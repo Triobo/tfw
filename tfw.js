@@ -45,7 +45,6 @@ HTMLElement.prototype.add=function(x){
   this.appendChild(x);
 }
 
-
 var desktop={
   div:null,
   layers:[],
@@ -166,6 +165,7 @@ var tfw={
    * @param {string} [params.innerHTML] - content (HTML)
    * @param {string} [params.text] - content (text), works same as innerHTML
    * @param {string} [params.style] - CSS styling
+   * @param {string} [params.title] - title (shows on hover)
    * @param {Object[]} [params.children] - descendant element(s)
    * @param {boolean} [params.disabled=false] - disabled input field
    * @param {number} [params.maxLength] - maximum input length
@@ -411,7 +411,7 @@ var tfw={
    * @see tfw#inputFieldLegend
    * @param {string} [params.type="text"] - input field type
    * @param {string} [params.value] - prefilled value
-   * @return {object} Created input field (HTML element)
+   * @return {Object} Created input field (HTML element)
    */
   input:function(params){
   	var element=document.createElement("input");
@@ -429,7 +429,7 @@ var tfw={
    * @see tfw#fillElemDefs
    * @see tfw#inputFieldLegend
    * @param {string} [params.value] - prefilled value
-   * @return {object} Created text area (HTML element)
+   * @return {Object} Created text area (HTML element)
    */
   textArea:function(params){
 	  var element=document.createElement("textarea");
@@ -448,7 +448,7 @@ var tfw={
    * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
    * @param {string} [params.text] - checkbox label text
    * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
-   * @return {object} Created checkbox (HTML element)
+   * @return {Object} Created checkbox (HTML element)
    */
   checkbox:function(params){
 		var r;
@@ -505,6 +505,168 @@ var tfw={
 		this.fillElemDefs(x, params);
 		
 		return x; 
+  },
+  /** @function
+   * @name tfw#icon
+   * @description Create an icon with specified parameters.
+   * @param {Object} params - icon parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
+   * @see tfw#fillElemDefs
+   * @param {function} [params.action] - function triggered when icon is clicked (basically onclick)
+   * @param {number} [params.index] - move background image up by this number of pixels (background-position-x)
+   * @return {Object} Created icon (HTML element)
+   */
+  icon:function(params){
+	var element=document.createElement("div");
+	params.className = "ikona" + ((params.className) ? (" "+params.className) : "");
+    this.fillElemDefs(element, params);
+    if (params.action){
+		element.action=params.action;
+		element.onclick=function(e){
+			if (!this.disabled) this.action(e);
+		}
+	}
+    var b=document.createElement("div");
+    if (params.index)  b.style.backgroundPositionX=(-params.index)+"px";
+    element.add(b);
+    element.disabled=0;
+    Object.defineProperty(element, "disabled", {
+      set:function(val){
+        this.disabled=val?1:0;
+        if (this.disabled) element.addClass("disabled");
+                      else element.removeClass("disabled");
+      },
+      get:function() {return this.disabled;},
+      enumerable:true,
+      configurable:true
+    });
+    if (params.disabled) element.disabled=params.disabled;
+    return element;
+  },
+  /** @function
+   * @name tfw#table
+   * @description Create a table with specified parameters.
+   * @param {Object} params - table parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for rows)
+   * @see tfw#fillElemDefs
+   * @return {Object} Created table (HTML element)
+   */
+  table:function(params){
+	var element=document.createElement("table");
+	this.fillElemDefs(element, params);
+    return element;
+  },
+  /** @function
+   * @name tfw#tr
+   * @description Create a table row with specified parameters.
+   * @param {Object} params - table row parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for columns/cells)
+   * @see tfw#fillElemDefs
+   * @return {Object} Created table row (HTML element)
+   */
+  tr:function(params){
+    var element=document.createElement("tr");
+	this.fillElemDefs(element, params);
+    return element;
+  },
+  /** @function
+   * @name tfw#td
+   * @description Create a table cell with specified parameters.
+   * @param {Object} params - table cell parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
+   * @see tfw#fillElemDefs
+   * @return {Object} Created table cell (HTML element)
+   */
+  td:function(params){
+    var element=document.createElement("td");
+	this.fillElemDefs(element, params);
+    return element;
+  },
+  /** @function
+   * @name tfw#slider
+   * @description Create a slider with specified parameters.
+   * @param {Object} params - slider parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
+   * @see tfw#fillElemDefs
+   * @param {string} params.id - ID, has to be present!
+   * @param {string} [params.legend] - legend text
+   * @param {string} [params.legendStyle] - legend CSS styling
+   * @param {number} [params.min=0] - minimum (smallest) value
+   * @param {number} [params.max=100] - maximum (largest) value
+   * @param {number} [params.step] - step between allowed values
+   * @param {string} [params.width] - width of slider (CSS, including unit)
+   * @param {string} [params.textWidth] - width of text (CSS, including unit)
+   * @param {string} [params.postText] - text after slider
+   * @return {Object} Created slider (HTML element)
+   */
+  slider:function(params){
+	var element=document.createElement("div");
+    element.min=0;
+    element.max=100;
+	params.style = "vertical-align:baseline;" + (params.style ? params.style : "");
+	var sliderValue = (params.value) ? params.value : false;
+	params.value = false;
+	this.fillElemDefs(element, params);
+    element.add(l=document.createElement("span"));
+    l.style.display="inline-block";    
+    if (params.legend) l.innerHTML=params.legend;
+    if (params.legendStyle) l.style.cssText=params.legendStyle;
+    var s;
+    element.add(s=document.createElement("input"))
+    s.type="range";
+    if (params.id)           s.id=params.id+"-s";
+    if (params.max)          {s.max=params.max;element.max=params.max;}
+    if ("min" in params)     {s.min=params.min;element.min=params.min;}
+    if (params.step)         	s.step=params.step;
+    if (params.width)        	s.style.width=params.width;
+    if (sliderValue) 		s.value=sliderValue;
+    s.oninput=function(){
+      $(params.id+"-v").value=this.value;
+      if (element.onchange) element.onchange();
+    }
+    s.onkeyup=function(){
+      $(params.id+"-v").value=this.value;
+      if (element.onchange) element.onchange();      
+    }
+    element.add(v=document.createElement("input"))
+    v.type="text";
+    if (params.id)      v.id=params.id+"-v";
+    if (params.textWidth) v.style.width=params.textWidth;
+    v.style.textAlign="right";
+    if (sliderValue) v.value=sliderValue;
+    v.onchange=function(){
+      if (!this.value.match(/^\d+$/)) this.value=0;
+      if (this.value<element.min) this.value=element.min;
+      if (this.value>element.max) this.value=element.max;
+      $(co.id+"-s").value=this.value;
+      if (element.onchange) element.onchange();
+    }
+    v.addEventListener("keydown", function(e){
+      var h=parseInt(this.value);
+      if (e.which==38) {
+        this.value=h-(e.altKey?8:1);
+        if (this.value<element.min) this.value=element.min;
+        $(element.id+"-s").value=this.value;
+        if (element.onchange) element.onchange();
+        e.stopPropagation();
+        e.preventDefault();
+      }
+      if (e.which==40) {
+        this.value=h+(e.altKey?8:1);
+        if (this.value>element.max) this.value=element.max;
+        $(element.id+"-s").value=this.value;
+        if (element.onchange) element.onchange();
+        e.stopPropagation();
+        e.preventDefault();
+      }
+    }, true);
+    element.setValue=function(a){
+      element.childNodes[1].value=a;
+      element.childNodes[2].value=a;
+    }
+    if (params.postText) {
+      element.add(p=document.createElement("span"));
+      p.innerHTML=params.postText;
+      p.style.display="inline-block";
+      p.style.height="20px";      
+    }
+
+    return element;
   },
   image:function(n){
     var x=document.createElement("img");
@@ -912,37 +1074,20 @@ var tfw={
  * @class
  */
 var prvek={
+  /**
+   * @deprecated
+   * @see tfw#icon
+   */
   ikona: function (co) {
-    var x=document.createElement("div");
-    if (co.id)     x.id=co.id;
-    var c="ikona";
-    if (co.className) c+=" "+co.className;
-    x.className=c;
-    if (co.styl)   x.style.cssText=co.styl;
-    if (co.popis)  x.title=co.popis;
-    if (co.action)   {
-      x.action=co.action;
-      x.onclick=function(e){
-        if (!this.zakazano) this.action(e);
-      }
-    }
-    var b=document.createElement("div");
-    if (co.index)  b.style.backgroundPositionX=(-co.index)+"px";
-    x.add(b);
-    x.zakazano=0;
-    Object.defineProperty(x, "disabled", {
-      set:function(val){
-        this.zakazano=val?1:0;
-        if (this.zakazano) x.addClass("disabled");
-                      else x.removeClass("disabled");
-      },
-      get:function() {return this.zakazano;},
-      enumerable:true,
-      configurable:true
-    });
-    if (co.zakazano) x.disabled=co.zakazano;
-    return x;
+	console.error("DEPRECATED prvek.ikona("+JSON.stringify(co)+")");
+	if (co.styl)		co.style=co.styl;
+	if (co.popis)		co.title=co.popis;
+	if (co.zakazano)	co.disabled=co.zakazano;
+	return tfw.icon(co);
   },
+  /**
+   * @todo Move to {@link tfw}
+   */
   seznamZatrzitek:function(co){
     var z;
     var x=document.createElement("div");
@@ -987,31 +1132,38 @@ var prvek={
     x.setAll =function(){this.value="A"};
     return x;
   },
+  /**
+   * @deprecated
+   * @see tfw#table
+   */
   tabulka:function(co){
-    var x=document.createElement("table");
-    if (co.id)    x.id=co.id;
-    if (co.className) x.className=co.className;
-    if (co.style)  x.style.cssText=co.style;
-    if (co.radky) for (var i=0;i<co.radky.length;i++) x.add(prvek.radek(co.radky[i]));      
-    return x;
+	console.error("DEPRECATED prvek.tabulka("+JSON.stringify(co)+")");
+    if (co.radky) co.children = co.radky;
+    return tfw.table(co);
   },
+  /**
+   * @deprecated
+   * @see tfw#tr
+   */
   radek:function(co){
-    var x=document.createElement("tr");
-    if (co.id)    x.id=co.id;
-    if (co.className) x.className=co.className;
-    if (co.style)  x.style.cssText=co.style;
-    if (co.sloupce) for (var i=0;i<co.sloupce.length;i++) x.add(prvek.sloupec(co.sloupce[i]));         
-    return x;
+	console.error("DEPRECATED prvek.radek("+JSON.stringify(co)+")");
+    if (co.sloupce) co.children = co.sloupce;
+    return tfw.tr(co);
   },
+  /**
+   * @deprecated
+   * @see tfw#td
+   */
   sloupec:function(co){
-    var x=document.createElement("td");
-    if (co.id)    x.id=co.id;
-    if (co.className) x.className=co.className;
-    if (co.obsah) x.innerHTML=co.obsah;
-    if (co.style)  x.style.cssText=co.style;
-    if (co.width) x.setAttribute("width",co.width+"px");
-    return x;
+	console.error("DEPRECATED prvek.sloupec("+JSON.stringify(co)+")");
+    if (co.obsah) co.innerHTML=co.obsah;
+    if (co.width) co.style = "width:"+co.width+"px;"+((co.style) ? co.style : "");
+    return tfw.td(co);
   },
+  /**
+   * @todo Remove dependencies on Triobo
+   * @todo Move to {@link tfw}
+   */
   soubory:function(co){
     var b,c,s;
     var trd="soubory";
@@ -1205,6 +1357,10 @@ var prvek={
     return x;
   },
   rezimVyberuBarvy:0,
+  /**
+   * @todo Remove dependencies on Triobo
+   * @todo Move to {@link tfw}
+   */
   barva:function(co){
     var x=document.createElement("div");
     if (co.id)    x.id=co.id;
@@ -1561,6 +1717,10 @@ var prvek={
     if (co.value) x.barvaAktualniAVychozi(co.value,co.value);
     return x;
   },
+  /**
+   * @todo Remove dependencies on Triobo
+   * @todo Move to {@link tfw}
+   */
   barvaSLegendou:function(co){
     var x=document.createElement("p");
     var l=document.createElement("span");
@@ -1571,79 +1731,15 @@ var prvek={
     x.add(prvek.barva(co));
     return x;
   },
+  /**
+   * @deprecated
+   * @see tfw#slider
+   */
   tahlo:function(co){
-    var x=document.createElement("div");
-    x.min=0;
-    x.max=100;
-    if (co.id)      x.id=co.id;
-    if (co.style)    x.style.cssText=co.style;    
-    if (co.onchange) x.onchange=co.onchange;
-    x.style.verticalAlign="baseline";
-    x.add(l=document.createElement("span"));
-    l.style.display="inline-block";    
-    if (co.legend) l.innerHTML=co.legend;
-    if (co.legendStyle) l.style.cssText=co.legendStyle;
-    var s;
-    x.add(s=document.createElement("input"))
-    s.type="range";
-    if (co.id)           s.id=co.id+"-s";
-    if (co.max)          {s.max=co.max;x.max=co.max;}
-    if ("min" in co)     {s.min=co.min;x.min=co.min;}
-    if (co.krok)         s.step=co.krok;
-    if (co.width)        s.style.width=co.width;
-    if ("value" in co) s.value=co.value;
-    s.oninput=function(){
-      $(co.id+"-v").value=this.value;
-      if (x.onchange) x.onchange();
-    }
-    s.onkeyup=function(){
-      $(co.id+"-v").value=this.value;
-      if (x.onchange) x.onchange();      
-    }
-    x.add(v=document.createElement("input"))
-    v.type="text";
-    if (co.id)      v.id=co.id+"-v";
-    if (co.sirkaText) v.style.width=co.sirkaText;
-    v.style.textAlign="right";
-    if ("value" in co) v.value=co.value;
-    v.onchange=function(){
-      if (!this.value.match(/^\d+$/)) this.value=0;
-      if (this.value<x.min) this.value=x.min;
-      if (this.value>x.max) this.value=x.max;
-      $(co.id+"-s").value=this.value;
-      if (x.onchange) x.onchange();
-    }
-    v.addEventListener("keydown", function(e){
-      var h=parseInt(this.value);
-      if (e.which==38) {
-        this.value=h-(e.altKey?8:1);
-        if (this.value<x.min) this.value=x.min;
-        $(x.id+"-s").value=this.value;
-        if (x.onchange) x.onchange();
-        e.stopPropagation();
-        e.preventDefault();
-      }
-      if (e.which==40) {
-        this.value=h+(e.altKey?8:1);
-        if (this.value>x.max) this.value=x.max;
-        $(x.id+"-s").value=this.value;
-        if (x.onchange) x.onchange();
-        e.stopPropagation();
-        e.preventDefault();
-      }
-    }, true);
-    x.setValue=function(a){
-      x.childNodes[1].value=a;
-      x.childNodes[2].value=a;
-    }
-    if (co.postText) {
-      x.add(p=document.createElement("span"));
-      p.innerHTML=co.postText;
-      p.style.display="inline-block";
-      p.style.height="20px";      
-    }
-
-    return x;
+	console.error("DEPRECATED prvek.tahlo("+JSON.stringify(co)+")");
+	if(co.krok)				co.step=co.krok;
+	if(co.sirkaText)		co.textWidth=co.sirkaText;
+    return tfw.slider(co);
   }
 }
 
