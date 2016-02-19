@@ -178,10 +178,10 @@ var tfw={
   		params.innerHTML = params.text;
   	}
   	
-  	var attributesToCopy = ["id","innerHTML","disabled","maxLength","evaluate","onClick"];
+  	var attributesToCopy = ["id","innerHTML","disabled","maxLength","evaluate","onclick","value"];
   	for(var i=0;i<attributesToCopy.length;i++){
   		var attribute = attributesToCopy[i];
-  		if(params[attribute]){
+  		if(attribute in params){
   			element[attribute] = params[attribute];
   		}
   	}
@@ -417,9 +417,6 @@ var tfw={
   	var element=document.createElement("input");
   	this.fillElemDefs(element, params);
   	element.type = (params.type) ? params.type : "text";
-  	if(params.value){
-  		element.value=params.value;
-  	}
   	return (params.legend) ? this.inputFieldLegend(element, params) : element;
   },
   /** @function
@@ -548,7 +545,7 @@ var tfw={
       enumerable:true,
       configurable:true
     });
-
+    if (params.selected) element.selected=1;
     return element;
   },
   /** @function
