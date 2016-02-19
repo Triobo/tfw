@@ -531,11 +531,10 @@ var tfw={
     element.disabled=0;
     Object.defineProperty(element, "disabled", {
       set:function(val){
-        this.disabled=val?1:0;
         if (this.disabled) element.addClass("disabled");
                       else element.removeClass("disabled");
       },
-      get:function() {return this.disabled;},
+      get:function() {return element.hasClass("disabled")},
       enumerable:true,
       configurable:true
     });
