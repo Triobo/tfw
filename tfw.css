@@ -302,7 +302,7 @@ button:disabled:hover {
   display:inline-block;
   width:12px;
   height:12px;
-  margin:1px 4px 3px 0px;
+  margin:3px 4px 3px 0px;
   border-radius:3px;
   cursor:pointer;
   vertical-align: bottom;
@@ -310,6 +310,48 @@ button:disabled:hover {
 }
 .tfwCheckbox div.checked {
   background-color: #fc5;/*orange*/
+}
+
+/* icon */
+.tfwIcon {
+  display:inline-block;
+  background-color: #ddd;/*silver*/
+  cursor:pointer;
+  text-align:center;
+  margin-left:1px;
+  padding:2px 1px;
+}
+.tfwIcon:first-child {
+  margin-left: 0px;
+}
+.tfwIcon:hover {
+  background-color: #8cc;/*azure*/
+}
+.tfwIcon.disabled div {
+  opacity:0.2;
+}
+.tfwIcon.disabled:hover {
+  background-color: #ddd;/*silver*/
+  cursor:default;
+}
+.tfwIcon.selected {
+  background-color: #fc5;/*orange*/
+}
+.tfwIcon.selected:hover {
+  background-color: #fd5;/*orange-light*/
+}
+
+.tfwIconGroup {
+  line-height: 1;
+  display:inline-block;
+  border-radius:3px;
+  border:1px solid #bbb;
+  background:#bbb;
+  overflow: hidden;
+  padding-right:-1px;
+  margin-right:4px;
+  vertical-align:top;
+  white-space: nowrap;
 }
 
 
