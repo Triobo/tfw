@@ -516,29 +516,39 @@ var tfw={
    * @return {Object} Created icon (HTML element)
    */
   icon:function(params){
-	var element=document.createElement("div");
-	params.className = "ikona" + ((params.className) ? (" "+params.className) : "");
+  	var element=document.createElement("div");
+  	params.className = "tfwIcon" + ((params.className) ? (" "+params.className) : "");
     this.fillElemDefs(element, params);
     if (params.action){
-		element.action=params.action;
-		element.onclick=function(e){
-			if (!this.disabled) this.action(e);
-		}
-	}
+  		element.action=params.action;
+  		element.onclick=function(e){
+  			if (!element.hasClass("disabled")) this.action(e);
+  		}
+  	}
     var b=document.createElement("div");
     if (params.index)  b.style.backgroundPositionX=(-params.index)+"px";
     element.add(b);
     element.disabled=0;
     Object.defineProperty(element, "disabled", {
       set:function(val){
-        if (this.disabled) element.addClass("disabled");
-                      else element.removeClass("disabled");
+        if (val) element.addClass("disabled");
+            else element.removeClass("disabled");
       },
       get:function() {return element.hasClass("disabled")},
       enumerable:true,
       configurable:true
     });
     if (params.disabled) element.disabled=params.disabled;
+    Object.defineProperty(element, "selected", {
+      set:function(val){
+        if (val) element.addClass("selected");
+            else element.removeClass("selected");
+      },
+      get:function() {return element.hasClass("selected")},
+      enumerable:true,
+      configurable:true
+    });
+
     return element;
   },
   /** @function
@@ -1179,14 +1189,14 @@ var prvek={
     var x=tfw.div({id:co.id,className:trd,style:"width:"+co.width+"px;height:"+co.height+";"});    
     x.add(b=tfw.div({className:"nastroje"}));
       
-      b.add(tfw.div({className:"ikony",children:[
-        prvek.ikona({className:"ikona24"+(co.nahledy?" aktivni":""),index:46*24,popis:t(511),action:function(e){  /*náhledy*/
+      b.add(tfw.div({className:"tfwIconGroup",children:[
+        tfw.icon({className:"ikona24"+(co.nahledy?" aktivni":""),index:46*24,title:t(511),action:function(e){  /*náhledy*/
           x.removeClass("seznam");
           x.addClass("nahledy");
           this.parentNode.childNodes[0].addClass("aktivni");
           this.parentNode.childNodes[1].removeClass("aktivni");
         }}),
-        prvek.ikona({className:"ikona24"+(co.nahledy?"":" aktivni"),index:47*24,popis:t(396),action:function(e){  /*"Seznam"*/
+        tfw.icon({className:"ikona24"+(co.nahledy?"":" aktivni"),index:47*24,title:t(396),action:function(e){  /*"Seznam"*/
           x.removeClass("nahledy");
           x.addClass("seznam");
           this.parentNode.childNodes[0].removeClass("aktivni");
@@ -1194,38 +1204,38 @@ var prvek={
         }})
       ]}));
             
-      b.add(c=tfw.div({className:"ikony"}));
-        c.add(prvek.ikona({className:"ikona24",index:49*24,popis:t(295),action:function(e){  /*vybrat vše*/
+      b.add(c=tfw.div({className:"tfwIconGroup"}));
+        c.add(tfw.icon({className:"ikona24",index:49*24,title:t(295),action:function(e){  /*vybrat vše*/
           var c=x.files;
           for (i=0;i<c.length;i++) if (window.getComputedStyle(c[i]).display!="none") c[i].addClass("oznacen");
         }}));
-        if (co.linky) c.add(prvek.ikona({className:"ikona24",index:63*24,popis:t(644),action:function(e){  /*vybrat nepoužité*/
+        if (co.linky) c.add(tfw.icon({className:"ikona24",index:63*24,title:t(644),action:function(e){  /*vybrat nepoužité*/
           var c=x.files;
           for (i=0;i<c.length;i++) if ((window.getComputedStyle(c[i]).display!="none") && (!c[i].linky)) c[i].addClass("oznacen");
         }}));
 
-        c.add(prvek.ikona({className:"ikona24",index:50*24,popis:t(296),action:function(e){  /*zrušit výběr*/
+        c.add(tfw.icon({className:"ikona24",index:50*24,title:t(296),action:function(e){  /*zrušit výběr*/
           for (i=0;i<x.files.length;i++) x.files[i].removeClass("oznacen");
         }}));
 
-      b.add(c=tfw.div({className:"ikony"}));     
+      b.add(c=tfw.div({className:"tfwIconGroup"}));     
         if (co.akcePridat) {
-          c.add(prvek.ikona({className:"ikona24",index:51*24,popis:t(498),action:co.akcePridat}));
+          c.add(tfw.icon({className:"ikona24",index:51*24,title:t(498),action:co.akcePridat}));
           x.akcePridat=co.akcePridat;
         }
   
         if (co.akceSmazat)
-          c.add(prvek.ikona({className:"ikona24",index:52*24,popis:t(297),action:co.akceSmazat})); /* smazat vybrané*/
+          c.add(tfw.icon({className:"ikona24",index:52*24,title:t(297),action:co.akceSmazat})); /* smazat vybrané*/
         
       if (co.menitPoradi) 
-        b.add(tfw.div({className:"ikony",children:[
-          prvek.ikona({className:"ikona24",index:53*24,popis:t(512),action:function(e){  /*"Nahoru"*/
+        b.add(tfw.div({className:"tfwIconGroup",children:[
+          tfw.icon({className:"ikona24",index:53*24,title:t(512),action:function(e){  /*"Nahoru"*/
             var c=x.files;
             for (i=1;i<c.length;i++) 
               if (c[i].hasClass("oznacen"))          
                 c[i].parentNode.insertBefore(c[i],c[i-1]);
           }}),
-          prvek.ikona({className:"ikona24",index:54*24,popis:t(513),action:function(e){  /*Dolů*/
+          tfw.icon({className:"ikona24",index:54*24,title:t(513),action:function(e){  /*Dolů*/
             var c=x.files;
             for (i=(c.length-2);i>=0;i--) 
               if (c[i].hasClass("oznacen"))          
@@ -1234,26 +1244,26 @@ var prvek={
         ]}));
         
       if (co.filtr>=0) 
-        b.add(tfw.div({className:"ikony",children:[
-          prvek.ikona({className:"ikona24"+((co.filtr & 1)?"":" aktivni"),index:1*24,popis:t(514),action:function(e){
-            if (this.hasClass("aktivni")) {this.removeClass("aktivni");x.addClass("hideImg");}
-            else {this.addClass("aktivni");x.removeClass("hideImg");}
+        b.add(tfw.div({className:"tfwIconGroup",children:[
+          tfw.icon({className:"ikona24"+((co.filtr & 1)?"":" selected"),index:1*24,title:t(514),action:function(e){
+            if (this.hasClass("selected")) {this.removeClass("selected");x.addClass("hideImg");}
+            else {this.addClass("selected");x.removeClass("hideImg");}
           }}),
-          prvek.ikona({className:"ikona24"+((co.filtr & 2)?"":" aktivni"),index:2*24,popis:t(515),action:function(e){
-            if (this.hasClass("aktivni")) {this.removeClass("aktivni");x.addClass("hideVideo");}
-            else {this.addClass("aktivni");x.removeClass("hideVideo");}
+          tfw.icon({className:"ikona24"+((co.filtr & 2)?"":" selected"),index:2*24,title:t(515),action:function(e){
+            if (this.hasClass("selected")) {this.removeClass("selected");x.addClass("hideVideo");}
+            else {this.addClass("selected");x.removeClass("hideVideo");}
           }}),
-          prvek.ikona({className:"ikona24"+((co.filtr & 4)?"":" aktivni"),index:4*24,popis:t(516),action:function(e){
-            if (this.hasClass("aktivni")) {this.removeClass("aktivni");x.addClass("hideAudio");}
-            else {this.addClass("aktivni");x.removeClass("hideAudio");}
+          tfw.icon({className:"ikona24"+((co.filtr & 4)?"":" selected"),index:4*24,title:t(516),action:function(e){
+            if (this.hasClass("selected")) {this.removeClass("selected");x.addClass("hideAudio");}
+            else {this.addClass("selected");x.removeClass("hideAudio");}
           }}),
-          prvek.ikona({className:"ikona24"+((co.filtr & 8)?"":" aktivni"),index:3*24,popis:"HTML",action:function(e){
-            if (this.hasClass("aktivni")) {this.removeClass("aktivni");x.addClass("hideHtml");}
-            else {this.addClass("aktivni");x.removeClass("hideHtml");}
+          tfw.icon({className:"ikona24"+((co.filtr & 8)?"":" selected"),index:3*24,title:"HTML",action:function(e){
+            if (this.hasClass("selected")) {this.removeClass("selected");x.addClass("hideHtml");}
+            else {this.addClass("selected");x.removeClass("hideHtml");}
           }}),
-          prvek.ikona({className:"ikona24"+((co.filtr & 16)?"":" aktivni"),index:0*24,popis:t(316),action:function(e){
-            if (this.hasClass("aktivni")) {this.removeClass("aktivni");x.addClass("hideFont");}
-            else {this.addClass("aktivni");x.removeClass("hideFont");}
+          tfw.icon({className:"ikona24"+((co.filtr & 16)?"":" selected"),index:0*24,title:t(316),action:function(e){
+            if (this.hasClass("selected")) {this.removeClass("selected");x.addClass("hideFont");}
+            else {this.addClass("selected");x.removeClass("hideFont");}
           }})
         ]}));
   
@@ -1343,7 +1353,7 @@ var prvek={
 
     if (x.akcePridat) {
       var h=co.infoPridat;
-      h=h.replace("%iconPlus", "<div class='ikony'><div class='ikona ikona24'><div style='background-position-x:-1224px;'></div></div></div>");
+      h=h.replace("%iconPlus", "<div class='tfwIconGroup' style='vertical-align:bottom;margin-right:0px;'><div class='tfwIcon ikona24'><div style='background-position-x:-1224px;'></div></div></div>");
       x.add(b=tfw.div({className:"zadnySoubor",innerHTML:h}));
       b.style.cursor="pointer";
       b.addEventListener("click",x.akcePridat,false);
@@ -1415,8 +1425,8 @@ var prvek={
         dlg.add(c=tfw.div({style:"width:200px;height:312px;",className:"tfwInline tfwSeparatorRight"}));
         c.add(tfw.par({className:"nadpis",innerHTML:t(548),style:"border-bottom:none;"})); /* paleta vydání */
         c.add(b=tfw.div({id:"dlgPaleta",className:"tfwSelect",style:"width:200px;height:250px;margin:2px 0 4px;"}));
-        c.add(tfw.div({className:"ikony",children:[
-          prvek.ikona({className:"ikona24",index:51*24,popis:t(20),action:function(e){  /* nová barva */
+        c.add(tfw.div({className:"tfwIconGroup",children:[
+          tfw.icon({className:"ikona24",index:51*24,title:t(20),action:function(e){  /* nová barva */
             if ($("dlgPaleta").value) $($("dlgPaleta").value).className="";
             var pi,max=0;
             for (i=0;i<$("dlgPaleta").childNodes.length;i++) {
@@ -1439,7 +1449,7 @@ var prvek={
             x.zmenaPalety=1;
             x.prejmenujBarvu();           
           }}),
-          prvek.ikona({id:"dlgPalUloz",className:"ikona24",index:57*24,popis:t(9),zakazano:1,action:function(e){
+          tfw.icon({id:"dlgPalUloz",className:"ikona24",index:57*24,title:t(9),zakazano:1,action:function(e){
             var pal=$($("dlgPaleta").value);
             pal.value=$("barvaR-v").value+","+$("barvaG-v").value+","+$("barvaB-v").value+","+($("barvaO-v").value/100);
             pal.childNodes[0].style.backgroundImage="-webkit-linear-gradient(rgba("+pal.value+"),rgba("+pal.value+")),url(pics/vzorek.png)";
@@ -1448,7 +1458,7 @@ var prvek={
             x.zmenaPalety=1;
             x.prejmenujBarvu();
           }}),
-          prvek.ikona({id:"dlgPalSmaz",className:"ikona24",index:52*24,popis:t(17),zakazano:1,action:function(e){
+          tfw.icon({id:"dlgPalSmaz",className:"ikona24",index:52*24,title:t(17),zakazano:1,action:function(e){
             var pal=$($("dlgPaleta").value);
             pal.parentNode.removeChild(pal);
             $("dlgPaleta").value="";
@@ -1459,8 +1469,8 @@ var prvek={
             x.zmenaPalety=1;
           }})
         ]}));         
-        c.add(tfw.div({className:"ikony",children:[  
-          prvek.ikona({id:"dlgPalNahoru",className:"ikona24",index:53*24,popis:t(512),zakazano:1,action:function(e){  /*"Nahoru"*/
+        c.add(tfw.div({className:"tfwIconGroup",children:[  
+          tfw.icon({id:"dlgPalNahoru",className:"ikona24",index:53*24,title:t(512),zakazano:1,action:function(e){  /*"Nahoru"*/
             var c=$("dlgPaleta").childNodes;
             for (i=1;i<c.length;i++) 
               if (c[i].hasClass("aktivni")) {         
@@ -1471,7 +1481,7 @@ var prvek={
               }
             x.zmenaPalety=1;
           }}),
-          prvek.ikona({id:"dlgPalDolu",className:"ikona24",index:54*24,popis:t(513),zakazano:1,action:function(e){  /*Dolů*/
+          tfw.icon({id:"dlgPalDolu",className:"ikona24",index:54*24,title:t(513),zakazano:1,action:function(e){  /*Dolů*/
             var c=$("dlgPaleta").childNodes;
             for (i=(c.length-2);i>=0;i--) 
               if (c[i].hasClass("selected")) {          
@@ -1725,7 +1735,9 @@ var prvek={
     var l=document.createElement("span");
     l.style.display="inline-block";
     if (co.legenda) l.innerHTML=co.legenda;
+    if (co.legend) l.innerHTML=co.legend;
     if (co.legendaSirka) l.style.width=co.legendaSirka;
+    if (co.legendStyle) l.style.cssText=co.legendStyle;
     x.add(l);
     x.add(prvek.barva(co));
     return x;
