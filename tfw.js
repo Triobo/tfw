@@ -450,14 +450,14 @@ var tfw={
   checkbox:function(params){
 		var r;
 		var x=document.createElement("div");
-		
-		params.className = (params.className) ? (params.className + " tfwCheckbox") : "tfwCheckbox";
-		
+		var labelText = (params.text) ? params.text : "";
+		params.text = "";
+		this.fillElemDefs(x, params);
+		x.addClass("tfwCheckbox");
+
 		if (params.onchange) x.onchange=params.onchange;
 		if (params.onclick) x.onclick=params.onclick;
 		
-		var labelText = (params.text) ? params.text : "";
-		params.text = "";
 		
 		var b=document.createElement("div");
 		
@@ -498,8 +498,6 @@ var tfw={
 		  e.stopPropagation();
 		  e.preventDefault();
 		},false);
-
-		this.fillElemDefs(x, params);
 		
 		return x; 
   },
@@ -565,11 +563,13 @@ var tfw={
    * @description Create a table row with specified parameters.
    * @param {Object} params - table row parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for columns/cells)
    * @see tfw#fillElemDefs
+   * @param {Array} [params.columns] - list of objects, that will be passed to tfw.td and added as children   
    * @return {Object} Created table row (HTML element)
    */
   tr:function(params){
     var element=document.createElement("tr");
-	this.fillElemDefs(element, params);
+	  this.fillElemDefs(element, params);
+	  if ("columns" in params) for (var i=0;i<params.columns.length;i++) element.add(tfw.td(params.columns[i]));
     return element;
   },
   /** @function
@@ -581,7 +581,7 @@ var tfw={
    */
   td:function(params){
     var element=document.createElement("td");
-	this.fillElemDefs(element, params);
+	  this.fillElemDefs(element, params);
     return element;
   },
   /** @function
@@ -1081,17 +1081,6 @@ var tfw={
  */
 var prvek={
   /**
-   * @deprecated
-   * @see tfw#icon
-   */
-  ikona: function (co) {
-	console.error("DEPRECATED prvek.ikona("+JSON.stringify(co)+")");
-	if (co.styl)		co.style=co.styl;
-	if (co.popis)		co.title=co.popis;
-	if (co.zakazano)	co.disabled=co.zakazano;
-	return tfw.icon(co);
-  },
-  /**
    * @todo Move to {@link tfw}
    */
   seznamZatrzitek:function(co){
@@ -1153,7 +1142,7 @@ var prvek={
    */
   radek:function(co){
 	console.error("DEPRECATED prvek.radek("+JSON.stringify(co)+")");
-    if (co.sloupce) co.children = co.sloupce;
+    if (co.sloupce) co.columns = co.sloupce;
     return tfw.tr(co);
   },
   /**
