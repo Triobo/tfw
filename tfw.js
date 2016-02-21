@@ -150,14 +150,13 @@ var desktop={
 }
 
 /**
- * Triobo framework.
- * @name tfw
+ * Triobo framework. This is a singleton (a single "instance" of a "class").
  * @class
  */
 var tfw={
-  /** @function
-   * @name tfw#fillElemDefs
-   * @description Set parameters of a HTML element.
+  /** 
+   * Set parameters of a HTML element.
+   * @memberof tfw
    * @param {Object} element - HTML element
    * @param {Object} params - parameters object
    * @param {string} [params.id] - ID
@@ -378,9 +377,9 @@ var tfw={
     }
     return x;
   },
-  /** @function
-   * @name tfw#inputFieldLegend
-   * @description Wrap an input field with a legend and a container.
+  /**
+   * Wrap an input field with a legend and a container.
+   * @memberof tfw
    * @param {Object} element - input field HTML element
    * @param {Object} params - legend parameters
    * @param {string} params.legend - legend text
@@ -403,12 +402,12 @@ var tfw={
 		if (params.postText) x.add(tfw.span({innerHTML:params.postText}));
 		return x;
   },
-  /** @function
-   * @name tfw#input
-   * @description Create an input field with specified parameters.
-   * @param {Object} params - input fields parameters (for more see {@link tfw#fillElemDefs|fillElemDefs} and {@link tfw#inputFieldLegend|inputFieldLegend})
-   * @see tfw#fillElemDefs
-   * @see tfw#inputFieldLegend
+  /**
+   * Create an input field with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - input fields parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {string} [params.type="text"] - input field type
    * @param {string} [params.value] - prefilled value
    * @return {Object} Created input field (HTML element)
@@ -419,12 +418,12 @@ var tfw={
   	element.type = (params.type) ? params.type : "text";
   	return (params.legend) ? this.inputFieldLegend(element, params) : element;
   },
-  /** @function
-   * @name tfw#textArea
-   * @description Create a text area with specified parameters.
-   * @param {Object} params - text area parameters (for more see {@link tfw#fillElemDefs|fillElemDefs} and {@link tfw#inputFieldLegend|inputFieldLegend})
-   * @see tfw#fillElemDefs
-   * @see tfw#inputFieldLegend
+  /**
+   * Create a text area with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - text area parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {string} [params.value] - prefilled value
    * @return {Object} Created text area (HTML element)
    */
@@ -436,12 +435,12 @@ var tfw={
 	  }
 	  return (params.legend) ? this.inputFieldLegend(element, params) : element;
   },
-  /** @function
-   * @name tfw#checkbox
-   * @description Create a checkbox with specified parameters.
-   * @param {Object} params - checkbox parameters (for more see {@link tfw#fillElemDefs|fillElemDefs} and {@link tfw#inputFieldLegend|inputFieldLegend})
-   * @see tfw#fillElemDefs
-   * @see tfw#inputFieldLegend
+  /**
+   * Create a checkbox with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - checkbox parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
    * @param {string} [params.text] - checkbox label text
    * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
@@ -501,11 +500,11 @@ var tfw={
 		
 		return x; 
   },
-  /** @function
-   * @name tfw#icon
-   * @description Create an icon with specified parameters.
-   * @param {Object} params - icon parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
-   * @see tfw#fillElemDefs
+  /**
+   * Create an icon with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - icon parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
    * @param {function} [params.action] - function triggered when icon is clicked (basically onclick)
    * @param {number} [params.index] - move background image up by this number of pixels (background-position-x)
    * @return {Object} Created icon (HTML element)
@@ -546,11 +545,11 @@ var tfw={
     if (params.selected) element.selected=1;
     return element;
   },
-  /** @function
-   * @name tfw#table
-   * @description Create a table with specified parameters.
-   * @param {Object} params - table parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for rows)
-   * @see tfw#fillElemDefs
+  /**
+   * Create a table with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - table parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for rows)
+   * @see tfw.fillElemDefs
    * @return {Object} Created table (HTML element)
    */
   table:function(params){
@@ -558,11 +557,11 @@ var tfw={
 	this.fillElemDefs(element, params);
     return element;
   },
-  /** @function
-   * @name tfw#tr
-   * @description Create a table row with specified parameters.
-   * @param {Object} params - table row parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for columns/cells)
-   * @see tfw#fillElemDefs
+  /**
+   * Create a table row with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - table row parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for columns/cells)
+   * @see tfw.fillElemDefs
    * @param {Array} [params.columns] - list of objects, that will be passed to tfw.td and added as children   
    * @return {Object} Created table row (HTML element)
    */
@@ -572,11 +571,11 @@ var tfw={
 	  if ("columns" in params) for (var i=0;i<params.columns.length;i++) element.add(tfw.td(params.columns[i]));
     return element;
   },
-  /** @function
-   * @name tfw#td
-   * @description Create a table cell with specified parameters.
-   * @param {Object} params - table cell parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
-   * @see tfw#fillElemDefs
+  /**
+   * Create a table cell with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - table cell parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
    * @return {Object} Created table cell (HTML element)
    */
   td:function(params){
@@ -584,11 +583,11 @@ var tfw={
 	  this.fillElemDefs(element, params);
     return element;
   },
-  /** @function
-   * @name tfw#slider
-   * @description Create a slider with specified parameters.
-   * @param {Object} params - slider parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
-   * @see tfw#fillElemDefs
+  /**
+   * Create a slider with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - slider parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
    * @param {string} params.id - ID, has to be present!
    * @param {string} [params.legend] - legend text
    * @param {string} [params.legendStyle] - legend CSS styling
@@ -849,6 +848,12 @@ var tfw={
       $("dlgPaD").innerHTML=co.text.replace("%1","<a href='"+hr.responseText+"' download>"+co.item+"</a>");
     },0);
   },
+  /**
+   * Decode JSON data, show error in case they are invalid.
+   * @memberof tfw
+   * @param {string} json - JSON encoded data
+   * @return {Object} Object that was encoded in given JSON string.
+   */
   decodeJSON:function(json){
     var odpoved={};
     try {
@@ -1076,7 +1081,6 @@ var tfw={
 
 /**
  * Function package for preparing HTML elements.
- * @name prvek
  * @class
  */
 var prvek={
@@ -1129,7 +1133,7 @@ var prvek={
   },
   /**
    * @deprecated
-   * @see tfw#table
+   * @see tfw.table
    */
   tabulka:function(co){
 	console.error("DEPRECATED prvek.tabulka("+JSON.stringify(co)+")");
@@ -1138,7 +1142,7 @@ var prvek={
   },
   /**
    * @deprecated
-   * @see tfw#tr
+   * @see tfw.tr
    */
   radek:function(co){
 	console.error("DEPRECATED prvek.radek("+JSON.stringify(co)+")");
@@ -1147,7 +1151,7 @@ var prvek={
   },
   /**
    * @deprecated
-   * @see tfw#td
+   * @see tfw.td
    */
   sloupec:function(co){
 	console.error("DEPRECATED prvek.sloupec("+JSON.stringify(co)+")");
@@ -1730,7 +1734,7 @@ var prvek={
   },
   /**
    * @deprecated
-   * @see tfw#slider
+   * @see tfw.slider
    */
   tahlo:function(co){
 	console.error("DEPRECATED prvek.tahlo("+JSON.stringify(co)+")");
@@ -1819,16 +1823,52 @@ function Web2RGB(h){
   return [r,g,b];
 }
 
+/**
+ * Class for creating dynamic tables.
+ * @class
+ * @name Dyntable
+ * @todo Move to {@link tfw}
+ * @param {Object} x parameters object (not used)
+ * @return {Object} Returns an object instance.
+ */
 function Dyntable(x){
   return {
+	/**
+	 * @memberof Dyntable#
+	 * @protected
+	 */
     myDiv:null,
+	/**
+	 * @memberof Dyntable#
+	 * @protected
+	 */
     url:null,
+	/**
+	 * @memberof Dyntable#
+	 * @protected
+	 */
     data:null,
+	/**
+	 * @memberof Dyntable#
+	 * @protected
+	 */
     rowEdit:null,
+	/** 
+	 * Create a dynamic table.
+	 * @memberof Dyntable#
+	 * @returns {function} Function that returns a "loading" DIV.
+	 */
     create:function(){
       this.myDiv=tfw.div({innerHTML:CEKANI});
       return this.myDiv;
     },
+	/** 
+	 * Reload (or load) data from server.
+	 * Sends a GET request to "data.php", decodes JSON and {@link Dyntable#paint|paints} the table.
+	 * @see Dyntable#paint
+	 * @see tfw.decodeJSON
+	 * @memberof Dyntable#
+	 */
     reload:function(){
       that=this;
       ajaxGet("data.php", this.url, function(hr){
@@ -1836,6 +1876,12 @@ function Dyntable(x){
         that.paint();
       },0);
     },
+	/** 
+	 * Refresh the content of the table using data gotten by (re)loading.
+	 * Empties the table and recreates it using this.data.
+	 * @see prvek
+	 * @memberof Dyntable#
+	 */
     paint:function(){
       var o,r,c;
       this.myDiv.innerHTML="";
