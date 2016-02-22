@@ -5,7 +5,14 @@
 <dd></dd>
 <dt><a href="#prvek">prvek</a></dt>
 <dd></dd>
-<dt><a href="#Dyntable">Dyntable</a></dt>
+<dt><del><a href="#Dyntable">Dyntable</a></del></dt>
+<dd></dd>
+</dl>
+
+## Constants
+
+<dl>
+<dt><a href="#CEKANI">CEKANI</a></dt>
 <dd></dd>
 </dl>
 
@@ -15,6 +22,15 @@
 
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
+    * [.dynamicTable](#tfw.dynamicTable)
+        * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
+        * [.myDiv](#tfw.dynamicTable+myDiv)
+        * [.url](#tfw.dynamicTable+url)
+        * [.data](#tfw.dynamicTable+data)
+        * [.rowEdit](#tfw.dynamicTable+rowEdit)
+        * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
+        * [.reload()](#tfw.dynamicTable+reload)
+        * [.paint()](#tfw.dynamicTable+paint)
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
     * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
@@ -31,6 +47,79 @@
 ### new tfw()
 Triobo framework. This is a singleton (a single "instance" of a "class").
 
+<a name="tfw.dynamicTable"></a>
+### tfw.dynamicTable
+**Kind**: static class of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Implement sorting (columns with text/numbers)
+- [ ] Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
+- [ ] Use tfw.calendar
+- [ ] View preferences (width, order and visibility of columns)
+
+
+* [.dynamicTable](#tfw.dynamicTable)
+    * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
+    * [.myDiv](#tfw.dynamicTable+myDiv)
+    * [.url](#tfw.dynamicTable+url)
+    * [.data](#tfw.dynamicTable+data)
+    * [.rowEdit](#tfw.dynamicTable+rowEdit)
+    * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
+    * [.reload()](#tfw.dynamicTable+reload)
+    * [.paint()](#tfw.dynamicTable+paint)
+
+<a name="new_tfw.dynamicTable_new"></a>
+#### new dynamicTable(params)
+Class for creating dynamic tables.
+
+**Returns**: <code>Object</code> - Returns an object instance.  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | parameters object (not used) |
+
+<a name="tfw.dynamicTable+myDiv"></a>
+#### dynamicTable.myDiv
+**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Access:** protected  
+<a name="tfw.dynamicTable+url"></a>
+#### dynamicTable.url
+**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Access:** protected  
+<a name="tfw.dynamicTable+data"></a>
+#### dynamicTable.data
+**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Access:** protected  
+<a name="tfw.dynamicTable+rowEdit"></a>
+#### dynamicTable.rowEdit
+**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Access:** protected  
+<a name="tfw.dynamicTable+create"></a>
+#### dynamicTable.create() ⇒ <code>Object</code>
+Create a dynamic table.
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Returns**: <code>Object</code> - Returns a "loading" DIV (with content defined by [CEKANI](#CEKANI)).  
+**Todo**
+
+- [ ] Remove dependency on [CEKANI](#CEKANI)
+
+<a name="tfw.dynamicTable+reload"></a>
+#### dynamicTable.reload()
+Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTable+paint) the table.
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**See**
+
+- tfw.dynamicTable#paint
+- tfw.decodeJSON
+
+<a name="tfw.dynamicTable+paint"></a>
+#### dynamicTable.paint()
+Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**See**: prvek  
 <a name="tfw.fillElemDefs"></a>
 ### tfw.fillElemDefs(element, params)
 Set parameters of a HTML element.
@@ -283,68 +372,15 @@ Function package for preparing HTML elements.
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **See**: tfw.slider  
 <a name="Dyntable"></a>
-## Dyntable
+## ~~Dyntable~~
+***Deprecated***
+
 **Kind**: global class  
+**See**: tfw.dynamicTable  
+<a name="CEKANI"></a>
+## CEKANI
+**Kind**: global constant  
 **Todo**
 
-- [ ] Move to [tfw](#tfw)
+- [ ] NOT DEFINED in tfw.js (defined in Triobo), should be moved here.
 
-
-* [Dyntable](#Dyntable)
-    * [new Dyntable(x)](#new_Dyntable_new)
-    * [.myDiv](#Dyntable+myDiv)
-    * [.url](#Dyntable+url)
-    * [.data](#Dyntable+data)
-    * [.rowEdit](#Dyntable+rowEdit)
-    * [.create()](#Dyntable+create) ⇒ <code>function</code>
-    * [.reload()](#Dyntable+reload)
-    * [.paint()](#Dyntable+paint)
-
-<a name="new_Dyntable_new"></a>
-### new Dyntable(x)
-Class for creating dynamic tables.
-
-**Returns**: <code>Object</code> - Returns an object instance.  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| x | <code>Object</code> | parameters object (not used) |
-
-<a name="Dyntable+myDiv"></a>
-### dyntable.myDiv
-**Kind**: instance property of <code>[Dyntable](#Dyntable)</code>  
-**Access:** protected  
-<a name="Dyntable+url"></a>
-### dyntable.url
-**Kind**: instance property of <code>[Dyntable](#Dyntable)</code>  
-**Access:** protected  
-<a name="Dyntable+data"></a>
-### dyntable.data
-**Kind**: instance property of <code>[Dyntable](#Dyntable)</code>  
-**Access:** protected  
-<a name="Dyntable+rowEdit"></a>
-### dyntable.rowEdit
-**Kind**: instance property of <code>[Dyntable](#Dyntable)</code>  
-**Access:** protected  
-<a name="Dyntable+create"></a>
-### dyntable.create() ⇒ <code>function</code>
-Create a dynamic table.
-
-**Kind**: instance method of <code>[Dyntable](#Dyntable)</code>  
-**Returns**: <code>function</code> - Function that returns a "loading" DIV.  
-<a name="Dyntable+reload"></a>
-### dyntable.reload()
-Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#Dyntable+paint) the table.
-
-**Kind**: instance method of <code>[Dyntable](#Dyntable)</code>  
-**See**
-
-- Dyntable#paint
-- tfw.decodeJSON
-
-<a name="Dyntable+paint"></a>
-### dyntable.paint()
-Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using this.data.
-
-**Kind**: instance method of <code>[Dyntable](#Dyntable)</code>  
-**See**: prvek  

@@ -1077,6 +1077,102 @@ var tfw={
       value:i
     })
   },
+	/**
+	 * Class for creating dynamic tables.
+	 * @class
+	 * @memberof tfw
+	 * @todo Implement sorting (columns with text/numbers)
+	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
+	 * @todo Use tfw.calendar
+	 * @todo View preferences (width, order and visibility of columns)
+	 * @param {Object} params parameters object (not used)
+	 * @return {Object} Returns an object instance.
+	 */
+  dynamicTable:function(params){
+	  return {
+		/**
+		 * @memberof tfw.dynamicTable#
+		 * @protected
+		 */
+		myDiv:null,
+		/**
+		 * @memberof tfw.dynamicTable#
+		 * @protected
+		 */
+		url:null,
+		/**
+		 * @memberof tfw.dynamicTable#
+		 * @protected
+		 */
+		data:null,
+		/**
+		 * @memberof tfw.dynamicTable#
+		 * @protected
+		 */
+		rowEdit:null,
+		/** 
+		 * Create a dynamic table.
+		 * @memberof tfw.dynamicTable#
+		 * @todo Remove dependency on {@link CEKANI}
+		 * @returns {Object} Returns a "loading" DIV (with content defined by {@link CEKANI}).
+		 */
+		create:function(){
+		  /**
+		   * @constant
+		   * @name CEKANI
+		   * @todo NOT DEFINED in tfw.js (defined in Triobo), should be moved here.
+		   */
+		  this.myDiv=tfw.div({innerHTML:CEKANI});
+		  return this.myDiv;
+		},
+		/** 
+		 * Reload (or load) data from server.
+		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
+		 * @see tfw.dynamicTable#paint
+		 * @see tfw.decodeJSON
+		 * @memberof tfw.dynamicTable#
+		 */
+		reload:function(){
+		  that=this;
+		  ajaxGet("data.php", this.url, function(hr){
+			that.data=tfw.decodeJSON(hr.responseText);
+			that.paint();
+		  },0);
+		},
+		/** 
+		 * Refresh the content of the table using data gotten by (re)loading.
+		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
+		 * @see prvek
+		 * @memberof tfw.dynamicTable#
+		 */
+		paint:function(){
+		  var o,r,c;
+		  this.myDiv.innerHTML="";
+		  this.myDiv.add(o=prvek.tabulka({}));
+		  o.add(r=prvek.radek({}));
+		  for (var j=0;j<this.data.cols.length;j++) {
+			c=document.createElement("th");
+			c.innerHTML=this.data.cols[j].n;
+			if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
+			if (!("h" in this.data.cols[j])) r.add(c);
+		  }
+		  for (var i=0;i<this.data.rows.length;i++) {
+			that=this;
+			o.add(r=prvek.radek({id:this.data.rows[i].id}));
+			if (this.rowEdit) {
+			  r.addEventListener("click", function(e){
+				that.rowEdit(e.currentTarget.value);
+			  });
+			  r.style.cursor="pointer";          
+			}
+			r.value=i;
+			for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
+			  r.add(c=prvek.sloupec({obsah:this.data.rows[i].cols[j]}));
+			}
+		  }
+		}
+	  }  
+	}
 }
 
 /**
@@ -1824,97 +1920,12 @@ function Web2RGB(h){
 }
 
 /**
- * Class for creating dynamic tables.
  * @class
  * @name Dyntable
- * @todo Move to {@link tfw}
- * @todo Implement sorting (columns with text/numbers)
- * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
- * @todo Use tfw.calendar
- * @todo View preferences (width, order and visibility of columns)
- * @param {Object} x parameters object (not used)
- * @return {Object} Returns an object instance.
+ * @deprecated
+ * @see tfw.dynamicTable
  */
 function Dyntable(x){
-  return {
-	/**
-	 * @memberof Dyntable#
-	 * @protected
-	 */
-    myDiv:null,
-	/**
-	 * @memberof Dyntable#
-	 * @protected
-	 */
-    url:null,
-	/**
-	 * @memberof Dyntable#
-	 * @protected
-	 */
-    data:null,
-	/**
-	 * @memberof Dyntable#
-	 * @protected
-	 */
-    rowEdit:null,
-	/** 
-	 * Create a dynamic table.
-	 * @memberof Dyntable#
-	 * @returns {function} Function that returns a "loading" DIV.
-	 */
-    create:function(){
-      this.myDiv=tfw.div({innerHTML:CEKANI});
-      return this.myDiv;
-    },
-	/** 
-	 * Reload (or load) data from server.
-	 * Sends a GET request to "data.php", decodes JSON and {@link Dyntable#paint|paints} the table.
-	 * @see Dyntable#paint
-	 * @see tfw.decodeJSON
-	 * @memberof Dyntable#
-	 */
-    reload:function(){
-      that=this;
-      ajaxGet("data.php", this.url, function(hr){
-        that.data=tfw.decodeJSON(hr.responseText);
-        that.paint();
-      },0);
-    },
-	/** 
-	 * Refresh the content of the table using data gotten by (re)loading.
-	 * Empties the table and recreates it using this.data.
-	 * @see prvek
-	 * @memberof Dyntable#
-	 */
-    paint:function(){
-      var o,r,c;
-      this.myDiv.innerHTML="";
-      this.myDiv.add(o=prvek.tabulka({}));
-      o.add(r=prvek.radek({}));
-      for (var j=0;j<this.data.cols.length;j++) {
-        c=document.createElement("th");
-        c.innerHTML=this.data.cols[j].n;
-        if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
-        if (!("h" in this.data.cols[j])) r.add(c);
-      }
-      for (var i=0;i<this.data.rows.length;i++) {
-        that=this;
-        o.add(r=prvek.radek({id:this.data.rows[i].id}));
-        if (this.rowEdit) {
-          r.addEventListener("click", function(e){
-            that.rowEdit(e.currentTarget.value);
-          });
-          r.style.cursor="pointer";          
-        }
-        r.value=i;
-        for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
-          r.add(c=prvek.sloupec({obsah:this.data.rows[i].cols[j]}));
-        }
-      }
-    }
-  }  
+  console.error("DEPRECATED Dyntable("+JSON.stringify(x)+"), use tfw.dynamicTable()");
+  return tfw.Dyntable(x);
 }
-
-
-
-
