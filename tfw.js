@@ -1828,6 +1828,10 @@ function Web2RGB(h){
  * @class
  * @name Dyntable
  * @todo Move to {@link tfw}
+ * @todo Implement sorting (columns with text/numbers)
+ * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
+ * @todo Use tfw.calendar
+ * @todo View preferences (width, order and visibility of columns)
  * @param {Object} x parameters object (not used)
  * @return {Object} Returns an object instance.
  */
