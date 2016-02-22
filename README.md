@@ -23,16 +23,21 @@
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
     * [.dynamicTable](#tfw.dynamicTable)
-        * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
-        * [.myDiv](#tfw.dynamicTable+myDiv)
-        * [.url](#tfw.dynamicTable+url)
-        * [.data](#tfw.dynamicTable+data)
-        * [.rowEdit](#tfw.dynamicTable+rowEdit)
-        * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
-        * [.reload()](#tfw.dynamicTable+reload)
-        * [.paint()](#tfw.dynamicTable+paint)
+        * [new dynamicTable(param)](#new_tfw.dynamicTable_new)
+        * _instance_
+            * [.myDiv](#tfw.dynamicTable+myDiv) : <code>Object</code>
+            * [.url](#tfw.dynamicTable+url) : <code>string</code>
+            * [.data](#tfw.dynamicTable+data) : <code>Object</code>
+            * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
+            * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
+            * [.reload()](#tfw.dynamicTable+reload)
+            * [.paint()](#tfw.dynamicTable+paint)
+        * _inner_
+            * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
+            * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
+            * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
-    * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>object</code>
+    * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
     * [.textArea(params)](#tfw.textArea) ⇒ <code>Object</code>
     * [.checkbox(params)](#tfw.checkbox) ⇒ <code>Object</code>
@@ -59,47 +64,71 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 
 
 * [.dynamicTable](#tfw.dynamicTable)
-    * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
-    * [.myDiv](#tfw.dynamicTable+myDiv)
-    * [.url](#tfw.dynamicTable+url)
-    * [.data](#tfw.dynamicTable+data)
-    * [.rowEdit](#tfw.dynamicTable+rowEdit)
-    * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
-    * [.reload()](#tfw.dynamicTable+reload)
-    * [.paint()](#tfw.dynamicTable+paint)
+    * [new dynamicTable(param)](#new_tfw.dynamicTable_new)
+    * _instance_
+        * [.myDiv](#tfw.dynamicTable+myDiv) : <code>Object</code>
+        * [.url](#tfw.dynamicTable+url) : <code>string</code>
+        * [.data](#tfw.dynamicTable+data) : <code>Object</code>
+        * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
+        * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
+        * [.reload()](#tfw.dynamicTable+reload)
+        * [.paint()](#tfw.dynamicTable+paint)
+    * _inner_
+        * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
+        * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
+        * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
 
 <a name="new_tfw.dynamicTable_new"></a>
-#### new dynamicTable(params)
+#### new dynamicTable(param)
 Class for creating dynamic tables.
 
 **Returns**: <code>Object</code> - Returns an object instance.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | parameters object (not used) |
+| param | <code>string</code> | table name (not used) |
 
 <a name="tfw.dynamicTable+myDiv"></a>
-#### dynamicTable.myDiv
+#### dynamicTable.myDiv : <code>Object</code>
+DIV with "loading" indicator, created by [create()](tfw.DynamicTable#create).
+
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Default**: <code>null</code>  
 **Access:** protected  
 <a name="tfw.dynamicTable+url"></a>
-#### dynamicTable.url
+#### dynamicTable.url : <code>string</code>
+URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling [reload()](#tfw.dynamicTable+reload).
+
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Access:** protected  
+**Default**: <code>&quot;null&quot;</code>  
+**Access:** public  
 <a name="tfw.dynamicTable+data"></a>
-#### dynamicTable.data
+#### dynamicTable.data : <code>Object</code>
+Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called to fill this.
+
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Access:** protected  
+**Default**: <code>null</code>  
+**Access:** public  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| cols | <code>[Array.&lt;dataCol&gt;](#tfw.dynamicTable..dataCol)</code> | list of columns |
+| rows | <code>[Array.&lt;dataRow&gt;](#tfw.dynamicTable..dataRow)</code> | list of rows |
+
 <a name="tfw.dynamicTable+rowEdit"></a>
-#### dynamicTable.rowEdit
+#### dynamicTable.rowEdit : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
+Function that is fired when row editing is triggered.
+
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Access:** protected  
+**Default**: <code>null</code>  
+**Access:** public  
 <a name="tfw.dynamicTable+create"></a>
 #### dynamicTable.create() ⇒ <code>Object</code>
 Create a dynamic table.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Returns**: <code>Object</code> - Returns a "loading" DIV (with content defined by [CEKANI](#CEKANI)).  
+**Returns**: <code>Object</code> - Returns the value of [myDiv()](#tfw.dynamicTable+myDiv) - a "loading" DIV (with content defined by [CEKANI](#CEKANI)).  
 **Todo**
 
 - [ ] Remove dependency on [CEKANI](#CEKANI)
@@ -114,12 +143,47 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 - tfw.dynamicTable#paint
 - tfw.decodeJSON
 
+**Todo**
+
+- [ ] Remove dependency on ajaxGet
+
 <a name="tfw.dynamicTable+paint"></a>
 #### dynamicTable.paint()
-Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).
+Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **See**: prvek  
+<a name="tfw.dynamicTable..dataCol"></a>
+#### dynamicTable~dataCol : <code>Object</code>
+**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| n | <code>string</code> | HTML content (innerHTML) |
+| w | <code>number</code> | width |
+| h | <code>boolean</code> | hidden |
+
+<a name="tfw.dynamicTable..dataRow"></a>
+#### dynamicTable~dataRow : <code>Object</code>
+**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>number</code> | row ID |
+| cols | <code>Array.&lt;string&gt;</code> | contents for each column (HTML) |
+
+<a name="tfw.dynamicTable..rowEdit"></a>
+#### dynamicTable~rowEdit : <code>function</code>
+Function that handles row editing.
+
+**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| order | <code>number</code> | order of the row being edited |
+
 <a name="tfw.fillElemDefs"></a>
 ### tfw.fillElemDefs(element, params)
 Set parameters of a HTML element.
@@ -144,11 +208,11 @@ Set parameters of a HTML element.
 | [params.onClick] | <code>function</code> |  | function to call when user clicks on the field (onclick fires) |
 
 <a name="tfw.inputFieldLegend"></a>
-### tfw.inputFieldLegend(element, params) ⇒ <code>object</code>
+### tfw.inputFieldLegend(element, params) ⇒ <code>Object</code>
 Wrap an input field with a legend and a container.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>object</code> - container with legend and input field (HTML element)  
+**Returns**: <code>Object</code> - container with legend and input field (HTML element)  
 
 | Param | Type | Description |
 | --- | --- | --- |

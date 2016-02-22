@@ -387,7 +387,7 @@ var tfw={
    * @param {string} [params.containerId] - legend container ID
    * @param {string} [params.containerStyle] - legend container CSS styling
    * @param {string} [params.postText] - text after input field
-   * @return {object} container with legend and input field (HTML element)
+   * @return {Object} container with legend and input field (HTML element)
    */
   inputFieldLegend(element, params){
 		var x=document.createElement("p");
@@ -1085,36 +1085,68 @@ var tfw={
 	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
 	 * @todo Use tfw.calendar
 	 * @todo View preferences (width, order and visibility of columns)
-	 * @param {Object} params parameters object (not used)
+	 * @param {string} param table name (not used)
 	 * @return {Object} Returns an object instance.
 	 */
-  dynamicTable:function(params){
+  dynamicTable:function(param){
 	  return {
 		/**
+		 * DIV with "loading" indicator, created by {@link tfw.DynamicTable#create|create()}.
 		 * @memberof tfw.dynamicTable#
+		 * @var {Object}
+		 * @default null
 		 * @protected
 		 */
 		myDiv:null,
 		/**
+		 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTable#reload|reload()}.
 		 * @memberof tfw.dynamicTable#
-		 * @protected
+		 * @var {string}
+		 * @default null
+		 * @public
 		 */
 		url:null,
 		/**
+		 * @typedef tfw.dynamicTable~dataCol
+		 * @type {Object}
+		 * @property {string} n - HTML content (innerHTML)
+		 * @property {number} w - width
+		 * @property {boolean} h - hidden
+		 */
+		/**
+		 * @typedef tfw.dynamicTable~dataRow
+		 * @type {Object}
+		 * @property {number} id - row ID
+		 * @property {Array.<string>} cols - contents for each column (HTML)
+		 */
+		/**
+		 * Data obtained from server. {@link tfw.dynamicTable#reload|reload()} has to be called to fill this.
 		 * @memberof tfw.dynamicTable#
-		 * @protected
+		 * @var {Object}
+		 * @default null
+		 * @public
+		 * @property {Array.<tfw.dynamicTable~dataCol>} cols - list of columns
+		 * @property {Array.<tfw.dynamicTable~dataRow>} rows - list of rows
 		 */
 		data:null,
 		/**
+		 * Function that handles row editing.
+		 * @callback tfw.dynamicTable~rowEdit
+		 * @param {number} order - order of the row being edited
+		 */
+		/**
+		 * Function that is fired when row editing is triggered.
 		 * @memberof tfw.dynamicTable#
-		 * @protected
+		 * @var {tfw.dynamicTable~rowEdit}
+		 * @default null
+		 * @public
 		 */
 		rowEdit:null,
 		/** 
 		 * Create a dynamic table.
 		 * @memberof tfw.dynamicTable#
 		 * @todo Remove dependency on {@link CEKANI}
-		 * @returns {Object} Returns a "loading" DIV (with content defined by {@link CEKANI}).
+		 * @returns {Object} Returns the value of {@link tfw.dynamicTable#myDiv|myDiv()} - a "loading" DIV (with content defined by {@link CEKANI}).
 		 */
 		create:function(){
 		  /**
@@ -1130,6 +1162,7 @@ var tfw={
 		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
 		 * @see tfw.dynamicTable#paint
 		 * @see tfw.decodeJSON
+		 * @todo Remove dependency on ajaxGet
 		 * @memberof tfw.dynamicTable#
 		 */
 		reload:function(){
@@ -1142,6 +1175,8 @@ var tfw={
 		/** 
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
+		 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
+		 * @listens onclick
 		 * @see prvek
 		 * @memberof tfw.dynamicTable#
 		 */
