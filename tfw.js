@@ -1292,7 +1292,7 @@ var prvek={
         s.add(tfw.input({className:"popisek",value:file.p}));
       }
       
-/*      if (triobo.user.id==1) s.add(tfw.div({style:"float:right;",innerHTML:"<a href='"+(this.slozka+file.f)+"' style='text-decoration:none;'>⬇︎</a>"}));*/
+      if (triobo.user.id==1) s.add(tfw.div({style:"float:right;",innerHTML:"<a href='"+(this.slozka+file.f)+"' style='text-decoration:none;'>⬇︎</a>"}));
       
       if (co.linky)   {
         s.linky=file.l.length;
