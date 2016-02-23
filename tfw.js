@@ -1,4 +1,5 @@
 /* Triobo Framework */
+var AJAX_LOADER="<img src='tfw/ajax-loader-small.gif'>";
 
 function $(id) {
   var x=document.getElementById(id);
@@ -74,7 +75,7 @@ var desktop={
     desktop.layers=[];
     desktop.activeLayer=0;
     desktop.div.innerHTML="";
-    desktop.div.add(desktop.layers[0]=tfw.div({id:"layer0",className:"layer"}));
+    desktop.div.add(desktop.layers[0]=tfw.div({id:"tfwLayer0",className:"tfwLayer"}));
     desktop.width=desktop.div.clientWidth;
     desktop.height=desktop.div.clientHeight;
     desktop.resizingFunctions=[];
@@ -91,14 +92,14 @@ var desktop={
   newLayer:function(co){
     if (co.modal) if (co.modal=="auto") co.modal=desktop.layers[desktop.activeLayer].hasClass("modal")?1:0;
     desktop.activeLayer++;
-    desktop.div.add(desktop.layers[desktop.activeLayer]=tfw.div({id:"layer"+desktop.activeLayer,className:"layer"+(co.modal?" modal":"")}));
+    desktop.div.add(desktop.layers[desktop.activeLayer]=tfw.div({id:"tfwLayer"+desktop.activeLayer,className:"tfwLayer"+(co.modal?" modal":"")}));
     if (co.autoclose) {
       desktop.layers[desktop.activeLayer].addEventListener("click", function(){
         desktop.closeTopLayer();
       }, false);
     };
     if (co.overlay) {
-      desktop.layers[desktop.activeLayer].add(tfw.div({id:"layerOverlay"+desktop.activeLayer,className:"layerOverlay"}));
+      desktop.layers[desktop.activeLayer].add(tfw.div({id:"tfwLayerOverlay"+desktop.activeLayer,className:"tfwLayerOverlay"}));
     };
     desktop.layers[desktop.activeLayer].addEventListener("mousemove", desktop.dialogMoveGo, false);
     desktop.layers[desktop.activeLayer].addEventListener("mouseup", desktop.dialogMoveEnd, false);
@@ -112,8 +113,8 @@ var desktop={
     }
   },
   hide:function(){
-    desktop.layers[desktop.activeLayer].add(tfw.div({id:"layerOverlay"+desktop.activeLayer,className:"layerOverlay",style:"cursor:progress;"}));
-    desktop.layers[desktop.activeLayer].add(tfw.div({id:"loader",style:"left:"+Math.round(desktop.width/2-16)+"px;top:"+Math.round(desktop.height/2-16)+"px"}));    
+    desktop.layers[desktop.activeLayer].add(tfw.div({id:"tfwLayerOverlay"+desktop.activeLayer,className:"tfwLayerOverlay",style:"cursor:progress;"}));
+    desktop.layers[desktop.activeLayer].add(tfw.div({id:"tfwLoader",style:"left:"+Math.round(desktop.width/2-16)+"px;top:"+Math.round(desktop.height/2-16)+"px"}));
   },
   done:function(){
     if (desktop.isWorking) {
@@ -554,8 +555,9 @@ var tfw={
    * @return {Object} Created table (HTML element)
    */
   table:function(params){
-	var element=document.createElement("table");
-	this.fillElemDefs(element, params);
+	  var element=document.createElement("table");
+	  this.fillElemDefs(element, params);
+	  if ("rows" in params) for (var i=0;i<params.rows.length;i++) element.add(tfw.tr(params.rows[i]));
     return element;
   },
   /** @function
@@ -840,7 +842,7 @@ var tfw={
       children:[
         tfw.div({id:"dlgPaD",children:[
           tfw.par({innerHTML:co.waiting}),
-          tfw.par({innerHTML:CEKANI})
+          tfw.par({innerHTML:AJAX_LOADER})
         ]})
       ],
       buttons:[
@@ -1135,7 +1137,7 @@ var prvek={
    */
   tabulka:function(co){
 	console.error("DEPRECATED prvek.tabulka("+JSON.stringify(co)+")");
-    if (co.radky) co.children = co.radky;
+    if (co.radky) co.rows = co.radky;
     return tfw.table(co);
   },
   /**
@@ -1818,7 +1820,7 @@ function Dyntable(x){
     data:null,
     rowEdit:null,
     create:function(){
-      this.myDiv=tfw.div({innerHTML:CEKANI});
+      this.myDiv=tfw.div({innerHTML:AJAX_LOADER});
       return this.myDiv;
     },
     reload:function(){
