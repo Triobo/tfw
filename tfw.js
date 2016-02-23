@@ -1,5 +1,4 @@
 /* Triobo Framework */
-var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
 
 function $(id) {
   var x=document.getElementById(id);
@@ -75,7 +74,7 @@ var desktop={
     desktop.layers=[];
     desktop.activeLayer=0;
     desktop.div.innerHTML="";
-    desktop.div.add(desktop.layers[0]=tfw.div({id:"tfwLayer0",className:"tfwLayer"}));
+    desktop.div.add(desktop.layers[0]=tfw.div({id:"layer0",className:"layer"}));
     desktop.width=desktop.div.clientWidth;
     desktop.height=desktop.div.clientHeight;
     desktop.resizingFunctions=[];
@@ -92,14 +91,14 @@ var desktop={
   newLayer:function(co){
     if (co.modal) if (co.modal=="auto") co.modal=desktop.layers[desktop.activeLayer].hasClass("modal")?1:0;
     desktop.activeLayer++;
-    desktop.div.add(desktop.layers[desktop.activeLayer]=tfw.div({id:"tfwLayer"+desktop.activeLayer,className:"tfwLayer"+(co.modal?" modal":"")}));
+    desktop.div.add(desktop.layers[desktop.activeLayer]=tfw.div({id:"layer"+desktop.activeLayer,className:"layer"+(co.modal?" modal":"")}));
     if (co.autoclose) {
       desktop.layers[desktop.activeLayer].addEventListener("click", function(){
         desktop.closeTopLayer();
       }, false);
     };
     if (co.overlay) {
-      desktop.layers[desktop.activeLayer].add(tfw.div({id:"tfwLayerOverlay"+desktop.activeLayer,className:"tfwLayerOverlay"}));
+      desktop.layers[desktop.activeLayer].add(tfw.div({id:"layerOverlay"+desktop.activeLayer,className:"layerOverlay"}));
     };
     desktop.layers[desktop.activeLayer].addEventListener("mousemove", desktop.dialogMoveGo, false);
     desktop.layers[desktop.activeLayer].addEventListener("mouseup", desktop.dialogMoveEnd, false);
@@ -113,8 +112,8 @@ var desktop={
     }
   },
   hide:function(){
-    desktop.layers[desktop.activeLayer].add(tfw.div({id:"tfwLayerOverlay"+desktop.activeLayer,className:"tfwLayerOverlay",style:"cursor:progress;"}));
-    desktop.layers[desktop.activeLayer].add(tfw.div({id:"tfwLoader",style:"left:"+Math.round(desktop.width/2-16)+"px;top:"+Math.round(desktop.height/2-16)+"px"}));
+    desktop.layers[desktop.activeLayer].add(tfw.div({id:"layerOverlay"+desktop.activeLayer,className:"layerOverlay",style:"cursor:progress;"}));
+    desktop.layers[desktop.activeLayer].add(tfw.div({id:"loader",style:"left:"+Math.round(desktop.width/2-16)+"px;top:"+Math.round(desktop.height/2-16)+"px"}));    
   },
   done:function(){
     if (desktop.isWorking) {
@@ -151,14 +150,13 @@ var desktop={
 }
 
 /**
- * Triobo framework.
- * @name tfw
+ * Triobo framework. This is a singleton (a single "instance" of a "class").
  * @class
  */
 var tfw={
-  /** @function
-   * @name tfw#fillElemDefs
-   * @description Set parameters of a HTML element.
+  /** 
+   * Set parameters of a HTML element.
+   * @memberof tfw
    * @param {Object} element - HTML element
    * @param {Object} params - parameters object
    * @param {string} [params.id] - ID
@@ -379,9 +377,9 @@ var tfw={
     }
     return x;
   },
-  /** @function
-   * @name tfw#inputFieldLegend
-   * @description Wrap an input field with a legend and a container.
+  /**
+   * Wrap an input field with a legend and a container.
+   * @memberof tfw
    * @param {Object} element - input field HTML element
    * @param {Object} params - legend parameters
    * @param {string} params.legend - legend text
@@ -389,7 +387,7 @@ var tfw={
    * @param {string} [params.containerId] - legend container ID
    * @param {string} [params.containerStyle] - legend container CSS styling
    * @param {string} [params.postText] - text after input field
-   * @return {object} container with legend and input field (HTML element)
+   * @return {Object} container with legend and input field (HTML element)
    */
   inputFieldLegend(element, params){
 		var x=document.createElement("p");
@@ -404,12 +402,12 @@ var tfw={
 		if (params.postText) x.add(tfw.span({innerHTML:params.postText}));
 		return x;
   },
-  /** @function
-   * @name tfw#input
-   * @description Create an input field with specified parameters.
-   * @param {Object} params - input fields parameters (for more see {@link tfw#fillElemDefs|fillElemDefs} and {@link tfw#inputFieldLegend|inputFieldLegend})
-   * @see tfw#fillElemDefs
-   * @see tfw#inputFieldLegend
+  /**
+   * Create an input field with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - input fields parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {string} [params.type="text"] - input field type
    * @param {string} [params.value] - prefilled value
    * @return {Object} Created input field (HTML element)
@@ -420,12 +418,12 @@ var tfw={
   	element.type = (params.type) ? params.type : "text";
   	return (params.legend) ? this.inputFieldLegend(element, params) : element;
   },
-  /** @function
-   * @name tfw#textArea
-   * @description Create a text area with specified parameters.
-   * @param {Object} params - text area parameters (for more see {@link tfw#fillElemDefs|fillElemDefs} and {@link tfw#inputFieldLegend|inputFieldLegend})
-   * @see tfw#fillElemDefs
-   * @see tfw#inputFieldLegend
+  /**
+   * Create a text area with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - text area parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {string} [params.value] - prefilled value
    * @return {Object} Created text area (HTML element)
    */
@@ -437,12 +435,12 @@ var tfw={
 	  }
 	  return (params.legend) ? this.inputFieldLegend(element, params) : element;
   },
-  /** @function
-   * @name tfw#checkbox
-   * @description Create a checkbox with specified parameters.
-   * @param {Object} params - checkbox parameters (for more see {@link tfw#fillElemDefs|fillElemDefs} and {@link tfw#inputFieldLegend|inputFieldLegend})
-   * @see tfw#fillElemDefs
-   * @see tfw#inputFieldLegend
+  /**
+   * Create a checkbox with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - checkbox parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
    * @param {string} [params.text] - checkbox label text
    * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
@@ -502,11 +500,11 @@ var tfw={
 		
 		return x; 
   },
-  /** @function
-   * @name tfw#icon
-   * @description Create an icon with specified parameters.
-   * @param {Object} params - icon parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
-   * @see tfw#fillElemDefs
+  /**
+   * Create an icon with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - icon parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
    * @param {function} [params.action] - function triggered when icon is clicked (basically onclick)
    * @param {number} [params.index] - move background image up by this number of pixels (background-position-x)
    * @return {Object} Created icon (HTML element)
@@ -547,24 +545,23 @@ var tfw={
     if (params.selected) element.selected=1;
     return element;
   },
-  /** @function
-   * @name tfw#table
-   * @description Create a table with specified parameters.
-   * @param {Object} params - table parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for rows)
-   * @see tfw#fillElemDefs
+  /**
+   * Create a table with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - table parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for rows)
+   * @see tfw.fillElemDefs
    * @return {Object} Created table (HTML element)
    */
   table:function(params){
-	  var element=document.createElement("table");
-	  this.fillElemDefs(element, params);
-	  if ("rows" in params) for (var i=0;i<params.rows.length;i++) element.add(tfw.tr(params.rows[i]));
+	var element=document.createElement("table");
+	this.fillElemDefs(element, params);
     return element;
   },
-  /** @function
-   * @name tfw#tr
-   * @description Create a table row with specified parameters.
-   * @param {Object} params - table row parameters (for more see {@link tfw#fillElemDefs|fillElemDefs}, use params.children for columns/cells)
-   * @see tfw#fillElemDefs
+  /**
+   * Create a table row with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - table row parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for columns/cells)
+   * @see tfw.fillElemDefs
    * @param {Array} [params.columns] - list of objects, that will be passed to tfw.td and added as children   
    * @return {Object} Created table row (HTML element)
    */
@@ -574,11 +571,11 @@ var tfw={
 	  if ("columns" in params) for (var i=0;i<params.columns.length;i++) element.add(tfw.td(params.columns[i]));
     return element;
   },
-  /** @function
-   * @name tfw#td
-   * @description Create a table cell with specified parameters.
-   * @param {Object} params - table cell parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
-   * @see tfw#fillElemDefs
+  /**
+   * Create a table cell with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - table cell parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
    * @return {Object} Created table cell (HTML element)
    */
   td:function(params){
@@ -586,11 +583,11 @@ var tfw={
 	  this.fillElemDefs(element, params);
     return element;
   },
-  /** @function
-   * @name tfw#slider
-   * @description Create a slider with specified parameters.
-   * @param {Object} params - slider parameters (for more see {@link tfw#fillElemDefs|fillElemDefs})
-   * @see tfw#fillElemDefs
+  /**
+   * Create a slider with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - slider parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
    * @param {string} params.id - ID, has to be present!
    * @param {string} [params.legend] - legend text
    * @param {string} [params.legendStyle] - legend CSS styling
@@ -598,19 +595,20 @@ var tfw={
    * @param {number} [params.max=100] - maximum (largest) value
    * @param {number} [params.step] - step between allowed values
    * @param {string} [params.width] - width of slider (CSS, including unit)
-   * @param {string} [params.valueStyle] - value box CSS styling
+   * @param {string} [params.textWidth] - width of text (CSS, including unit)
    * @param {string} [params.postText] - text after slider
    * @return {Object} Created slider (HTML element)
    */
   slider:function(params){
-	var element=document.createElement("p");
+	var element=document.createElement("div");
     element.min=0;
     element.max=100;
-	params.className = "tfwSlider" + ((params.className) ? (" "+params.className) : "");
+	params.style = "vertical-align:baseline;" + (params.style ? params.style : "");
 	var sliderValue = (params.value) ? params.value : false;
 	params.value = false;
 	this.fillElemDefs(element, params);
     element.add(l=document.createElement("span"));
+    l.style.display="inline-block";    
     if (params.legend) l.innerHTML=params.legend;
     if (params.legendStyle) l.style.cssText=params.legendStyle;
     var s;
@@ -633,7 +631,7 @@ var tfw={
     element.add(v=document.createElement("input"))
     v.type="text";
     if (params.id)      v.id=params.id+"-v";
-    if (params.valueStyle) v.style.cssText=params.valueStyle;
+    if (params.textWidth) v.style.width=params.textWidth;
     v.style.textAlign="right";
     if (sliderValue) v.value=sliderValue;
     v.onchange=function(){
@@ -662,19 +660,15 @@ var tfw={
         e.preventDefault();
       }
     }, true);
- 		Object.defineProperty(element, "value", {
-		  set:function(a){
-        this.childNodes[1].value=a;
-        this.childNodes[2].value=a;
-		  },
-		  get:function() {return this.childNodes[2].value;},
-		  enumerable:true,
-		  configurable:true
-		});
+    element.setValue=function(a){
+      element.childNodes[1].value=a;
+      element.childNodes[2].value=a;
+    }
     if (params.postText) {
       element.add(p=document.createElement("span"));
       p.innerHTML=params.postText;
-      if (params.postStyle) p.style.cssText=params.postStyle;
+      p.style.display="inline-block";
+      p.style.height="20px";      
     }
 
     return element;
@@ -801,6 +795,7 @@ var tfw={
     desktop.newLayer({overlay:true,modal:true});
     var vnit,dlg,tlac;
     var sirka=300,vyska=200,nazev="";
+    if (co.sirka) console.error("DEPRECATED tfw.dialog SIRKA/VYSKA/NAZEV");
     if (co.width) sirka=co.width;
     if (co.height) vyska=co.height;
     if (co.title) nazev=co.title;
@@ -820,7 +815,7 @@ var tfw={
 
     desktop.layers[desktop.activeLayer].addEventListener("keydown",function(e){if (e.which==27) desktop.closeTopLayer();},true); /**/ 
 
-    vnit.add(dlg=tfw.div({style:"height:"+(vyska-(nazev?60:32)-27)+"px"}));
+    vnit.add(dlg=tfw.div({}));
     dlg.addEventListener("mousedown",function(e){e.stopPropagation();},false);
     if (co.obsah) dlg.innerHTML=co.obsah;
     if (co.children) for (var i=0;i<co.children.length;i++) dlg.add(c=co.children[i]);
@@ -842,7 +837,7 @@ var tfw={
       children:[
         tfw.div({id:"dlgPaD",children:[
           tfw.par({innerHTML:co.waiting}),
-          tfw.par({innerHTML:AJAX_LOADER})
+          tfw.par({innerHTML:CEKANI})
         ]})
       ],
       buttons:[
@@ -853,6 +848,12 @@ var tfw={
       $("dlgPaD").innerHTML=co.text.replace("%1","<a href='"+hr.responseText+"' download>"+co.item+"</a>");
     },0);
   },
+  /**
+   * Decode JSON data, show error in case they are invalid.
+   * @memberof tfw
+   * @param {string} json - JSON encoded data
+   * @return {Object} Object that was encoded in given JSON string.
+   */
   decodeJSON:function(json){
     var odpoved={};
     try {
@@ -1076,11 +1077,141 @@ var tfw={
       value:i
     })
   },
+	/**
+	 * Class for creating dynamic tables.
+	 * @class
+	 * @memberof tfw
+	 * @todo Implement sorting (columns with text/numbers)
+	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
+	 * @todo Use tfw.calendar
+	 * @todo View preferences (width, order and visibility of columns)
+	 * @param {string} param table name (not used)
+	 * @return {Object} Returns an object instance.
+	 */
+  dynamicTable:function(param){
+	  return {
+		/**
+		 * DIV with "loading" indicator, created by {@link tfw.DynamicTable#create|create()}.
+		 * @memberof tfw.dynamicTable#
+		 * @var {Object}
+		 * @default null
+		 * @protected
+		 */
+		myDiv:null,
+		/**
+		 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTable#reload|reload()}.
+		 * @memberof tfw.dynamicTable#
+		 * @var {string}
+		 * @default null
+		 * @public
+		 */
+		url:null,
+		/**
+		 * @typedef tfw.dynamicTable~dataCol
+		 * @type {Object}
+		 * @property {string} n - HTML content (innerHTML)
+		 * @property {number} w - width
+		 * @property {boolean} h - hidden
+		 */
+		/**
+		 * @typedef tfw.dynamicTable~dataRow
+		 * @type {Object}
+		 * @property {number} id - row ID
+		 * @property {Array.<string>} cols - contents for each column (HTML)
+		 */
+		/**
+		 * Data obtained from server. {@link tfw.dynamicTable#reload|reload()} has to be called to fill this.
+		 * @memberof tfw.dynamicTable#
+		 * @var {Object}
+		 * @default null
+		 * @public
+		 * @property {Array.<tfw.dynamicTable~dataCol>} cols - list of columns
+		 * @property {Array.<tfw.dynamicTable~dataRow>} rows - list of rows
+		 */
+		data:null,
+		/**
+		 * Function that handles row editing.
+		 * @callback tfw.dynamicTable~rowEdit
+		 * @param {number} order - order of the row being edited
+		 */
+		/**
+		 * Function that is fired when row editing is triggered.
+		 * @memberof tfw.dynamicTable#
+		 * @var {tfw.dynamicTable~rowEdit}
+		 * @default null
+		 * @public
+		 */
+		rowEdit:null,
+		/** 
+		 * Create a dynamic table.
+		 * @memberof tfw.dynamicTable#
+		 * @todo Remove dependency on {@link CEKANI}
+		 * @returns {Object} Returns the value of {@link tfw.dynamicTable#myDiv|myDiv()} - a "loading" DIV (with content defined by {@link CEKANI}).
+		 */
+		create:function(){
+		  /**
+		   * @constant
+		   * @name CEKANI
+		   * @todo NOT DEFINED in tfw.js (defined in Triobo), should be moved here.
+		   */
+		  this.myDiv=tfw.div({innerHTML:CEKANI});
+		  return this.myDiv;
+		},
+		/** 
+		 * Reload (or load) data from server.
+		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
+		 * @see tfw.dynamicTable#paint
+		 * @see tfw.decodeJSON
+		 * @todo Remove dependency on ajaxGet
+		 * @memberof tfw.dynamicTable#
+		 */
+		reload:function(){
+		  that=this;
+		  ajaxGet("data.php", this.url, function(hr){
+			that.data=tfw.decodeJSON(hr.responseText);
+			that.paint();
+		  },0);
+		},
+		/** 
+		 * Refresh the content of the table using data gotten by (re)loading.
+		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
+		 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
+		 * @listens onclick
+		 * @see prvek
+		 * @memberof tfw.dynamicTable#
+		 */
+		paint:function(){
+		  var o,r,c;
+		  this.myDiv.innerHTML="";
+		  this.myDiv.add(o=prvek.tabulka({}));
+		  o.add(r=prvek.radek({}));
+		  for (var j=0;j<this.data.cols.length;j++) {
+			c=document.createElement("th");
+			c.innerHTML=this.data.cols[j].n;
+			if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
+			if (!("h" in this.data.cols[j])) r.add(c);
+		  }
+		  for (var i=0;i<this.data.rows.length;i++) {
+			that=this;
+			o.add(r=prvek.radek({id:this.data.rows[i].id}));
+			if (this.rowEdit) {
+			  r.addEventListener("click", function(e){
+				that.rowEdit(e.currentTarget.value);
+			  });
+			  r.style.cursor="pointer";          
+			}
+			r.value=i;
+			for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
+			  r.add(c=prvek.sloupec({obsah:this.data.rows[i].cols[j]}));
+			}
+		  }
+		}
+	  }  
+	}
 }
 
 /**
  * Function package for preparing HTML elements.
- * @name prvek
  * @class
  */
 var prvek={
@@ -1133,16 +1264,16 @@ var prvek={
   },
   /**
    * @deprecated
-   * @see tfw#table
+   * @see tfw.table
    */
   tabulka:function(co){
 	console.error("DEPRECATED prvek.tabulka("+JSON.stringify(co)+")");
-    if (co.radky) co.rows = co.radky;
+    if (co.radky) co.children = co.radky;
     return tfw.table(co);
   },
   /**
    * @deprecated
-   * @see tfw#tr
+   * @see tfw.tr
    */
   radek:function(co){
 	console.error("DEPRECATED prvek.radek("+JSON.stringify(co)+")");
@@ -1151,7 +1282,7 @@ var prvek={
   },
   /**
    * @deprecated
-   * @see tfw#td
+   * @see tfw.td
    */
   sloupec:function(co){
 	console.error("DEPRECATED prvek.sloupec("+JSON.stringify(co)+")");
@@ -1463,7 +1594,7 @@ var prvek={
           tfw.icon({id:"dlgPalNahoru",className:"ikona24",index:53*24,title:t(512),zakazano:1,action:function(e){  /*"Nahoru"*/
             var c=$("dlgPaleta").childNodes;
             for (i=1;i<c.length;i++) 
-              if (c[i].hasClass("selected")) {         
+              if (c[i].hasClass("aktivni")) {         
                 c[i].parentNode.insertBefore(c[i],c[i-1]);
                 $("dlgPalNahoru").disabled=(i==1)?1:0;
                 $("dlgPalDolu").disabled=0;
@@ -1506,9 +1637,9 @@ var prvek={
       z.childNodes[1].add(tfw.div({id:"paletaHSV",style:"width:200px;height:200px;background-size: 200px 200px;position:relative;overflow:hidden;cursor:crosshair;",children:[
           tfw.div({id:"paletaHSVpoint",style:"position:absolute;width:7px;height:7px;border:1px solid black;border-radius:4px;"})
         ]}));
-      z.childNodes[1].add(tfw.slider({id:"barvaH",legend:"H:",legendStyle:"width:18px",postText:"°",min:0,max:359,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintH,style:"margin-top:16px;"}));
-      z.childNodes[1].add(tfw.slider({id:"barvaS",legend:"S:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintH}));
-      z.childNodes[1].add(tfw.slider({id:"barvaV",legend:"B:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintH}));
+      z.childNodes[1].add(prvek.tahlo({id:"barvaH",legend:"H:",legendStyle:"width:18px",postText:"°",min:0,max:359,krok:1,value:0,sirkaText:"32px",onchange:x.repaintH,style:"margin-top:16px;"}));
+      z.childNodes[1].add(prvek.tahlo({id:"barvaS",legend:"S:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintH}));
+      z.childNodes[1].add(prvek.tahlo({id:"barvaV",legend:"B:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintH}));
       
       for (var ry=0;ry<10;ry++)
         for (var rx=0;rx<9;rx++) {
@@ -1523,9 +1654,9 @@ var prvek={
            b.style.backgroundColor="rgb("+b.value+")";
            b.addEventListener("click",function(){
              var rb=this.value.split(",");
-             $("barvaR").value=(rb[0]);
-             $("barvaG").value=(rb[1]);
-             $("barvaB").value=(rb[2]);
+             $("barvaR").setValue(rb[0]);
+             $("barvaG").setValue(rb[1]);
+             $("barvaB").setValue(rb[2]);
              x.repaintR();
            },false);
            b.addEventListener("dblclick",function(e){
@@ -1538,21 +1669,21 @@ var prvek={
           tfw.div({id:"puvodniBarva",className:"ukazkaBarvy",style:"width:88px;height:58px;display:inline-block;border:1px solid black;border-right:none;"}),
           tfw.div({id:"barvaNahled",className:"ukazkaBarvy",style:"width:88px;height:58px;display:inline-block;border:1px solid black;border-left:none;"}),        
         ]}),
-        tfw.slider({id:"barvaR",legend:"R:",legendStyle:"width:18px",min:0,max:255,step:1,value:parseInt(rgb[0]),valueStyle:"width:32px",onchange:x.repaintR,style:"margin-top:8px;"}),
-        tfw.slider({id:"barvaG",legend:"G:",legendStyle:"width:18px",min:0,max:255,step:1,value:parseInt(rgb[1]),valueStyle:"width:32px",onchange:x.repaintR}),
-        tfw.slider({id:"barvaB",legend:"B:",legendStyle:"width:18px",min:0,max:255,step:1,value:parseInt(rgb[2]),valueStyle:"width:32px",onchange:x.repaintR}),
-        tfw.slider({id:"barvaC",legend:"C:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC,style:"margin-top:8px;"}),
-        tfw.slider({id:"barvaM",legend:"M:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC}),
-        tfw.slider({id:"barvaY",legend:"Y:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC}),
-        tfw.slider({id:"barvaK",legend:"K:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC}),
+        prvek.tahlo({id:"barvaR",legend:"R:",legendStyle:"width:18px",min:0,max:255,krok:1,value:parseInt(rgb[0]),sirkaText:"32px",onchange:x.repaintR,style:"margin-top:8px;"}),
+        prvek.tahlo({id:"barvaG",legend:"G:",legendStyle:"width:18px",min:0,max:255,krok:1,value:parseInt(rgb[1]),sirkaText:"32px",onchange:x.repaintR}),
+        prvek.tahlo({id:"barvaB",legend:"B:",legendStyle:"width:18px",min:0,max:255,krok:1,value:parseInt(rgb[2]),sirkaText:"32px",onchange:x.repaintR}),
+        prvek.tahlo({id:"barvaC",legend:"C:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC,style:"margin-top:8px;"}),
+        prvek.tahlo({id:"barvaM",legend:"M:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC}),
+        prvek.tahlo({id:"barvaY",legend:"Y:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC}),
+        prvek.tahlo({id:"barvaK",legend:"K:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC}),
         tfw.input({id:"barvaW",legend:"Web #",legendStyle:"width:138px",style:"width:56px;margin-top:8px;text-align:center;font-family:courier,monospace;font-size:13px;",maxLength:6,onchange:x.repaintW}),
         tfw.par({innerHTML:t(36)+":",style:"margin:8 0 0px;"}),
-        tfw.slider({id:"barvaO",legend:"",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:opac,valueStyle:"width:32px",onchange:x.repaintR})
+        prvek.tahlo({id:"barvaO",legend:"",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:opac,sirkaText:"32px",onchange:x.repaintR})
       ]}));
       
               
       if (co.bezSytosti) {
-        $("barvaO").value=(100);
+        $("barvaO").setValue(100);
         $("barvaO-s").disabled=1;
         $("barvaO-v").disabled=1;
       }
@@ -1571,9 +1702,9 @@ var prvek={
     },false);
     x.prejmenujBarvu=function(){
       tfw.dialog({
-        title:t(545),
-        width:332,
-        height:180,
+        nazev:t(545),
+        sirka:332,
+        vyska:180,
         children:[   /* "Název barvy" */
           tfw.input({id:"nazevBarvy",value:$($("dlgPaleta").value).childNodes[1].innerHTML,legend:t(545)+":",legendStyle:"width:80px",style:"width:200px"})
         ],
@@ -1602,10 +1733,10 @@ var prvek={
         this.className="selected";
         $("dlgPaleta").value=this.id;
         var rgb=this.value.split(",");
-        $("barvaR").value=(rgb[0]);
-        $("barvaG").value=(rgb[1]);
-        $("barvaB").value=(rgb[2]);
-        $("barvaO").value=(rgb[3]*100);
+        $("barvaR").setValue(rgb[0]);
+        $("barvaG").setValue(rgb[1]);
+        $("barvaB").setValue(rgb[2]);
+        $("barvaO").setValue(rgb[3]*100);
         x.repaintR();
         $("dlgPalUloz").disabled=0;           
         $("dlgPalSmaz").disabled=0;
@@ -1627,8 +1758,8 @@ var prvek={
         if (h>359) h=359;
         if (s<0) s=0;
         if (s>100) s=100;
-        $("barvaH").value=(h);
-        $("barvaS").value=(s);
+        $("barvaH").setValue(h);
+        $("barvaS").setValue(s);
         x.repaintH();
         e.stopPropagation();
         e.preventDefault();
@@ -1636,56 +1767,56 @@ var prvek={
     }
     x.repaintR=function(){
       var hsv=RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaH").value=(hsv[0]);
-      $("barvaS").value=(hsv[1]);
-      $("barvaV").value=(hsv[2]);
+      $("barvaH").setValue(hsv[0]);
+      $("barvaS").setValue(hsv[1]);
+      $("barvaV").setValue(hsv[2]);
       var cmyk=RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaC").value=(cmyk[0]);
-      $("barvaM").value=(cmyk[1]);
-      $("barvaY").value=(cmyk[2]);
-      $("barvaK").value=(cmyk[3]);
+      $("barvaC").setValue(cmyk[0]);
+      $("barvaM").setValue(cmyk[1]);
+      $("barvaY").setValue(cmyk[2]);
+      $("barvaK").setValue(cmyk[3]);
       $("barvaW").value=RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     }
     x.repaintH=function(){
       var rgb=HSV2RGB($("barvaH-v").value, $("barvaS-v").value, $("barvaV-v").value);
-      $("barvaR").value=(rgb[0]);
-      $("barvaG").value=(rgb[1]);
-      $("barvaB").value=(rgb[2]);
+      $("barvaR").setValue(rgb[0]);
+      $("barvaG").setValue(rgb[1]);
+      $("barvaB").setValue(rgb[2]);
       var cmyk=RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaC").value=(cmyk[0]);
-      $("barvaM").value=(cmyk[1]);
-      $("barvaY").value=(cmyk[2]);
-      $("barvaK").value=(cmyk[3]);
+      $("barvaC").setValue(cmyk[0]);
+      $("barvaM").setValue(cmyk[1]);
+      $("barvaY").setValue(cmyk[2]);
+      $("barvaK").setValue(cmyk[3]);
       $("barvaW").value=RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();      
     }
     x.repaintC=function(){
       var rgb=CMYK2RGB($("barvaC-v").value, $("barvaM-v").value, $("barvaY-v").value, $("barvaK-v").value);
-      $("barvaR").value=(rgb[0]);
-      $("barvaG").value=(rgb[1]);
-      $("barvaB").value=(rgb[2]);
+      $("barvaR").setValue(rgb[0]);
+      $("barvaG").setValue(rgb[1]);
+      $("barvaB").setValue(rgb[2]);
       var hsv=RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaH").value=(hsv[0]);
-      $("barvaS").value=(hsv[1]);
-      $("barvaV").value=(hsv[2]);
+      $("barvaH").setValue(hsv[0]);
+      $("barvaS").setValue(hsv[1]);
+      $("barvaV").setValue(hsv[2]);
       $("barvaW").value=RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     }
     x.repaintW=function(){
       var rgb=Web2RGB($("barvaW").value);
-      $("barvaR").value=(rgb[0]);
-      $("barvaG").value=(rgb[1]);
-      $("barvaB").value=(rgb[2]);
+      $("barvaR").setValue(rgb[0]);
+      $("barvaG").setValue(rgb[1]);
+      $("barvaB").setValue(rgb[2]);
       var hsv=RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaH").value=(hsv[0]);
-      $("barvaS").value=(hsv[1]);
-      $("barvaV").value=(hsv[2]);      
+      $("barvaH").setValue(hsv[0]);
+      $("barvaS").setValue(hsv[1]);
+      $("barvaV").setValue(hsv[2]);      
       var cmyk=RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaC").value=(cmyk[0]);
-      $("barvaM").value=(cmyk[1]);
-      $("barvaY").value=(cmyk[2]);
-      $("barvaK").value=(cmyk[3]);
+      $("barvaC").setValue(cmyk[0]);
+      $("barvaM").setValue(cmyk[1]);
+      $("barvaY").setValue(cmyk[2]);
+      $("barvaK").setValue(cmyk[3]);
       x.repaintPal();      
     }    
     x.repaintPal=function(){
@@ -1732,6 +1863,16 @@ var prvek={
     x.add(prvek.barva(co));
     return x;
   },
+  /**
+   * @deprecated
+   * @see tfw.slider
+   */
+  tahlo:function(co){
+	console.error("DEPRECATED prvek.tahlo("+JSON.stringify(co)+")");
+	if(co.krok)				co.step=co.krok;
+	if(co.sirkaText)		co.textWidth=co.sirkaText;
+    return tfw.slider(co);
+  }
 }
 
 function RGB2HSV(r, g, b) {
@@ -1813,52 +1954,13 @@ function Web2RGB(h){
   return [r,g,b];
 }
 
+/**
+ * @class
+ * @name Dyntable
+ * @deprecated
+ * @see tfw.dynamicTable
+ */
 function Dyntable(x){
-  return {
-    myDiv:null,
-    url:null,
-    data:null,
-    rowEdit:null,
-    create:function(){
-      this.myDiv=tfw.div({innerHTML:AJAX_LOADER});
-      return this.myDiv;
-    },
-    reload:function(){
-      that=this;
-      ajaxGet("data.php", this.url, function(hr){
-        that.data=tfw.decodeJSON(hr.responseText);
-        that.paint();
-      },0);
-    },
-    paint:function(){
-      var o,r,c;
-      this.myDiv.innerHTML="";
-      this.myDiv.add(o=prvek.tabulka({}));
-      o.add(r=prvek.radek({}));
-      for (var j=0;j<this.data.cols.length;j++) {
-        c=document.createElement("th");
-        c.innerHTML=this.data.cols[j].n;
-        if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
-        if (!("h" in this.data.cols[j])) r.add(c);
-      }
-      for (var i=0;i<this.data.rows.length;i++) {
-        that=this;
-        o.add(r=prvek.radek({id:this.data.rows[i].id}));
-        if (this.rowEdit) {
-          r.addEventListener("click", function(e){
-            that.rowEdit(e.currentTarget.value);
-          });
-          r.style.cursor="pointer";          
-        }
-        r.value=i;
-        for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
-          r.add(c=prvek.sloupec({obsah:this.data.rows[i].cols[j]}));
-        }
-      }
-    }
-  }  
+  console.error("DEPRECATED Dyntable("+JSON.stringify(x)+"), use tfw.dynamicTable()");
+  return tfw.Dyntable(x);
 }
-
-
-
-
