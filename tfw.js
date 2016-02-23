@@ -1,5 +1,5 @@
 /* Triobo Framework */
-var AJAX_LOADER="<img src='tfw/ajax-loader-small.gif'>";
+var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
 
 function $(id) {
   var x=document.getElementById(id);
@@ -820,7 +820,7 @@ var tfw={
 
     desktop.layers[desktop.activeLayer].addEventListener("keydown",function(e){if (e.which==27) desktop.closeTopLayer();},true); /**/ 
 
-    vnit.add(dlg=tfw.div({}));
+    vnit.add(dlg=tfw.div({style:"height:"+(vyska-(nazev?60:32)-27)+"px"}));
     dlg.addEventListener("mousedown",function(e){e.stopPropagation();},false);
     if (co.obsah) dlg.innerHTML=co.obsah;
     if (co.children) for (var i=0;i<co.children.length;i++) dlg.add(c=co.children[i]);
