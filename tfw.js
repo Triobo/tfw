@@ -596,20 +596,19 @@ var tfw={
    * @param {number} [params.max=100] - maximum (largest) value
    * @param {number} [params.step] - step between allowed values
    * @param {string} [params.width] - width of slider (CSS, including unit)
-   * @param {string} [params.textWidth] - width of text (CSS, including unit)
+   * @param {string} [params.valueStyle] - value box CSS styling
    * @param {string} [params.postText] - text after slider
    * @return {Object} Created slider (HTML element)
    */
   slider:function(params){
-	var element=document.createElement("div");
+	var element=document.createElement("p");
     element.min=0;
     element.max=100;
-	params.style = "vertical-align:baseline;" + (params.style ? params.style : "");
+	params.className = "tfwSlider" + ((params.className) ? (" "+params.className) : "");
 	var sliderValue = (params.value) ? params.value : false;
 	params.value = false;
 	this.fillElemDefs(element, params);
     element.add(l=document.createElement("span"));
-    l.style.display="inline-block";    
     if (params.legend) l.innerHTML=params.legend;
     if (params.legendStyle) l.style.cssText=params.legendStyle;
     var s;
@@ -632,7 +631,7 @@ var tfw={
     element.add(v=document.createElement("input"))
     v.type="text";
     if (params.id)      v.id=params.id+"-v";
-    if (params.textWidth) v.style.width=params.textWidth;
+    if (params.valueStyle) v.style.cssText=params.valueStyle;
     v.style.textAlign="right";
     if (sliderValue) v.value=sliderValue;
     v.onchange=function(){
@@ -661,15 +660,19 @@ var tfw={
         e.preventDefault();
       }
     }, true);
-    element.setValue=function(a){
-      element.childNodes[1].value=a;
-      element.childNodes[2].value=a;
-    }
+ 		Object.defineProperty(element, "value", {
+		  set:function(a){
+        this.childNodes[1].value=a;
+        this.childNodes[2].value=a;
+		  },
+		  get:function() {return this.childNodes[2].value;},
+		  enumerable:true,
+		  configurable:true
+		});
     if (params.postText) {
       element.add(p=document.createElement("span"));
       p.innerHTML=params.postText;
-      p.style.display="inline-block";
-      p.style.height="20px";      
+      if (params.postStyle) p.style.cssText=params.postStyle;
     }
 
     return element;
@@ -796,7 +799,6 @@ var tfw={
     desktop.newLayer({overlay:true,modal:true});
     var vnit,dlg,tlac;
     var sirka=300,vyska=200,nazev="";
-    if (co.sirka) console.error("DEPRECATED tfw.dialog SIRKA/VYSKA/NAZEV");
     if (co.width) sirka=co.width;
     if (co.height) vyska=co.height;
     if (co.title) nazev=co.title;
@@ -1459,7 +1461,7 @@ var prvek={
           tfw.icon({id:"dlgPalNahoru",className:"ikona24",index:53*24,title:t(512),zakazano:1,action:function(e){  /*"Nahoru"*/
             var c=$("dlgPaleta").childNodes;
             for (i=1;i<c.length;i++) 
-              if (c[i].hasClass("aktivni")) {         
+              if (c[i].hasClass("selected")) {         
                 c[i].parentNode.insertBefore(c[i],c[i-1]);
                 $("dlgPalNahoru").disabled=(i==1)?1:0;
                 $("dlgPalDolu").disabled=0;
@@ -1502,9 +1504,9 @@ var prvek={
       z.childNodes[1].add(tfw.div({id:"paletaHSV",style:"width:200px;height:200px;background-size: 200px 200px;position:relative;overflow:hidden;cursor:crosshair;",children:[
           tfw.div({id:"paletaHSVpoint",style:"position:absolute;width:7px;height:7px;border:1px solid black;border-radius:4px;"})
         ]}));
-      z.childNodes[1].add(prvek.tahlo({id:"barvaH",legend:"H:",legendStyle:"width:18px",postText:"°",min:0,max:359,krok:1,value:0,sirkaText:"32px",onchange:x.repaintH,style:"margin-top:16px;"}));
-      z.childNodes[1].add(prvek.tahlo({id:"barvaS",legend:"S:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintH}));
-      z.childNodes[1].add(prvek.tahlo({id:"barvaV",legend:"B:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintH}));
+      z.childNodes[1].add(tfw.slider({id:"barvaH",legend:"H:",legendStyle:"width:18px",postText:"°",min:0,max:359,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintH,style:"margin-top:16px;"}));
+      z.childNodes[1].add(tfw.slider({id:"barvaS",legend:"S:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintH}));
+      z.childNodes[1].add(tfw.slider({id:"barvaV",legend:"B:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintH}));
       
       for (var ry=0;ry<10;ry++)
         for (var rx=0;rx<9;rx++) {
@@ -1519,9 +1521,9 @@ var prvek={
            b.style.backgroundColor="rgb("+b.value+")";
            b.addEventListener("click",function(){
              var rb=this.value.split(",");
-             $("barvaR").setValue(rb[0]);
-             $("barvaG").setValue(rb[1]);
-             $("barvaB").setValue(rb[2]);
+             $("barvaR").value=(rb[0]);
+             $("barvaG").value=(rb[1]);
+             $("barvaB").value=(rb[2]);
              x.repaintR();
            },false);
            b.addEventListener("dblclick",function(e){
@@ -1534,21 +1536,21 @@ var prvek={
           tfw.div({id:"puvodniBarva",className:"ukazkaBarvy",style:"width:88px;height:58px;display:inline-block;border:1px solid black;border-right:none;"}),
           tfw.div({id:"barvaNahled",className:"ukazkaBarvy",style:"width:88px;height:58px;display:inline-block;border:1px solid black;border-left:none;"}),        
         ]}),
-        prvek.tahlo({id:"barvaR",legend:"R:",legendStyle:"width:18px",min:0,max:255,krok:1,value:parseInt(rgb[0]),sirkaText:"32px",onchange:x.repaintR,style:"margin-top:8px;"}),
-        prvek.tahlo({id:"barvaG",legend:"G:",legendStyle:"width:18px",min:0,max:255,krok:1,value:parseInt(rgb[1]),sirkaText:"32px",onchange:x.repaintR}),
-        prvek.tahlo({id:"barvaB",legend:"B:",legendStyle:"width:18px",min:0,max:255,krok:1,value:parseInt(rgb[2]),sirkaText:"32px",onchange:x.repaintR}),
-        prvek.tahlo({id:"barvaC",legend:"C:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC,style:"margin-top:8px;"}),
-        prvek.tahlo({id:"barvaM",legend:"M:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC}),
-        prvek.tahlo({id:"barvaY",legend:"Y:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC}),
-        prvek.tahlo({id:"barvaK",legend:"K:",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:0,sirkaText:"32px",onchange:x.repaintC}),
+        tfw.slider({id:"barvaR",legend:"R:",legendStyle:"width:18px",min:0,max:255,step:1,value:parseInt(rgb[0]),valueStyle:"width:32px",onchange:x.repaintR,style:"margin-top:8px;"}),
+        tfw.slider({id:"barvaG",legend:"G:",legendStyle:"width:18px",min:0,max:255,step:1,value:parseInt(rgb[1]),valueStyle:"width:32px",onchange:x.repaintR}),
+        tfw.slider({id:"barvaB",legend:"B:",legendStyle:"width:18px",min:0,max:255,step:1,value:parseInt(rgb[2]),valueStyle:"width:32px",onchange:x.repaintR}),
+        tfw.slider({id:"barvaC",legend:"C:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC,style:"margin-top:8px;"}),
+        tfw.slider({id:"barvaM",legend:"M:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC}),
+        tfw.slider({id:"barvaY",legend:"Y:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC}),
+        tfw.slider({id:"barvaK",legend:"K:",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:0,valueStyle:"width:32px",onchange:x.repaintC}),
         tfw.input({id:"barvaW",legend:"Web #",legendStyle:"width:138px",style:"width:56px;margin-top:8px;text-align:center;font-family:courier,monospace;font-size:13px;",maxLength:6,onchange:x.repaintW}),
         tfw.par({innerHTML:t(36)+":",style:"margin:8 0 0px;"}),
-        prvek.tahlo({id:"barvaO",legend:"",legendStyle:"width:18px",postText:"%",min:0,max:100,krok:1,value:opac,sirkaText:"32px",onchange:x.repaintR})
+        tfw.slider({id:"barvaO",legend:"",legendStyle:"width:18px",postText:"%",min:0,max:100,step:1,value:opac,valueStyle:"width:32px",onchange:x.repaintR})
       ]}));
       
               
       if (co.bezSytosti) {
-        $("barvaO").setValue(100);
+        $("barvaO").value=(100);
         $("barvaO-s").disabled=1;
         $("barvaO-v").disabled=1;
       }
@@ -1567,9 +1569,9 @@ var prvek={
     },false);
     x.prejmenujBarvu=function(){
       tfw.dialog({
-        nazev:t(545),
-        sirka:332,
-        vyska:180,
+        title:t(545),
+        width:332,
+        height:180,
         children:[   /* "Název barvy" */
           tfw.input({id:"nazevBarvy",value:$($("dlgPaleta").value).childNodes[1].innerHTML,legend:t(545)+":",legendStyle:"width:80px",style:"width:200px"})
         ],
@@ -1598,10 +1600,10 @@ var prvek={
         this.className="selected";
         $("dlgPaleta").value=this.id;
         var rgb=this.value.split(",");
-        $("barvaR").setValue(rgb[0]);
-        $("barvaG").setValue(rgb[1]);
-        $("barvaB").setValue(rgb[2]);
-        $("barvaO").setValue(rgb[3]*100);
+        $("barvaR").value=(rgb[0]);
+        $("barvaG").value=(rgb[1]);
+        $("barvaB").value=(rgb[2]);
+        $("barvaO").value=(rgb[3]*100);
         x.repaintR();
         $("dlgPalUloz").disabled=0;           
         $("dlgPalSmaz").disabled=0;
@@ -1623,8 +1625,8 @@ var prvek={
         if (h>359) h=359;
         if (s<0) s=0;
         if (s>100) s=100;
-        $("barvaH").setValue(h);
-        $("barvaS").setValue(s);
+        $("barvaH").value=(h);
+        $("barvaS").value=(s);
         x.repaintH();
         e.stopPropagation();
         e.preventDefault();
@@ -1632,56 +1634,56 @@ var prvek={
     }
     x.repaintR=function(){
       var hsv=RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaH").setValue(hsv[0]);
-      $("barvaS").setValue(hsv[1]);
-      $("barvaV").setValue(hsv[2]);
+      $("barvaH").value=(hsv[0]);
+      $("barvaS").value=(hsv[1]);
+      $("barvaV").value=(hsv[2]);
       var cmyk=RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaC").setValue(cmyk[0]);
-      $("barvaM").setValue(cmyk[1]);
-      $("barvaY").setValue(cmyk[2]);
-      $("barvaK").setValue(cmyk[3]);
+      $("barvaC").value=(cmyk[0]);
+      $("barvaM").value=(cmyk[1]);
+      $("barvaY").value=(cmyk[2]);
+      $("barvaK").value=(cmyk[3]);
       $("barvaW").value=RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     }
     x.repaintH=function(){
       var rgb=HSV2RGB($("barvaH-v").value, $("barvaS-v").value, $("barvaV-v").value);
-      $("barvaR").setValue(rgb[0]);
-      $("barvaG").setValue(rgb[1]);
-      $("barvaB").setValue(rgb[2]);
+      $("barvaR").value=(rgb[0]);
+      $("barvaG").value=(rgb[1]);
+      $("barvaB").value=(rgb[2]);
       var cmyk=RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaC").setValue(cmyk[0]);
-      $("barvaM").setValue(cmyk[1]);
-      $("barvaY").setValue(cmyk[2]);
-      $("barvaK").setValue(cmyk[3]);
+      $("barvaC").value=(cmyk[0]);
+      $("barvaM").value=(cmyk[1]);
+      $("barvaY").value=(cmyk[2]);
+      $("barvaK").value=(cmyk[3]);
       $("barvaW").value=RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();      
     }
     x.repaintC=function(){
       var rgb=CMYK2RGB($("barvaC-v").value, $("barvaM-v").value, $("barvaY-v").value, $("barvaK-v").value);
-      $("barvaR").setValue(rgb[0]);
-      $("barvaG").setValue(rgb[1]);
-      $("barvaB").setValue(rgb[2]);
+      $("barvaR").value=(rgb[0]);
+      $("barvaG").value=(rgb[1]);
+      $("barvaB").value=(rgb[2]);
       var hsv=RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaH").setValue(hsv[0]);
-      $("barvaS").setValue(hsv[1]);
-      $("barvaV").setValue(hsv[2]);
+      $("barvaH").value=(hsv[0]);
+      $("barvaS").value=(hsv[1]);
+      $("barvaV").value=(hsv[2]);
       $("barvaW").value=RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     }
     x.repaintW=function(){
       var rgb=Web2RGB($("barvaW").value);
-      $("barvaR").setValue(rgb[0]);
-      $("barvaG").setValue(rgb[1]);
-      $("barvaB").setValue(rgb[2]);
+      $("barvaR").value=(rgb[0]);
+      $("barvaG").value=(rgb[1]);
+      $("barvaB").value=(rgb[2]);
       var hsv=RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaH").setValue(hsv[0]);
-      $("barvaS").setValue(hsv[1]);
-      $("barvaV").setValue(hsv[2]);      
+      $("barvaH").value=(hsv[0]);
+      $("barvaS").value=(hsv[1]);
+      $("barvaV").value=(hsv[2]);      
       var cmyk=RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
-      $("barvaC").setValue(cmyk[0]);
-      $("barvaM").setValue(cmyk[1]);
-      $("barvaY").setValue(cmyk[2]);
-      $("barvaK").setValue(cmyk[3]);
+      $("barvaC").value=(cmyk[0]);
+      $("barvaM").value=(cmyk[1]);
+      $("barvaY").value=(cmyk[2]);
+      $("barvaK").value=(cmyk[3]);
       x.repaintPal();      
     }    
     x.repaintPal=function(){
@@ -1728,16 +1730,6 @@ var prvek={
     x.add(prvek.barva(co));
     return x;
   },
-  /**
-   * @deprecated
-   * @see tfw#slider
-   */
-  tahlo:function(co){
-	console.error("DEPRECATED prvek.tahlo("+JSON.stringify(co)+")");
-	if(co.krok)				co.step=co.krok;
-	if(co.sirkaText)		co.textWidth=co.sirkaText;
-    return tfw.slider(co);
-  }
 }
 
 function RGB2HSV(r, g, b) {

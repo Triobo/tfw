@@ -207,7 +207,6 @@ Create a slider with specified parameters.
     * [.soubory()](#prvek.soubory)
     * [.barva()](#prvek.barva)
     * [.barvaSLegendou()](#prvek.barvaSLegendou)
-    * ~~[.tahlo()](#prvek.tahlo)~~
 
 <a name="new_prvek_new"></a>
 ### new prvek()
@@ -267,10 +266,6 @@ Function package for preparing HTML elements.
 
 - [ ] Remove dependencies on Triobo
 - [ ] Move to [tfw](#tfw)
-
-<a name="prvek.tahlo"></a>
-### ~~prvek.tahlo()~~
-***Deprecated***
 
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **See**: tfw#slider  
