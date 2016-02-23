@@ -354,6 +354,14 @@ button:disabled:hover {
   white-space: nowrap;
 }
 
+/* tfwSlider */
+.tfwSlider {
+  vertical-align:bottom;
+}
+
+.tfwSlider span {
+  display:inline-block;
+}
 
 /* layout formating */
 .tfwInline {
