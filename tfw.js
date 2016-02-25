@@ -418,7 +418,7 @@ var tfw={
   	var element=document.createElement("input");
   	this.fillElemDefs(element, params);
   	element.type = (params.type) ? params.type : "text";
-  	return (params.legend) ? this.inputFieldLegend(element, params) : element;
+  	return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /** @function
    * @name tfw#textArea
@@ -435,7 +435,7 @@ var tfw={
 	  if(params.value){
 		  element.innerHTML=params.value;
 	  }
-	  return (params.legend) ? this.inputFieldLegend(element, params) : element;
+	  return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /** @function
    * @name tfw#checkbox
