@@ -1,5 +1,17 @@
 /* Triobo Framework */
+/**
+ * @constant
+ * @name AJAX_LOADER
+ * @description Used by {@link tfw.dynamicTable#create}
+ */
 var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
+
+var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Date","w":"140px"},{"n":"Title"},{"n":"Content"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":["2016-03-03 00:00:00","Dvě","Něco dalšího",""]},{"id":"608","cols":["2015-02-02 00:00:00","Jedna","Něco",""]}]}';
+
+/* Fake data from server, for testing. */
+function ajaxGet(urlWithoutQueryString, urlParameters, callback, darken) {
+  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
+}
 
 function $(id) {
   var x=document.getElementById(id);
@@ -865,13 +877,13 @@ var tfw={
       tfw.dialog({
         width:600,
         height:420,
-        title:t(529),
+        title:"Error",
         children:[
-          tfw.div({innerHTML:tPRELOZ("This is unknown error, please contact Triobo representative:"),className:"nazev"}),
+          tfw.div({innerHTML:"This is unknown error, please contact Triobo representative:",className:"nazev"}),
           tfw.div({style:"width:100%;height:300px;overflow-y:scroll;font-size:80%;",innerHTML:json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')})
               ],
         buttons:[
-          {action:desktop.closeTopLayer,text:t(1)}
+          {action:desktop.closeTopLayer,text:"x"}
         ]
       });
     }
@@ -1089,6 +1101,15 @@ var tfw={
 	 * @todo Use tfw.calendar
 	 * @todo View preferences (width, order and visibility of columns)
 	 * @param {string} param table name (not used)
+	 * @example
+	 * function myRowEditFunction(order){
+	 * 		...
+	 * }
+	 * var table = tfw.dynamicTable();
+	 * document.body.appendChild(table.create());
+	 * table.url = "action=download&id=8"; //optional
+	 * table.rowEdit = myRowEditFunction; //optional
+	 * table.reload();
 	 * @return {Object} Returns an object instance.
 	 */
   dynamicTable:function(param){
@@ -1148,24 +1169,28 @@ var tfw={
 		/** 
 		 * Create a dynamic table.
 		 * @memberof tfw.dynamicTable#
-		 * @todo Remove dependency on {@link CEKANI}
-		 * @returns {Object} Returns the value of {@link tfw.dynamicTable#myDiv|myDiv()} - a "loading" DIV (with content defined by {@link CEKANI}).
+		 * @returns {Object} Returns the value of {@link tfw.dynamicTable#myDiv|myDiv()} - a "loading" DIV (with content defined by {@link AJAX_LOADER}).
 		 */
 		create:function(){
-		  /**
-		   * @constant
-		   * @name CEKANI
-		   * @todo NOT DEFINED in tfw.js (defined in Triobo), should be moved here.
-		   */
-		  this.myDiv=tfw.div({innerHTML:CEKANI});
+		  this.myDiv=tfw.div({innerHTML:AJAX_LOADER});
 		  return this.myDiv;
 		},
+		/**
+		 * Send a GET request to server (handle errors).
+		 * @callback tfw.dynamicTable~ajaxGet
+		 * @param {string} urlWithoutQueryString - URL (can be relative) of data source (e. g. PHP script)
+		 * @param {string} urlParameters - URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2"
+		 * @param {function} callback - callback function that handles the XMLHttpRequest object (only in case of success)
+		 * @param {number} darken - whether to call desktop.working(), if set to 2, 1 is passed as parameter, 0 otherwise
+		 * @see desktop
+		 * @return {Object} The XMLHttpRequest object after sending the request.
+		 */
 		/** 
 		 * Reload (or load) data from server.
 		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
+		 * A global function {@link tfw.dynamicTable~ajaxGet|ajaxGet} must be defined.
 		 * @see tfw.dynamicTable#paint
 		 * @see tfw.decodeJSON
-		 * @todo Remove dependency on ajaxGet
 		 * @memberof tfw.dynamicTable#
 		 */
 		reload:function(){
@@ -1180,14 +1205,13 @@ var tfw={
 		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
 		 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
 		 * @listens onclick
-		 * @see prvek
 		 * @memberof tfw.dynamicTable#
 		 */
 		paint:function(){
 		  var o,r,c;
 		  this.myDiv.innerHTML="";
-		  this.myDiv.add(o=prvek.tabulka({}));
-		  o.add(r=prvek.radek({}));
+		  this.myDiv.add(o=tfw.table({}));
+		  o.add(r=tfw.tr({}));
 		  for (var j=0;j<this.data.cols.length;j++) {
 			c=document.createElement("th");
 			c.innerHTML=this.data.cols[j].n;
@@ -1196,7 +1220,7 @@ var tfw={
 		  }
 		  for (var i=0;i<this.data.rows.length;i++) {
 			that=this;
-			o.add(r=prvek.radek({id:this.data.rows[i].id}));
+			o.add(r=tfw.tr({id:this.data.rows[i].id}));
 			if (this.rowEdit) {
 			  r.addEventListener("click", function(e){
 				that.rowEdit(e.currentTarget.value);
@@ -1205,7 +1229,7 @@ var tfw={
 			}
 			r.value=i;
 			for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
-			  r.add(c=prvek.sloupec({obsah:this.data.rows[i].cols[j]}));
+			  r.add(c=tfw.td({innerHTML:this.data.rows[i].cols[j]}));
 			}
 		  }
 		}

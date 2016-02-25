@@ -4,6 +4,9 @@ function init() {
   desktop.layers[desktop.activeLayer].add(main=tfw.div({}));
   main.add(tfw.par({text:"Testovací stránka"}));
   main.add(tfw.button({text:"Otevři dialog",action:testovaciDialog}));
+  var table = tfw.dynamicTable();
+  main.add(table.create());
+  table.reload();
 }
 
 function testovaciDialog(){

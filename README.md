@@ -12,8 +12,9 @@
 ## Constants
 
 <dl>
-<dt><a href="#CEKANI">CEKANI</a></dt>
-<dd></dd>
+<dt><a href="#AJAX_LOADER">AJAX_LOADER</a></dt>
+<dd><p>Used by <a href="#tfw.dynamicTable+create">create</a></p>
+</dd>
 </dl>
 
 <a name="tfw"></a>
@@ -36,6 +37,7 @@
             * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
             * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
+            * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
     * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
@@ -77,6 +79,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
         * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
         * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
+        * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
 
 <a name="new_tfw.dynamicTable_new"></a>
 #### new dynamicTable(param)
@@ -88,6 +91,10 @@ Class for creating dynamic tables.
 | --- | --- | --- |
 | param | <code>string</code> | table name (not used) |
 
+**Example**  
+```js
+function myRowEditFunction(order){		...}var table = tfw.dynamicTable();document.body.appendChild(table.create());table.url = "action=download&id=8"; //optionaltable.rowEdit = myRowEditFunction; //optionaltable.reload();
+```
 <a name="tfw.dynamicTable+myDiv"></a>
 #### dynamicTable.myDiv : <code>Object</code>
 DIV with "loading" indicator, created by [create()](tfw.DynamicTable#create).
@@ -128,14 +135,10 @@ Function that is fired when row editing is triggered.
 Create a dynamic table.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Returns**: <code>Object</code> - Returns the value of [myDiv()](#tfw.dynamicTable+myDiv) - a "loading" DIV (with content defined by [CEKANI](#CEKANI)).  
-**Todo**
-
-- [ ] Remove dependency on [CEKANI](#CEKANI)
-
+**Returns**: <code>Object</code> - Returns the value of [myDiv()](#tfw.dynamicTable+myDiv) - a "loading" DIV (with content defined by [AJAX_LOADER](#AJAX_LOADER)).  
 <a name="tfw.dynamicTable+reload"></a>
 #### dynamicTable.reload()
-Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTable+paint) the table.
+Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTable+paint) the table.A global function [ajaxGet](#tfw.dynamicTable..ajaxGet) must be defined.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **See**
@@ -143,16 +146,11 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 - tfw.dynamicTable#paint
 - tfw.decodeJSON
 
-**Todo**
-
-- [ ] Remove dependency on ajaxGet
-
 <a name="tfw.dynamicTable+paint"></a>
 #### dynamicTable.paint()
 Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**See**: prvek  
 <a name="tfw.dynamicTable..dataCol"></a>
 #### dynamicTable~dataCol : <code>Object</code>
 **Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
@@ -183,6 +181,21 @@ Function that handles row editing.
 | Param | Type | Description |
 | --- | --- | --- |
 | order | <code>number</code> | order of the row being edited |
+
+<a name="tfw.dynamicTable..ajaxGet"></a>
+#### dynamicTable~ajaxGet ⇒ <code>Object</code>
+Send a GET request to server (handle errors).
+
+**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Returns**: <code>Object</code> - The XMLHttpRequest object after sending the request.  
+**See**: desktop  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| urlWithoutQueryString | <code>string</code> | URL (can be relative) of data source (e. g. PHP script) |
+| urlParameters | <code>string</code> | URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2" |
+| callback | <code>function</code> | callback function that handles the XMLHttpRequest object (only in case of success) |
+| darken | <code>number</code> | whether to call desktop.working(), if set to 2, 1 is passed as parameter, 0 otherwise |
 
 <a name="tfw.fillElemDefs"></a>
 ### tfw.fillElemDefs(element, params)
@@ -347,7 +360,7 @@ Create a slider with specified parameters.
 | [params.max] | <code>number</code> | <code>100</code> | maximum (largest) value |
 | [params.step] | <code>number</code> |  | step between allowed values |
 | [params.width] | <code>string</code> |  | width of slider (CSS, including unit) |
-| [params.textWidth] | <code>string</code> |  | width of text (CSS, including unit) |
+| [params.valueStyle] | <code>string</code> |  | value box CSS styling |
 | [params.postText] | <code>string</code> |  | text after slider |
 
 <a name="tfw.decodeJSON"></a>
@@ -428,18 +441,14 @@ Function package for preparing HTML elements.
 - [ ] Remove dependencies on Triobo
 - [ ] Move to [tfw](#tfw)
 
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**See**: tfw.slider  
 <a name="Dyntable"></a>
 ## ~~Dyntable~~
 ***Deprecated***
 
 **Kind**: global class  
 **See**: tfw.dynamicTable  
-<a name="CEKANI"></a>
-## CEKANI
+<a name="AJAX_LOADER"></a>
+## AJAX_LOADER
+Used by [create](#tfw.dynamicTable+create)
+
 **Kind**: global constant  
-**Todo**
-
-- [ ] NOT DEFINED in tfw.js (defined in Triobo), should be moved here.
-
