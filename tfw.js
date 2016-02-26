@@ -511,6 +511,8 @@ var tfw={
 		  e.preventDefault();
 		},false);
 		
+		if (params.disabled) x.disabled=1;
+		
 		return x; 
   },
   /**

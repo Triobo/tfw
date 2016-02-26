@@ -309,10 +309,10 @@ button:disabled:hover {
   background-color: #8cc;/*azure*/
   color:black;
 }
-.tfwCheckbox.zakazano {
+.tfwCheckbox.disabled {
   color:#bbb;
 }
-.tfwCheckbox.zakazano:hover {
+.tfwCheckbox.disabled:hover {
   background-color: inherit;
 }
 .tfwCheckbox div {
