@@ -402,7 +402,7 @@ var tfw={
    * @param {string} [params.postText] - text after input field
    * @return {Object} container with legend and input field (HTML element)
    */
-  inputFieldLegend(element, params){
+  inputFieldLegend:function(element, params){
 		var x=document.createElement("p");
 		var l=document.createElement("span");
 		if (params.legend) l.innerHTML=params.legend;
@@ -429,7 +429,7 @@ var tfw={
   	var element=document.createElement("input");
   	this.fillElemDefs(element, params);
   	element.type = (params.type) ? params.type : "text";
-  	return (params.legend) ? this.inputFieldLegend(element, params) : element;
+  	return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /**
    * Create a text area with specified parameters.
@@ -446,7 +446,7 @@ var tfw={
 	  if(params.value){
 		  element.innerHTML=params.value;
 	  }
-	  return (params.legend) ? this.inputFieldLegend(element, params) : element;
+	  return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /**
    * Create a checkbox with specified parameters.
@@ -617,7 +617,7 @@ var tfw={
     element.min=0;
     element.max=100;
 	params.className = "tfwSlider" + ((params.className) ? (" "+params.className) : "");
-	var sliderValue = (params.value) ? params.value : false;
+	var sliderValue = ("value" in params) ? params.value : 0;
 	params.value = false;
 	this.fillElemDefs(element, params);
     element.add(l=document.createElement("span"));
@@ -631,7 +631,7 @@ var tfw={
     if ("min" in params)     {s.min=params.min;element.min=params.min;}
     if (params.step)         	s.step=params.step;
     if (params.width)        	s.style.width=params.width;
-    if (sliderValue) 		s.value=sliderValue;
+    s.value=sliderValue;
     s.oninput=function(){
       $(params.id+"-v").value=this.value;
       if (element.onchange) element.onchange();
@@ -645,7 +645,7 @@ var tfw={
     if (params.id)      v.id=params.id+"-v";
     if (params.valueStyle) v.style.cssText=params.valueStyle;
     v.style.textAlign="right";
-    if (sliderValue) v.value=sliderValue;
+    v.value=sliderValue;
     v.onchange=function(){
       if (!this.value.match(/^\d+$/)) this.value=0;
       if (this.value<element.min) this.value=element.min;
@@ -1569,6 +1569,8 @@ var prvek={
       if (isNaN(opac)) opac=100;
       var ab=parseInt(rgb[0])+","+parseInt(rgb[1])+","+parseInt(rgb[2])+","+(Math.round(parseFloat(rgb[3])*100))/100;
       
+      console.info("Barva je "+ab);
+      
       if (co.paleta) {
         dlg.add(c=tfw.div({style:"width:200px;height:312px;",className:"tfwInline tfwSeparatorRight"}));
         c.add(tfw.par({className:"nadpis",innerHTML:t(548),style:"border-bottom:none;"})); /* paleta vydání */
@@ -1655,8 +1657,7 @@ var prvek={
             $("paleta-"+editor.aktVydani.paleta[i].id).scrollIntoView(true);
           }
         }        
-      }
-      
+      }      
       
       dlg.add(b=tfw.div({style:"width:216px;height:312px;",className:"tfwInline tfwSeparatorRight"}));
       b.add(z=tfw.noveZalozky("zalMichani",216,200,t(546)+";"+t(547),prvek.rezimVyberuBarvy));      
