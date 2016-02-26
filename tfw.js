@@ -391,7 +391,7 @@ var tfw={
    * @param {string} [params.postText] - text after input field
    * @return {object} container with legend and input field (HTML element)
    */
-  inputFieldLegend(element, params){
+  inputFieldLegend:function(element, params){
 		var x=document.createElement("p");
 		var l=document.createElement("span");
 		if (params.legend) l.innerHTML=params.legend;
