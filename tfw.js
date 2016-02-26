@@ -1411,8 +1411,6 @@ var prvek={
       if (isNaN(opac)) opac=100;
       var ab=parseInt(rgb[0])+","+parseInt(rgb[1])+","+parseInt(rgb[2])+","+(Math.round(parseFloat(rgb[3])*100))/100;
       
-      console.info("Barva je "+ab);
-      
       if (co.paleta) {
         dlg.add(c=tfw.div({style:"width:200px;height:312px;",className:"tfwInline tfwSeparatorRight"}));
         c.add(tfw.par({className:"nadpis",innerHTML:t(548),style:"border-bottom:none;"})); /* paleta vydání */
