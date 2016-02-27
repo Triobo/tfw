@@ -1,16 +1,24 @@
-/* Triobo Framework */
 /**
- * @constant
- * @name AJAX_LOADER
+ * @file Triobo Framework
+ * @author mpl75
+ * @author melanger
+ */
+/**
  * @description Used by {@link tfw.dynamicTable#create}
+ * @constant {string}
  */
 var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
 
-var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Date","w":"140px"},{"n":"Title"},{"n":"Content"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":["2016-03-03 00:00:00","Dvě","Něco dalšího",""]},{"id":"608","cols":["2015-02-02 00:00:00","Jedna","Něco",""]}]}';
-
-/* Fake data from server, for testing. */
+/**
+ * Fake data "from server", for testing.
+ * @ignore
+ */
 function ajaxGet(urlWithoutQueryString, urlParameters, callback, darken) {
-  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
+  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true},{"n":"Content","type":"text"},{"n":"Number","type":"number","sort":"true"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":["2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":["2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
+  function callCallback(){
+	  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
+  }
+  setTimeout(callCallback, 500);
 }
 
 function $(id) {
@@ -1098,14 +1106,13 @@ var tfw={
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @memberof tfw
-	 * @todo Implement sorting (columns with text/numbers)
 	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
 	 * @todo Use tfw.calendar
 	 * @todo View preferences (width, order and visibility of columns)
 	 * @param {string} param table name (not used)
 	 * @example
 	 * function myRowEditFunction(order){
-	 * 		...
+	 * 	// ...
 	 * }
 	 * var table = tfw.dynamicTable();
 	 * document.body.appendChild(table.create());
@@ -1116,6 +1123,20 @@ var tfw={
 	 */
   dynamicTable:function(param){
 	  return {
+		/**
+		 * Ascending sorting symbol.
+		 * @const {string}
+		 * @memberof tfw.dynamicTable#
+		 * @default
+		 */
+		ascSortingSymbol:"&darr;",
+		/**
+		 * Descending sorting symbol.
+		 * @const {string}
+		 * @memberof tfw.dynamicTable#
+		 * @default
+		 */
+		descSortingSymbol:"&uarr;",
 		/**
 		 * DIV with "loading" indicator, created by {@link tfw.DynamicTable#create|create()}.
 		 * @memberof tfw.dynamicTable#
@@ -1138,6 +1159,8 @@ var tfw={
 		 * @property {string} n - HTML content (innerHTML)
 		 * @property {number} w - width
 		 * @property {boolean} h - hidden
+		 * @property {string} [type=null] - type of field, possible values: null (general), "text", "number", "date"
+		 * @property {boolean} [sort=false] - whether to allow sorting by this column's values
 		 */
 		/**
 		 * @typedef tfw.dynamicTable~dataRow
@@ -1210,19 +1233,28 @@ var tfw={
 		 * @memberof tfw.dynamicTable#
 		 */
 		paint:function(){
-		  var o,r,c;
+		  var o,thead,tbody,r,c;
 		  this.myDiv.innerHTML="";
 		  this.myDiv.add(o=tfw.table({}));
-		  o.add(r=tfw.tr({}));
+		  o.add(thead=document.createElement("thead"));
+		  thead.add(r=tfw.tr({}));
 		  for (var j=0;j<this.data.cols.length;j++) {
 			c=document.createElement("th");
 			c.innerHTML=this.data.cols[j].n;
 			if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
+			if("sort" in this.data.cols[j] && this.data.cols[j]){
+				c.innerHTML += "<button class='tfwDtSort' data-sort-order='desc' data-sort-col='"+j+"'>"+this.descSortingSymbol+"</button> <button class='tfwDtSort' data-sort-order='asc' data-sort-col='"+j+"'>"+this.ascSortingSymbol+"</button>";
+				var sortingButtons = c.querySelectorAll("button.tfwDtSort");
+				for(var i=0;i<sortingButtons.length;i++){
+					sortingButtons[i].onclick = this.sort;
+				}
+			}
 			if (!("h" in this.data.cols[j])) r.add(c);
 		  }
+		  o.add(tbody=document.createElement("tbody"));
 		  for (var i=0;i<this.data.rows.length;i++) {
 			that=this;
-			o.add(r=tfw.tr({id:this.data.rows[i].id}));
+			tbody.add(r=tfw.tr({id:this.data.rows[i].id}));
 			if (this.rowEdit) {
 			  r.addEventListener("click", function(e){
 				that.rowEdit(e.currentTarget.value);
@@ -1234,6 +1266,32 @@ var tfw={
 			  r.add(c=tfw.td({innerHTML:this.data.rows[i].cols[j]}));
 			}
 		  }
+		},
+		/**
+		 * Apply sorting by values of a column.
+		 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
+		 * @memberof tfw.dynamicTable#
+		 * @param {Object} event - Event object
+		 */
+		sort:function(event){
+			var tbody=this.closest("table").querySelector("tbody"), col=this.getAttribute("data-sort-col"), asc=(this.getAttribute("data-sort-order")=="asc" ? 1 : -1);
+			var rows = tbody.rows, rlen = rows.length, arr = new Array(), i, j, cells, clen;
+			for(i = 0; i < rlen; i++){
+			cells = rows[i].cells;
+			clen = cells.length;
+			arr[i] = new Array();
+				for(j = 0; j < clen; j++){
+				arr[i][j] = cells[j].innerHTML;
+				}
+			}
+			// sort the array by the specified column number (col) and order (asc)
+			arr.sort(function(a, b){
+				return (a[col] == b[col]) ? 0 : ((a[col] > b[col]) ? asc : (-1*asc));
+			});
+			for(i = 0; i < rlen; i++){
+				arr[i] = "<td>"+arr[i].join("</td><td>")+"</td>";
+			}
+			tbody.innerHTML = "<tr>"+arr.join("</tr><tr>")+"</tr>";
 		}
 	  }  
 	}

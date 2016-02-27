@@ -12,7 +12,7 @@
 ## Constants
 
 <dl>
-<dt><a href="#AJAX_LOADER">AJAX_LOADER</a></dt>
+<dt><a href="#AJAX_LOADER">AJAX_LOADER</a> : <code>string</code></dt>
 <dd><p>Used by <a href="#tfw.dynamicTable+create">create</a></p>
 </dd>
 </dl>
@@ -30,9 +30,12 @@
             * [.url](#tfw.dynamicTable+url) : <code>string</code>
             * [.data](#tfw.dynamicTable+data) : <code>Object</code>
             * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
+            * [.ascSortingSymbol](#tfw.dynamicTable+ascSortingSymbol) : <code>string</code>
+            * [.descSortingSymbol](#tfw.dynamicTable+descSortingSymbol) : <code>string</code>
             * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTable+reload)
             * [.paint()](#tfw.dynamicTable+paint)
+            * [.sort(event)](#tfw.dynamicTable+sort)
         * _inner_
             * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
             * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -59,7 +62,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **Todo**
 
-- [ ] Implement sorting (columns with text/numbers)
 - [ ] Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
 - [ ] Use tfw.calendar
 - [ ] View preferences (width, order and visibility of columns)
@@ -72,9 +74,12 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.url](#tfw.dynamicTable+url) : <code>string</code>
         * [.data](#tfw.dynamicTable+data) : <code>Object</code>
         * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
+        * [.ascSortingSymbol](#tfw.dynamicTable+ascSortingSymbol) : <code>string</code>
+        * [.descSortingSymbol](#tfw.dynamicTable+descSortingSymbol) : <code>string</code>
         * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTable+reload)
         * [.paint()](#tfw.dynamicTable+paint)
+        * [.sort(event)](#tfw.dynamicTable+sort)
     * _inner_
         * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
         * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -93,7 +98,7 @@ Class for creating dynamic tables.
 
 **Example**  
 ```js
-function myRowEditFunction(order){		...}var table = tfw.dynamicTable();document.body.appendChild(table.create());table.url = "action=download&id=8"; //optionaltable.rowEdit = myRowEditFunction; //optionaltable.reload();
+function myRowEditFunction(order){	// ...}var table = tfw.dynamicTable();document.body.appendChild(table.create());table.url = "action=download&id=8"; //optionaltable.rowEdit = myRowEditFunction; //optionaltable.reload();
 ```
 <a name="tfw.dynamicTable+myDiv"></a>
 #### dynamicTable.myDiv : <code>Object</code>
@@ -130,6 +135,18 @@ Function that is fired when row editing is triggered.
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Default**: <code>null</code>  
 **Access:** public  
+<a name="tfw.dynamicTable+ascSortingSymbol"></a>
+#### dynamicTable.ascSortingSymbol : <code>string</code>
+Ascending sorting symbol.
+
+**Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Default**: <code>&quot;&amp;darr;&quot;</code>  
+<a name="tfw.dynamicTable+descSortingSymbol"></a>
+#### dynamicTable.descSortingSymbol : <code>string</code>
+Descending sorting symbol.
+
+**Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Default**: <code>&quot;&amp;uarr;&quot;</code>  
 <a name="tfw.dynamicTable+create"></a>
 #### dynamicTable.create() ⇒ <code>Object</code>
 Create a dynamic table.
@@ -151,16 +168,28 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+<a name="tfw.dynamicTable+sort"></a>
+#### dynamicTable.sort(event)
+Apply sorting by values of a column.Inspired by ProGM's solution from [Stack Exchange](http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript)
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>Object</code> | Event object |
+
 <a name="tfw.dynamicTable..dataCol"></a>
 #### dynamicTable~dataCol : <code>Object</code>
 **Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Properties**
 
-| Name | Type | Description |
-| --- | --- | --- |
-| n | <code>string</code> | HTML content (innerHTML) |
-| w | <code>number</code> | width |
-| h | <code>boolean</code> | hidden |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| n | <code>string</code> |  | HTML content (innerHTML) |
+| w | <code>number</code> |  | width |
+| h | <code>boolean</code> |  | hidden |
+| type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "date" |
+| sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
 
 <a name="tfw.dynamicTable..dataRow"></a>
 #### dynamicTable~dataRow : <code>Object</code>
@@ -448,7 +477,7 @@ Function package for preparing HTML elements.
 **Kind**: global class  
 **See**: tfw.dynamicTable  
 <a name="AJAX_LOADER"></a>
-## AJAX_LOADER
+## AJAX_LOADER : <code>string</code>
 Used by [create](#tfw.dynamicTable+create)
 
 **Kind**: global constant  
