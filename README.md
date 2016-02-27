@@ -38,13 +38,15 @@
             * [.reload()](#tfw.dynamicTable+reload)
             * [.paint()](#tfw.dynamicTable+paint)
             * [.sort(event)](#tfw.dynamicTable+sort)
-            * [.search(event)](#tfw.dynamicTable+search)
+            * [.filterSearch(column, value, searchType)](#tfw.dynamicTable+filterSearch)
+            * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
         * _inner_
             * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
             * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
             * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
+    * [.select(n)](#tfw.select) ⇒ <code>Object</code>
     * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
     * [.textArea(params)](#tfw.textArea) ⇒ <code>Object</code>
@@ -65,7 +67,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **Todo**
 
-- [ ] Implement filter (columns with boolean - on/off/both, numbers - range, date - ranges)
+- [ ] Implement filter (numbers/date - range)
 - [ ] Use tfw.calendar
 - [ ] View preferences (width, order and visibility of columns)
 - [ ] Allow editing of simple cells
@@ -86,7 +88,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.reload()](#tfw.dynamicTable+reload)
         * [.paint()](#tfw.dynamicTable+paint)
         * [.sort(event)](#tfw.dynamicTable+sort)
-        * [.search(event)](#tfw.dynamicTable+search)
+        * [.filterSearch(column, value, searchType)](#tfw.dynamicTable+filterSearch)
+        * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
     * _inner_
         * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
         * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -197,24 +200,35 @@ Refresh the content of the table using data gotten by (re)loading.Empties the t
 Apply sorting by values (text without HTML) of a column.Inspired by ProGM's solution from [Stack Exchange](http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript)Overrides style attribute of TR elements inside TBODY.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Todo**
-
-- [ ] Use CSS class for toggling instead of display:none
-
 
 | Param | Type | Description |
 | --- | --- | --- |
 | event | <code>Object</code> | Event object |
 
-<a name="tfw.dynamicTable+search"></a>
-#### dynamicTable.search(event)
-Apply search filter (case insensitive).
+<a name="tfw.dynamicTable+filterSearch"></a>
+#### dynamicTable.filterSearch(column, value, searchType)
+Apply search filter (case insensitive).Requires .searchFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**See**: tfw.dynamicTable~dataCol  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>Object</code> | Event object |
+| column | <code>number</code> | order number of searched column |
+| value | <code>string</code> | searched string |
+| searchType | <code>number</code> | type of search |
+
+<a name="tfw.dynamicTable+filterBoolean"></a>
+#### dynamicTable.filterBoolean(column, value)
+Apply boolean filter.Requires .booleanFilterInvalid{display:none}
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**See**: tfw.dynamicTable~dataCol  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| column | <code>number</code> | order number of searched column |
+| value | <code>string</code> | searched string |
 
 <a name="tfw.dynamicTable..dataCol"></a>
 #### dynamicTable~dataCol : <code>Object</code>
@@ -290,6 +304,21 @@ Set parameters of a HTML element.
 | [params.onClick] | <code>function</code> |  | function to call when user clicks on the field (onclick fires) |
 | [params.value] | <code>string</code> |  | default field value (or button text) |
 | [params.placeholder] | <code>string</code> |  | text field placeholder |
+
+<a name="tfw.select"></a>
+### tfw.select(n) ⇒ <code>Object</code>
+Create a select field.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>Object</code> - Created select field (HTML element).  
+**Todo**
+
+- [ ] Finish this doc
+
+
+| Param | Description |
+| --- | --- |
+| n | parameters |
 
 <a name="tfw.inputFieldLegend"></a>
 ### tfw.inputFieldLegend(element, params) ⇒ <code>Object</code>

@@ -415,3 +415,8 @@ button:disabled:hover {
   height:100%;
 }
 
+/*****************/
+
+.searchFilterInvalid, .booleanFilterInvalid{
+	display:none;
+}

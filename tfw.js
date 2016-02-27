@@ -266,6 +266,12 @@ var tfw={
     this.fillElemDefs(x,n);
     return x;
   },
+  /**
+   * Create a select field.
+   * @param n parameters
+   * @todo Finish this doc
+   * @return {Object} Created select field (HTML element).
+   */
   select:function(n){
     var x=document.createElement("div");
     if (n.id)        x.id=n.id;
@@ -1112,7 +1118,7 @@ var tfw={
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @memberof tfw
-	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, date - ranges)
+	 * @todo Implement filter (numbers/date - range)
 	 * @todo Use tfw.calendar
 	 * @todo View preferences (width, order and visibility of columns)
 	 * @todo Allow editing of simple cells
@@ -1265,14 +1271,20 @@ var tfw={
 		  o.add(thead=document.createElement("thead"));
 		  
 		  var anySearchAllowed = false;
-		  r=tfw.tr({});
+		  r=tfw.tr({className:'search'});
 		  for (var j=0;j<this.data.cols.length;j++) {
 			  c=document.createElement("th");
 			  if(this.data.cols[j].search){
 				  var searchInput = tfw.input({type:"text",placeholder:"Search "+((this.data.cols[j].search==1)?"beginning with":"including")+"..."});
 				  searchInput.setAttribute("data-search-type", this.data.cols[j].search);
-				  searchInput.setAttribute("data-search-col", j);
-				  searchInput.onkeyup = this.search;
+				  searchInput.setAttribute("data-filter-col", j);
+				  var table = this;
+				  searchInput.onkeyup = function(){
+					  table.filterSearch(this.getAttribute("data-filter-col"),
+								   this.value,
+								   this.getAttribute("data-search-type")
+								   );
+				  }
 				  c.add(searchInput);
 				  
 				  anySearchAllowed = true;
@@ -1283,6 +1295,39 @@ var tfw={
 			  r.add(c);
 		  }
 		  if(anySearchAllowed){
+			  thead.add(r);
+		  }
+		  
+		  var anyFilterAllowed = false;
+		  r=tfw.tr({className:'filters'});
+		  for (var j=0;j<this.data.cols.length;j++) {
+			  c=document.createElement("th");
+			  if(this.data.cols[j].filter){
+				  anyFilterAllowed = true;
+				  var table = this;
+				  if(this.data.cols[j].type == "checkbox"){
+					  var filter = tfw.select({
+							list:"Both;Yes;No",
+							value:0,
+							onchange:function(){
+								table.filterBoolean(this.getAttribute("data-filter-col"), this.value);
+							}
+						});
+					  filter.setAttribute("data-filter-col", j);
+					  c.add(filter);
+				  }
+				  /* else if (){
+				  } */
+				  else {
+					  anyFilterAllowed = false;
+				  }
+			  }
+			  else {
+				  c.innerHTML = "&nbsp;";
+			  }
+			  r.add(c);
+		  }
+		  if(anyFilterAllowed){
 			  thead.add(r);
 		  }
 		  
@@ -1330,7 +1375,6 @@ var tfw={
 		 * Apply sorting by values (text without HTML) of a column.
 		 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
 		 * Overrides style attribute of TR elements inside TBODY.
-		 * @todo Use CSS class for toggling instead of display:none
 		 * @memberof tfw.dynamicTable#
 		 * @param {Object} event - Event object
 		 */
@@ -1350,15 +1394,35 @@ var tfw={
 		},
 		/**
 		 * Apply search filter (case insensitive).
+		 * Requires .searchFilterInvalid{display:none}
 		 * @memberof tfw.dynamicTable#
-		 * @param {Object} event - Event object
+		 * @param {number} column - order number of searched column
+		 * @param {string} value - searched string
+		 * @param {number} searchType - type of search
+		 * @see tfw.dynamicTable~dataCol
 		 */
-		search:function(event){
-			var tbody=this.closest("table").querySelector("tbody"), searchType = this.getAttribute("data-search-type"), col=this.getAttribute("data-search-col");
+		filterSearch:function(column, value, searchType){
+			var tbody = this.myDiv.querySelector("tbody");
 			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
 			for(var i=0;i<tbody.rows.length;i++){
-				var matches = this.value=="" || tbody.rows[i].cells[col].textContent.toLowerCase()[searchFunc](this.value.toLowerCase());
-				tfw.fillElemDefs(tbody.rows[i], {style:(matches?"":"display:none")});
+				var matches = value=="" || tbody.rows[i].cells[column].textContent.toLowerCase()[searchFunc](value.toLowerCase());
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('searchFilterInvalid');
+			}
+		},
+		/**
+		 * Apply boolean filter.
+		 * Requires .booleanFilterInvalid{display:none}
+		 * @memberof tfw.dynamicTable#
+		 * @param {number} column - order number of searched column
+		 * @param {string} value - searched string
+		 * @see tfw.dynamicTable~dataCol
+		 */
+		filterBoolean:function(column, searchType){
+			var tbody = this.myDiv.querySelector("tbody");
+			for(var i=0;i<tbody.rows.length;i++){
+				var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
+				var matches = (searchType==="0") || (searchType==="1"&&value) || (searchType==="2"&&!value);
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('booleanFilterInvalid');
 			}
 		}
 	  }  
