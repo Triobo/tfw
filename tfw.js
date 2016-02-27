@@ -14,7 +14,7 @@ var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
  * @ignore
  */
 function ajaxGet(urlWithoutQueryString, urlParameters, callback, darken) {
-  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true},{"n":"Content","type":"text"},{"n":"Number","type":"number","sort":"true"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":["2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":["2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
+  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true,"search":1},{"n":"Content","type":"text","search":2},{"n":"Number","type":"number","sort":"true"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":["2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":["2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
   function callCallback(){
 	  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
   }
@@ -192,13 +192,15 @@ var tfw={
    * @param {boolean} [params.evaluate=false] - evaluate (eval) field value after change (onchange), set to 1 or true
    * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
    * @param {function} [params.onClick] - function to call when user clicks on the field (onclick fires)
+   * @param {string} [params.value] - default field value (or button text)
+   * @param {string} [params.placeholder] - text field placeholder
    */
   fillElemDefs:function(element,params){
-  	if (params.text){
+  	if ("text" in params){
   		params.innerHTML = params.text;
   	}
   	
-  	var attributesToCopy = ["id","innerHTML","disabled","maxLength","evaluate","onclick","value"];
+  	var attributesToCopy = ["id","innerHTML","disabled","maxLength","evaluate","onclick","value","placeholder"];
   	for(var i=0;i<attributesToCopy.length;i++){
   		var attribute = attributesToCopy[i];
   		if(attribute in params){
@@ -206,11 +208,11 @@ var tfw={
   		}
   	}
   	
-  	if(params.style){
+  	if("style" in params){
   		element.style.cssText = params.style;
   	}
   	
-    if(params.className){
+    if("className" in params){
   		if(element.className){
   			element.className += " " + params.className;
   		}
@@ -219,7 +221,7 @@ var tfw={
   		}
   	}
       
-    if(params.children){
+    if("children" in params){
   		for(var i=0;i<params.children.length;i++){
   			if(params.children[i]){
   				element.add(params.children[i]);
@@ -227,10 +229,10 @@ var tfw={
   		}
   	}
   	
-  	if(params.onchange){
+  	if("onchange" in params){
   		element.speconchange=params.onchange;
   	}
-  	if(params.onchange || params.evaluate){
+  	if("onchange" in params || "evaluate" in params){
   		element.onchange=function(){
   		  if(this.speconchange){
   			  this.speconchange();
@@ -598,12 +600,16 @@ var tfw={
    * Create a table cell with specified parameters.
    * @memberof tfw
    * @param {Object} params - table cell parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {number} [params.colspan] - number of columns that this cell will merge
    * @see tfw.fillElemDefs
    * @return {Object} Created table cell (HTML element)
    */
   td:function(params){
     var element=document.createElement("td");
 	  this.fillElemDefs(element, params);
+	  if("colspan" in params){
+		  element.setAttribute("colspan", params.colspan);
+	  }
     return element;
   },
   /**
@@ -1106,7 +1112,7 @@ var tfw={
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @memberof tfw
-	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
+	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, date - ranges)
 	 * @todo Use tfw.calendar
 	 * @todo View preferences (width, order and visibility of columns)
 	 * @param {string} param table name (not used)
@@ -1161,6 +1167,7 @@ var tfw={
 		 * @property {boolean} h - hidden
 		 * @property {string} [type=null] - type of field, possible values: null (general), "text", "number", "date"
 		 * @property {boolean} [sort=false] - whether to allow sorting by this column's values
+		 * @property {number} [search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
 		 */
 		/**
 		 * @typedef tfw.dynamicTable~dataRow
@@ -1230,13 +1237,38 @@ var tfw={
 		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
 		 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
 		 * @listens onclick
+		 * @listens onkeyup
 		 * @memberof tfw.dynamicTable#
+		 * @todo Localize
 		 */
 		paint:function(){
 		  var o,thead,tbody,r,c;
 		  this.myDiv.innerHTML="";
 		  this.myDiv.add(o=tfw.table({}));
 		  o.add(thead=document.createElement("thead"));
+		  
+		  var anySearchAllowed = false;
+		  r=tfw.tr({});
+		  for (var j=0;j<this.data.cols.length;j++) {
+			  c=document.createElement("th");
+			  if(this.data.cols[j].search){
+				  var searchInput = tfw.input({type:"text",placeholder:"Search "+((this.data.cols[j].search==1)?"beginning with":"including")+"..."});
+				  searchInput.setAttribute("data-search-type", this.data.cols[j].search);
+				  searchInput.setAttribute("data-search-col", j);
+				  searchInput.onkeyup = this.search;
+				  c.add(searchInput);
+				  
+				  anySearchAllowed = true;
+			  }
+			  else {
+				  c.innerHTML = "&nbsp;";
+			  }
+			  r.add(c);
+		  }
+		  if(anySearchAllowed){
+			  thead.add(r);
+		  }
+		  
 		  thead.add(r=tfw.tr({}));
 		  for (var j=0;j<this.data.cols.length;j++) {
 			c=document.createElement("th");
@@ -1270,6 +1302,8 @@ var tfw={
 		/**
 		 * Apply sorting by values of a column.
 		 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
+		 * Overrides style attribute of TR elements inside TBODY.
+		 * @todo Use CSS class for toggling instead of display:none
 		 * @memberof tfw.dynamicTable#
 		 * @param {Object} event - Event object
 		 */
@@ -1292,6 +1326,28 @@ var tfw={
 				arr[i] = "<td>"+arr[i].join("</td><td>")+"</td>";
 			}
 			tbody.innerHTML = "<tr>"+arr.join("</tr><tr>")+"</tr>";
+		},
+		/**
+		 * Apply search filter.
+		 * @memberof tfw.dynamicTable#
+		 * @param {Object} event - Event object
+		 * @todo Localize
+		 */
+		search:function(event){
+			var tbody=this.closest("table").querySelector("tbody"), searchType = this.getAttribute("data-search-type"), col=this.getAttribute("data-search-col");
+			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
+			var anyRowMatches = false;
+			for(var i=0;i<tbody.rows.length;i++){
+				var matches = this.value=="" || tbody.rows[i].cells[col].innerHTML[searchFunc](this.value);
+				tfw.fillElemDefs(tbody.rows[i], {style:(matches?"":"display:none")});
+				if(matches){
+					anyRowMatches = true;
+				}
+			}
+			if(!anyRowMatches){
+				var colsLength = this.closest("table").querySelector("thead tr").cells.length;
+				tbody.add(tfw.tr({children:[tfw.td({innerHTML:"No rows are matching your search.",colspan:colsLength})]}));
+			}
 		}
 	  }  
 	}

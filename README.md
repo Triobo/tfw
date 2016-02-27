@@ -36,6 +36,7 @@
             * [.reload()](#tfw.dynamicTable+reload)
             * [.paint()](#tfw.dynamicTable+paint)
             * [.sort(event)](#tfw.dynamicTable+sort)
+            * [.search(event)](#tfw.dynamicTable+search)
         * _inner_
             * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
             * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -62,7 +63,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **Todo**
 
-- [ ] Implement filter (columns with boolean - on/off/both, numbers - range, text/number - search, date - ranges)
+- [ ] Implement filter (columns with boolean - on/off/both, numbers - range, date - ranges)
 - [ ] Use tfw.calendar
 - [ ] View preferences (width, order and visibility of columns)
 
@@ -80,6 +81,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.reload()](#tfw.dynamicTable+reload)
         * [.paint()](#tfw.dynamicTable+paint)
         * [.sort(event)](#tfw.dynamicTable+sort)
+        * [.search(event)](#tfw.dynamicTable+search)
     * _inner_
         * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
         * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -168,11 +170,33 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Todo**
+
+- [ ] Localize
+
 <a name="tfw.dynamicTable+sort"></a>
 #### dynamicTable.sort(event)
-Apply sorting by values of a column.Inspired by ProGM's solution from [Stack Exchange](http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript)
+Apply sorting by values of a column.Inspired by ProGM's solution from [Stack Exchange](http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript)Overrides style attribute of TR elements inside TBODY.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Todo**
+
+- [ ] Use CSS class for toggling instead of display:none
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| event | <code>Object</code> | Event object |
+
+<a name="tfw.dynamicTable+search"></a>
+#### dynamicTable.search(event)
+Apply search filter.
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Todo**
+
+- [ ] Localize
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -190,6 +214,7 @@ Apply sorting by values of a column.Inspired by ProGM's solution from [Stack Ex
 | h | <code>boolean</code> |  | hidden |
 | type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "date" |
 | sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
+| search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
 
 <a name="tfw.dynamicTable..dataRow"></a>
 #### dynamicTable~dataRow : <code>Object</code>
@@ -248,6 +273,8 @@ Set parameters of a HTML element.
 | [params.evaluate] | <code>boolean</code> | <code>false</code> | evaluate (eval) field value after change (onchange), set to 1 or true |
 | [params.onchange] | <code>function</code> |  | function to call when field changes value (onchange fires) |
 | [params.onClick] | <code>function</code> |  | function to call when user clicks on the field (onclick fires) |
+| [params.value] | <code>string</code> |  | default field value (or button text) |
+| [params.placeholder] | <code>string</code> |  | text field placeholder |
 
 <a name="tfw.inputFieldLegend"></a>
 ### tfw.inputFieldLegend(element, params) ⇒ <code>Object</code>
@@ -370,6 +397,7 @@ Create a table cell with specified parameters.
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | table cell parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.colspan] | <code>number</code> | number of columns that this cell will merge |
 
 <a name="tfw.slider"></a>
 ### tfw.slider(params) ⇒ <code>Object</code>
