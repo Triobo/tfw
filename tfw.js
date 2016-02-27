@@ -4,7 +4,7 @@
  * @author melanger
  */
 /**
- * @description Used by {@link tfw.dynamicTable#create}
+ * HTML to show when some content is being loaded.
  * @constant {string}
  */
 var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
@@ -14,7 +14,7 @@ var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
  * @ignore
  */
 function ajaxGet(urlWithoutQueryString, urlParameters, callback, darken) {
-  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true,"search":1},{"n":"Content","type":"text","search":2},{"n":"Number","type":"number","sort":"true"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":["2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":["2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
+  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Public","type":"checkbox","sort":true,"filter":true},{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true,"search":1},{"n":"Content","type":"text","search":2},{"n":"Number","type":"number","sort":"true"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":[true,"2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":[false,"2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
   function callCallback(){
 	  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
   }
@@ -484,7 +484,7 @@ var tfw={
 		var b=document.createElement("div");
 		
 		x._value=0;
-		if (params.value) x._value=params.value?1:0;
+		if ("value" in params) x._value=params.value?1:0;
 		
 		b.className=x._value?"checked":"";
 		x.add(b);
@@ -1115,6 +1115,7 @@ var tfw={
 	 * @todo Implement filter (columns with boolean - on/off/both, numbers - range, date - ranges)
 	 * @todo Use tfw.calendar
 	 * @todo View preferences (width, order and visibility of columns)
+	 * @todo Allow editing of simple cells
 	 * @param {string} param table name (not used)
 	 * @example
 	 * function myRowEditFunction(order){
@@ -1144,6 +1145,20 @@ var tfw={
 		 */
 		descSortingSymbol:"&uarr;",
 		/**
+		 * Default label for true.
+		 * @const {string}
+		 * @memberof tfw.dynamicTable#
+		 * @default
+		 */
+		labelTrue:"Yes",
+		/**
+		 * Default label for false.
+		 * @const {string}
+		 * @memberof tfw.dynamicTable#
+		 * @default
+		 */
+		labelFalse:"No",
+		/**
 		 * DIV with "loading" indicator, created by {@link tfw.DynamicTable#create|create()}.
 		 * @memberof tfw.dynamicTable#
 		 * @var {Object}
@@ -1168,6 +1183,7 @@ var tfw={
 		 * @property {string} [type=null] - type of field, possible values: null (general), "text", "number", "date"
 		 * @property {boolean} [sort=false] - whether to allow sorting by this column's values
 		 * @property {number} [search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
+		 * @property {boolean} [filter=false] - whether to allow filtering (depends on type)
 		 */
 		/**
 		 * @typedef tfw.dynamicTable~dataRow
@@ -1240,6 +1256,7 @@ var tfw={
 		 * @listens onkeyup
 		 * @memberof tfw.dynamicTable#
 		 * @todo Localize
+		 * @todo Think about using different IDs for rows (e.g. add a prefix)
 		 */
 		paint:function(){
 		  var o,thead,tbody,r,c;
@@ -1293,14 +1310,24 @@ var tfw={
 			  });
 			  r.style.cursor="pointer";          
 			}
-			r.value=i;
+			r.value=i;//???
 			for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
-			  r.add(c=tfw.td({innerHTML:this.data.rows[i].cols[j]}));
+			  var params={}, val = this.data.rows[i].cols[j];
+			  if("type" in this.data.cols[j]){
+				  if(this.data.cols[j].type == "checkbox"){
+					  var id = "tfwDynamicTable-"+i+"-"+j;
+					  params.children = [tfw.checkbox({id:id,value:(val?1:0),text:(val ? this.labelTrue : this.labelFalse),'disabled':true})]
+				  }
+				  else{
+					  params.innerHTML = val;
+				  }
+			  }
+			  r.add(c=tfw.td(params));
 			}
 		  }
 		},
 		/**
-		 * Apply sorting by values of a column.
+		 * Apply sorting by values (text without HTML) of a column.
 		 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
 		 * Overrides style attribute of TR elements inside TBODY.
 		 * @todo Use CSS class for toggling instead of display:none
@@ -1309,44 +1336,29 @@ var tfw={
 		 */
 		sort:function(event){
 			var tbody=this.closest("table").querySelector("tbody"), col=this.getAttribute("data-sort-col"), asc=(this.getAttribute("data-sort-order")=="asc" ? 1 : -1);
-			var rows = tbody.rows, rlen = rows.length, arr = new Array(), i, j, cells, clen;
+			var rows = tbody.rows, rlen = rows.length, arr = new Array(), i;
 			for(i = 0; i < rlen; i++){
-			cells = rows[i].cells;
-			clen = cells.length;
-			arr[i] = new Array();
-				for(j = 0; j < clen; j++){
-				arr[i][j] = cells[j].innerHTML;
-				}
+				arr[i] = {id:rows[i].id,value:rows[i].cells[col].textContent};
 			}
 			// sort the array by the specified column number (col) and order (asc)
 			arr.sort(function(a, b){
-				return (a[col] == b[col]) ? 0 : ((a[col] > b[col]) ? asc : (-1*asc));
+				return (a.value == b.value) ? 0 : ((a.value > b.value) ? asc : (-1*asc));
 			});
 			for(i = 0; i < rlen; i++){
-				arr[i] = "<td>"+arr[i].join("</td><td>")+"</td>";
+				tbody.appendChild(rows.namedItem(arr[i].id));
 			}
-			tbody.innerHTML = "<tr>"+arr.join("</tr><tr>")+"</tr>";
 		},
 		/**
-		 * Apply search filter.
+		 * Apply search filter (case insensitive).
 		 * @memberof tfw.dynamicTable#
 		 * @param {Object} event - Event object
-		 * @todo Localize
 		 */
 		search:function(event){
 			var tbody=this.closest("table").querySelector("tbody"), searchType = this.getAttribute("data-search-type"), col=this.getAttribute("data-search-col");
 			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
-			var anyRowMatches = false;
 			for(var i=0;i<tbody.rows.length;i++){
-				var matches = this.value=="" || tbody.rows[i].cells[col].innerHTML[searchFunc](this.value);
+				var matches = this.value=="" || tbody.rows[i].cells[col].textContent.toLowerCase()[searchFunc](this.value.toLowerCase());
 				tfw.fillElemDefs(tbody.rows[i], {style:(matches?"":"display:none")});
-				if(matches){
-					anyRowMatches = true;
-				}
-			}
-			if(!anyRowMatches){
-				var colsLength = this.closest("table").querySelector("thead tr").cells.length;
-				tbody.add(tfw.tr({children:[tfw.td({innerHTML:"No rows are matching your search.",colspan:colsLength})]}));
 			}
 		}
 	  }  
