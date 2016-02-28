@@ -135,16 +135,16 @@ Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | cols | <code>Array.&lt;Object&gt;</code> |  | list of columns |
-| cols.n | <code>string</code> |  | HTML content (innerHTML) |
-| cols.w | <code>number</code> |  | width |
-| cols.h | <code>boolean</code> |  | hidden |
-| cols.type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "date" |
-| cols.sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
-| cols.search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
-| cols.filter | <code>boolean</code> | <code>false</code> | whether to allow filtering (depends on type) |
+| cols[].n | <code>string</code> |  | HTML content (innerHTML) |
+| cols[].w | <code>number</code> |  | width |
+| cols[].h | <code>boolean</code> |  | hidden |
+| cols[].type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "date" |
+| cols[].sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
+| cols[].search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
+| cols[].filter | <code>boolean</code> | <code>false</code> | whether to allow filtering (depends on type) |
 | rows | <code>Array.&lt;Object&gt;</code> |  | list of rows |
-| rows.id | <code>number</code> |  | row ID |
-| rows.cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
+| rows[].id | <code>number</code> |  | row ID |
+| rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
 <a name="tfw.dynamicTable+rowEdit"></a>
 #### dynamicTable.rowEdit : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>

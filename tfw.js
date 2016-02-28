@@ -1214,16 +1214,16 @@ var tfw={
 		 * @default null
 		 * @public
 		 * @property {Object[]} cols - list of columns
-		 * @property {string} cols.n - HTML content (innerHTML)
-		 * @property {number} cols.w - width
-		 * @property {boolean} cols.h - hidden
-		 * @property {string} [cols.type=null] - type of field, possible values: null (general), "text", "number", "date"
-		 * @property {boolean} [cols.sort=false] - whether to allow sorting by this column's values
-		 * @property {number} [cols.search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
-		 * @property {boolean} [cols.filter=false] - whether to allow filtering (depends on type)
+		 * @property {string} cols[].n - HTML content (innerHTML)
+		 * @property {number} cols[].w - width
+		 * @property {boolean} cols[].h - hidden
+		 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "date"
+		 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
+		 * @property {number} [cols[].search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
+		 * @property {boolean} [cols[].filter=false] - whether to allow filtering (depends on type)
 		 * @property {Object[]} rows - list of rows
-		 * @property {number} rows.id - row ID
-		 * @property {Array.<string>} rows.cols - contents for each column (HTML)
+		 * @property {number} rows[].id - row ID
+		 * @property {string[]} rows[].cols - contents for each column (HTML)
 		 */
 		data:null,
 		/**
