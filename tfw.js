@@ -267,65 +267,74 @@ var tfw={
     return x;
   },
   /**
-   * Create a select field.
-   * @param n parameters
-   * @todo Finish this doc
+   * Create a select field with specified parameters.
+   * @param {Object} params - select parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
+   * @param {boolean} [params.multiple] - can multiple values be selected
+   * @param {(string|string[]|Object[])} params.list - list of options as string "label1;label2" or "label1|value1;label2|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text)
+   * @param {string} [params.list[].id] - value (defaults to numeric index of option)
+   * @param {string} params.list[].t - label
    * @return {Object} Created select field (HTML element).
    */
-  select:function(n){
-    var x=document.createElement("div");
-    if (n.id)        x.id=n.id;
-    x.className="tfwSelect";
-    if (n.className) x.className+=" "+n.class;
-    if (n.style)     x.style.cssText=n.style;
-    x.multiple=0;
-    if (n.multiple)  x.multiple=1;
-    if (n.onchange)  x.onchange=n.onchange;
-    x.clickOnItem=function(e){
+  select:function(params){
+    var element=document.createElement("div");
+	params.className = "tfwSelect " + (("className" in params) ? params.className : "");
+    element.multiple = ("multiple" in params && params.multiple);
+	if(!"value" in params){
+		params.value = "0";
+	}
+	this.fillElemDefs(element, params);
+    element.clickOnItem=function(e){
       e.stopPropagation();
       e.preventDefault();
-      if (x.multiple) {
+      if (element.multiple) {
         this.toggleClass("selected");      
       } else {
-        for (var i=0;i<x.childNodes.length;i++) x.childNodes[i].removeClass("selected");
+        for (var i=0;i<element.childNodes.length;i++) element.childNodes[i].removeClass("selected");
         this.addClass("selected");
       }
       var m=[];
-      for (var i=0;i<x.childNodes.length;i++) if (x.childNodes[i].hasClass("selected")) m.push(x.childNodes[i].value);
-      x.value=m.join(",");
-      if (x.onchange) x.onchange();
+      for (var i=0;i<element.childNodes.length;i++){
+		  if (element.childNodes[i].hasClass("selected")){
+			  m.push(element.childNodes[i].value);
+		  }
+	  }
+      element.value=m.join(",");
+      if (element.onchange) element.onchange();
     }
-    x.value="0";
-    if (n.value) x.value=""+n.value;
-    var m=x.value.split(",");
-    if (typeof n.list==="string") {
-      szn=n.list.split(";");
-      n.list=[];
+    var m=element.value.toString().split(",");
+    if (typeof params.list==="string") {
+      szn=params.list.split(";");
+      params.list=[];
       for (var i=0;i<szn.length;i++) {
         var prt=szn[i].split("|");
         if (prt.length==1) prt[1]=i;
-        n.list.push({id:prt[1],t:prt[0]});
+        params.list.push({id:prt[1],t:prt[0]});
       }
     }
-    for (i=0;i<n.list.length;i++) {
-      var p=n.list[i];
+    for (i=0;i<params.list.length;i++) {
+      var p=params.list[i];
       if (typeof p==="string") p={id:i,t:p};
       if (!("id" in p)) p.id=i;
       var l=document.createElement("div");
       l.value=""+p.id;
       if ("n" in p) l.innerHTML=p.n; else l.innerHTML=p.t;
       if (m.indexOf(l.value)>-1) l.className="selected";
-      l.addEventListener("mousedown", x.clickOnItem,false);
-      x.add(l);
+      l.addEventListener("mousedown", element.clickOnItem,false);
+      element.add(l);
     }
-    x.setValue=function(a){
-      for (var i=0;i<x.childNodes.length;i++) {
-        if (x.childNodes[i].value==a) x.childNodes[i].addClass("selected");
-                                 else x.childNodes[i].removeClass("selected");
+    element.setValue=function(a){
+      for (var i=0;i<element.childNodes.length;i++) {
+        if (element.childNodes[i].value==a){
+			element.childNodes[i].addClass("selected");
+		}
+        else{
+			element.childNodes[i].removeClass("selected");
+		}
       }
-      x.value=""+a;
+      element.value=""+a;
     }
-    return x;
+    return element;
   },
   dropDown:function(n){
     var y=document.createElement("p");
@@ -1183,11 +1192,11 @@ var tfw={
 		 */
 		labelFalse:"No",
 		/**
-		 * DIV with "loading" indicator, created by {@link tfw.DynamicTable#create|create()}.
+		 * DIV containing the table.
 		 * @memberof tfw.dynamicTable#
 		 * @var {Object}
 		 * @default null
-		 * @protected
+		 * @readonly
 		 */
 		myDiv:null,
 		/**
@@ -1199,30 +1208,22 @@ var tfw={
 		 */
 		url:null,
 		/**
-		 * @typedef tfw.dynamicTable~dataCol
-		 * @type {Object}
-		 * @property {string} n - HTML content (innerHTML)
-		 * @property {number} w - width
-		 * @property {boolean} h - hidden
-		 * @property {string} [type=null] - type of field, possible values: null (general), "text", "number", "date"
-		 * @property {boolean} [sort=false] - whether to allow sorting by this column's values
-		 * @property {number} [search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
-		 * @property {boolean} [filter=false] - whether to allow filtering (depends on type)
-		 */
-		/**
-		 * @typedef tfw.dynamicTable~dataRow
-		 * @type {Object}
-		 * @property {number} id - row ID
-		 * @property {Array.<string>} cols - contents for each column (HTML)
-		 */
-		/**
 		 * Data obtained from server. {@link tfw.dynamicTable#reload|reload()} has to be called to fill this.
 		 * @memberof tfw.dynamicTable#
 		 * @var {Object}
 		 * @default null
 		 * @public
-		 * @property {Array.<tfw.dynamicTable~dataCol>} cols - list of columns
-		 * @property {Array.<tfw.dynamicTable~dataRow>} rows - list of rows
+		 * @property {Object[]} cols - list of columns
+		 * @property {string} cols.n - HTML content (innerHTML)
+		 * @property {number} cols.w - width
+		 * @property {boolean} cols.h - hidden
+		 * @property {string} [cols.type=null] - type of field, possible values: null (general), "text", "number", "date"
+		 * @property {boolean} [cols.sort=false] - whether to allow sorting by this column's values
+		 * @property {number} [cols.search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
+		 * @property {boolean} [cols.filter=false] - whether to allow filtering (depends on type)
+		 * @property {Object[]} rows - list of rows
+		 * @property {number} rows.id - row ID
+		 * @property {Array.<string>} rows.cols - contents for each column (HTML)
 		 */
 		data:null,
 		/**
@@ -1443,7 +1444,6 @@ var tfw={
 		 * @param {number} column - order number of searched column
 		 * @param {string} value - searched string
 		 * @param {number} searchType - type of search
-		 * @see tfw.dynamicTable~dataCol
 		 */
 		filterSearch:function(column, value, searchType){
 			var tbody = this.myDiv.querySelector("tbody");
@@ -1459,7 +1459,6 @@ var tfw={
 		 * @memberof tfw.dynamicTable#
 		 * @param {number} column - order number of searched column
 		 * @param {string} value - searched string
-		 * @see tfw.dynamicTable~dataCol
 		 */
 		filterBoolean:function(column, searchType){
 			var tbody = this.myDiv.querySelector("tbody");
@@ -1476,7 +1475,6 @@ var tfw={
 		 * @param {number} column - order number of searched column
 		 * @param {number} compareValue - value to compare to
 		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
-		 * @see tfw.dynamicTable~dataCol
 		 */
 		filterNumeric:function(column, compareValue, cmp){
 			var tbody = this.myDiv.querySelector("tbody");

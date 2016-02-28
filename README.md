@@ -42,12 +42,10 @@
             * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
             * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
         * _inner_
-            * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
-            * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
             * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
-    * [.select(n)](#tfw.select) ⇒ <code>Object</code>
+    * [.select(params)](#tfw.select) ⇒ <code>Object</code>
     * [.button(params)](#tfw.button) ⇒ <code>Object</code>
     * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
@@ -94,8 +92,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
         * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
     * _inner_
-        * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
-        * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
         * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
         * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
 
@@ -115,11 +111,11 @@ function myRowEditFunction(order){	// ...}var table = tfw.dynamicTable();doc
 ```
 <a name="tfw.dynamicTable+myDiv"></a>
 #### dynamicTable.myDiv : <code>Object</code>
-DIV with "loading" indicator, created by [create()](tfw.DynamicTable#create).
+DIV containing the table.
 
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Default**: <code>null</code>  
-**Access:** protected  
+**Read only**: true  
 <a name="tfw.dynamicTable+url"></a>
 #### dynamicTable.url : <code>string</code>
 URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling [reload()](#tfw.dynamicTable+reload).
@@ -136,10 +132,19 @@ Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called
 **Access:** public  
 **Properties**
 
-| Name | Type | Description |
-| --- | --- | --- |
-| cols | <code>[Array.&lt;dataCol&gt;](#tfw.dynamicTable..dataCol)</code> | list of columns |
-| rows | <code>[Array.&lt;dataRow&gt;](#tfw.dynamicTable..dataRow)</code> | list of rows |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| cols | <code>Array.&lt;Object&gt;</code> |  | list of columns |
+| cols.n | <code>string</code> |  | HTML content (innerHTML) |
+| cols.w | <code>number</code> |  | width |
+| cols.h | <code>boolean</code> |  | hidden |
+| cols.type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "date" |
+| cols.sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
+| cols.search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
+| cols.filter | <code>boolean</code> | <code>false</code> | whether to allow filtering (depends on type) |
+| rows | <code>Array.&lt;Object&gt;</code> |  | list of rows |
+| rows.id | <code>number</code> |  | row ID |
+| rows.cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
 <a name="tfw.dynamicTable+rowEdit"></a>
 #### dynamicTable.rowEdit : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
@@ -213,7 +218,6 @@ Apply sorting by values (text without HTML) of a column.Inspired by ProGM's sol
 Apply search filter (case insensitive).Requires .searchFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**See**: tfw.dynamicTable~dataCol  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -226,7 +230,6 @@ Apply search filter (case insensitive).Requires .searchFilterInvalid{display:no
 Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**See**: tfw.dynamicTable~dataCol  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -238,38 +241,12 @@ Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**See**: tfw.dynamicTable~dataCol  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | column | <code>number</code> | order number of searched column |
 | compareValue | <code>number</code> | value to compare to |
 | cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
-
-<a name="tfw.dynamicTable..dataCol"></a>
-#### dynamicTable~dataCol : <code>Object</code>
-**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Properties**
-
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| n | <code>string</code> |  | HTML content (innerHTML) |
-| w | <code>number</code> |  | width |
-| h | <code>boolean</code> |  | hidden |
-| type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "date" |
-| sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
-| search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
-| filter | <code>boolean</code> | <code>false</code> | whether to allow filtering (depends on type) |
-
-<a name="tfw.dynamicTable..dataRow"></a>
-#### dynamicTable~dataRow : <code>Object</code>
-**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Properties**
-
-| Name | Type | Description |
-| --- | --- | --- |
-| id | <code>number</code> | row ID |
-| cols | <code>Array.&lt;string&gt;</code> | contents for each column (HTML) |
 
 <a name="tfw.dynamicTable..rowEdit"></a>
 #### dynamicTable~rowEdit : <code>function</code>
@@ -322,19 +299,20 @@ Set parameters of a HTML element.
 | [params.placeholder] | <code>string</code> |  | text field placeholder |
 
 <a name="tfw.select"></a>
-### tfw.select(n) ⇒ <code>Object</code>
-Create a select field.
+### tfw.select(params) ⇒ <code>Object</code>
+Create a select field with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>Object</code> - Created select field (HTML element).  
-**Todo**
+**See**: tfw.fillElemDefs  
 
-- [ ] Finish this doc
-
-
-| Param | Description |
-| --- | --- |
-| n | parameters |
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | select parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.multiple] | <code>boolean</code> | can multiple values be selected |
+| params.list | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> | list of options as string "label1;label2" or "label1|value1;label2|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text) |
+| [params.list[].id] | <code>string</code> | value (defaults to numeric index of option) |
+| params.list[].t | <code>string</code> | label |
 
 <a name="tfw.button"></a>
 ### tfw.button(params) ⇒ <code>Object</code>
