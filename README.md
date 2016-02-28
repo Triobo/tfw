@@ -40,6 +40,7 @@
             * [.sort(event)](#tfw.dynamicTable+sort)
             * [.filterSearch(column, value, searchType)](#tfw.dynamicTable+filterSearch)
             * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
+            * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
         * _inner_
             * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
             * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -47,6 +48,7 @@
             * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
     * [.select(n)](#tfw.select) ⇒ <code>Object</code>
+    * [.button(params)](#tfw.button) ⇒ <code>Object</code>
     * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
     * [.textArea(params)](#tfw.textArea) ⇒ <code>Object</code>
@@ -67,8 +69,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **Todo**
 
-- [ ] Implement filter (numbers/date - range)
 - [ ] Use tfw.calendar
+- [ ] Implement date filter (calendar range)
 - [ ] View preferences (width, order and visibility of columns)
 - [ ] Allow editing of simple cells
 
@@ -90,6 +92,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.sort(event)](#tfw.dynamicTable+sort)
         * [.filterSearch(column, value, searchType)](#tfw.dynamicTable+filterSearch)
         * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
+        * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
     * _inner_
         * [~dataCol](#tfw.dynamicTable..dataCol) : <code>Object</code>
         * [~dataRow](#tfw.dynamicTable..dataRow) : <code>Object</code>
@@ -230,6 +233,19 @@ Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 | column | <code>number</code> | order number of searched column |
 | value | <code>string</code> | searched string |
 
+<a name="tfw.dynamicTable+filterNumeric"></a>
+#### dynamicTable.filterNumeric(column, compareValue, cmp)
+Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**See**: tfw.dynamicTable~dataCol  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| column | <code>number</code> | order number of searched column |
+| compareValue | <code>number</code> | value to compare to |
+| cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
+
 <a name="tfw.dynamicTable..dataCol"></a>
 #### dynamicTable~dataCol : <code>Object</code>
 **Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
@@ -320,6 +336,21 @@ Create a select field.
 | --- | --- |
 | n | parameters |
 
+<a name="tfw.button"></a>
+### tfw.button(params) ⇒ <code>Object</code>
+Create a button with specified parameters.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>Object</code> - Created button (HTML element)  
+**See**: tfw.fillElemDefs  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | button parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.step] | <code>number</code> |  | step between allowed numeric values |
+| [params.default] | <code>boolean</code> | <code>false</code> | if true, type=submit, otherwise type=button |
+| [params.action] | <code>function</code> |  | Function to fire when button is clicked (event propagation is stopped) |
+
 <a name="tfw.inputFieldLegend"></a>
 ### tfw.inputFieldLegend(element, params) ⇒ <code>Object</code>
 Wrap an input field with a legend and a container.
@@ -354,6 +385,9 @@ Create an input field with specified parameters.
 | params | <code>Object</code> |  | input fields parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
 | [params.type] | <code>string</code> | <code>&quot;\&quot;text\&quot;&quot;</code> | input field type |
 | [params.value] | <code>string</code> |  | prefilled value |
+| [params.min] | <code>number</code> |  | minimum allowed value |
+| [params.max] | <code>number</code> |  | maximum allowed value |
+| [params.step] | <code>number</code> |  | step between allowed numeric values |
 
 <a name="tfw.textArea"></a>
 ### tfw.textArea(params) ⇒ <code>Object</code>

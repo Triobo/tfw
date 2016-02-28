@@ -417,6 +417,6 @@ button:disabled:hover {
 
 /*****************/
 
-.searchFilterInvalid, .booleanFilterInvalid{
+.searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1{
 	display:none;
 }

@@ -14,7 +14,7 @@ var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
  * @ignore
  */
 function ajaxGet(urlWithoutQueryString, urlParameters, callback, darken) {
-  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Public","type":"checkbox","sort":true,"filter":true},{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true,"search":1},{"n":"Content","type":"text","search":2},{"n":"Number","type":"number","sort":"true"},{"n":"Image","h":1}],"rows":[{"id":"609","cols":[true,"2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":[false,"2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
+  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Public","type":"checkbox","sort":true,"filter":true},{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true,"search":1},{"n":"Content","type":"text","search":2},{"n":"Number","type":"number","sort":true,"filter":true},{"n":"Image","h":1}],"rows":[{"id":"609","cols":[true,"2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":[false,"2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
   function callCallback(){
 	  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
   }
@@ -392,19 +392,28 @@ var tfw={
     y.add(x);
     return y;
   },
-  button:function(n){
-    var x=document.createElement("button");
-    this.fillElemDefs(x,n);    
-    if (n.default) x.type="submit"; else x.type="button";
-    if (n.disabled) x.disabled=1;
-    if (n.action) {
-      x.action=n.action;
-      x.onclick=function(e){
+  /**
+   * Create a button with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - button parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @see tfw.fillElemDefs
+   * @param {number} [params.step] - step between allowed numeric values
+   * @param {boolean} [params.default=false] - if true, type=submit, otherwise type=button
+   * @param {function} [params.action] - Function to fire when button is clicked (event propagation is stopped)
+   * @return {Object} Created button (HTML element)
+   */
+  button:function(params){
+    var element=document.createElement("button");
+    this.fillElemDefs(element,params);    
+    if (params.default) element.type="submit"; else element.type="button";
+    if (params.action) {
+      element.action=params.action;
+      element.onclick=function(e){
         e.stopPropagation();
         if (!this.disabled) this.action(e);
       }
     }
-    return x;
+    return element;
   },
   /**
    * Wrap an input field with a legend and a container.
@@ -439,12 +448,21 @@ var tfw={
    * @see tfw.inputFieldLegend
    * @param {string} [params.type="text"] - input field type
    * @param {string} [params.value] - prefilled value
+   * @param {number} [params.min] - minimum allowed value
+   * @param {number} [params.max] - maximum allowed value
+   * @param {number} [params.step] - step between allowed numeric values
    * @return {Object} Created input field (HTML element)
    */
   input:function(params){
   	var element=document.createElement("input");
   	this.fillElemDefs(element, params);
-  	element.type = (params.type) ? params.type : "text";
+  	//element.type = (params.type) ? params.type : "text";
+	var attributesToCopy = ["type","min","max","step"];
+	for(var i=0;i<attributesToCopy.length;i++){
+		if(attributesToCopy[i] in params){
+			element[attributesToCopy[i]] = params[attributesToCopy[i]];
+		}
+	}
   	return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /**
@@ -1118,8 +1136,8 @@ var tfw={
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @memberof tfw
-	 * @todo Implement filter (numbers/date - range)
 	 * @todo Use tfw.calendar
+	 * @todo Implement date filter (calendar range)
 	 * @todo View preferences (width, order and visibility of columns)
 	 * @todo Allow editing of simple cells
 	 * @param {string} param table name (not used)
@@ -1316,6 +1334,25 @@ var tfw={
 					  filter.setAttribute("data-filter-col", j);
 					  c.add(filter);
 				  }
+				  else if(this.data.cols[j].type == "number"){
+					  var minV, maxV;
+					  minV = maxV = this.data.rows[0].cols[j];
+					  for(var i=1;i<this.data.rows.length;i++){
+						  if(this.data.rows[i].cols[j] < minV){
+							  minV = this.data.rows[i].cols[j];
+						  }
+						  else if(this.data.rows[i].cols[j] > maxV){
+							  maxV = this.data.rows[i].cols[j];
+						  }
+					  }
+					  var table = this;
+					  var f1 = tfw.input({type:"number",className:"rangeMin",onchange:function(){var max=this.closest("th").querySelector(".rangeMax");max.min = this.value;if(parseInt(max.value) < parseInt(max.min)){max.value=max.min;max.onchange();}table.filterNumeric(this.getAttribute("data-filter-col"),this.value,1);},min:minV,max:maxV,value:minV,legend:"From:"});
+					  var f2 = tfw.input({type:"number",className:"rangeMax",onchange:function(){var min=this.closest("th").querySelector(".rangeMin");min.max = this.value;if(parseInt(min.value) > parseInt(min.max)){min.value=min.max;min.onchange();}table.filterNumeric(this.getAttribute("data-filter-col"),this.value,-1);},min:minV,max:maxV,value:maxV,legend:"To:"});;
+					  f1.querySelector(".rangeMin").setAttribute("data-filter-col", j);
+					  f2.querySelector(".rangeMax").setAttribute("data-filter-col", j);
+					  c.add(f1);
+					  c.add(f2);
+				  }
 				  /* else if (){
 				  } */
 				  else {
@@ -1337,10 +1374,14 @@ var tfw={
 			c.innerHTML=this.data.cols[j].n;
 			if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
 			if("sort" in this.data.cols[j] && this.data.cols[j]){
-				c.innerHTML += "<button class='tfwDtSort' data-sort-order='desc' data-sort-col='"+j+"'>"+this.descSortingSymbol+"</button> <button class='tfwDtSort' data-sort-order='asc' data-sort-col='"+j+"'>"+this.ascSortingSymbol+"</button>";
-				var sortingButtons = c.querySelectorAll("button.tfwDtSort");
+				var b1 = tfw.button({className:'tfwDtSort',innerHTML:this.descSortingSymbol}), b2 = tfw.button({className:'tfwDtSort',innerHTML:this.ascSortingSymbol});
+				b1.setAttribute('data-sort-order', 'desc');
+				b2.setAttribute('data-sort-order', 'asc');
+				var sortingButtons = [b1,b2];
 				for(var i=0;i<sortingButtons.length;i++){
 					sortingButtons[i].onclick = this.sort;
+					sortingButtons[i].setAttribute('data-sort-col', j);
+					c.add(sortingButtons[i]);
 				}
 			}
 			if (!("h" in this.data.cols[j])) r.add(c);
@@ -1359,9 +1400,12 @@ var tfw={
 			for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
 			  var params={}, val = this.data.rows[i].cols[j];
 			  if("type" in this.data.cols[j]){
+				  var id = "tfwDynamicTable-"+i+"-"+j;
 				  if(this.data.cols[j].type == "checkbox"){
-					  var id = "tfwDynamicTable-"+i+"-"+j;
 					  params.children = [tfw.checkbox({id:id,value:(val?1:0),text:(val ? this.labelTrue : this.labelFalse),'disabled':true})]
+				  }
+				  else if(this.data.cols[j].type == "number"){
+					  params.children = [tfw.input({type:"number",id:id,value:val,'disabled':true})];
 				  }
 				  else{
 					  params.innerHTML = val;
@@ -1423,6 +1467,23 @@ var tfw={
 				var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
 				var matches = (searchType==="0") || (searchType==="1"&&value) || (searchType==="2"&&!value);
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('booleanFilterInvalid');
+			}
+		},
+		/**
+		 * Apply numeric filter.
+		 * Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
+		 * @memberof tfw.dynamicTable#
+		 * @param {number} column - order number of searched column
+		 * @param {number} compareValue - value to compare to
+		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
+		 * @see tfw.dynamicTable~dataCol
+		 */
+		filterNumeric:function(column, compareValue, cmp){
+			var tbody = this.myDiv.querySelector("tbody");
+			for(var i=0;i<tbody.rows.length;i++){
+				var value = parseInt(tbody.rows[i].cells[column].querySelector("input").value);
+				var matches = (!value || (value-compareValue)*cmp >= 0);
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('numericFilterInvalid'+cmp);
 			}
 		}
 	  }  
