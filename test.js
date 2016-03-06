@@ -5,6 +5,7 @@ function init() {
   main.add(tfw.par({text:"Testovací stránka"}));
   main.add(tfw.button({text:"Otevři dialog",action:testovaciDialog}));
   var table = tfw.dynamicTable();
+  table.url = "t=test&a=load";
   main.add(table.create());
   table.reload();
 }
