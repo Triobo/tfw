@@ -167,6 +167,35 @@ var desktop={
       e.preventDefault();
       desktop.dialogMoveData={};
     }
+  },
+  ajaxIncludeParams:null,
+  ajaxOnErrorCode:null,
+  ajaxOnError:null,
+  ajaxGet:function(o) {
+    var httpRequest=new XMLHttpRequest();
+    httpRequest.onreadystatechange=function(e){
+      if (httpRequest.readyState===4) {  
+        desktop.done();    
+        if (httpRequest.status===200) {
+          pe=0;
+          if (desktop.ajaxOnErrorCode) {
+        	  var rt=httpRequest.responseText;
+        	  if (rt.substr(0,1)=="#") pe=1;
+          }
+          if (pe) desktop.ajaxOnErrorCode(rt);
+        	   else o.ondone(httpRequest);
+        } else if (desktop.ajaxOnError) desktop.ajaxOnError();  
+      }
+    }
+    
+    var ur=o.url;
+    if (desktop.ajaxIncludeParams) ur+="&"+desktop.ajaxIncludeParams();
+    console.info("Desktop ajaxGet "+ur);
+    httpRequest.open("GET", ur);
+    httpRequest.setRequestHeader("Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0");  
+    httpRequest.send();
+    if (o.autohide) desktop.working((o.autohide==2)?1:0);
+    return (httpRequest);
   }
 }
 
