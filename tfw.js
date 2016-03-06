@@ -9,18 +9,6 @@
  */
 var AJAX_LOADER="<div class='tfwDivContentLoader'><span></span></div>";
 
-/**
- * Fake data "from server", for testing.
- * @ignore
- */
-function ajaxGet(urlWithoutQueryString, urlParameters, callback, darken) {
-  var TFW_DYNAMICTABLE_EXAMPLE = '{"cols":[{"n":"Public","type":"checkbox","sort":true,"filter":true},{"n":"Date","w":"140px","type":"date","sort":true},{"n":"Title","type":"text","sort":true,"search":1},{"n":"Content","type":"text","search":2},{"n":"Number","type":"number","sort":true,"filter":true},{"n":"Image","h":1}],"rows":[{"id":"609","cols":[true,"2016-03-03 00:00:00","Dvě","Něco dalšího",42,""]},{"id":"608","cols":[false,"2015-02-02 00:00:00","Jedna","Něco",1,""]}]}';
-  function callCallback(){
-	  callback({"responseText":TFW_DYNAMICTABLE_EXAMPLE});
-  }
-  setTimeout(callCallback, 500);
-}
-
 function $(id) {
   var x=document.getElementById(id);
   return x;
@@ -1244,10 +1232,10 @@ var tfw={
 		 * @default null
 		 * @public
 		 * @property {Object[]} cols - list of columns
-		 * @property {string} cols[].n - HTML content (innerHTML)
+		 * @property {string} cols[].n - name (HTML)
 		 * @property {number} cols[].w - width
 		 * @property {boolean} cols[].h - hidden
-		 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "date"
+		 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "date", "order"
 		 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
 		 * @property {number} [cols[].search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
 		 * @property {boolean} [cols[].filter=false] - whether to allow filtering (depends on type)
@@ -1319,14 +1307,42 @@ var tfw={
 		  this.myDiv.innerHTML="";
 		  this.myDiv.add(o=tfw.table({className:'dynamicTable'}));
 		  
-		  o.add(r=document.createElement("colgroup"));
 		  for (var j=0;j<this.data.cols.length;j++) {
 			  if(this.data.cols[j].h){
 				  continue;
 			  }
-			  else {
+			  else{
 				  visibleColsCount++;
-				  r.add(document.createElement("col"));
+				  if(this.data.cols[j].type == "order"){
+					  this.data.cols[j].sort = true;
+					  o.addEventListener("click", function(event){
+						  var el = event.target;
+						  var col = el.getAttribute("data-sort-col");
+						  if(col && dynamicTable.data.cols[col].type == "order"){
+							  var tbody=this.closest("table").querySelector("tbody");
+							  if(tbody.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length > 0){
+								alert("You have to turn off all filters before changing order of rows.");
+							  }
+							  else{
+								  var rows = tbody.getElementsByTagName("tr");
+								  for(var i=0;i<rows.length;i++){
+									  rows[i].draggable=true;
+									  rows[i].ondragstart = function(event){
+										  event.dataTransfer.setData("text", event.target.id);
+									  };
+									  rows[i].ondragover = function(event){
+										  event.preventDefault();
+									  }
+									  rows[i].ondrop = function drop(event) {
+										  event.preventDefault();
+										  var data = event.dataTransfer.getData("text");
+										  event.target.closest("tbody").insertBefore(document.getElementById(data), event.target.closest("tr"));
+  									  }
+								  }
+							  }
+						  }
+					  });
+				  }
 			  }
 		  }
 		  
@@ -1433,6 +1449,7 @@ var tfw={
 			}
 			if (!("h" in this.data.cols[j])) r.add(c);
 		  }
+		  
 		  o.add(tbody=document.createElement("tbody"));
 		  for (var i=0;i<this.data.rows.length;i++) {
 			tbody.add(r=tfw.tr({id:this.data.rows[i].id}));
@@ -1471,6 +1488,7 @@ var tfw={
 			checkbox.setAttribute("data-filter-col", j);
 			tfootTd.add(checkbox);
 		  }
+		  tfootTd.add(tfw.button({innerHTML:"disable all filters",onclick:function(){dynamicTable.disableAllFilters(dynamicTable);}}));
 		},
 		/**
 		 * Apply sorting by values (text without HTML) of a column.
@@ -1503,7 +1521,7 @@ var tfw={
 		 * @memberof tfw.dynamicTable#
 		 * @param {number} column - order number of searched column
 		 * @param {string} value - searched string
-		 * @param {number} searchType - type of search
+		 * @param {number} [searchType=2] - type of search (1 = starts with, 2 = includes)
 		 */
 		filterSearch:function(column, value, searchType){
 			var tbody = this.myDiv.querySelector("tbody");
@@ -1518,7 +1536,7 @@ var tfw={
 		 * Requires .booleanFilterInvalid{display:none}
 		 * @memberof tfw.dynamicTable#
 		 * @param {number} column - order number of searched column
-		 * @param {string} value - searched string
+		 * @param {string} searchType - search type ("0" = both, "1" = only true, "2" = only false)
 		 */
 		filterBoolean:function(column, searchType){
 			var tbody = this.myDiv.querySelector("tbody");
@@ -1533,14 +1551,14 @@ var tfw={
 		 * Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
 		 * @memberof tfw.dynamicTable#
 		 * @param {number} column - order number of searched column
-		 * @param {number} compareValue - value to compare to
+		 * @param {string} compareValue - value to compare to (can be "")
 		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
 		 */
 		filterNumeric:function(column, compareValue, cmp){
 			var tbody = this.myDiv.querySelector("tbody");
 			for(var i=0;i<tbody.rows.length;i++){
 				var value = parseInt(tbody.rows[i].cells[column].querySelector("input").value);
-				var matches = (!value || (value-compareValue)*cmp >= 0);
+				var matches = (value==="" || (value-compareValue)*cmp >= 0);
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('numericFilterInvalid'+cmp);
 			}
 		},
@@ -1556,8 +1574,8 @@ var tfw={
 			for(var i=0;i<cells.length;i++){
 				cells[i].toggleClass("hideColumn");
 			}
-		},
-	  }  
+		}
+	  }
 	}
 }
 
