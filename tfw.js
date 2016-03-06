@@ -501,6 +501,7 @@ var tfw={
    * @param {string} [params.text] - checkbox label text
    * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
    * @return {Object} Created checkbox (HTML element)
+   * @todo Use "value" for real value, instead of using it for "checked"
    */
   checkbox:function(params){
 		var r;
@@ -1147,9 +1148,9 @@ var tfw={
 	 * @memberof tfw
 	 * @todo Use tfw.calendar
 	 * @todo Implement date filter (calendar range)
-	 * @todo View preferences (width, order and visibility of columns)
+	 * @todo View preferences (width?, order of columns)
 	 * @todo Allow editing of simple cells
-	 * @param {string} param table name (not used)
+	 * @param {string} param table name (not used yet)
 	 * @example
 	 * function myRowEditFunction(order){
 	 * 	// ...
@@ -1265,6 +1266,7 @@ var tfw={
 		 * @see tfw.dynamicTable#paint
 		 * @see tfw.decodeJSON
 		 * @memberof tfw.dynamicTable#
+		 * @todo Don't repaint table, just change values.
 		 */
 		reload:function(){
 		  that=this;
@@ -1284,22 +1286,36 @@ var tfw={
 		 * @todo Think about using different IDs for rows (e.g. add a prefix)
 		 */
 		paint:function(){
-		  var o,thead,tbody,r,c;
+		  var o,thead,tbody,r,c,visibleColsCount=0,dynamicTable=this;
 		  this.myDiv.innerHTML="";
-		  this.myDiv.add(o=tfw.table({}));
+		  this.myDiv.add(o=tfw.table({className:'dynamicTable'}));
+		  
+		  o.add(r=document.createElement("colgroup"));
+		  for (var j=0;j<this.data.cols.length;j++) {
+			  if(this.data.cols[j].h){
+				  continue;
+			  }
+			  else {
+				  visibleColsCount++;
+				  r.add(document.createElement("col"));
+			  }
+		  }
+		  
 		  o.add(thead=document.createElement("thead"));
 		  
 		  var anySearchAllowed = false;
 		  r=tfw.tr({className:'search'});
 		  for (var j=0;j<this.data.cols.length;j++) {
+			  if(this.data.cols[j].h){
+				  continue;
+			  }
 			  c=document.createElement("th");
 			  if(this.data.cols[j].search){
 				  var searchInput = tfw.input({type:"text",placeholder:"Search "+((this.data.cols[j].search==1)?"beginning with":"including")+"..."});
 				  searchInput.setAttribute("data-search-type", this.data.cols[j].search);
 				  searchInput.setAttribute("data-filter-col", j);
-				  var table = this;
 				  searchInput.onkeyup = function(){
-					  table.filterSearch(this.getAttribute("data-filter-col"),
+					  dynamicTable.filterSearch(this.getAttribute("data-filter-col"),
 								   this.value,
 								   this.getAttribute("data-search-type")
 								   );
@@ -1320,16 +1336,18 @@ var tfw={
 		  var anyFilterAllowed = false;
 		  r=tfw.tr({className:'filters'});
 		  for (var j=0;j<this.data.cols.length;j++) {
+			  if(this.data.cols[j].h){
+				  continue;
+			  }
 			  c=document.createElement("th");
 			  if(this.data.cols[j].filter){
 				  anyFilterAllowed = true;
-				  var table = this;
 				  if(this.data.cols[j].type == "checkbox"){
 					  var filter = tfw.select({
 							list:"Both;Yes;No",
 							value:0,
 							onchange:function(){
-								table.filterBoolean(this.getAttribute("data-filter-col"), this.value);
+								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
 							}
 						});
 					  filter.setAttribute("data-filter-col", j);
@@ -1346,9 +1364,8 @@ var tfw={
 							  maxV = this.data.rows[i].cols[j];
 						  }
 					  }
-					  var table = this;
-					  var f1 = tfw.input({type:"number",className:"rangeMin",onchange:function(){var max=this.closest("th").querySelector(".rangeMax");max.min = this.value;if(parseInt(max.value) < parseInt(max.min)){max.value=max.min;max.onchange();}table.filterNumeric(this.getAttribute("data-filter-col"),this.value,1);},min:minV,max:maxV,value:minV,legend:"From:"});
-					  var f2 = tfw.input({type:"number",className:"rangeMax",onchange:function(){var min=this.closest("th").querySelector(".rangeMin");min.max = this.value;if(parseInt(min.value) > parseInt(min.max)){min.value=min.max;min.onchange();}table.filterNumeric(this.getAttribute("data-filter-col"),this.value,-1);},min:minV,max:maxV,value:maxV,legend:"To:"});;
+					  var f1 = tfw.input({type:"number",className:"rangeMin",onchange:function(){var max=this.closest("th").querySelector(".rangeMax");max.min = this.value;if(parseInt(max.value) < parseInt(max.min)){max.value=max.min;max.onchange();}dynamicTable.filterNumeric(this.getAttribute("data-filter-col"),this.value,1);},min:minV,max:maxV,value:minV,legend:"From:"});
+					  var f2 = tfw.input({type:"number",className:"rangeMax",onchange:function(){var min=this.closest("th").querySelector(".rangeMin");min.max = this.value;if(parseInt(min.value) > parseInt(min.max)){min.value=min.max;min.onchange();}dynamicTable.filterNumeric(this.getAttribute("data-filter-col"),this.value,-1);},min:minV,max:maxV,value:maxV,legend:"To:"});;
 					  f1.querySelector(".rangeMin").setAttribute("data-filter-col", j);
 					  f2.querySelector(".rangeMax").setAttribute("data-filter-col", j);
 					  c.add(f1);
@@ -1389,11 +1406,10 @@ var tfw={
 		  }
 		  o.add(tbody=document.createElement("tbody"));
 		  for (var i=0;i<this.data.rows.length;i++) {
-			that=this;
 			tbody.add(r=tfw.tr({id:this.data.rows[i].id}));
 			if (this.rowEdit) {
 			  r.addEventListener("click", function(e){
-				that.rowEdit(e.currentTarget.value);
+				dynamicTable.rowEdit(e.currentTarget.value);
 			  });
 			  r.style.cursor="pointer";          
 			}
@@ -1415,6 +1431,17 @@ var tfw={
 			  r.add(c=tfw.td(params));
 			}
 		  }
+		  var tfoot, tfootTd;
+		  o.add(tfoot=document.createElement("tfoot"));
+		  tfoot.add(tfw.tr({children:[tfootTd=tfw.td({colspan:visibleColsCount})]}));
+		  for (var j=0;j<this.data.cols.length;j++) {
+			if(this.data.cols[j].h){
+				continue;
+			}
+			var checkbox = tfw.checkbox({text:this.data.cols[j].n,value:1,onchange:function(){dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));}});
+			checkbox.setAttribute("data-filter-col", j);
+			tfootTd.add(checkbox);
+		  }
 		},
 		/**
 		 * Apply sorting by values (text without HTML) of a column.
@@ -1427,7 +1454,11 @@ var tfw={
 			var tbody=this.closest("table").querySelector("tbody"), col=this.getAttribute("data-sort-col"), asc=(this.getAttribute("data-sort-order")=="asc" ? 1 : -1);
 			var rows = tbody.rows, rlen = rows.length, arr = new Array(), i;
 			for(i = 0; i < rlen; i++){
-				arr[i] = {id:rows[i].id,value:rows[i].cells[col].textContent};
+				var val = rows[i].cells[col].textContent;
+				if(!val){
+					val = rows[i].cells[col].querySelector("input, select").value;
+				}
+				arr[i] = {id:rows[i].id,value:val};
 			}
 			// sort the array by the specified column number (col) and order (asc)
 			arr.sort(function(a, b){
@@ -1483,7 +1514,20 @@ var tfw={
 				var matches = (!value || (value-compareValue)*cmp >= 0);
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('numericFilterInvalid'+cmp);
 			}
-		}
+		},
+		/**
+		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
+		 * Requires .hideColumn{display:none}
+		 * @memberof tfw.dynamicTable#
+		 * @param {number} column - order number of column
+		 * @todo Save user preferences (to localStorage/server)
+		 */
+		toggleColumn:function(column){
+			var cells = this.myDiv.querySelectorAll("tbody td:nth-child("+(parseInt(column)+1)+"), th:nth-child("+(parseInt(column)+1)+")");
+			for(var i=0;i<cells.length;i++){
+				cells[i].toggleClass("hideColumn");
+			}
+		},
 	  }  
 	}
 }

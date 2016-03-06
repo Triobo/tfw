@@ -41,6 +41,7 @@
             * [.filterSearch(column, value, searchType)](#tfw.dynamicTable+filterSearch)
             * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
             * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
+            * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
         * _inner_
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
             * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
@@ -69,7 +70,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 
 - [ ] Use tfw.calendar
 - [ ] Implement date filter (calendar range)
-- [ ] View preferences (width, order and visibility of columns)
+- [ ] View preferences (width?, order of columns)
 - [ ] Allow editing of simple cells
 
 
@@ -91,6 +92,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.filterSearch(column, value, searchType)](#tfw.dynamicTable+filterSearch)
         * [.filterBoolean(column, value)](#tfw.dynamicTable+filterBoolean)
         * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
+        * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
     * _inner_
         * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
         * [~ajaxGet](#tfw.dynamicTable..ajaxGet) ⇒ <code>Object</code>
@@ -103,7 +105,7 @@ Class for creating dynamic tables.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| param | <code>string</code> | table name (not used) |
+| param | <code>string</code> | table name (not used yet) |
 
 **Example**  
 ```js
@@ -193,6 +195,10 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 - tfw.dynamicTable#paint
 - tfw.decodeJSON
 
+**Todo**
+
+- [ ] Don't repaint table, just change values.
+
 <a name="tfw.dynamicTable+paint"></a>
 #### dynamicTable.paint()
 Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.
@@ -247,6 +253,20 @@ Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{d
 | column | <code>number</code> | order number of searched column |
 | compareValue | <code>number</code> | value to compare to |
 | cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
+
+<a name="tfw.dynamicTable+toggleColumn"></a>
+#### dynamicTable.toggleColumn(column)
+Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideColumn{display:none}
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Todo**
+
+- [ ] Save user preferences (to localStorage/server)
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| column | <code>number</code> | order number of column |
 
 <a name="tfw.dynamicTable..rowEdit"></a>
 #### dynamicTable~rowEdit : <code>function</code>
@@ -394,6 +414,10 @@ Create a checkbox with specified parameters.
 
 - tfw.fillElemDefs
 - tfw.inputFieldLegend
+
+**Todo**
+
+- [ ] Use "value" for real value, instead of using it for "checked"
 
 
 | Param | Type | Default | Description |

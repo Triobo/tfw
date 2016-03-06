@@ -417,6 +417,20 @@ button:disabled:hover {
 
 /*****************/
 
-.searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1{
+.searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn{
 	display:none;
+}
+
+table.dynamicTable{
+	table-layout: fixed;
+    word-wrap: break-word;
+    border-collapse: collapse;
+    border: 1px solid #bbb;
+}
+
+.dynamicTable th, .dynamicTable td {
+    border: 1px solid #666;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
