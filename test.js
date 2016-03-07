@@ -9,6 +9,13 @@ function init() {
   main.add(table.getTable());
   table.url = "t=test&a=load";
   table.reload();
+  
+  tfw.calendar.placeCalendar = function(cal, input){
+	input.parentNode.insertBefore(cal, input);
+  }
+  var input = tfw.input({value:"2016-03-07"});
+  main.appendChild(input);
+  tfw.calendar(input);
 }
 
 function testovaciDialog(){

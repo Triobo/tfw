@@ -54,7 +54,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
         * _inner_
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
     * [.calendar](#tfw.calendar)
-        * [new calendar()](#new_tfw.calendar_new)
+        * [new calendar(input)](#new_tfw.calendar_new)
         * _static_
             * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
             * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
@@ -315,7 +315,7 @@ Function that handles row editing.
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 
 * [.calendar](#tfw.calendar)
-    * [new calendar()](#new_tfw.calendar_new)
+    * [new calendar(input)](#new_tfw.calendar_new)
     * _static_
         * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
         * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
@@ -324,9 +324,18 @@ Function that handles row editing.
         * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
 
 <a name="new_tfw.calendar_new"></a>
-#### new calendar()
-Class for enhancing date input fields.
+#### new calendar(input)
+Class for enhancing date input fields. Requires CSS styling.
 
+
+| Param | Type | Description |
+| --- | --- | --- |
+| input | <code>Object</code> | input field to turn into calendar field (HTML element) |
+
+**Example**  
+```js
+tfw.calendar.placeCalendar = function(cal, input){ input.parentNode.insertBefore(cal, input);}var input = tfw.input({value:"2016-03-07"});document.body.appendChild(input);tfw.calendar(input);
+```
 <a name="tfw.calendar.months"></a>
 #### calendar.months : <code>Array.&lt;String&gt;</code>
 List of months' names.
@@ -335,7 +344,7 @@ List of months' names.
 **Default**: <code>[&quot;January&quot;,&quot;February&quot;,&quot;March&quot;,&quot;April&quot;,&quot;May&quot;,&quot;June&quot;,&quot;July&quot;,&quot;August&quot;,&quot;September&quot;,&quot;October&quot;,&quot;November&quot;,&quot;December&quot;]</code>  
 <a name="tfw.calendar.daysShort"></a>
 #### calendar.daysShort : <code>Array.&lt;String&gt;</code>
-List of days' names' first two letters (week beginning with Monday)
+List of days' names' first two letters (beginning with Monday)
 
 **Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
 **Default**: <code>[&quot;Mo&quot;,&quot;Tu&quot;,&quot;We&quot;,&quot;Th&quot;,&quot;Fr&quot;,&quot;Sa&quot;,&quot;Su&quot;]</code>  

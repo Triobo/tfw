@@ -434,3 +434,86 @@ table.dynamicTable{
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+/*********************/
+
+.calendarWidget {
+  width:188px;
+  height:164px;
+  overflow:hidden;
+  border:1px solid #bbb;
+  background: #eee;
+  border-radius:3px;
+  z-index:1;
+  font-family:PTSans,Helvetica,Arial,sans;
+}
+
+.calendarWidget p.dayNames {
+  font-size:11px;
+}
+
+.calendarWidget div.head {
+  padding:4px 2px 2px;
+  background-color: #ddd;/*silver*/
+  text-align:center;
+  border-top-left-radius:4px;
+  border-top-right-radius:4px;
+}
+
+.calendarBackButton {
+  float:left;
+  cursor:pointer;
+  width:20px;
+  background:url("https://editor.triobo.com/v351/pics/sipkaVlevo.png") 2px 2px;  
+}
+
+.calendarForwardButton {
+  float:right;
+  cursor:pointer;
+  width:20px;
+  background:url("https://editor.triobo.com/v351/pics/sipkaVpravo.png") 2px 2px;
+}
+
+.calendarWidget p {
+  margin:0px;
+}
+
+.calendarWidget p span {
+  display:inline-block;
+  width:22px;
+  border-bottom:1px solid #bbb;
+  border-right:1px solid #bbb;
+  text-align:right;
+  padding:2px 2px 0px;
+}
+
+.calendarWidget p.week span.day {
+  cursor:pointer;
+}
+
+.calendarWidget p.week span.day:hover {
+  background-color: #8cc;/*azure*/
+  color:black;
+}
+
+.calendarWidget p span.sunday {
+  border-right:none;
+  color:red;
+}
+
+.calendarWidget p span.current {
+  background-color: #fc5;/*orange*/
+  color:black;
+}
+
+.calendarInput {
+  height:18px;
+  background:#8cc url("https://editor.triobo.com/v351/pics/calendar.png") 1px 1px no-repeat;
+  margin:0px;
+  border-radius:3px;
+  cursor:pointer;
+}
+
+.calendarInput:hover {
+  background-color:#fc5;
+}

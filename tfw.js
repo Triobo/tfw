@@ -1587,11 +1587,153 @@ var tfw={
 	};
   },
   /**
-   * Class for enhancing date input fields.
+   * Class for enhancing date input fields. Requires CSS styling.
    * @class
+   * @example
+   * tfw.calendar.placeCalendar = function(cal, input){
+   *  input.parentNode.insertBefore(cal, input);
+   * }
+   * 
+   * var input = tfw.input({value:"2016-03-07"});
+   * document.body.appendChild(input);
+   *
+   * tfw.calendar(input);
+   * @param {Object} input - input field to turn into calendar field (HTML element)
    */
-  calendar:function(){
+  calendar:function(input){
+	var self = this;
+	var calendarInput = input;
+	input.addClass("calendarInput");
+	input._calendar = this;
 	
+	var calendarContainer = document.createElement("div");
+	calendarContainer.addClass("calendarWidget");
+	
+	var selectedYear;
+	/**
+	 * Month number, 1-12
+	 * @private
+	 */
+	var selectedMonth;
+	/**
+	 * Day number, 1-31 (or 0 for undefined)
+	 * @private
+	 */
+	var selectedDay;
+	
+	var setSelectedDate = function(year, month, day){
+		selectedYear = parseInt(year);
+		selectedMonth = parseInt(month);
+		selectedDay = parseInt(day);
+	}
+	
+	if(tfw.calendar.placeCalendar != null){
+		tfw.calendar.placeCalendar(calendarContainer, input);
+	}
+	else {
+		console.error("Calendar widget was not added to the document - no callback was set.");
+	}
+	
+	function paint(){
+		var d=new Date(selectedYear,selectedMonth-1,1);
+		var w=d.getDay(); /* which day of week is the first one of a month */
+		w=(w+6)%7 /* so that Monday is first */
+		var sp=0;
+
+		calendarContainer.innerHTML="";
+		var header=document.createElement("div");
+		header.setAttribute("class","head");
+		//header.innerHTML=t(70+selectedMonth)+" "+selectedYear;
+		header.innerHTML=tfw.calendar.months[selectedMonth-1]+" "+selectedYear;
+		calendarContainer.add(header);
+
+		var backButton=document.createElement("div");
+		backButton.addClass("calendarBackButton");
+		backButton.innerHTML="&nbsp;";
+		backButton.addEventListener("mousedown",backward,true);
+		header.add(backButton);
+
+		var forwardButton=document.createElement("div");
+		forwardButton.addClass("calendarForwardButton");
+		forwardButton.innerHTML="&nbsp;";
+		forwardButton.addEventListener("mousedown",forward,true);
+		header.add(forwardButton);
+		
+		var day;
+
+		var dayNames=document.createElement("p");
+		dayNames.setAttribute("class","dayNames");
+		for (i=0;i<7;i++) {
+			day=document.createElement("span");
+			day.innerHTML=tfw.calendar.daysShort[i];
+			if (i%7==6){
+				day.setAttribute("class","sunday");
+			}
+			dayNames.add(day);
+		}
+		calendarContainer.add(dayNames);
+
+		var week=document.createElement("p");
+		week.setAttribute("class","week");
+		for (i=0;i<w;i++) {
+			day=document.createElement("span");
+			day.innerHTML="&nbsp;";
+			week.add(day);
+			sp++;
+		}
+		var pdm=new Date(selectedYear,selectedMonth,0).getDate();
+		for (i=1;i<=pdm;i++) {
+			day=document.createElement("span");
+			day.setAttribute("id","day-"+selectedYear+"-"+(selectedMonth<10?"0"+selectedMonth:selectedMonth)+"-"+(i<10?"0"+i:i));
+			day.setAttribute("class","day"+(sp%7==6?" sunday":"")+(i==selectedDay?" current":""));
+			day.innerHTML=i;
+			day.addEventListener("mousedown",clicked,true);
+			week.add(day);
+			sp++;
+			if ((sp==7) && (i<pdm)) {
+				sp=0;
+				calendarContainer.add(week);
+				week=document.createElement("p");
+				week.setAttribute("class","week");
+			}
+		}
+		for (i=sp;i<7;i++) {
+			day=document.createElement("span");
+			if (i%7==6) day.setAttribute("class","sunday");
+			day.innerHTML="&nbsp;";
+			week.add(day);
+		}
+		calendarContainer.add(week);
+	}
+	
+	input.addEventListener("click", function(event){
+		var selectedDate = this.value.split("-");
+		setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
+		paint();
+	});
+	
+	function backward(event){
+		event.stopPropagation();
+		event.preventDefault();
+		setSelectedDate(selectedYear-(selectedMonth==1?1:0), selectedMonth==1?12:selectedMonth-1, 0);
+		paint();
+	}
+	
+	function forward(event){
+		event.stopPropagation();
+		event.preventDefault();
+		setSelectedDate(selectedYear+(selectedMonth==12?1:0), selectedMonth==12?1:selectedMonth+1, 0);
+		paint();
+	}
+	
+	function clicked(event){
+		input.value = this.id.substr(4);
+		var current = calendarContainer.querySelector(".current");
+		if(current){
+			current.toggleClass("current");
+		}
+		this.addClass("current");
+	}
   }
 }
 
@@ -1602,7 +1744,7 @@ var tfw={
  */
 tfw.calendar.months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 /**
- * List of days' names' first two letters (week beginning with Monday)
+ * List of days' names' first two letters (beginning with Monday)
  * @var {String[]}
  * @default
  */
