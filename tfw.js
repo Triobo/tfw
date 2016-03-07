@@ -1315,7 +1315,7 @@ var tfw={
 		 */
 		reload:function(){
 		  that=this;
-		  desktop.ajaxGet({url:"https://test.triobo.com/v36/data-test.php?"+this.url, ondone:function(hr){
+		  tfw.ajaxGet({url:"https://editor.triobo.com/v36/dynamicTable.php?"+this.url, ondone:function(hr){
 			that.data=tfw.decodeJSON(hr.responseText);
 			that.paint();
 			}, autohide: 0});
