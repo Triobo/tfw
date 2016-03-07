@@ -926,7 +926,7 @@ var tfw={
   ajaxOnError:null,
   /**
    * Get data from server via AJAX.
-   * @memberof desktop
+   * @memberof tfw
    * @param {Object} o - parameters object
    * @param {string} o.url - URL of server script with data
    * @param {function} o.ondone - function to call when request has successfully completed
