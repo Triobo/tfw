@@ -85,8 +85,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 - [ ] View preferences (width?, order of columns)
 - [ ] Allow editing of simple cells
 - [ ] Implement server parameter t - name of table
-- [ ] Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell), watch (long polling), delete (row)
-- [ ] Implement "child" tables (e.g. link from list of releases to list of articles in a release)
+- [ ] Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
+- [ ] Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 
 
 * [.dynamicTable](#tfw.dynamicTable)
@@ -208,6 +208,10 @@ Create a dynamic table.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Returns**: <code>Object</code> - Returns the value of [myDiv()](#tfw.dynamicTable+myDiv) - a "loading" DIV (with content defined by [AJAX_LOADER](#AJAX_LOADER)).  
+**Todo**
+
+- [ ] Don't do this, bind everything to table/container HTML element
+
 <a name="tfw.dynamicTable+reload"></a>
 #### dynamicTable.reload()
 Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTable+paint) the table.
@@ -230,8 +234,9 @@ Refresh the content of the table using data gotten by (re)loading.Empties the t
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Todo**
 
-- [ ] Localize
+- [ ] Enable localization
 - [ ] Think about using different IDs for rows (e.g. add a prefix)
+- [ ] Change drag&dropping so that it is clear where the dragged row will end
 
 <a name="tfw.dynamicTable+sort"></a>
 #### dynamicTable.sort(event)

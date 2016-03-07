@@ -1200,8 +1200,8 @@ var tfw={
 	 * @todo View preferences (width?, order of columns)
 	 * @todo Allow editing of simple cells
 	 * @todo Implement server parameter t - name of table
-	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell), watch (long polling), delete (row)
-	 * @todo Implement "child" tables (e.g. link from list of releases to list of articles in a release)
+	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
+	 * @todo Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 	 * @param {string} param table name (not used yet)
 	 * @example
 	 * function myRowEditFunction(order){
@@ -1299,6 +1299,7 @@ var tfw={
 		 * Create a dynamic table.
 		 * @memberof tfw.dynamicTable#
 		 * @returns {Object} Returns the value of {@link tfw.dynamicTable#myDiv|myDiv()} - a "loading" DIV (with content defined by {@link AJAX_LOADER}).
+		 * @todo Don't do this, bind everything to table/container HTML element
 		 */
 		create:function(){
 		  this.myDiv=tfw.div({innerHTML:AJAX_LOADER});
@@ -1327,8 +1328,9 @@ var tfw={
 		 * @listens onclick
 		 * @listens onkeyup
 		 * @memberof tfw.dynamicTable#
-		 * @todo Localize
+		 * @todo Enable localization
 		 * @todo Think about using different IDs for rows (e.g. add a prefix)
+		 * @todo Change drag&dropping so that it is clear where the dragged row will end
 		 */
 		paint:function(){
 		  var o,thead,tbody,r,c,visibleColsCount=0,dynamicTable=this;
