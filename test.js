@@ -4,9 +4,10 @@ function init() {
   desktop.layers[desktop.activeLayer].add(main=tfw.div({}));
   main.add(tfw.par({text:"Testovací stránka"}));
   main.add(tfw.button({text:"Otevři dialog",action:testovaciDialog}));
-  var table = tfw.dynamicTable();
+  
+  var table = new tfw.dynamicTable({id:"table1"});
+  main.add(table.getTable());
   table.url = "t=test&a=load";
-  main.add(table.create());
   table.reload();
 }
 

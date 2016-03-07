@@ -33,9 +33,9 @@ Triobo. This is a singleton (a single "instance" of a "class").
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
     * [.dynamicTable](#tfw.dynamicTable)
-        * [new dynamicTable(param)](#new_tfw.dynamicTable_new)
+        * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
         * _instance_
-            * [.myDiv](#tfw.dynamicTable+myDiv) : <code>Object</code>
+            * [.tableContainer](#tfw.dynamicTable+tableContainer) : <code>Object</code>
             * [.url](#tfw.dynamicTable+url) : <code>string</code>
             * [.data](#tfw.dynamicTable+data) : <code>Object</code>
             * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
@@ -43,7 +43,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.descSortingSymbol](#tfw.dynamicTable+descSortingSymbol) : <code>string</code>
             * [.labelTrue](#tfw.dynamicTable+labelTrue) : <code>string</code>
             * [.labelFalse](#tfw.dynamicTable+labelFalse) : <code>string</code>
-            * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
+            * [.getTable()](#tfw.dynamicTable+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTable+reload)
             * [.paint()](#tfw.dynamicTable+paint)
             * [.sort(event)](#tfw.dynamicTable+sort)
@@ -86,6 +86,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 <a name="tfw.dynamicTable"></a>
 ### tfw.dynamicTable
 **Kind**: static class of <code>[tfw](#tfw)</code>  
+**See**: AJAX_LOADER  
 **Todo**
 
 - [ ] Use tfw.calendar
@@ -98,9 +99,9 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 
 
 * [.dynamicTable](#tfw.dynamicTable)
-    * [new dynamicTable(param)](#new_tfw.dynamicTable_new)
+    * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
     * _instance_
-        * [.myDiv](#tfw.dynamicTable+myDiv) : <code>Object</code>
+        * [.tableContainer](#tfw.dynamicTable+tableContainer) : <code>Object</code>
         * [.url](#tfw.dynamicTable+url) : <code>string</code>
         * [.data](#tfw.dynamicTable+data) : <code>Object</code>
         * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
@@ -108,7 +109,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.descSortingSymbol](#tfw.dynamicTable+descSortingSymbol) : <code>string</code>
         * [.labelTrue](#tfw.dynamicTable+labelTrue) : <code>string</code>
         * [.labelFalse](#tfw.dynamicTable+labelFalse) : <code>string</code>
-        * [.create()](#tfw.dynamicTable+create) ⇒ <code>Object</code>
+        * [.getTable()](#tfw.dynamicTable+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTable+reload)
         * [.paint()](#tfw.dynamicTable+paint)
         * [.sort(event)](#tfw.dynamicTable+sort)
@@ -120,32 +121,30 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
 
 <a name="new_tfw.dynamicTable_new"></a>
-#### new dynamicTable(param)
+#### new dynamicTable(params)
 Class for creating dynamic tables.
 
-**Returns**: <code>Object</code> - Returns an object instance.  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| param | <code>string</code> | table name (not used yet) |
+| params | <code>Object</code> | table parameters |
+| [params.id] | <code>string</code> | table ID (name) |
 
 **Example**  
 ```js
-function myRowEditFunction(order){	// ...}var table = tfw.dynamicTable();document.body.appendChild(table.create());table.url = "action=download&id=8"; //optionaltable.rowEdit = myRowEditFunction; //optionaltable.reload();
+function myRowEditFunction(order){	// ...}var table = new tfw.dynamicTable({id:"table1"});document.body.appendChild(table.getTable());table.url = "action=download&id=8"; //optionaltable.rowEdit = myRowEditFunction; //optionaltable.reload();
 ```
-<a name="tfw.dynamicTable+myDiv"></a>
-#### dynamicTable.myDiv : <code>Object</code>
+<a name="tfw.dynamicTable+tableContainer"></a>
+#### dynamicTable.tableContainer : <code>Object</code>
 DIV containing the table.
 
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Default**: <code>null</code>  
 **Read only**: true  
 <a name="tfw.dynamicTable+url"></a>
 #### dynamicTable.url : <code>string</code>
 URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling [reload()](#tfw.dynamicTable+reload).
 
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Default**: <code>&quot;null&quot;</code>  
 **Access:** public  
 <a name="tfw.dynamicTable+data"></a>
 #### dynamicTable.data : <code>Object</code>
@@ -154,6 +153,7 @@ Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called
 **Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Default**: <code>null</code>  
 **Access:** public  
+**Read only**: true  
 **Todo**
 
 - [ ] Rename "n" to "name", "w" to "width", "h" to "hidden"
@@ -183,7 +183,6 @@ Function that is fired when row editing is triggered.
 **Access:** public  
 **Todo**
 
-- [ ] Generate automatically or ...
 - [ ] Don't bind to onclick of TRs, show an edit ([i]) icon after each row (if set)
 
 <a name="tfw.dynamicTable+ascSortingSymbol"></a>
@@ -210,16 +209,12 @@ Default label for false.
 
 **Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Default**: <code>&quot;No&quot;</code>  
-<a name="tfw.dynamicTable+create"></a>
-#### dynamicTable.create() ⇒ <code>Object</code>
-Create a dynamic table.
+<a name="tfw.dynamicTable+getTable"></a>
+#### dynamicTable.getTable() ⇒ <code>Object</code>
+Get table container (for inserting into document).
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Returns**: <code>Object</code> - Returns the value of [myDiv()](#tfw.dynamicTable+myDiv) - a "loading" DIV (with content defined by [AJAX_LOADER](#AJAX_LOADER)).  
-**Todo**
-
-- [ ] Don't do this, bind everything to table/container HTML element
-
+**Returns**: <code>Object</code> - Returns the table container (HTML element).  
 <a name="tfw.dynamicTable+reload"></a>
 #### dynamicTable.reload()
 Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTable+paint) the table.
