@@ -53,6 +53,14 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
         * _inner_
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
+    * [.calendar](#tfw.calendar)
+        * [new calendar()](#new_tfw.calendar_new)
+        * _static_
+            * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
+            * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
+            * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+        * _inner_
+            * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
     * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
     * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
     * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
@@ -306,6 +314,52 @@ Function that handles row editing.
 | Param | Type | Description |
 | --- | --- | --- |
 | order | <code>number</code> | order of the row being edited |
+
+<a name="tfw.calendar"></a>
+### tfw.calendar
+**Kind**: static class of <code>[tfw](#tfw)</code>  
+
+* [.calendar](#tfw.calendar)
+    * [new calendar()](#new_tfw.calendar_new)
+    * _static_
+        * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
+        * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
+        * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+    * _inner_
+        * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
+
+<a name="new_tfw.calendar_new"></a>
+#### new calendar()
+Class for enhancing date input fields.
+
+<a name="tfw.calendar.months"></a>
+#### calendar.months : <code>Array.&lt;String&gt;</code>
+List of months' names.
+
+**Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
+**Default**: <code>[&quot;January&quot;,&quot;February&quot;,&quot;March&quot;,&quot;April&quot;,&quot;May&quot;,&quot;June&quot;,&quot;July&quot;,&quot;August&quot;,&quot;September&quot;,&quot;October&quot;,&quot;November&quot;,&quot;December&quot;]</code>  
+<a name="tfw.calendar.daysShort"></a>
+#### calendar.daysShort : <code>Array.&lt;String&gt;</code>
+List of days' names' first two letters (week beginning with Monday)
+
+**Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
+**Default**: <code>[&quot;Mo&quot;,&quot;Tu&quot;,&quot;We&quot;,&quot;Th&quot;,&quot;Fr&quot;,&quot;Sa&quot;,&quot;Su&quot;]</code>  
+<a name="tfw.calendar.placeCalendar"></a>
+#### calendar.placeCalendar : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+Function called when a calendar widget is created.
+
+**Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
+**Default**: <code></code>  
+<a name="tfw.calendar..placeCalendar"></a>
+#### calendar~placeCalendar : <code>function</code>
+Callback function that puts calendar widget for an input field into page.Most likely create an overlay that closes calendar when user clicks somewhere else.
+
+**Kind**: inner typedef of <code>[calendar](#tfw.calendar)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| calendar | <code>Object</code> | calendar widget (HTML element) |
+| input | <code>Object</code> | related input field (HTML element) |
 
 <a name="tfw.ajaxIncludeParams"></a>
 ### tfw.ajaxIncludeParams : <code>function</code>

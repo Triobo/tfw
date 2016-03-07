@@ -1606,8 +1606,42 @@ var tfw={
 			}
 		}
 	  }
+	},
+	/**
+	 * Class for enhancing date input fields.
+	 * @class
+	 */
+	calendar:function(){
+		
 	}
 }
+
+/**
+ * List of months' names.
+ * @var {String[]}
+ * @default
+ */
+tfw.calendar.months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+/**
+ * List of days' names' first two letters (week beginning with Monday)
+ * @var {String[]}
+ * @default
+ */
+tfw.calendar.daysShort = ["Mo","Tu","We","Th","Fr","Sa","Su"];
+/**
+ * Callback function that puts calendar widget for an input field into page.
+ * Most likely create an overlay that closes calendar when user clicks somewhere else.
+ * @callback tfw.calendar~placeCalendar
+ * @param {Object} calendar - calendar widget (HTML element)
+ * @param {Object} input - related input field (HTML element)
+ * @default
+ */
+/**
+ * Function called when a calendar widget is created.
+ * @var {tfw.calendar~placeCalendar}
+ * @default
+ */
+tfw.calendar.placeCalendar = null;
 
 /**
  * Function package for preparing HTML elements.
