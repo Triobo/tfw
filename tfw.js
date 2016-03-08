@@ -929,7 +929,7 @@ var tfw={
    * @memberof desktop
    * @param {Object} o - parameters object
    * @param {string} o.url - URL of server script with data
-   * @param {function} o.ondone - function to call when request has successfully completed
+   * @param {function} o.onload - function to call when request has successfully completed
    * @param {number} [o.autohide=0] - whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately)
    * @return {Object} - Returns XMLHttpRequest object
    * @see tfw.ajaxIncludeParams
@@ -948,7 +948,7 @@ var tfw={
         	  if (rt.substr(0,1)=="#") pe=1;
           }
           if (pe) tfw.ajaxOnErrorCode(rt);
-        	   else o.ondone(httpRequest);
+        	   else o.onload(httpRequest);
         } else if (tfw.ajaxOnError) tfw.ajaxOnError();  
       }
     }
@@ -961,6 +961,19 @@ var tfw={
     httpRequest.send();
     if (o.autohide) desktop.working((o.autohide==2)?1:0);
     return (httpRequest);
+  },
+  /**
+   * Encode all items as URL.
+   * @memberof tfw
+   * @param {array} fields - items to be encoded {key1:id1,key2:id2,...}
+   * @return {string} String, that can be used to call server via ajax 
+   */
+   encodeFormValues:function(fields){
+    var x=[];
+    for (var key in fields) if (fields.hasOwnProperty(key)) {
+      x.push(key+"="+encodeURIComponent($(fields[key]).value));
+    }
+    return x.join("&");
   },
   /**
    * Decode JSON data, show error in case they are invalid.
@@ -1315,7 +1328,7 @@ var tfw={
 		 */
 		reload:function(){
 		  that=this;
-		  tfw.ajaxGet({url:"https://editor.triobo.com/v36/dynamicTable.php?"+this.url, ondone:function(hr){
+		  tfw.ajaxGet({url:"https://editor.triobo.com/v36/dynamicTable.php?"+this.url, onload:function(hr){
 			that.data=tfw.decodeJSON(hr.responseText);
 			that.paint();
 			}, autohide: 0});
