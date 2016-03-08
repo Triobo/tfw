@@ -965,7 +965,7 @@ var tfw={
   /**
    * Encode all items as URL.
    * @memberof tfw
-   * @param {array} fields - items to be encoded {key1:id1,key2:id2,...}
+   * @param {Object} fields - items to be encoded {key1:id1,key2:id2,...}
    * @return {string} String, that can be used to call server via ajax 
    */
    encodeFormValues:function(fields){
@@ -1272,9 +1272,9 @@ var tfw={
 	 * @public
 	 * @readonly
 	 * @property {Object[]} cols - list of columns
-	 * @property {string} cols[].n - name (HTML)
-	 * @property {number} cols[].w - width
-	 * @property {boolean} cols[].h - hidden
+	 * @property {string} cols[].name - name (HTML)
+	 * @property {number} cols[].width - width
+	 * @property {boolean} cols[].hidden - hidden
 	 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "checkbox", "date", "order"
 	 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
 	 * @property {number} [cols[].search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
@@ -1282,7 +1282,6 @@ var tfw={
 	 * @property {Object[]} rows - list of rows
 	 * @property {number} rows[].id - row ID
 	 * @property {string[]} rows[].cols - contents for each column (HTML)
-	 * @todo Rename "n" to "name", "w" to "width", "h" to "hidden"
 	 */
 	this.data = null;
 	/**
@@ -1315,7 +1314,7 @@ var tfw={
 	 */
 	this.reload = function(){
 	  that=this;
-	  tfw.ajaxGet({url:"https://editor.triobo.com/v36/dynamicTable.php?"+this.url, ondone:function(hr){
+	  tfw.ajaxGet({url:"https://editor.triobo.com/v36/dynamicTable.php?"+this.url, onload:function(hr){
 		that.data=tfw.decodeJSON(hr.responseText);
 		that.paint();
 		}, autohide: 0});
@@ -1336,7 +1335,7 @@ var tfw={
 	  this.tableContainer.add(o=tfw.table({className:'dynamicTable'}));
 	  
 	  for (var j=0;j<this.data.cols.length;j++) {
-		  if(this.data.cols[j].h){
+		  if(this.data.cols[j].hidden){
 			  continue;
 		  }
 		  else{
@@ -1379,7 +1378,7 @@ var tfw={
 	  var anySearchAllowed = false;
 	  r=tfw.tr({className:'search'});
 	  for (var j=0;j<this.data.cols.length;j++) {
-		  if(this.data.cols[j].h){
+		  if(this.data.cols[j].hidden){
 			  continue;
 		  }
 		  c=document.createElement("th");
@@ -1409,7 +1408,7 @@ var tfw={
 	  var anyFilterAllowed = false;
 	  r=tfw.tr({className:'filters'});
 	  for (var j=0;j<this.data.cols.length;j++) {
-		  if(this.data.cols[j].h){
+		  if(this.data.cols[j].hidden){
 			  continue;
 		  }
 		  c=document.createElement("th");
@@ -1462,8 +1461,8 @@ var tfw={
 	  thead.add(r=tfw.tr({}));
 	  for (var j=0;j<this.data.cols.length;j++) {
 		c=document.createElement("th");
-		c.innerHTML=this.data.cols[j].n;
-		if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
+		c.innerHTML=this.data.cols[j].name;
+		if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].width;
 		if("sort" in this.data.cols[j] && this.data.cols[j]){
 			var b1 = tfw.button({className:'tfwDtSort',innerHTML:this.descSortingSymbol}), b2 = tfw.button({className:'tfwDtSort',innerHTML:this.ascSortingSymbol});
 			b1.setAttribute('data-sort-order', 'desc');
@@ -1509,10 +1508,10 @@ var tfw={
 	  o.add(tfoot=document.createElement("tfoot"));
 	  tfoot.add(tfw.tr({children:[tfootTd=tfw.td({colspan:visibleColsCount})]}));
 	  for (var j=0;j<this.data.cols.length;j++) {
-		if(this.data.cols[j].h){
+		if(this.data.cols[j].hidden){
 			continue;
 		}
-		var checkbox = tfw.checkbox({text:this.data.cols[j].n,value:1,onchange:function(){dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));}});
+		var checkbox = tfw.checkbox({text:this.data.cols[j].name,value:1,onchange:function(){dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));}});
 		checkbox.setAttribute("data-filter-col", j);
 		tfootTd.add(checkbox);
 	  }
