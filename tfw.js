@@ -270,12 +270,12 @@ var tfw={
    */
   select:function(params){
     var element=document.createElement("div");
-	params.className = "tfwSelect " + (("className" in params) ? params.className : "");
+    params.className = "tfwSelect " + (("className" in params) ? params.className : "");
     element.multiple = ("multiple" in params && params.multiple);
-	if(!"value" in params){
-		params.value = "0";
-	}
-	this.fillElemDefs(element, params);
+  	if(!"value" in params){
+  		params.value = "0";
+  	}
+    this.fillElemDefs(element, params);
     element.clickOnItem=function(e){
       e.stopPropagation();
       e.preventDefault();
@@ -287,13 +287,14 @@ var tfw={
       }
       var m=[];
       for (var i=0;i<element.childNodes.length;i++){
-		  if (element.childNodes[i].hasClass("selected")){
-			  m.push(element.childNodes[i].value);
-		  }
-	  }
+  		  if (element.childNodes[i].hasClass("selected")){
+  			  m.push(element.childNodes[i].value);
+  		  }
+  	  }
       element.value=m.join(",");
       if (element.onchange) element.onchange();
     }
+    if (!element.value) element.value=0;
     var m=element.value.toString().split(",");
     if (typeof params.list==="string") {
       szn=params.list.split(";");
