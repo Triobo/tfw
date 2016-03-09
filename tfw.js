@@ -845,8 +845,8 @@ var tfw={
     x.remove=function(){
       
     }
-    x.prekresli();    
-    return x;    
+    x.prekresli();
+	  return (x.legend) ? (this.inputFieldLegend(x, n)) : x;
   },
   dialog:function(co){
     var b,c;
@@ -1794,16 +1794,17 @@ var prvek={
     x.className=c;
     if (co.style)  x.style.cssText=co.style;
     if (co.onchange) x.onchange=co.onchange;
-    if (co.seznam) for(var i=0;i<co.seznam.length;i++) {
-      x.add(z=tfw.checkbox({id:co.id+"-"+co.seznam[i].id,text:co.seznam[i].text}));
-      z.onChange=function(){
+    if (co.seznam) for(var i=0;i<co.seznam.length;i++) x.add(tfw.checkbox({
+      id:co.id+"-"+co.seznam[i].id,
+      text:co.seznam[i].text, 
+      onchange:function(){
         var y=[];
         var s=this.parentNode;
         for (var i=0;i<s.childNodes.length;i++) if (s.childNodes[i].value) y.push(s.childNodes[i].id.split("-")[1]);
         s._value=y.join(",");
         if (x.onchange) x.onchange();
       }
-    }
+    }));
     Object.defineProperty(x, "value", {
       set:function(val){
         y=[];
