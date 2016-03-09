@@ -742,8 +742,8 @@ var tfw={
     var x=document.createElement("div");
     if (n.id)    x.id=n.id;
       else x.id="filebox";
-    if (n.className) n.className="filebox "+n.className;
-      else n.className="filebox";
+    if (n.className) n.className="tfwFilebox "+n.className;
+      else n.className="tfwFilebox";
     x.className=n.className;
     if (n.style)  x.style.cssText=n.style;
     if (n.text)  x.text=n.text;
@@ -846,7 +846,7 @@ var tfw={
       
     }
     x.prekresli();
-	  return (x.legend) ? (this.inputFieldLegend(x, n)) : x;
+	  return (n.legend) ? (this.inputFieldLegend(x, n)) : x;
   },
   dialog:function(co){
     var b,c;

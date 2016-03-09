@@ -11,7 +11,7 @@ input {
   height:21px;
   border-radius:3px;
   border:1px solid #bbb; 
-  margin:0px 4px 1px;
+  margin:0px 2px 1px;
   padding:0px 2px;
   vertical-align: baseline;
   font-size:15px;
@@ -29,6 +29,18 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus, button:f
   border:1px solid #8cc;/*azure*/
   box-shadow: 0 0 4px #8cc;/*azure*/
   outline: 0;
+}
+textarea {
+  border-radius:3px;
+  border:1px solid #bbb; 
+  margin:0px 2px 1px;
+  padding:0px 2px;
+  vertical-align: baseline;
+  font-size:15px;
+  background:#fff;
+  color:#000;
+  font-family:inherit;
+  box-sizing: border-box;  
 }
 button {
   display:inline-block;
@@ -233,6 +245,7 @@ button:disabled:hover {
 
 .tfwContainer span {
   display:inline-block;
+  vertical-align:top;
 }
 
 /* block */
@@ -378,6 +391,55 @@ button:disabled:hover {
 
 .tfwSlider span {
   display:inline-block;
+}
+
+/* tfwFilebox */
+.tfwFilebox {
+  box-sizing: border-box;
+  position:relative;
+  display:inline-block;
+  width:100px;
+  height:20px;
+  border:1px solid #bbb;
+  margin:0 2px 1px;
+  border-radius:3px;
+  color:#000;
+  background:white;
+  cursor:pointer;
+  text-align: center;
+}
+
+.tfwFilebox .content {
+  display:table-cell;
+  vertical-align: middle;
+  overflow: hidden;
+  position:relative;
+}
+
+.tfwFilebox .butRemove {
+  display:none;
+  position:absolute;
+  right:8px;
+  top:8px;
+  background-color: #d00;
+  color:white;
+}
+
+.tfwFilebox:hover .butRemove {
+  display:block;
+}
+
+.tfwFilebox.empty {
+  color:#bbb;
+  background:transparent;
+}
+
+.tfwFilebox .content img {
+  width:100%;
+  height:100%;  
+}
+.tfwFilebox .content p {
+  height:40px;
 }
 
 /* layout formating */
