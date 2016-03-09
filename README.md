@@ -77,6 +77,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
     * [.td(params)](#tfw.td) ⇒ <code>Object</code>
     * [.slider(params)](#tfw.slider) ⇒ <code>Object</code>
     * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>Object</code>
+    * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
     * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
 
 <a name="new_tfw_new"></a>
@@ -154,18 +155,14 @@ Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called
 **Default**: <code>null</code>  
 **Access:** public  
 **Read only**: true  
-**Todo**
-
-- [ ] Rename "n" to "name", "w" to "width", "h" to "hidden"
-
 **Properties**
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | cols | <code>Array.&lt;Object&gt;</code> |  | list of columns |
-| cols[].n | <code>string</code> |  | name (HTML) |
-| cols[].w | <code>number</code> |  | width |
-| cols[].h | <code>boolean</code> |  | hidden |
+| cols[].name | <code>string</code> |  | name (HTML) |
+| cols[].width | <code>number</code> |  | width |
+| cols[].hidden | <code>boolean</code> |  | hidden |
 | cols[].type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "checkbox", "date", "order" |
 | cols[].sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
 | cols[].search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
@@ -611,8 +608,19 @@ Get data from server via AJAX.
 | --- | --- | --- | --- |
 | o | <code>Object</code> |  | parameters object |
 | o.url | <code>string</code> |  | URL of server script with data |
-| o.ondone | <code>function</code> |  | function to call when request has successfully completed |
+| o.onload | <code>function</code> |  | function to call when request has successfully completed |
 | [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately) |
+
+<a name="tfw.encodeFormValues"></a>
+### tfw.encodeFormValues(fields) ⇒ <code>string</code>
+Encode all items as URL.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>string</code> - String, that can be used to call server via ajax  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| fields | <code>Object</code> | items to be encoded {key1:id1,key2:id2,...} |
 
 <a name="tfw.decodeJSON"></a>
 ### tfw.decodeJSON(json) ⇒ <code>Object</code>
