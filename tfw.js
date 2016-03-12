@@ -1208,8 +1208,6 @@ var tfw={
 	/**
 	 * Class for creating dynamic tables.
 	 * @class
-	 * @todo Use tfw.calendar
-	 * @todo Implement date filter (calendar range)
 	 * @todo View preferences (width?, order of columns)
 	 * @todo Allow editing of simple cells
 	 * @todo Implement server parameter t - name of table
@@ -1444,6 +1442,26 @@ var tfw={
 				  c.add(f1);
 				  c.add(f2);
 			  }
+			  else if(this.data.cols[j].type == "date"){
+				  var minV, maxV;
+				  minV = maxV = this.data.rows[0].cols[j];
+				  for(var i=1;i<this.data.rows.length;i++){
+					  if(this.data.rows[i].cols[j] < minV){
+						  minV = this.data.rows[i].cols[j];
+					  }
+					  else if(this.data.rows[i].cols[j] > maxV){
+						  maxV = this.data.rows[i].cols[j];
+					  }
+				  }
+				  var f1 = tfw.input({type:"text",className:"dateMin",onchange:function(){dynamicTable.filterDate(this.getAttribute("data-filter-col"),this.value,1);},value:minV.match(/\d{4,}-\d{2}-\d{2}/)[0],legend:"From:"});
+				  var f2 = tfw.input({type:"text",className:"dateMax",onchange:function(){dynamicTable.filterDate(this.getAttribute("data-filter-col"),this.value,-1);},value:maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],legend:"To:"});;
+				  c.add(f1);
+				  c.add(f2);
+				  tfw.calendar(f1.querySelector("input"));
+				  tfw.calendar(f2.querySelector("input"));
+				  f1.querySelector(".dateMin").setAttribute("data-filter-col", j);
+				  f2.querySelector(".dateMax").setAttribute("data-filter-col", j);
+			  }
 			  /* else if (){
 			  } */
 			  else {
@@ -1497,6 +1515,9 @@ var tfw={
 			  }
 			  else if(this.data.cols[j].type == "number"){
 				  params.children = [tfw.input({type:"number",id:id,value:val,'disabled':true})];
+			  }
+			  else if(this.data.cols[j].type == "date"){
+				  params.children = [tfw.input({type:"text",id:id,value:val.match(/\d{4,}-\d{2}-\d{2}/)[0],'disabled':true})];
 			  }
 			  else{
 				  params.innerHTML = val;
@@ -1587,6 +1608,24 @@ var tfw={
 		}
 	};
 	/**
+	 * Apply date filter.
+	 * Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
+	 * @param {number} column - order number of searched column
+	 * @param {string} compareValue - value to compare to (can be "")
+	 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
+	 */
+	this.filterDate = function(column, compareValue, cmp){
+		var tbody = this.tableContainer.querySelector("tbody");
+		for(var i=0;i<tbody.rows.length;i++){
+			var value = tbody.rows[i].cells[column].textContent;
+			if(!value){
+				value = tbody.rows[i].cells[column].querySelector("input").value;
+			}
+			var matches = (value==="" || (cmp>=0 && value>=compareValue) || (cmp<=0 && value<=compareValue));
+			tbody.rows[i][matches ? 'removeClass' : 'addClass']('dateFilterInvalid'+cmp);
+		}
+	};
+	/**
 	 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
 	 * Requires .hideColumn{display:none}
 	 * @param {number} column - order number of column
@@ -1618,6 +1657,7 @@ var tfw={
 	var calendarInput = input;
 	input.addClass("calendarInput");
 	input._calendar = this;
+	input.setAttribute("pattern", "[0-9]{4,}-[0-9]{2}-[0-9]{2}");
 	
 	var calendarContainer = document.createElement("div");
 	calendarContainer.addClass("calendarWidget");
@@ -1746,6 +1786,9 @@ var tfw={
 			current.toggleClass("current");
 		}
 		this.addClass("current");
+		if(calendarInput.onchange){
+			calendarInput.onchange();
+		}
 	}
   }
 }

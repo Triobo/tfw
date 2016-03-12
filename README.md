@@ -50,6 +50,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTable+filterSearch)
             * [.filterBoolean(column, searchType)](#tfw.dynamicTable+filterBoolean)
             * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
+            * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTable+filterDate)
             * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
         * _inner_
             * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
@@ -90,8 +91,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **See**: AJAX_LOADER  
 **Todo**
 
-- [ ] Use tfw.calendar
-- [ ] Implement date filter (calendar range)
 - [ ] View preferences (width?, order of columns)
 - [ ] Allow editing of simple cells
 - [ ] Implement server parameter t - name of table
@@ -117,6 +116,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTable+filterSearch)
         * [.filterBoolean(column, searchType)](#tfw.dynamicTable+filterBoolean)
         * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
+        * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTable+filterDate)
         * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
     * _inner_
         * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
@@ -274,6 +274,18 @@ Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 <a name="tfw.dynamicTable+filterNumeric"></a>
 #### dynamicTable.filterNumeric(column, compareValue, cmp)
 Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| column | <code>number</code> | order number of searched column |
+| compareValue | <code>string</code> | value to compare to (can be "") |
+| cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
+
+<a name="tfw.dynamicTable+filterDate"></a>
+#### dynamicTable.filterDate(column, compareValue, cmp)
+Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 

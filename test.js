@@ -13,9 +13,6 @@ function init() {
   tfw.calendar.placeCalendar = function(cal, input){
 	input.parentNode.insertBefore(cal, input);
   }
-  var input = tfw.input({value:"2016-03-07"});
-  main.appendChild(input);
-  tfw.calendar(input);
 }
 
 function testovaciDialog(){
