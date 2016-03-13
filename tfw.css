@@ -497,6 +497,14 @@ table.dynamicTable{
     text-overflow: ellipsis;
 }
 
+.dynamicTable tr.draggable{
+	cursor:grab;
+}
+
+.dynamicTable tr.draggable:active{
+	cursor:grabbing;
+}
+
 /*********************/
 
 .calendarWidget {

@@ -1318,14 +1318,89 @@ var tfw={
 		that.paint();
 		}, autohide: 0});
 	};
+	
+	/**
+	 * Test if no filters are applied and table is sorted by column of type 'order'.
+	 * @return {boolean} True if reordering can be done, false otherwise.
+	 */
+	this.reorderEnabled = function(){
+		return sortedByOrder && (this.tableContainer.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length == 0);
+	}
+	
+	/**
+	 * @private
+	 * @var {boolean}
+	 */
+	var sortedByOrder = false;
+	/**
+	 * @private
+	 * @var {number}
+	 */
+	var orderColumn = null;
+	
+	/**
+	 * Toggle reordering of rows via drag & drop.
+	 * Reflects the value of a private variable set by onclick events fired with filters.
+	 * Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
+	 * @listens ondragstart
+	 * @listens ondragover
+	 * @listens ondrop
+	 */
+	this.toggleReorder = function(){
+		var dynamicTable = this;
+		var rowReorderEnabled = this.reorderEnabled();
+		var tbody=this.tableContainer.querySelector("tbody");
+		if(rowReorderEnabled){
+			window.getSelection().removeAllRanges();
+		}
+		var rows = tbody.getElementsByTagName("tr");
+		for(var i=0;i<rows.length;i++){
+		  rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']("draggable");
+		  rows[i].draggable=rowReorderEnabled;
+		  rows[i].ondragstart = rowReorderEnabled ? function(event){
+			  event.dataTransfer.setData("text", event.target.id);
+		  } : null;
+		  rows[i].ondragover = rowReorderEnabled ? function(event){
+			  event.preventDefault();
+			  var allowed = (event.target.parentNode.isEqualNode(tbody));
+			  event.dataTransfer.dropEffect = allowed ? 'move' : 'cancel';
+		  } : null;
+		  rows[i].ondrop = rowReorderEnabled ? function(event){
+			  event.preventDefault();
+			  var data = event.dataTransfer.getData("text");
+			  var element = document.getElementById(data);
+			  event.target.closest("tbody").insertBefore(element, event.target.closest("tr"));
+			  dynamicTable.orderChange(element);
+		  } : null;
+		}
+	}
+	
+	/**
+	 * Reflect a change in order in the table.
+	 * @param {Object} element - row that was dropped (HTML element)
+	 * @todo Reflect on server
+	 */
+	this.orderChange = function(element){
+		var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML)-1;
+		var droppedRowOrder = Array.prototype.indexOf.call(element.parentNode.children, element);
+		element.getElementsByTagName("td")[orderColumn].innerHTML = droppedRowOrder+1;
+		var rows = this.tableContainer.querySelectorAll("tbody tr");
+		for(var i=droppedRowOrder+1;i<=originalRowOrder;i++){
+			var cell = rows[i].getElementsByTagName("td")[orderColumn];
+			cell.innerHTML = parseInt(cell.innerHTML)+1;
+		}
+		//serverCall(originalRowOrder, droppedRowOrder, ...)
+	}
+	
 	/** 
 	 * Refresh the content of the table using data gotten by (re)loading.
 	 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
 	 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
+	 * Assumes that there is only 1 order column and that data are sorted by that column.
 	 * @listens onclick
 	 * @listens onkeyup
 	 * @todo Enable localization
-	 * @todo Think about using different IDs for rows (e.g. add a prefix)
+	 * @todo Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
 	 * @todo Change drag&dropping so that it is clear where the dragged row will end
 	 */
 	this.paint = function(){
@@ -1340,33 +1415,16 @@ var tfw={
 		  else{
 			  visibleColsCount++;
 			  if(this.data.cols[j].type == "order"){
+				  sortedByOrder = true; //assumed
+				  orderColumn = j;
 				  this.data.cols[j].sort = true;
 				  o.addEventListener("click", function(event){
-					  var el = event.target;
-					  var col = el.getAttribute("data-sort-col");
-					  if(col && dynamicTable.data.cols[col].type == "order"){
-						  var tbody=this.closest("table").querySelector("tbody");
-						  if(tbody.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length > 0){
-							alert("You have to turn off all filters before changing order of rows.");
-						  }
-						  else{
-							  var rows = tbody.getElementsByTagName("tr");
-							  for(var i=0;i<rows.length;i++){
-								  rows[i].draggable=true;
-								  rows[i].ondragstart = function(event){
-									  event.dataTransfer.setData("text", event.target.id);
-								  };
-								  rows[i].ondragover = function(event){
-									  event.preventDefault();
-								  }
-								  rows[i].ondrop = function drop(event) {
-									  event.preventDefault();
-									  var data = event.dataTransfer.getData("text");
-									  event.target.closest("tbody").insertBefore(document.getElementById(data), event.target.closest("tr"));
-								  }
-							  }
-						  }
+					  var tbody = dynamicTable.tableContainer.querySelector("tbody");
+					  var col = event.target.getAttribute("data-sort-col");
+					  if(col){
+						  sortedByOrder = (dynamicTable.data.cols[col].type == "order");
 					  }
+					  dynamicTable.toggleReorder();
 				  });
 			  }
 		  }
@@ -1537,7 +1595,7 @@ var tfw={
 		checkbox.setAttribute("data-filter-col", j);
 		tfootTd.add(checkbox);
 	  }
-	  tfootTd.add(tfw.button({innerHTML:"disable all filters",onclick:function(){dynamicTable.disableAllFilters(dynamicTable);}}));
+	  this.toggleReorder();
 	};
 	/**
 	 * Apply sorting by values (text without HTML) of a column.

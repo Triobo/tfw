@@ -45,6 +45,9 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.labelFalse](#tfw.dynamicTable+labelFalse) : <code>string</code>
             * [.getTable()](#tfw.dynamicTable+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTable+reload)
+            * [.reorderEnabled()](#tfw.dynamicTable+reorderEnabled) ⇒ <code>boolean</code>
+            * [.toggleReorder()](#tfw.dynamicTable+toggleReorder)
+            * [.orderChange(element)](#tfw.dynamicTable+orderChange)
             * [.paint()](#tfw.dynamicTable+paint)
             * [.sort(event)](#tfw.dynamicTable+sort)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTable+filterSearch)
@@ -111,6 +114,9 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.labelFalse](#tfw.dynamicTable+labelFalse) : <code>string</code>
         * [.getTable()](#tfw.dynamicTable+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTable+reload)
+        * [.reorderEnabled()](#tfw.dynamicTable+reorderEnabled) ⇒ <code>boolean</code>
+        * [.toggleReorder()](#tfw.dynamicTable+toggleReorder)
+        * [.orderChange(element)](#tfw.dynamicTable+orderChange)
         * [.paint()](#tfw.dynamicTable+paint)
         * [.sort(event)](#tfw.dynamicTable+sort)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTable+filterSearch)
@@ -227,15 +233,40 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 - [ ] Don't repaint table, just change values.
 - [ ] Don't use hardcoded base URL
 
+<a name="tfw.dynamicTable+reorderEnabled"></a>
+#### dynamicTable.reorderEnabled() ⇒ <code>boolean</code>
+Test if no filters are applied and table is sorted by column of type 'order'.
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
+<a name="tfw.dynamicTable+toggleReorder"></a>
+#### dynamicTable.toggleReorder()
+Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+<a name="tfw.dynamicTable+orderChange"></a>
+#### dynamicTable.orderChange(element)
+Reflect a change in order in the table.
+
+**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Todo**
+
+- [ ] Reflect on server
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| element | <code>Object</code> | row that was dropped (HTML element) |
+
 <a name="tfw.dynamicTable+paint"></a>
 #### dynamicTable.paint()
-Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.
+Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.Assumes that there is only 1 order column and that data are sorted by that column.
 
 **Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
 **Todo**
 
 - [ ] Enable localization
-- [ ] Think about using different IDs for rows (e.g. add a prefix)
+- [ ] Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
 
 <a name="tfw.dynamicTable+sort"></a>
