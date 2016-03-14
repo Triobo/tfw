@@ -2518,6 +2518,48 @@ function Web2RGB(h){
  * @see tfw.dynamicTable
  */
 function Dyntable(x){
-  console.error("DEPRECATED Dyntable("+JSON.stringify(x)+"), use tfw.dynamicTable()");
-  return tfw.Dyntable(x);
+  console.error("DEPRECATED Dyntable(), use tfw.dynamicTable()");
+  return {
+    myDiv:null,
+    url:null,
+    data:null,
+    rowEdit:null,
+    create:function(){
+      this.myDiv=tfw.div({innerHTML:AJAX_LOADER});
+      return this.myDiv;
+    },
+    reload:function(){
+      that=this;
+      ajaxGet("datanews.php", this.url, function(hr){
+        that.data=tfw.decodeJSON(hr.responseText);
+        that.paint();
+      },0);
+    },
+    paint:function(){
+      var o,r,c;
+      this.myDiv.innerHTML="";
+      this.myDiv.add(o=tfw.table({}));
+      o.add(r=tfw.tr({}));
+      for (var j=0;j<this.data.cols.length;j++) {
+        c=document.createElement("th");
+        c.innerHTML=this.data.cols[j].n;
+        if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].w;
+        if (!("h" in this.data.cols[j])) r.add(c);
+      }
+      for (var i=0;i<this.data.rows.length;i++) {
+        that=this;
+        o.add(r=tfw.tr({id:this.data.rows[i].id}));
+        if (this.rowEdit) {
+          r.addEventListener("click", function(e){
+            that.rowEdit(e.currentTarget.value);
+          });
+          r.style.cursor="pointer";          
+        }
+        r.value=i;
+        for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
+          r.add(c=tfw.td({text:this.data.rows[i].cols[j]}));
+        }
+      }
+    }
+  }  
 }
