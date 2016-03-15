@@ -5,10 +5,9 @@ function init() {
   main.add(tfw.par({text:"Testovací stránka"}));
   main.add(tfw.button({text:"Otevři dialog",action:testovaciDialog}));
   
-  var table = new tfw.dynamicTable({id:"table1"});
-  main.add(table.getTable());
-  table.url = "t=test&a=load";
-  table.reload();
+  var table;
+  main.add(table=tfw.dynamicTable({id:"table1", url:"t=test&a=load"}));
+  //table.reload();
   
   tfw.calendar.placeCalendar = function(cal, input){
 	input.parentNode.insertBefore(cal, input);

@@ -1226,477 +1226,485 @@ var tfw={
 	 * table.reload();
 	 * @see AJAX_LOADER
 	 */
-  dynamicTable:function(params){
-  if ("id" in params) this.tableId=params.id;
-	/**
-	 * DIV containing the table.
-	 * @var {Object}
-	 * @default
-	 * @readonly
-	 */
-	this.tableContainer = tfw.div({innerHTML:AJAX_LOADER});
-	/**
-	 * Ascending sorting symbol.
-	 * @const {string}
-	 * @default
-	 */
-	this.ascSortingSymbol = "&darr;";
-	/**
-	 * Descending sorting symbol.
-	 * @const {string}
-	 * @default
-	 */
-	this.descSortingSymbol = "&uarr;";
-	/**
-	 * Default label for true.
-	 * @const {string}
-	 * @default
-	 */
-	this.labelTrue = "Yes";
-	/**
-	 * Default label for false.
-	 * @const {string}
-	 * @default
-	 */
-	this.labelFalse = "No";
-	/**
-	 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTable#reload|reload()}.
-	 * @var {string}
-	 * @public
-	 */
-	this.url = "";
-	/**
-	 * Data obtained from server. {@link tfw.dynamicTable#reload|reload()} has to be called to fill this.
-	 * @var {Object}
-	 * @default null
-	 * @public
-	 * @readonly
-	 * @property {Object[]} cols - list of columns
-	 * @property {string} cols[].name - name (HTML)
-	 * @property {number} cols[].width - width
-	 * @property {boolean} cols[].hidden - hidden
-	 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "checkbox", "date", "order"
-	 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
-	 * @property {number} [cols[].search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
-	 * @property {boolean} [cols[].filter=false] - whether to allow filtering (depends on type)
-	 * @property {Object[]} rows - list of rows
-	 * @property {number} rows[].id - row ID
-	 * @property {string[]} rows[].cols - contents for each column (HTML)
-	 */
-	this.data = null;
-	/**
-	 * Function that handles row editing.
-	 * @callback tfw.dynamicTable~rowEdit
-	 * @param {number} order - order of the row being edited
-	 */
-	/**
-	 * Function that is fired when row editing is triggered.
-	 * @var {tfw.dynamicTable~rowEdit}
-	 * @default null
-	 * @public
-	 * @todo Don't bind to onclick of TRs, show an edit ([i]) icon after each row (if set)
-	 */
-	this.rowEdit = null;
-	/** 
-	 * Get table container (for inserting into document).
-	 * @returns {Object} Returns the table container (HTML element).
-	 */
-	this.getTable = function(){
-	  return this.tableContainer;
-	};
-	/** 
-	 * Reload (or load) data from server.
-	 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
-	 * @see tfw.dynamicTable#paint
-	 * @see tfw.decodeJSON
-	 * @todo Don't repaint table, just change values.
-	 * @todo Don't use hardcoded base URL
-	 */
-	this.reload = function(){
-	  that=this;
-	  tfw.ajaxGet({url:"data.php?t="+this.tableId+"&a=load", onload:function(hr){
-		that.data=tfw.decodeJSON(hr.responseText);
-		that.paint();
-		}, autohide: 0});
-	};
-	
-	/**
-	 * Test if no filters are applied and table is sorted by column of type 'order'.
-	 * @return {boolean} True if reordering can be done, false otherwise.
-	 */
-	this.reorderEnabled = function(){
-		return sortedByOrder && (this.tableContainer.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length == 0);
-	}
-	
-	/**
-	 * @private
-	 * @var {boolean}
-	 */
-	var sortedByOrder = false;
-	/**
-	 * @private
-	 * @var {number}
-	 */
-	var orderColumn = null;
-	
-	/**
-	 * Toggle reordering of rows via drag & drop.
-	 * Reflects the value of a private variable set by onclick events fired with filters.
-	 * Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
-	 * @listens ondragstart
-	 * @listens ondragover
-	 * @listens ondrop
-	 */
-	this.toggleReorder = function(){
-		var dynamicTable = this;
-		var rowReorderEnabled = this.reorderEnabled();
-		var tbody=this.tableContainer.querySelector("tbody");
-		if(rowReorderEnabled){
-			window.getSelection().removeAllRanges();
+	dynamicTableClass:function(params){
+		if ("id" in params) this.tableId=params.id;
+		/**
+		 * DIV containing the table.
+		 * @var {Object}
+		 * @default
+		 * @readonly
+		 */
+		this.tableContainer = tfw.div({innerHTML:AJAX_LOADER});
+		/**
+		 * Ascending sorting symbol.
+		 * @const {string}
+		 * @default
+		 */
+		this.ascSortingSymbol = "&darr;";
+		/**
+		 * Descending sorting symbol.
+		 * @const {string}
+		 * @default
+		 */
+		this.descSortingSymbol = "&uarr;";
+		/**
+		 * Default label for true.
+		 * @const {string}
+		 * @default
+		 */
+		this.labelTrue = "Yes";
+		/**
+		 * Default label for false.
+		 * @const {string}
+		 * @default
+		 */
+		this.labelFalse = "No";
+		/**
+		 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTable#reload|reload()}.
+		 * @var {string}
+		 * @public
+		 */
+		this.url = "";
+		/**
+		 * Data obtained from server. {@link tfw.dynamicTable#reload|reload()} has to be called to fill this.
+		 * @var {Object}
+		 * @default null
+		 * @public
+		 * @readonly
+		 * @property {Object[]} cols - list of columns
+		 * @property {string} cols[].name - name (HTML)
+		 * @property {number} cols[].width - width
+		 * @property {boolean} cols[].hidden - hidden
+		 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "checkbox", "date", "order"
+		 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
+		 * @property {number} [cols[].search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
+		 * @property {boolean} [cols[].filter=false] - whether to allow filtering (depends on type)
+		 * @property {Object[]} rows - list of rows
+		 * @property {number} rows[].id - row ID
+		 * @property {string[]} rows[].cols - contents for each column (HTML)
+		 */
+		this.data = null;
+		/**
+		 * Function that handles row editing.
+		 * @callback tfw.dynamicTable~rowEdit
+		 * @param {number} order - order of the row being edited
+		 */
+		/**
+		 * Function that is fired when row editing is triggered.
+		 * @var {tfw.dynamicTable~rowEdit}
+		 * @default null
+		 * @public
+		 * @todo Don't bind to onclick of TRs, show an edit ([i]) icon after each row (if set)
+		 */
+		this.rowEdit = null;
+		/** 
+		 * Get table container (for inserting into document).
+		 * @returns {Object} Returns the table container (HTML element).
+		 */
+		this.getTable = function(){
+		  return this.tableContainer;
+		};
+		/** 
+		 * Reload (or load) data from server.
+		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
+		 * @see tfw.dynamicTable#paint
+		 * @see tfw.decodeJSON
+		 * @todo Don't repaint table, just change values.
+		 * @todo Don't use hardcoded base URL
+		 */
+		this.reload = function(){
+		  that=this;
+		  tfw.ajaxGet({url:"data.php?t="+this.tableId+"&a=load", onload:function(hr){
+			that.data=tfw.decodeJSON(hr.responseText);
+			that.paint();
+			}, autohide: 0});
+		};
+		
+		/**
+		 * Test if no filters are applied and table is sorted by column of type 'order'.
+		 * @return {boolean} True if reordering can be done, false otherwise.
+		 */
+		this.reorderEnabled = function(){
+			return sortedByOrder && (this.tableContainer.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length == 0);
 		}
-		var rows = tbody.getElementsByTagName("tr");
-		for(var i=0;i<rows.length;i++){
-		  rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']("draggable");
-		  rows[i].draggable=rowReorderEnabled;
-		  rows[i].ondragstart = rowReorderEnabled ? function(event){
-			  event.dataTransfer.setData("text", event.target.id);
-		  } : null;
-		  rows[i].ondragover = rowReorderEnabled ? function(event){
-			  event.preventDefault();
-			  var allowed = (event.target.parentNode.isEqualNode(tbody));
-			  event.dataTransfer.dropEffect = allowed ? 'move' : 'cancel';
-		  } : null;
-		  rows[i].ondrop = rowReorderEnabled ? function(event){
-			  event.preventDefault();
-			  var data = event.dataTransfer.getData("text");
-			  var element = document.getElementById(data);
-			  event.target.closest("tbody").insertBefore(element, event.target.closest("tr"));
-			  dynamicTable.orderChange(element);
-		  } : null;
-		}
-	}
-	
-	/**
-	 * Reflect a change in order in the table.
-	 * @param {Object} element - row that was dropped (HTML element)
-	 * @todo Reflect on server
-	 */
-	this.orderChange = function(element){
-		var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML)-1;
-		var droppedRowOrder = Array.prototype.indexOf.call(element.parentNode.children, element);
-		element.getElementsByTagName("td")[orderColumn].innerHTML = droppedRowOrder+1;
-		var rows = this.tableContainer.querySelectorAll("tbody tr");
-		for(var i=droppedRowOrder+1;i<=originalRowOrder;i++){
-			var cell = rows[i].getElementsByTagName("td")[orderColumn];
-			cell.innerHTML = parseInt(cell.innerHTML)+1;
-		}
-		//serverCall(originalRowOrder, droppedRowOrder, ...)
-	}
-	
-	/** 
-	 * Refresh the content of the table using data gotten by (re)loading.
-	 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
-	 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
-	 * Assumes that there is only 1 order column and that data are sorted by that column.
-	 * @listens onclick
-	 * @listens onkeyup
-	 * @todo Enable localization
-	 * @todo Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
-	 * @todo Change drag&dropping so that it is clear where the dragged row will end
-	 */
-	this.paint = function(){
-	  var o,thead,tbody,r,c,visibleColsCount=0,dynamicTable=this;
-	  this.tableContainer.innerHTML="";
-	  this.tableContainer.add(o=tfw.table({className:'dynamicTable'}));
-	  
-	  for (var j=0;j<this.data.cols.length;j++) {
-		  if(this.data.cols[j].hidden){
-			  continue;
-		  }
-		  else{
-			  visibleColsCount++;
-			  if(this.data.cols[j].type == "order"){
-				  sortedByOrder = true; //assumed
-				  orderColumn = j;
-				  this.data.cols[j].sort = true;
-				  o.addEventListener("click", function(event){
-					  var tbody = dynamicTable.tableContainer.querySelector("tbody");
-					  var col = event.target.getAttribute("data-sort-col");
-					  var order = event.target.getAttribute("data-sort-order");
-					  if(col){
-						  sortedByOrder = (dynamicTable.data.cols[col].type == "order" && order == 'asc');
-					  }
-					  dynamicTable.toggleReorder();
-				  });
-			  }
-		  }
-	  }
-	  
-	  o.add(thead=document.createElement("thead"));
-	  
-	  var anySearchAllowed = false;
-	  r=tfw.tr({className:'search'});
-	  for (var j=0;j<this.data.cols.length;j++) {
-		  if(this.data.cols[j].hidden){
-			  continue;
-		  }
-		  c=document.createElement("th");
-		  if(this.data.cols[j].search){
-			  var searchInput = tfw.input({type:"text",placeholder:"Search "+((this.data.cols[j].search==1)?"beginning with":"including")+"..."});
-			  searchInput.setAttribute("data-search-type", this.data.cols[j].search);
-			  searchInput.setAttribute("data-filter-col", j);
-			  searchInput.onkeyup = function(){
-				  dynamicTable.filterSearch(this.getAttribute("data-filter-col"),
-							   this.value,
-							   this.getAttribute("data-search-type")
-							   );
-			  }
-			  c.add(searchInput);
-			  
-			  anySearchAllowed = true;
-		  }
-		  else {
-			  c.innerHTML = "&nbsp;";
-		  }
-		  r.add(c);
-	  }
-	  if(anySearchAllowed){
-		  thead.add(r);
-	  }
-	  
-	  var anyFilterAllowed = false;
-	  r=tfw.tr({className:'filters'});
-	  for (var j=0;j<this.data.cols.length;j++) {
-		  if(this.data.cols[j].hidden){
-			  continue;
-		  }
-		  c=document.createElement("th");
-		  if(this.data.cols[j].filter){
-			  anyFilterAllowed = true;
-			  if(this.data.cols[j].type == "checkbox"){
-				  var filter = tfw.select({
-						list:"Both;Yes;No",
-						value:0,
-						onchange:function(){
-							dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
-						}
-					});
-				  filter.setAttribute("data-filter-col", j);
-				  c.add(filter);
-			  }
-			  else if(this.data.cols[j].type == "number"){
-				  var minV, maxV;
-				  minV = maxV = this.data.rows[0].cols[j];
-				  for(var i=1;i<this.data.rows.length;i++){
-					  if(this.data.rows[i].cols[j] < minV){
-						  minV = this.data.rows[i].cols[j];
-					  }
-					  else if(this.data.rows[i].cols[j] > maxV){
-						  maxV = this.data.rows[i].cols[j];
-					  }
-				  }
-				  var f1 = tfw.input({type:"number",className:"rangeMin",onchange:function(){var max=this.closest("th").querySelector(".rangeMax");max.min = this.value;if(parseInt(max.value) < parseInt(max.min)){max.value=max.min;max.onchange();}dynamicTable.filterNumeric(this.getAttribute("data-filter-col"),this.value,1);},min:minV,max:maxV,value:minV,legend:"From:"});
-				  var f2 = tfw.input({type:"number",className:"rangeMax",onchange:function(){var min=this.closest("th").querySelector(".rangeMin");min.max = this.value;if(parseInt(min.value) > parseInt(min.max)){min.value=min.max;min.onchange();}dynamicTable.filterNumeric(this.getAttribute("data-filter-col"),this.value,-1);},min:minV,max:maxV,value:maxV,legend:"To:"});;
-				  f1.querySelector(".rangeMin").setAttribute("data-filter-col", j);
-				  f2.querySelector(".rangeMax").setAttribute("data-filter-col", j);
-				  c.add(f1);
-				  c.add(f2);
-			  }
-			  else if(this.data.cols[j].type == "date"){
-				  var minV, maxV;
-				  minV = maxV = this.data.rows[0].cols[j];
-				  for(var i=1;i<this.data.rows.length;i++){
-					  if(this.data.rows[i].cols[j] < minV){
-						  minV = this.data.rows[i].cols[j];
-					  }
-					  else if(this.data.rows[i].cols[j] > maxV){
-						  maxV = this.data.rows[i].cols[j];
-					  }
-				  }
-				  var f1 = tfw.input({type:"text",className:"dateMin",onchange:function(){dynamicTable.filterDate(this.getAttribute("data-filter-col"),this.value,1);},value:minV.match(/\d{4,}-\d{2}-\d{2}/)[0],legend:"From:"});
-				  var f2 = tfw.input({type:"text",className:"dateMax",onchange:function(){dynamicTable.filterDate(this.getAttribute("data-filter-col"),this.value,-1);},value:maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],legend:"To:"});;
-				  c.add(f1);
-				  c.add(f2);
-				  tfw.calendar(f1.querySelector("input"));
-				  tfw.calendar(f2.querySelector("input"));
-				  f1.querySelector(".dateMin").setAttribute("data-filter-col", j);
-				  f2.querySelector(".dateMax").setAttribute("data-filter-col", j);
-			  }
-			  /* else if (){
-			  } */
-			  else {
-				  anyFilterAllowed = false;
-			  }
-		  }
-		  else {
-			  c.innerHTML = "&nbsp;";
-		  }
-		  r.add(c);
-	  }
-	  if(anyFilterAllowed){
-		  thead.add(r);
-	  }
-	  
-	  thead.add(r=tfw.tr({}));
-	  for (var j=0;j<this.data.cols.length;j++) {
-		c=document.createElement("th");
-		c.innerHTML=this.data.cols[j].name;
-		if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].width;
-		if("sort" in this.data.cols[j] && this.data.cols[j]){
-			var b1 = tfw.button({className:'tfwDtSort',innerHTML:this.descSortingSymbol}), b2 = tfw.button({className:'tfwDtSort',innerHTML:this.ascSortingSymbol});
-			b1.setAttribute('data-sort-order', 'desc');
-			b2.setAttribute('data-sort-order', 'asc');
-			var sortingButtons = [b1,b2];
-			for(var i=0;i<sortingButtons.length;i++){
-				sortingButtons[i].onclick = this.sort;
-				sortingButtons[i].setAttribute('data-sort-col', j);
-				c.add(sortingButtons[i]);
+		
+		/**
+		 * @private
+		 * @var {boolean}
+		 */
+		var sortedByOrder = false;
+		/**
+		 * @private
+		 * @var {number}
+		 */
+		var orderColumn = null;
+		
+		/**
+		 * Toggle reordering of rows via drag & drop.
+		 * Reflects the value of a private variable set by onclick events fired with filters.
+		 * Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
+		 * @listens ondragstart
+		 * @listens ondragover
+		 * @listens ondrop
+		 */
+		this.toggleReorder = function(){
+			var dynamicTable = this;
+			var rowReorderEnabled = this.reorderEnabled();
+			var tbody=this.tableContainer.querySelector("tbody");
+			if(rowReorderEnabled){
+				window.getSelection().removeAllRanges();
+			}
+			var rows = tbody.getElementsByTagName("tr");
+			for(var i=0;i<rows.length;i++){
+			  rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']("draggable");
+			  rows[i].draggable=rowReorderEnabled;
+			  rows[i].ondragstart = rowReorderEnabled ? function(event){
+				  event.dataTransfer.setData("text", event.target.id);
+			  } : null;
+			  rows[i].ondragover = rowReorderEnabled ? function(event){
+				  event.preventDefault();
+				  var allowed = (event.target.parentNode.isEqualNode(tbody));
+				  event.dataTransfer.dropEffect = allowed ? 'move' : 'cancel';
+			  } : null;
+			  rows[i].ondrop = rowReorderEnabled ? function(event){
+				  event.preventDefault();
+				  var data = event.dataTransfer.getData("text");
+				  var element = document.getElementById(data);
+				  event.target.closest("tbody").insertBefore(element, event.target.closest("tr"));
+				  dynamicTable.orderChange(element);
+			  } : null;
 			}
 		}
-		if (!("h" in this.data.cols[j])) r.add(c);
-	  }
-	  
-	  o.add(tbody=document.createElement("tbody"));
-	  for (var i=0;i<this.data.rows.length;i++) {
-		tbody.add(r=tfw.tr({id:this.data.rows[i].id}));
-		if (this.rowEdit) {
-		  r.addEventListener("click", function(e){
-			dynamicTable.rowEdit(e.currentTarget.value);
-		  });
-		  r.style.cursor="pointer";          
+		
+		/**
+		 * Reflect a change in order in the table.
+		 * @param {Object} element - row that was dropped (HTML element)
+		 * @todo Reflect on server
+		 */
+		this.orderChange = function(element){
+			var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML)-1;
+			var droppedRowOrder = Array.prototype.indexOf.call(element.parentNode.children, element);
+			element.getElementsByTagName("td")[orderColumn].innerHTML = droppedRowOrder+1;
+			var rows = this.tableContainer.querySelectorAll("tbody tr");
+			for(var i=droppedRowOrder+1;i<=originalRowOrder;i++){
+				var cell = rows[i].getElementsByTagName("td")[orderColumn];
+				cell.innerHTML = parseInt(cell.innerHTML)+1;
+			}
+			//serverCall(originalRowOrder, droppedRowOrder, ...)
 		}
-		r.value=i;//???
-		for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
-		  var params={}, val = this.data.rows[i].cols[j];
-		  if("type" in this.data.cols[j]){
-			  var id = "tfwDynamicTable-"+i+"-"+j;
-			  if(this.data.cols[j].type == "checkbox"){
-				  params.children = [tfw.checkbox({id:id,value:(val?1:0),text:(val ? this.labelTrue : this.labelFalse),'disabled':true})]
-			  }
-			  else if(this.data.cols[j].type == "number"){
-				  params.children = [tfw.input({type:"number",id:id,value:val,'disabled':true})];
-			  }
-			  else if(this.data.cols[j].type == "date"){
-				  params.children = [tfw.input({type:"text",id:id,value:val.match(/\d{4,}-\d{2}-\d{2}/)[0],'disabled':true})];
+		
+		/** 
+		 * Refresh the content of the table using data gotten by (re)loading.
+		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
+		 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
+		 * Assumes that there is only 1 order column and that data are sorted by that column.
+		 * @listens onclick
+		 * @listens onkeyup
+		 * @todo Enable localization
+		 * @todo Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
+		 * @todo Change drag&dropping so that it is clear where the dragged row will end
+		 */
+		this.paint = function(){
+		  var o,thead,tbody,r,c,visibleColsCount=0,dynamicTable=this;
+		  this.tableContainer.innerHTML="";
+		  this.tableContainer.add(o=tfw.table({className:'dynamicTable'}));
+		  
+		  for (var j=0;j<this.data.cols.length;j++) {
+			  if(this.data.cols[j].hidden){
+				  continue;
 			  }
 			  else{
-				  params.innerHTML = val;
+				  visibleColsCount++;
+				  if(this.data.cols[j].type == "order"){
+					  sortedByOrder = true; //assumed
+					  orderColumn = j;
+					  this.data.cols[j].sort = true;
+					  o.addEventListener("click", function(event){
+						  var tbody = dynamicTable.tableContainer.querySelector("tbody");
+						  var col = event.target.getAttribute("data-sort-col");
+						  var order = event.target.getAttribute("data-sort-order");
+						  if(col){
+							  sortedByOrder = (dynamicTable.data.cols[col].type == "order" && order == 'asc');
+						  }
+						  dynamicTable.toggleReorder();
+					  });
+				  }
 			  }
 		  }
-		  r.add(c=tfw.td(params));
-		}
-	  }
-	  var tfoot, tfootTd;
-	  o.add(tfoot=document.createElement("tfoot"));
-	  tfoot.add(tfw.tr({children:[tfootTd=tfw.td({colspan:visibleColsCount})]}));
-	  for (var j=0;j<this.data.cols.length;j++) {
-		if(this.data.cols[j].hidden){
-			continue;
-		}
-		var checkbox = tfw.checkbox({text:this.data.cols[j].name,value:1,onchange:function(){dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));}});
-		checkbox.setAttribute("data-filter-col", j);
-		tfootTd.add(checkbox);
-	  }
-	  this.toggleReorder();
-	};
-	/**
-	 * Apply sorting by values (text without HTML) of a column.
-	 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
-	 * Overrides style attribute of TR elements inside TBODY.
-	 * @param {Object} event - Event object
-	 */
-	this.sort = function(event){
-		var tbody=this.closest("table").querySelector("tbody"), col=this.getAttribute("data-sort-col"), asc=(this.getAttribute("data-sort-order")=="asc" ? 1 : -1);
-		var rows = tbody.rows, rlen = rows.length, arr = new Array(), i;
-		for(i = 0; i < rlen; i++){
-			var val = rows[i].cells[col].textContent;
-			if(!val){
-				val = rows[i].cells[col].querySelector("input, select").value;
+		  
+		  o.add(thead=document.createElement("thead"));
+		  
+		  var anySearchAllowed = false;
+		  r=tfw.tr({className:'search'});
+		  for (var j=0;j<this.data.cols.length;j++) {
+			  if(this.data.cols[j].hidden){
+				  continue;
+			  }
+			  c=document.createElement("th");
+			  if(this.data.cols[j].search){
+				  var searchInput = tfw.input({type:"text",placeholder:"Search "+((this.data.cols[j].search==1)?"beginning with":"including")+"..."});
+				  searchInput.setAttribute("data-search-type", this.data.cols[j].search);
+				  searchInput.setAttribute("data-filter-col", j);
+				  searchInput.onkeyup = function(){
+					  dynamicTable.filterSearch(this.getAttribute("data-filter-col"),
+								   this.value,
+								   this.getAttribute("data-search-type")
+								   );
+				  }
+				  c.add(searchInput);
+				  
+				  anySearchAllowed = true;
+			  }
+			  else {
+				  c.innerHTML = "&nbsp;";
+			  }
+			  r.add(c);
+		  }
+		  if(anySearchAllowed){
+			  thead.add(r);
+		  }
+		  
+		  var anyFilterAllowed = false;
+		  r=tfw.tr({className:'filters'});
+		  for (var j=0;j<this.data.cols.length;j++) {
+			  if(this.data.cols[j].hidden){
+				  continue;
+			  }
+			  c=document.createElement("th");
+			  if(this.data.cols[j].filter){
+				  anyFilterAllowed = true;
+				  if(this.data.cols[j].type == "checkbox"){
+					  var filter = tfw.select({
+							list:"Both;Yes;No",
+							value:0,
+							onchange:function(){
+								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
+							}
+						});
+					  filter.setAttribute("data-filter-col", j);
+					  c.add(filter);
+				  }
+				  else if(this.data.cols[j].type == "number"){
+					  var minV, maxV;
+					  minV = maxV = this.data.rows[0].cols[j];
+					  for(var i=1;i<this.data.rows.length;i++){
+						  if(this.data.rows[i].cols[j] < minV){
+							  minV = this.data.rows[i].cols[j];
+						  }
+						  else if(this.data.rows[i].cols[j] > maxV){
+							  maxV = this.data.rows[i].cols[j];
+						  }
+					  }
+					  var f1 = tfw.input({type:"number",className:"rangeMin",onchange:function(){var max=this.closest("th").querySelector(".rangeMax");max.min = this.value;if(parseInt(max.value) < parseInt(max.min)){max.value=max.min;max.onchange();}dynamicTable.filterNumeric(this.getAttribute("data-filter-col"),this.value,1);},min:minV,max:maxV,value:minV,legend:"From:"});
+					  var f2 = tfw.input({type:"number",className:"rangeMax",onchange:function(){var min=this.closest("th").querySelector(".rangeMin");min.max = this.value;if(parseInt(min.value) > parseInt(min.max)){min.value=min.max;min.onchange();}dynamicTable.filterNumeric(this.getAttribute("data-filter-col"),this.value,-1);},min:minV,max:maxV,value:maxV,legend:"To:"});;
+					  f1.querySelector(".rangeMin").setAttribute("data-filter-col", j);
+					  f2.querySelector(".rangeMax").setAttribute("data-filter-col", j);
+					  c.add(f1);
+					  c.add(f2);
+				  }
+				  else if(this.data.cols[j].type == "date"){
+					  var minV, maxV;
+					  minV = maxV = this.data.rows[0].cols[j];
+					  for(var i=1;i<this.data.rows.length;i++){
+						  if(this.data.rows[i].cols[j] < minV){
+							  minV = this.data.rows[i].cols[j];
+						  }
+						  else if(this.data.rows[i].cols[j] > maxV){
+							  maxV = this.data.rows[i].cols[j];
+						  }
+					  }
+					  var f1 = tfw.input({type:"text",className:"dateMin",onchange:function(){dynamicTable.filterDate(this.getAttribute("data-filter-col"),this.value,1);},value:minV.match(/\d{4,}-\d{2}-\d{2}/)[0],legend:"From:"});
+					  var f2 = tfw.input({type:"text",className:"dateMax",onchange:function(){dynamicTable.filterDate(this.getAttribute("data-filter-col"),this.value,-1);},value:maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],legend:"To:"});;
+					  c.add(f1);
+					  c.add(f2);
+					  tfw.calendar(f1.querySelector("input"));
+					  tfw.calendar(f2.querySelector("input"));
+					  f1.querySelector(".dateMin").setAttribute("data-filter-col", j);
+					  f2.querySelector(".dateMax").setAttribute("data-filter-col", j);
+				  }
+				  /* else if (){
+				  } */
+				  else {
+					  anyFilterAllowed = false;
+				  }
+			  }
+			  else {
+				  c.innerHTML = "&nbsp;";
+			  }
+			  r.add(c);
+		  }
+		  if(anyFilterAllowed){
+			  thead.add(r);
+		  }
+		  
+		  thead.add(r=tfw.tr({}));
+		  for (var j=0;j<this.data.cols.length;j++) {
+			c=document.createElement("th");
+			c.innerHTML=this.data.cols[j].name;
+			if ("w" in this.data.cols[j]) c.style.width=this.data.cols[j].width;
+			if("sort" in this.data.cols[j] && this.data.cols[j]){
+				var b1 = tfw.button({className:'tfwDtSort',innerHTML:this.descSortingSymbol}), b2 = tfw.button({className:'tfwDtSort',innerHTML:this.ascSortingSymbol});
+				b1.setAttribute('data-sort-order', 'desc');
+				b2.setAttribute('data-sort-order', 'asc');
+				var sortingButtons = [b1,b2];
+				for(var i=0;i<sortingButtons.length;i++){
+					sortingButtons[i].onclick = this.sort;
+					sortingButtons[i].setAttribute('data-sort-col', j);
+					c.add(sortingButtons[i]);
+				}
 			}
-			arr[i] = {id:rows[i].id,value:val};
-		}
-		// sort the array by the specified column number (col) and order (asc)
-		arr.sort(function(a, b){
-			return (a.value == b.value) ? 0 : ((a.value > b.value) ? asc : (-1*asc));
-		});
-		for(i = 0; i < rlen; i++){
-			tbody.appendChild(rows.namedItem(arr[i].id));
-		}
-	};
-	/**
-	 * Apply search filter (case insensitive).
-	 * Requires .searchFilterInvalid{display:none}
-	 * @param {number} column - order number of searched column
-	 * @param {string} value - searched string
-	 * @param {number} [searchType=2] - type of search (1 = starts with, 2 = includes)
-	 */
-	this.filterSearch = function(column, value, searchType){
-		var tbody = this.tableContainer.querySelector("tbody");
-		var searchFunc = (searchType == 1) ? "startsWith" : "includes";
-		for(var i=0;i<tbody.rows.length;i++){
-			var matches = value=="" || tbody.rows[i].cells[column].textContent.toLowerCase()[searchFunc](value.toLowerCase());
-			tbody.rows[i][matches ? 'removeClass' : 'addClass']('searchFilterInvalid');
-		}
-	};
-	/**
-	 * Apply boolean filter.
-	 * Requires .booleanFilterInvalid{display:none}
-	 * @param {number} column - order number of searched column
-	 * @param {string} searchType - search type ("0" = both, "1" = only true, "2" = only false)
-	 */
-	this.filterBoolean = function(column, searchType){
-		var tbody = this.tableContainer.querySelector("tbody");
-		for(var i=0;i<tbody.rows.length;i++){
-			var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
-			var matches = (searchType==="0") || (searchType==="1"&&value) || (searchType==="2"&&!value);
-			tbody.rows[i][matches ? 'removeClass' : 'addClass']('booleanFilterInvalid');
-		}
-	};
-	/**
-	 * Apply numeric filter.
-	 * Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
-	 * @param {number} column - order number of searched column
-	 * @param {string} compareValue - value to compare to (can be "")
-	 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
-	 */
-	this.filterNumeric = function(column, compareValue, cmp){
-		var tbody = this.tableContainer.querySelector("tbody");
-		for(var i=0;i<tbody.rows.length;i++){
-			var value = parseInt(tbody.rows[i].cells[column].querySelector("input").value);
-			var matches = (value==="" || (value-compareValue)*cmp >= 0);
-			tbody.rows[i][matches ? 'removeClass' : 'addClass']('numericFilterInvalid'+cmp);
-		}
-	};
-	/**
-	 * Apply date filter.
-	 * Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
-	 * @param {number} column - order number of searched column
-	 * @param {string} compareValue - value to compare to (can be "")
-	 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
-	 */
-	this.filterDate = function(column, compareValue, cmp){
-		var tbody = this.tableContainer.querySelector("tbody");
-		for(var i=0;i<tbody.rows.length;i++){
-			var value = tbody.rows[i].cells[column].textContent;
-			if(!value){
-				value = tbody.rows[i].cells[column].querySelector("input").value;
+			if (!("h" in this.data.cols[j])) r.add(c);
+		  }
+		  
+		  o.add(tbody=document.createElement("tbody"));
+		  for (var i=0;i<this.data.rows.length;i++) {
+			tbody.add(r=tfw.tr({id:this.data.rows[i].id}));
+			if (this.rowEdit) {
+			  r.addEventListener("click", function(e){
+				dynamicTable.rowEdit(e.currentTarget.value);
+			  });
+			  r.style.cursor="pointer";          
 			}
-			var matches = (value==="" || (cmp>=0 && value>=compareValue) || (cmp<=0 && value<=compareValue));
-			tbody.rows[i][matches ? 'removeClass' : 'addClass']('dateFilterInvalid'+cmp);
-		}
-	};
-	/**
-	 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
-	 * Requires .hideColumn{display:none}
-	 * @param {number} column - order number of column
-	 * @todo Save user preferences (to localStorage/server)
-	 */
-	this.toggleColumn = function(column){
-		var cells = this.tableContainer.querySelectorAll("tbody td:nth-child("+(parseInt(column)+1)+"), th:nth-child("+(parseInt(column)+1)+")");
-		for(var i=0;i<cells.length;i++){
-			cells[i].toggleClass("hideColumn");
-		}
-	};
+			r.value=i;//???
+			for (var j=0;j<this.data.cols.length;j++) if (!("h" in this.data.cols[j])) {
+			  var params={}, val = this.data.rows[i].cols[j];
+			  if("type" in this.data.cols[j]){
+				  var id = "tfwDynamicTable-"+i+"-"+j;
+				  if(this.data.cols[j].type == "checkbox"){
+					  params.children = [tfw.checkbox({id:id,value:(val?1:0),text:(val ? this.labelTrue : this.labelFalse),'disabled':true})]
+				  }
+				  else if(this.data.cols[j].type == "number"){
+					  params.children = [tfw.input({type:"number",id:id,value:val,'disabled':true})];
+				  }
+				  else if(this.data.cols[j].type == "date"){
+					  params.children = [tfw.input({type:"text",id:id,value:val.match(/\d{4,}-\d{2}-\d{2}/)[0],'disabled':true})];
+				  }
+				  else{
+					  params.innerHTML = val;
+				  }
+			  }
+			  r.add(c=tfw.td(params));
+			}
+		  }
+		  var tfoot, tfootTd;
+		  o.add(tfoot=document.createElement("tfoot"));
+		  tfoot.add(tfw.tr({children:[tfootTd=tfw.td({colspan:visibleColsCount})]}));
+		  for (var j=0;j<this.data.cols.length;j++) {
+			if(this.data.cols[j].hidden){
+				continue;
+			}
+			var checkbox = tfw.checkbox({text:this.data.cols[j].name,value:1,onchange:function(){dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));}});
+			checkbox.setAttribute("data-filter-col", j);
+			tfootTd.add(checkbox);
+		  }
+		  this.toggleReorder();
+		};
+		/**
+		 * Apply sorting by values (text without HTML) of a column.
+		 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
+		 * Overrides style attribute of TR elements inside TBODY.
+		 * @param {Object} event - Event object
+		 */
+		this.sort = function(event){
+			var tbody=this.closest("table").querySelector("tbody"), col=this.getAttribute("data-sort-col"), asc=(this.getAttribute("data-sort-order")=="asc" ? 1 : -1);
+			var rows = tbody.rows, rlen = rows.length, arr = new Array(), i;
+			for(i = 0; i < rlen; i++){
+				var val = rows[i].cells[col].textContent;
+				if(!val){
+					val = rows[i].cells[col].querySelector("input, select").value;
+				}
+				arr[i] = {id:rows[i].id,value:val};
+			}
+			// sort the array by the specified column number (col) and order (asc)
+			arr.sort(function(a, b){
+				return (a.value == b.value) ? 0 : ((a.value > b.value) ? asc : (-1*asc));
+			});
+			for(i = 0; i < rlen; i++){
+				tbody.appendChild(rows.namedItem(arr[i].id));
+			}
+		};
+		/**
+		 * Apply search filter (case insensitive).
+		 * Requires .searchFilterInvalid{display:none}
+		 * @param {number} column - order number of searched column
+		 * @param {string} value - searched string
+		 * @param {number} [searchType=2] - type of search (1 = starts with, 2 = includes)
+		 */
+		this.filterSearch = function(column, value, searchType){
+			var tbody = this.tableContainer.querySelector("tbody");
+			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
+			for(var i=0;i<tbody.rows.length;i++){
+				var matches = value=="" || tbody.rows[i].cells[column].textContent.toLowerCase()[searchFunc](value.toLowerCase());
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('searchFilterInvalid');
+			}
+		};
+		/**
+		 * Apply boolean filter.
+		 * Requires .booleanFilterInvalid{display:none}
+		 * @param {number} column - order number of searched column
+		 * @param {string} searchType - search type ("0" = both, "1" = only true, "2" = only false)
+		 */
+		this.filterBoolean = function(column, searchType){
+			var tbody = this.tableContainer.querySelector("tbody");
+			for(var i=0;i<tbody.rows.length;i++){
+				var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
+				var matches = (searchType==="0") || (searchType==="1"&&value) || (searchType==="2"&&!value);
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('booleanFilterInvalid');
+			}
+		};
+		/**
+		 * Apply numeric filter.
+		 * Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
+		 * @param {number} column - order number of searched column
+		 * @param {string} compareValue - value to compare to (can be "")
+		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
+		 */
+		this.filterNumeric = function(column, compareValue, cmp){
+			var tbody = this.tableContainer.querySelector("tbody");
+			for(var i=0;i<tbody.rows.length;i++){
+				var value = parseInt(tbody.rows[i].cells[column].querySelector("input").value);
+				var matches = (value==="" || (value-compareValue)*cmp >= 0);
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('numericFilterInvalid'+cmp);
+			}
+		};
+		/**
+		 * Apply date filter.
+		 * Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
+		 * @param {number} column - order number of searched column
+		 * @param {string} compareValue - value to compare to (can be "")
+		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
+		 */
+		this.filterDate = function(column, compareValue, cmp){
+			var tbody = this.tableContainer.querySelector("tbody");
+			for(var i=0;i<tbody.rows.length;i++){
+				var value = tbody.rows[i].cells[column].textContent;
+				if(!value){
+					value = tbody.rows[i].cells[column].querySelector("input").value;
+				}
+				var matches = (value==="" || (cmp>=0 && value>=compareValue) || (cmp<=0 && value<=compareValue));
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('dateFilterInvalid'+cmp);
+			}
+		};
+		/**
+		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
+		 * Requires .hideColumn{display:none}
+		 * @param {number} column - order number of column
+		 * @todo Save user preferences (to localStorage/server)
+		 */
+		this.toggleColumn = function(column){
+			var cells = this.tableContainer.querySelectorAll("tbody td:nth-child("+(parseInt(column)+1)+"), th:nth-child("+(parseInt(column)+1)+")");
+			for(var i=0;i<cells.length;i++){
+				cells[i].toggleClass("hideColumn");
+			}
+		};
+  },
+  dynamicTable:function(params){
+	  var t = new tfw.dynamicTableClass({id:"a"});
+	  var ret = t.tableContainer;
+	  for(prop in t){
+		  ret[prop] = t[prop];
+	  }
+	  return ret;
   },
   /**
    * Class for enhancing date input fields. Requires CSS styling.
