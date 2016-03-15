@@ -1227,6 +1227,7 @@ var tfw={
 	 * @see AJAX_LOADER
 	 */
   dynamicTable:function(params){
+  if ("id" in params) this.tableId=params.id;
 	/**
 	 * DIV containing the table.
 	 * @var {Object}
@@ -1313,7 +1314,7 @@ var tfw={
 	 */
 	this.reload = function(){
 	  that=this;
-	  tfw.ajaxGet({url:"https://editor.triobo.com/v36/dynamicTable.php?"+this.url, onload:function(hr){
+	  tfw.ajaxGet({url:"data.php?t="+this.tableId+"&a=load", onload:function(hr){
 		that.data=tfw.decodeJSON(hr.responseText);
 		that.paint();
 		}, autohide: 0});
