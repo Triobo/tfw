@@ -32,31 +32,30 @@ Triobo. This is a singleton (a single "instance" of a "class").
 
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
-    * [.dynamicTable](#tfw.dynamicTable)
-        * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
+    * [.dynamicTableClass](#tfw.dynamicTableClass)
+        * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
         * _instance_
-            * [.tableContainer](#tfw.dynamicTable+tableContainer) : <code>Object</code>
-            * [.url](#tfw.dynamicTable+url) : <code>string</code>
-            * [.data](#tfw.dynamicTable+data) : <code>Object</code>
-            * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
-            * [.ascSortingSymbol](#tfw.dynamicTable+ascSortingSymbol) : <code>string</code>
-            * [.descSortingSymbol](#tfw.dynamicTable+descSortingSymbol) : <code>string</code>
-            * [.labelTrue](#tfw.dynamicTable+labelTrue) : <code>string</code>
-            * [.labelFalse](#tfw.dynamicTable+labelFalse) : <code>string</code>
-            * [.getTable()](#tfw.dynamicTable+getTable) ⇒ <code>Object</code>
-            * [.reload()](#tfw.dynamicTable+reload)
-            * [.reorderEnabled()](#tfw.dynamicTable+reorderEnabled) ⇒ <code>boolean</code>
-            * [.toggleReorder()](#tfw.dynamicTable+toggleReorder)
-            * [.orderChange(element)](#tfw.dynamicTable+orderChange)
-            * [.paint()](#tfw.dynamicTable+paint)
-            * [.sort(event)](#tfw.dynamicTable+sort)
-            * [.filterSearch(column, value, [searchType])](#tfw.dynamicTable+filterSearch)
-            * [.filterBoolean(column, searchType)](#tfw.dynamicTable+filterBoolean)
-            * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
-            * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTable+filterDate)
-            * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
+            * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
+            * [.url](#tfw.dynamicTableClass+url) : <code>string</code>
+            * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
+            * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
+            * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
+            * [.labelTrue](#tfw.dynamicTableClass+labelTrue) : <code>string</code>
+            * [.labelFalse](#tfw.dynamicTableClass+labelFalse) : <code>string</code>
+            * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
+            * [.reload()](#tfw.dynamicTableClass+reload)
+            * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
+            * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+            * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
+            * [.paint()](#tfw.dynamicTableClass+paint)
+            * [.sort(event)](#tfw.dynamicTableClass+sort)
+            * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
+            * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
+            * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
+            * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
+            * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
         * _inner_
-            * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
+            * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
     * [.calendar](#tfw.calendar)
         * [new calendar(input)](#new_tfw.calendar_new)
         * _static_
@@ -83,17 +82,19 @@ Triobo. This is a singleton (a single "instance" of a "class").
     * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>Object</code>
     * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
     * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
+    * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>Object</code>
 
 <a name="new_tfw_new"></a>
 ### new tfw()
 Triobo framework. This is a singleton (a single "instance" of a "class").
 
-<a name="tfw.dynamicTable"></a>
-### tfw.dynamicTable
+<a name="tfw.dynamicTableClass"></a>
+### tfw.dynamicTableClass
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **See**: AJAX_LOADER  
 **Todo**
 
+- [ ] Don't bind rowEdit to onclick of TRs, show an edit ([i]) icon after each row (if set)
 - [ ] View preferences (width?, order of columns)
 - [ ] Allow editing of simple cells
 - [ ] Implement server parameter t - name of table
@@ -101,63 +102,63 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 - [ ] Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 
 
-* [.dynamicTable](#tfw.dynamicTable)
-    * [new dynamicTable(params)](#new_tfw.dynamicTable_new)
+* [.dynamicTableClass](#tfw.dynamicTableClass)
+    * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
     * _instance_
-        * [.tableContainer](#tfw.dynamicTable+tableContainer) : <code>Object</code>
-        * [.url](#tfw.dynamicTable+url) : <code>string</code>
-        * [.data](#tfw.dynamicTable+data) : <code>Object</code>
-        * [.rowEdit](#tfw.dynamicTable+rowEdit) : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
-        * [.ascSortingSymbol](#tfw.dynamicTable+ascSortingSymbol) : <code>string</code>
-        * [.descSortingSymbol](#tfw.dynamicTable+descSortingSymbol) : <code>string</code>
-        * [.labelTrue](#tfw.dynamicTable+labelTrue) : <code>string</code>
-        * [.labelFalse](#tfw.dynamicTable+labelFalse) : <code>string</code>
-        * [.getTable()](#tfw.dynamicTable+getTable) ⇒ <code>Object</code>
-        * [.reload()](#tfw.dynamicTable+reload)
-        * [.reorderEnabled()](#tfw.dynamicTable+reorderEnabled) ⇒ <code>boolean</code>
-        * [.toggleReorder()](#tfw.dynamicTable+toggleReorder)
-        * [.orderChange(element)](#tfw.dynamicTable+orderChange)
-        * [.paint()](#tfw.dynamicTable+paint)
-        * [.sort(event)](#tfw.dynamicTable+sort)
-        * [.filterSearch(column, value, [searchType])](#tfw.dynamicTable+filterSearch)
-        * [.filterBoolean(column, searchType)](#tfw.dynamicTable+filterBoolean)
-        * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTable+filterNumeric)
-        * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTable+filterDate)
-        * [.toggleColumn(column)](#tfw.dynamicTable+toggleColumn)
+        * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
+        * [.url](#tfw.dynamicTableClass+url) : <code>string</code>
+        * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
+        * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
+        * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
+        * [.labelTrue](#tfw.dynamicTableClass+labelTrue) : <code>string</code>
+        * [.labelFalse](#tfw.dynamicTableClass+labelFalse) : <code>string</code>
+        * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
+        * [.reload()](#tfw.dynamicTableClass+reload)
+        * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
+        * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+        * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
+        * [.paint()](#tfw.dynamicTableClass+paint)
+        * [.sort(event)](#tfw.dynamicTableClass+sort)
+        * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
+        * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
+        * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
+        * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
+        * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
     * _inner_
-        * [~rowEdit](#tfw.dynamicTable..rowEdit) : <code>function</code>
+        * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
 
-<a name="new_tfw.dynamicTable_new"></a>
-#### new dynamicTable(params)
+<a name="new_tfw.dynamicTableClass_new"></a>
+#### new dynamicTableClass(params)
 Class for creating dynamic tables.
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>Object</code> | table parameters |
-| [params.id] | <code>string</code> | table ID (name) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | table parameters |
+| [params.id] | <code>string</code> | <code>&quot;\&quot;dynamicTable\&quot;&quot;</code> | Table ID (name) that identifies the table (in database, HTML IDs) |
+| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function that is fired when row editing is triggered. |
 
 **Example**  
 ```js
-function myRowEditFunction(order){	// ...}var table = new tfw.dynamicTable({id:"table1"});document.body.appendChild(table.getTable());table.url = "action=download&id=8"; //optionaltable.rowEdit = myRowEditFunction; //optionaltable.reload();
+function myRowEditFunction(order){	// ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   rowEdit: myRowEditFunction  } ));
 ```
-<a name="tfw.dynamicTable+tableContainer"></a>
-#### dynamicTable.tableContainer : <code>Object</code>
+<a name="tfw.dynamicTableClass+tableContainer"></a>
+#### dynamicTableClass.tableContainer : <code>Object</code>
 DIV containing the table.
 
-**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Read only**: true  
-<a name="tfw.dynamicTable+url"></a>
-#### dynamicTable.url : <code>string</code>
-URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling [reload()](#tfw.dynamicTable+reload).
+<a name="tfw.dynamicTableClass+url"></a>
+#### dynamicTableClass.url : <code>string</code>
+URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling [reload()](#tfw.dynamicTableClass+reload).
 
-**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Access:** public  
-<a name="tfw.dynamicTable+data"></a>
-#### dynamicTable.data : <code>Object</code>
-Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called to fill this.
+<a name="tfw.dynamicTableClass+data"></a>
+#### dynamicTableClass.data : <code>Object</code>
+Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be called to fill this.
 
-**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>null</code>  
 **Access:** public  
 **Read only**: true  
@@ -177,55 +178,44 @@ Data obtained from server. [reload()](#tfw.dynamicTable+reload) has to be called
 | rows[].id | <code>number</code> |  | row ID |
 | rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
-<a name="tfw.dynamicTable+rowEdit"></a>
-#### dynamicTable.rowEdit : <code>[rowEdit](#tfw.dynamicTable..rowEdit)</code>
-Function that is fired when row editing is triggered.
-
-**Kind**: instance property of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-**Default**: <code>null</code>  
-**Access:** public  
-**Todo**
-
-- [ ] Don't bind to onclick of TRs, show an edit ([i]) icon after each row (if set)
-
-<a name="tfw.dynamicTable+ascSortingSymbol"></a>
-#### dynamicTable.ascSortingSymbol : <code>string</code>
+<a name="tfw.dynamicTableClass+ascSortingSymbol"></a>
+#### dynamicTableClass.ascSortingSymbol : <code>string</code>
 Ascending sorting symbol.
 
-**Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>&quot;&amp;darr;&quot;</code>  
-<a name="tfw.dynamicTable+descSortingSymbol"></a>
-#### dynamicTable.descSortingSymbol : <code>string</code>
+<a name="tfw.dynamicTableClass+descSortingSymbol"></a>
+#### dynamicTableClass.descSortingSymbol : <code>string</code>
 Descending sorting symbol.
 
-**Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>&quot;&amp;uarr;&quot;</code>  
-<a name="tfw.dynamicTable+labelTrue"></a>
-#### dynamicTable.labelTrue : <code>string</code>
+<a name="tfw.dynamicTableClass+labelTrue"></a>
+#### dynamicTableClass.labelTrue : <code>string</code>
 Default label for true.
 
-**Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>&quot;Yes&quot;</code>  
-<a name="tfw.dynamicTable+labelFalse"></a>
-#### dynamicTable.labelFalse : <code>string</code>
+<a name="tfw.dynamicTableClass+labelFalse"></a>
+#### dynamicTableClass.labelFalse : <code>string</code>
 Default label for false.
 
-**Kind**: instance constant of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>&quot;No&quot;</code>  
-<a name="tfw.dynamicTable+getTable"></a>
-#### dynamicTable.getTable() ⇒ <code>Object</code>
+<a name="tfw.dynamicTableClass+getTable"></a>
+#### dynamicTableClass.getTable() ⇒ <code>Object</code>
 Get table container (for inserting into document).
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>Object</code> - Returns the table container (HTML element).  
-<a name="tfw.dynamicTable+reload"></a>
-#### dynamicTable.reload()
-Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTable+paint) the table.
+<a name="tfw.dynamicTableClass+reload"></a>
+#### dynamicTableClass.reload()
+Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTableClass+paint) the table.
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**
 
-- tfw.dynamicTable#paint
+- tfw.dynamicTableClass#paint
 - tfw.decodeJSON
 
 **Todo**
@@ -233,22 +223,22 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 - [ ] Don't repaint table, just change values.
 - [ ] Don't use hardcoded base URL
 
-<a name="tfw.dynamicTable+reorderEnabled"></a>
-#### dynamicTable.reorderEnabled() ⇒ <code>boolean</code>
+<a name="tfw.dynamicTableClass+reorderEnabled"></a>
+#### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
 Test if no filters are applied and table is sorted by column of type 'order'.
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
-<a name="tfw.dynamicTable+toggleReorder"></a>
-#### dynamicTable.toggleReorder()
+<a name="tfw.dynamicTableClass+toggleReorder"></a>
+#### dynamicTableClass.toggleReorder()
 Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
-<a name="tfw.dynamicTable+orderChange"></a>
-#### dynamicTable.orderChange(element)
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+<a name="tfw.dynamicTableClass+orderChange"></a>
+#### dynamicTableClass.orderChange(element)
 Reflect a change in order in the table.
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
 - [ ] Reflect on server
@@ -258,32 +248,32 @@ Reflect a change in order in the table.
 | --- | --- | --- |
 | element | <code>Object</code> | row that was dropped (HTML element) |
 
-<a name="tfw.dynamicTable+paint"></a>
-#### dynamicTable.paint()
-Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTable+data).If [rowEdit](#tfw.dynamicTable+rowEdit) is set, it will be fired when a row is clicked.Assumes that there is only 1 order column and that data are sorted by that column.
+<a name="tfw.dynamicTableClass+paint"></a>
+#### dynamicTableClass.paint()
+Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTableClass+data).If [rowEdit](tfw.dynamicTableClass#rowEdit) is set, it will be fired when a row is clicked.Assumes that there is only 1 order column and that data are sorted by that column.
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
 - [ ] Enable localization
 - [ ] Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
 
-<a name="tfw.dynamicTable+sort"></a>
-#### dynamicTable.sort(event)
+<a name="tfw.dynamicTableClass+sort"></a>
+#### dynamicTableClass.sort(event)
 Apply sorting by values (text without HTML) of a column.Inspired by ProGM's solution from [Stack Exchange](http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript)Overrides style attribute of TR elements inside TBODY.
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | event | <code>Object</code> | Event object |
 
-<a name="tfw.dynamicTable+filterSearch"></a>
-#### dynamicTable.filterSearch(column, value, [searchType])
+<a name="tfw.dynamicTableClass+filterSearch"></a>
+#### dynamicTableClass.filterSearch(column, value, [searchType])
 Apply search filter (case insensitive).Requires .searchFilterInvalid{display:none}
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -291,22 +281,22 @@ Apply search filter (case insensitive).Requires .searchFilterInvalid{display:no
 | value | <code>string</code> |  | searched string |
 | [searchType] | <code>number</code> | <code>2</code> | type of search (1 = starts with, 2 = includes) |
 
-<a name="tfw.dynamicTable+filterBoolean"></a>
-#### dynamicTable.filterBoolean(column, searchType)
+<a name="tfw.dynamicTableClass+filterBoolean"></a>
+#### dynamicTableClass.filterBoolean(column, searchType)
 Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | column | <code>number</code> | order number of searched column |
 | searchType | <code>string</code> | search type ("0" = both, "1" = only true, "2" = only false) |
 
-<a name="tfw.dynamicTable+filterNumeric"></a>
-#### dynamicTable.filterNumeric(column, compareValue, cmp)
+<a name="tfw.dynamicTableClass+filterNumeric"></a>
+#### dynamicTableClass.filterNumeric(column, compareValue, cmp)
 Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -314,11 +304,11 @@ Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{d
 | compareValue | <code>string</code> | value to compare to (can be "") |
 | cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
 
-<a name="tfw.dynamicTable+filterDate"></a>
-#### dynamicTable.filterDate(column, compareValue, cmp)
+<a name="tfw.dynamicTableClass+filterDate"></a>
+#### dynamicTableClass.filterDate(column, compareValue, cmp)
 Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -326,11 +316,11 @@ Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:no
 | compareValue | <code>string</code> | value to compare to (can be "") |
 | cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
 
-<a name="tfw.dynamicTable+toggleColumn"></a>
-#### dynamicTable.toggleColumn(column)
+<a name="tfw.dynamicTableClass+toggleColumn"></a>
+#### dynamicTableClass.toggleColumn(column)
 Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideColumn{display:none}
 
-**Kind**: instance method of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
 - [ ] Save user preferences (to localStorage/server)
@@ -340,11 +330,11 @@ Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideCo
 | --- | --- | --- |
 | column | <code>number</code> | order number of column |
 
-<a name="tfw.dynamicTable..rowEdit"></a>
-#### dynamicTable~rowEdit : <code>function</code>
+<a name="tfw.dynamicTableClass..rowEdit"></a>
+#### dynamicTableClass~rowEdit : <code>function</code>
 Function that handles row editing.
 
-**Kind**: inner typedef of <code>[dynamicTable](#tfw.dynamicTable)</code>  
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -675,6 +665,18 @@ Decode JSON data, show error in case they are invalid.
 | Param | Type | Description |
 | --- | --- | --- |
 | json | <code>string</code> | JSON encoded data |
+
+<a name="tfw.dynamicTable"></a>
+### tfw.dynamicTable(params) ⇒ <code>Object</code>
+Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.Class instance's properties are mirrored into the HTML element.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>Object</code> - table (HTML element)  
+**See**: tfw.dynamicTableClass  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | table parameters (see [dynamicTableClass](#tfw.dynamicTableClass)) |
 
 <a name="prvek"></a>
 ## prvek

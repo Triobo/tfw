@@ -6,8 +6,7 @@ function init() {
   main.add(tfw.button({text:"Otevři dialog",action:testovaciDialog}));
   
   var table;
-  main.add(table=tfw.dynamicTable({id:"table1", url:"t=test&a=load"}));
-  //table.reload();
+  main.add(table=tfw.dynamicTable({id:"table1"}));
   
   tfw.calendar.placeCalendar = function(cal, input){
 	input.parentNode.insertBefore(cal, input);

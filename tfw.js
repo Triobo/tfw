@@ -1208,26 +1208,34 @@ var tfw={
 	/**
 	 * Class for creating dynamic tables.
 	 * @class
+	 * @todo Don't bind rowEdit to onclick of TRs, show an edit ([i]) icon after each row (if set)
 	 * @todo View preferences (width?, order of columns)
 	 * @todo Allow editing of simple cells
 	 * @todo Implement server parameter t - name of table
 	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
 	 * @todo Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 	 * @param {Object} params - table parameters
-	 * @param {string} [params.id] - table ID (name)
+	 * @param {string} [params.id="dynamicTable"] - Table ID (name) that identifies the table (in database, HTML IDs)
+	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function that is fired when row editing is triggered.
 	 * @example
 	 * function myRowEditFunction(order){
 	 * 	// ...
 	 * }
-	 * var table = new tfw.dynamicTable({id:"table1"});
-	 * document.body.appendChild(table.getTable());
-	 * table.url = "action=download&id=8"; //optional
-	 * table.rowEdit = myRowEditFunction; //optional
-	 * table.reload();
+	 * var table = document.body.appendChild(
+	 *  tfw.dynamicTable(
+	 *   {
+	 *    id: "table1",
+	 *    rowEdit: myRowEditFunction
+	 *   }
+	 *  )
+	 * );
 	 * @see AJAX_LOADER
 	 */
 	dynamicTableClass:function(params){
-		if ("id" in params) this.tableId=params.id;
+		/**
+		 * @private
+		 */
+		var tableId = ("id" in params) ? params.id : "dynamicTable";
 		/**
 		 * DIV containing the table.
 		 * @var {Object}
@@ -1260,13 +1268,13 @@ var tfw={
 		 */
 		this.labelFalse = "No";
 		/**
-		 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTable#reload|reload()}.
+		 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTableClass#reload|reload()}.
 		 * @var {string}
 		 * @public
 		 */
 		this.url = "";
 		/**
-		 * Data obtained from server. {@link tfw.dynamicTable#reload|reload()} has to be called to fill this.
+		 * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
 		 * @var {Object}
 		 * @default null
 		 * @public
@@ -1286,17 +1294,13 @@ var tfw={
 		this.data = null;
 		/**
 		 * Function that handles row editing.
-		 * @callback tfw.dynamicTable~rowEdit
+		 * @callback tfw.dynamicTableClass~rowEdit
 		 * @param {number} order - order of the row being edited
 		 */
 		/**
-		 * Function that is fired when row editing is triggered.
-		 * @var {tfw.dynamicTable~rowEdit}
-		 * @default null
-		 * @public
-		 * @todo Don't bind to onclick of TRs, show an edit ([i]) icon after each row (if set)
+		 * @private
 		 */
-		this.rowEdit = null;
+		var rowEdit = ("rowEdit" in params) ? params.rowEdit : null;
 		/** 
 		 * Get table container (for inserting into document).
 		 * @returns {Object} Returns the table container (HTML element).
@@ -1306,15 +1310,15 @@ var tfw={
 		};
 		/** 
 		 * Reload (or load) data from server.
-		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTable#paint|paints} the table.
-		 * @see tfw.dynamicTable#paint
+		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTableClass#paint|paints} the table.
+		 * @see tfw.dynamicTableClass#paint
 		 * @see tfw.decodeJSON
 		 * @todo Don't repaint table, just change values.
 		 * @todo Don't use hardcoded base URL
 		 */
 		this.reload = function(){
 		  that=this;
-		  tfw.ajaxGet({url:"data.php?t="+this.tableId+"&a=load", onload:function(hr){
+		  tfw.ajaxGet({url:"data.php?t="+tableId+"&a=load", onload:function(hr){
 			that.data=tfw.decodeJSON(hr.responseText);
 			that.paint();
 			}, autohide: 0});
@@ -1395,8 +1399,8 @@ var tfw={
 		
 		/** 
 		 * Refresh the content of the table using data gotten by (re)loading.
-		 * Empties the table and recreates it using {@link tfw.dynamicTable#data|data}.
-		 * If {@link tfw.dynamicTable#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
+		 * Empties the table and recreates it using {@link tfw.dynamicTableClass#data|data}.
+		 * If {@link tfw.dynamicTableClass#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
 		 * Assumes that there is only 1 order column and that data are sorted by that column.
 		 * @listens onclick
 		 * @listens onkeyup
@@ -1698,12 +1702,20 @@ var tfw={
 			}
 		};
   },
+  /**
+   * Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
+   * Class instance's properties are mirrored into the HTML element.
+   * @param {Object} params - table parameters (see {@link tfw.dynamicTableClass})
+   * @return {Object} table (HTML element)
+   * @see tfw.dynamicTableClass
+   */
   dynamicTable:function(params){
 	  var t = new tfw.dynamicTableClass({id:"a"});
 	  var ret = t.tableContainer;
 	  for(prop in t){
 		  ret[prop] = t[prop];
 	  }
+	  ret.reload();
 	  return ret;
   },
   /**
