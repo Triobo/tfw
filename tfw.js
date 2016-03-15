@@ -1422,8 +1422,9 @@ var tfw={
 				  o.addEventListener("click", function(event){
 					  var tbody = dynamicTable.tableContainer.querySelector("tbody");
 					  var col = event.target.getAttribute("data-sort-col");
+					  var order = event.target.getAttribute("data-sort-order");
 					  if(col){
-						  sortedByOrder = (dynamicTable.data.cols[col].type == "order");
+						  sortedByOrder = (dynamicTable.data.cols[col].type == "order" && order == 'asc');
 					  }
 					  dynamicTable.toggleReorder();
 				  });
