@@ -419,7 +419,7 @@ var tfw = {
             x.itemHeight = 20;
         if (n.onchange)
             x.onchange = n.onchange;
-        x.onmousedown = neVychoziAkce;
+        x.onmousedown = function(e){e.preventDefault();};
         x.onclick = function () {
             var b;
             desktop.newLayer({
