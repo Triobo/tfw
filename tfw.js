@@ -2090,9 +2090,7 @@ var tfw = {
 	 * @see tfw.dynamicTableClass
 	 */
 	dynamicTable : function (params) {
-		var t = new tfw.dynamicTableClass({
-				id : "a"
-			});
+		var t = new tfw.dynamicTableClass(params);
 		var ret = t.tableContainer;
 		for (prop in t) {
 			ret[prop] = t[prop];
