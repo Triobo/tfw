@@ -48,7 +48,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
             * [.paint()](#tfw.dynamicTableClass+paint)
-            * [.sort(event)](#tfw.dynamicTableClass+sort)
+            * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
             * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
             * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
@@ -118,7 +118,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint()](#tfw.dynamicTableClass+paint)
-        * [.sort(event)](#tfw.dynamicTableClass+sort)
+        * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
         * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
         * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
@@ -260,14 +260,15 @@ Refresh the content of the table using data gotten by (re)loading.Empties the t
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
 
 <a name="tfw.dynamicTableClass+sort"></a>
-#### dynamicTableClass.sort(event)
-Apply sorting by values (text without HTML) of a column.Inspired by ProGM's solution from [Stack Exchange](http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript)Overrides style attribute of TR elements inside TBODY.
+#### dynamicTableClass.sort(obj, dynamicTable)
+Apply sorting by values (text without HTML) of a column.Text fields are sorted locale aware, with empty strings always last.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| event | <code>Object</code> | Event object |
+| obj | <code>Object</code> | sorting button that triggered the event |
+| dynamicTable | <code>dynamicTableClass</code> | reference to "this" |
 
 <a name="tfw.dynamicTableClass+filterSearch"></a>
 #### dynamicTableClass.filterSearch(column, value, [searchType])

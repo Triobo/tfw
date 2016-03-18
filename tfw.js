@@ -9,6 +9,10 @@
  */
 var AJAX_LOADER = "<div class='tfwDivContentLoader'><span></span></div>";
 
+function cmp(a, b){
+	return a < b ? -1 : a > b;
+}
+
 function $(id) {
     var x = document.getElementById(id);
     return x;
@@ -1886,17 +1890,17 @@ var tfw = {
 				if ("sort" in this.data.cols[j] && this.data.cols[j]) {
 					var b1 = tfw.button({
 							className : 'tfwDtSort',
-							innerHTML : this.descSortingSymbol
+							innerHTML : this.ascSortingSymbol
 						}),
 					b2 = tfw.button({
 							className : 'tfwDtSort',
-							innerHTML : this.ascSortingSymbol
+							innerHTML : this.descSortingSymbol
 						});
-					b1.setAttribute('data-sort-order', 'desc');
-					b2.setAttribute('data-sort-order', 'asc');
+					b1.setAttribute('data-sort-order', 'asc');
+					b2.setAttribute('data-sort-order', 'desc');
 					var sortingButtons = [b1, b2];
 					for (var i = 0; i < sortingButtons.length; i++) {
-						sortingButtons[i].onclick = this.sort;
+						sortingButtons[i].onclick = function(event){dynamicTable.sort(this, dynamicTable);};
 						sortingButtons[i].setAttribute('data-sort-col', j);
 						c.add(sortingButtons[i]);
 					}
@@ -1977,32 +1981,43 @@ var tfw = {
 		};
 		/**
 		 * Apply sorting by values (text without HTML) of a column.
-		 * Inspired by ProGM's solution from {@link http://codereview.stackexchange.com/questions/37632/sorting-an-html-table-with-javascript|Stack Exchange}
-		 * Overrides style attribute of TR elements inside TBODY.
-		 * @param {Object} event - Event object
+		 * Text fields are sorted locale aware, with empty strings always last.
+		 * @param {Object} obj - sorting button that triggered the event
+		 * @param {dynamicTableClass} dynamicTable - reference to "this"
 		 */
-		this.sort = function (event) {
-			var tbody = this.closest("table").querySelector("tbody"),
-			col = this.getAttribute("data-sort-col"),
-			asc = (this.getAttribute("data-sort-order") == "asc" ? 1 : -1);
+		this.sort = function (obj, dynamicTable) {
+			var tbody = obj.closest("table").querySelector("tbody"),
+			col = obj.getAttribute("data-sort-col"),
+			asc = (obj.getAttribute("data-sort-order") == "asc" ? 1 : -1);
 			var rows = tbody.rows,
 			rlen = rows.length,
 			arr = new Array(),
 			i;
 			for (i = 0; i < rlen; i++) {
-				var val = rows[i].cells[col].textContent;
+				var val = rows[i].cells[col].textContent.trim();
 				if (!val) {
-					val = rows[i].cells[col].querySelector("input, select").value;
+					var input = rows[i].cells[col].querySelector("input, select");
+					if(input != null){
+						val = input.value;
+					}
 				}
 				arr[i] = {
 					id : rows[i].id,
 					value : val
 				};
 			}
-			// sort the array by the specified column number (col) and order (asc)
-			arr.sort(function (a, b) {
-				return (a.value == b.value) ? 0 : ((a.value > b.value) ? asc : (-1 * asc));
-			});
+			if(dynamicTable.data.cols[col].type == "text"){
+				arr.sort(function (a, b) {
+					return (a.value === "" && b.value === "") ? (cmp(a.id, b.id) * asc) : ((a.value === "") ? 1 : ((b.value === "") ? -1 : ((a.value.localeCompare(b.value) || cmp(a.id, b.id)) * asc)));
+				});
+			}
+			else{
+				arr.sort(function (a, b) {
+					//return (a.value == b.value) ? 0 : ((a.value > b.value) ? asc : (-1 * asc));
+					return cmp(a.value, b.value) * asc;
+				});
+			}
+			
 			for (i = 0; i < rlen; i++) {
 				tbody.appendChild(rows.namedItem(arr[i].id));
 			}
