@@ -210,6 +210,7 @@ var desktop = {
 /**
  * Triobo framework. This is a singleton (a single "instance" of a "class").
  * @class
+ * @todo http://www.w3schools.com/js/js_reserved.asp
  */
 var tfw = {
     /**
@@ -1483,7 +1484,7 @@ var tfw = {
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @todo Don't bind rowEdit to onclick of TRs, show an edit ([i]) icon after each row (if set)
-	 * @todo View preferences (width?, order of columns)
+	 * @todo View preferences (width, order of columns)
 	 * @todo Allow editing of simple cells
 	 * @todo Implement server parameter t - name of table
 	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
@@ -1798,8 +1799,9 @@ var tfw = {
 			o.add(tbody = document.createElement("tbody"));
 			for (var i = 0; i < this.data.rows.length; i++) {
 				tbody.add(r = tfw.tr({
-							id : this.data.rows[i].id
-						}));
+					id: "rowID-"+this.data.rows[i].id
+				}));
+				r.setAttribute("data-rowID", this.data.rows[i].id);
 				if (this.rowEdit) {
 					r.addEventListener("click", function (e) {
 						dynamicTable.rowEdit(e.currentTarget.value);
@@ -2108,6 +2110,7 @@ var tfw = {
 		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
 		 * Requires .hideColumn{display:none}
 		 * @param {number} column - order number of column
+		 * @todo Don't show controls in table footer but in a dialog
 		 * @todo Save user preferences (to localStorage/server)
 		 */
 		this.toggleColumn = function (column) {

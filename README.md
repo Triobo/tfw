@@ -29,6 +29,10 @@ Triobo. This is a singleton (a single "instance" of a "class").
 <a name="tfw"></a>
 ## tfw
 **Kind**: global class  
+**Todo**
+
+- [ ] http://www.w3schools.com/js/js_reserved.asp
+
 
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
@@ -96,7 +100,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Todo**
 
 - [ ] Don't bind rowEdit to onclick of TRs, show an edit ([i]) icon after each row (if set)
-- [ ] View preferences (width?, order of columns)
+- [ ] View preferences (width, order of columns)
 - [ ] Allow editing of simple cells
 - [ ] Implement server parameter t - name of table
 - [ ] Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
@@ -337,6 +341,7 @@ Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideCo
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
+- [ ] Don't show controls in table footer but in a dialog
 - [ ] Save user preferences (to localStorage/server)
 
 
