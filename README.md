@@ -48,6 +48,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
             * [.paint()](#tfw.dynamicTableClass+paint)
+            * [.filter(obj, dynamicTable)](#tfw.dynamicTableClass+filter)
             * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
             * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
@@ -118,6 +119,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint()](#tfw.dynamicTableClass+paint)
+        * [.filter(obj, dynamicTable)](#tfw.dynamicTableClass+filter)
         * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
         * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
@@ -258,6 +260,17 @@ Refresh the content of the table using data gotten by (re)loading.Empties the t
 - [ ] Enable localization
 - [ ] Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
+
+<a name="tfw.dynamicTableClass+filter"></a>
+#### dynamicTableClass.filter(obj, dynamicTable)
+Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| obj | <code>Object</code> | filter button that triggered the event |
+| dynamicTable | <code>dynamicTableClass</code> | reference to "this" |
 
 <a name="tfw.dynamicTableClass+sort"></a>
 #### dynamicTableClass.sort(obj, dynamicTable)

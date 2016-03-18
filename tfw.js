@@ -1679,7 +1679,7 @@ var tfw = {
 			}
 			//serverCall(originalRowOrder, droppedRowOrder, ...)
 		}
-
+		
 		/**
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Empties the table and recreates it using {@link tfw.dynamicTableClass#data|data}.
@@ -1761,133 +1761,13 @@ var tfw = {
 				thead.add(r);
 			}
 
-			var anyFilterAllowed = false;
-			r = tfw.tr({
-					className : 'filters'
-				});
-			for (var j = 0; j < this.data.cols.length; j++) {
-				if (this.data.cols[j].hidden) {
-					continue;
-				}
-				c = document.createElement("th");
-				if (this.data.cols[j].filter) {
-					anyFilterAllowed = true;
-					if (this.data.cols[j].type == "checkbox") {
-						var filter = tfw.select({
-								list : "Both;Yes;No",
-								value : 0,
-								onchange : function () {
-									dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
-								}
-							});
-						filter.setAttribute("data-filter-col", j);
-						c.add(filter);
-					} else if (this.data.cols[j].type == "number") {
-						var minV,
-						maxV;
-						minV = maxV = this.data.rows[0].cols[j];
-						for (var i = 1; i < this.data.rows.length; i++) {
-							if (this.data.rows[i].cols[j] < minV) {
-								minV = this.data.rows[i].cols[j];
-							} else if (this.data.rows[i].cols[j] > maxV) {
-								maxV = this.data.rows[i].cols[j];
-							}
-						}
-						var f1 = tfw.input({
-								type : "number",
-								className : "rangeMin",
-								onchange : function () {
-									var max = this.closest("th").querySelector(".rangeMax");
-									max.min = this.value;
-									if (parseInt(max.value) < parseInt(max.min)) {
-										max.value = max.min;
-										max.onchange();
-									}
-									dynamicTable.filterNumeric(this.getAttribute("data-filter-col"), this.value, 1);
-								},
-								min : minV,
-								max : maxV,
-								value : minV,
-								legend : "From:"
-							});
-						var f2 = tfw.input({
-								type : "number",
-								className : "rangeMax",
-								onchange : function () {
-									var min = this.closest("th").querySelector(".rangeMin");
-									min.max = this.value;
-									if (parseInt(min.value) > parseInt(min.max)) {
-										min.value = min.max;
-										min.onchange();
-									}
-									dynamicTable.filterNumeric(this.getAttribute("data-filter-col"), this.value, -1);
-								},
-								min : minV,
-								max : maxV,
-								value : maxV,
-								legend : "To:"
-							}); ;
-						f1.querySelector(".rangeMin").setAttribute("data-filter-col", j);
-						f2.querySelector(".rangeMax").setAttribute("data-filter-col", j);
-						c.add(f1);
-						c.add(f2);
-					} else if (this.data.cols[j].type == "date") {
-						var minV,
-						maxV;
-						minV = maxV = this.data.rows[0].cols[j];
-						for (var i = 1; i < this.data.rows.length; i++) {
-							if (this.data.rows[i].cols[j] < minV) {
-								minV = this.data.rows[i].cols[j];
-							} else if (this.data.rows[i].cols[j] > maxV) {
-								maxV = this.data.rows[i].cols[j];
-							}
-						}
-						var f1 = tfw.input({
-								type : "text",
-								className : "dateMin",
-								onchange : function () {
-									dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, 1);
-								},
-								value : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
-								legend : "From:"
-							});
-						var f2 = tfw.input({
-								type : "text",
-								className : "dateMax",
-								onchange : function () {
-									dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, -1);
-								},
-								value : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
-								legend : "To:"
-							}); ;
-						c.add(f1);
-						c.add(f2);
-						tfw.calendar(f1.querySelector("input"));
-						tfw.calendar(f2.querySelector("input"));
-						f1.querySelector(".dateMin").setAttribute("data-filter-col", j);
-						f2.querySelector(".dateMax").setAttribute("data-filter-col", j);
-					}
-					/* else if (){
-					} */
-					else {
-						anyFilterAllowed = false;
-					}
-				} else {
-					c.innerHTML = "&nbsp;";
-				}
-				r.add(c);
-			}
-			if (anyFilterAllowed) {
-				thead.add(r);
-			}
-
 			thead.add(r = tfw.tr({className:'headlines'}));
 			for (var j = 0; j < this.data.cols.length; j++) {
 				c = document.createElement("th");
 				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
 				if ("w" in this.data.cols[j])
 					c.style.width = this.data.cols[j].width;
-				if ("sort" in this.data.cols[j] && this.data.cols[j]) {
+				if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
 					var b1 = tfw.button({
 							className : 'tfwDtSort',
 							innerHTML : this.descSortingSymbol
@@ -1904,6 +1784,12 @@ var tfw = {
 						sortingButtons[i].setAttribute('data-sort-col', j);
 						c.add(sortingButtons[i]);
 					}
+				}
+				if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
+					var b = tfw.button({className:'tfwDtFilter'+this.data.cols[j].type,innerHTML:"f",
+						onclick:function(event){dynamicTable.filter(this, dynamicTable);}});
+					b.setAttribute('data-filter-col', j);
+					c.add(b);
 				}
 				if (!("h" in this.data.cols[j]))
 					r.add(c);
@@ -1979,6 +1865,140 @@ var tfw = {
 			}
 			this.toggleReorder();
 		};
+		
+		/**
+		 * Apply filter for values of a column.
+		 * Creates a {@link tfw.dialog|dialog} with filter.
+		 * @param {Object} obj - filter button that triggered the event
+		 * @param {dynamicTableClass} dynamicTable - reference to "this"
+		 */
+		this.filter = function (obj, dynamicTable) {
+			var col = obj.getAttribute("data-filter-col");			
+			if (dynamicTable.data.cols[col].hidden) {
+				console.error("Tried to apply filter on a hidden column.");
+				return;
+			}
+			else if(!"filter" in dynamicTable.data.cols[col] || !dynamicTable.data.cols[col].filter){
+				console.error("Tried to apply filter on a column with no filter.");
+				return;
+			}
+			c = document.createElement("div");
+			var type = dynamicTable.data.cols[col].type;
+			
+			switch(type){
+				case "checkbox":
+					var filter = tfw.select({
+							list : "Both;Yes;No",
+							value : 0,
+							onchange : function () {
+								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
+							}
+						});
+					filter.setAttribute("data-filter-col", col);
+					c.add(filter);
+				break;
+				case "number":
+					var minV,
+					maxV;
+					minV = maxV = dynamicTable.data.rows[0].cols[col];
+					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
+						if (dynamicTable.data.rows[i].cols[col] < minV) {
+							minV = dynamicTable.data.rows[i].cols[col];
+						} else if (dynamicTable.data.rows[i].cols[col] > maxV) {
+							maxV = dynamicTable.data.rows[i].cols[col];
+						}
+					}
+					var f1 = tfw.input({
+							type : "number",
+							className : "rangeMin",
+							onchange : function () {
+								var max = this.closest("th").querySelector(".rangeMax");
+								max.min = this.value;
+								if (parseInt(max.value) < parseInt(max.min)) {
+									max.value = max.min;
+									max.onchange();
+								}
+								dynamicTable.filterNumeric(this.getAttribute("data-filter-col"), this.value, 1);
+							},
+							min : minV,
+							max : maxV,
+							value : minV,
+							legend : "From:"
+						});
+					var f2 = tfw.input({
+							type : "number",
+							className : "rangeMax",
+							onchange : function () {
+								var min = this.closest("th").querySelector(".rangeMin");
+								min.max = this.value;
+								if (parseInt(min.value) > parseInt(min.max)) {
+									min.value = min.max;
+									min.onchange();
+								}
+								dynamicTable.filterNumeric(this.getAttribute("data-filter-col"), this.value, -1);
+							},
+							min : minV,
+							max : maxV,
+							value : maxV,
+							legend : "To:"
+						}); ;
+					f1.querySelector(".rangeMin").setAttribute("data-filter-col", col);
+					f2.querySelector(".rangeMax").setAttribute("data-filter-col", col);
+					c.add(f1);
+					c.add(f2);
+				break;
+				case  "date":
+					var minV,
+					maxV;
+					minV = maxV = dynamicTable.data.rows[0].cols[col];
+					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
+						if (dynamicTable.data.rows[i].cols[col] < minV) {
+							minV = dynamicTable.data.rows[i].cols[col];
+						} else if (dynamicTable.data.rows[i].cols[col] > maxV) {
+							maxV = dynamicTable.data.rows[i].cols[col];
+						}
+					}
+					var f1 = tfw.input({
+							type : "text",
+							className : "dateMin",
+							onchange : function () {
+								dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, 1);
+							},
+							value : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
+							legend : "From:"
+						});
+					var f2 = tfw.input({
+							type : "text",
+							className : "dateMax",
+							onchange : function () {
+								dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, -1);
+							},
+							value : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
+							legend : "To:"
+						}); ;
+					c.add(f1);
+					c.add(f2);
+					tfw.calendar(f1.querySelector("input"));
+					tfw.calendar(f2.querySelector("input"));
+					f1.querySelector(".dateMin").setAttribute("data-filter-col", col);
+					f2.querySelector(".dateMax").setAttribute("data-filter-col", col);
+				break;
+				default:
+					console.error("Tried to apply filter on type that is not supported.");
+					return;
+			}
+			var dlg=tfw.dialog({
+				width:300,
+				height:300,
+				title:"Filter",
+				children:[c],
+				buttons:[
+				  //{text:"Ok",default:1,action:function(){window.alert("ok")}},
+				  {text:"Zavřít",action:desktop.closeTopLayer}
+				]
+			});
+		}
+		
 		/**
 		 * Apply sorting by values (text without HTML) of a column.
 		 * Text fields are sorted locale aware, with empty strings always last.
