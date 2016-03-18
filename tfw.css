@@ -497,6 +497,16 @@ table.dynamicTable{
     text-overflow: ellipsis;
 }
 
+.dynamicTable tr.headlines th{
+	vertical-align: top;
+}
+.dynamicTable tr.headlines th span{
+	float:left;
+}
+.dynamicTable tr.headlines th button{
+	float:right;
+}
+
 .dynamicTable tr.draggable{
 	cursor:grab;
 }

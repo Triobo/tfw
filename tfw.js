@@ -1881,23 +1881,23 @@ var tfw = {
 				thead.add(r);
 			}
 
-			thead.add(r = tfw.tr({}));
+			thead.add(r = tfw.tr({className:'headlines'}));
 			for (var j = 0; j < this.data.cols.length; j++) {
 				c = document.createElement("th");
-				c.innerHTML = this.data.cols[j].name;
+				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
 				if ("w" in this.data.cols[j])
 					c.style.width = this.data.cols[j].width;
 				if ("sort" in this.data.cols[j] && this.data.cols[j]) {
 					var b1 = tfw.button({
 							className : 'tfwDtSort',
-							innerHTML : this.ascSortingSymbol
+							innerHTML : this.descSortingSymbol
 						}),
 					b2 = tfw.button({
 							className : 'tfwDtSort',
-							innerHTML : this.descSortingSymbol
+							innerHTML : this.ascSortingSymbol
 						});
-					b1.setAttribute('data-sort-order', 'asc');
-					b2.setAttribute('data-sort-order', 'desc');
+					b1.setAttribute('data-sort-order', 'desc');
+					b2.setAttribute('data-sort-order', 'asc');
 					var sortingButtons = [b1, b2];
 					for (var i = 0; i < sortingButtons.length; i++) {
 						sortingButtons[i].onclick = function(event){dynamicTable.sort(this, dynamicTable);};
