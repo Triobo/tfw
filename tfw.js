@@ -1483,7 +1483,6 @@ var tfw = {
 	/**
 	 * Class for creating dynamic tables.
 	 * @class
-	 * @todo Don't bind rowEdit to onclick of TRs, show an edit ([i]) icon after each row (if set)
 	 * @todo View preferences (width, order of columns)
 	 * @todo Allow editing of simple cells
 	 * @todo Implement server parameter t - name of table
@@ -1684,13 +1683,12 @@ var tfw = {
 		/**
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Empties the table and recreates it using {@link tfw.dynamicTableClass#data|data}.
-		 * If {@link tfw.dynamicTableClass#rowEdit|rowEdit} is set, it will be fired when a row is clicked.
 		 * Assumes that there is only 1 order column and that data are sorted by that column.
 		 * @listens onclick
 		 * @listens onkeyup
 		 * @todo Enable localization
-		 * @todo Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
 		 * @todo Change drag&dropping so that it is clear where the dragged row will end
+		 * @todo Adjust icons (filter, settings, edit)
 		 */
 		this.paint = function () {
 			var o,
@@ -1763,6 +1761,9 @@ var tfw = {
 			}
 
 			thead.add(r = tfw.tr({className:'headlines'}));
+			if (rowEdit) {
+				r.appendChild(document.createElement("th"));
+			}
 			for (var j = 0; j < this.data.cols.length; j++) {
 				c = document.createElement("th");
 				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
@@ -1802,13 +1803,11 @@ var tfw = {
 					id: "rowID-"+this.data.rows[i].id
 				}));
 				r.setAttribute("data-rowID", this.data.rows[i].id);
-				if (this.rowEdit) {
-					r.addEventListener("click", function (e) {
-						dynamicTable.rowEdit(e.currentTarget.value);
-					});
-					r.style.cursor = "pointer";
+				
+				if (rowEdit) {
+					r.appendChild(tfw.td({children:[tfw.icon({action:rowEdit.bind(dynamicTable, i)})]}));
 				}
-				r.value = i; //???
+				
 				for (var j = 0; j < this.data.cols.length; j++)
 					if (!("h" in this.data.cols[j])) {
 						var params = {},

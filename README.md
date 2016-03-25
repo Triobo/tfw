@@ -100,7 +100,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **See**: AJAX_LOADER  
 **Todo**
 
-- [ ] Don't bind rowEdit to onclick of TRs, show an edit ([i]) icon after each row (if set)
 - [ ] View preferences (width, order of columns)
 - [ ] Allow editing of simple cells
 - [ ] Implement server parameter t - name of table
@@ -258,14 +257,14 @@ Reflect a change in order in the table.
 
 <a name="tfw.dynamicTableClass+paint"></a>
 #### dynamicTableClass.paint()
-Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTableClass+data).If [rowEdit](tfw.dynamicTableClass#rowEdit) is set, it will be fired when a row is clicked.Assumes that there is only 1 order column and that data are sorted by that column.
+Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTableClass+data).Assumes that there is only 1 order column and that data are sorted by that column.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
 - [ ] Enable localization
-- [ ] Think about using different IDs (or a data attribute) for rows (e.g. add a prefix)
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
+- [ ] Adjust icons (filter, settings, edit)
 
 <a name="tfw.dynamicTableClass+filter"></a>
 #### dynamicTableClass.filter(column)
