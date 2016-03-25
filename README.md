@@ -52,13 +52,14 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
             * [.paint()](#tfw.dynamicTableClass+paint)
-            * [.filter(obj, dynamicTable)](#tfw.dynamicTableClass+filter)
+            * [.filter(column)](#tfw.dynamicTableClass+filter)
             * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
             * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
             * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
             * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
             * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
+            * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
         * _inner_
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
     * [.calendar](#tfw.calendar)
@@ -123,13 +124,14 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint()](#tfw.dynamicTableClass+paint)
-        * [.filter(obj, dynamicTable)](#tfw.dynamicTableClass+filter)
+        * [.filter(column)](#tfw.dynamicTableClass+filter)
         * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
         * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
         * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
         * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
         * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
+        * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
     * _inner_
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
 
@@ -266,15 +268,14 @@ Refresh the content of the table using data gotten by (re)loading.Empties the t
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
 
 <a name="tfw.dynamicTableClass+filter"></a>
-#### dynamicTableClass.filter(obj, dynamicTable)
+#### dynamicTableClass.filter(column)
 Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| obj | <code>Object</code> | filter button that triggered the event |
-| dynamicTable | <code>dynamicTableClass</code> | reference to "this" |
+| column | <code>number</code> | order number of searched column |
 
 <a name="tfw.dynamicTableClass+sort"></a>
 #### dynamicTableClass.sort(obj, dynamicTable)
@@ -341,7 +342,6 @@ Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideCo
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
-- [ ] Don't show controls in table footer but in a dialog
 - [ ] Save user preferences (to localStorage/server)
 
 
@@ -349,6 +349,11 @@ Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideCo
 | --- | --- | --- |
 | column | <code>number</code> | order number of column |
 
+<a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
+#### dynamicTableClass.toggleColumnDialog()
+Toggle visibility of a column.Creates a [dialog](tfw.dialog) with checkboxes.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 #### dynamicTableClass~rowEdit : <code>function</code>
 Function that handles row editing.

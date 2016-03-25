@@ -1788,7 +1788,7 @@ var tfw = {
 				}
 				if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
 					var b = tfw.button({className:'tfwDtFilter'+this.data.cols[j].type,innerHTML:"f",
-						onclick:function(event){dynamicTable.filter(this, dynamicTable);}});
+						onclick:function(event){dynamicTable.filter.call(dynamicTable, this.dataset.filterCol);}});
 					b.setAttribute('data-filter-col', j);
 					c.add(b);
 				}
@@ -1843,49 +1843,27 @@ var tfw = {
 						r.add(c = tfw.td(params));
 					}
 			}
-			var tfoot,
-			tfootTd;
-			o.add(tfoot = document.createElement("tfoot"));
-			tfoot.add(tfw.tr({
-					children : [tfootTd = tfw.td({
-								colspan : visibleColsCount
-							})]
-				}));
-			for (var j = 0; j < this.data.cols.length; j++) {
-				if (this.data.cols[j].hidden) {
-					continue;
-				}
-				var checkbox = tfw.checkbox({
-						text : this.data.cols[j].name,
-						value : 1,
-						onchange : function () {
-							dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));
-						}
-					});
-				checkbox.setAttribute("data-filter-col", j);
-				tfootTd.add(checkbox);
-			}
+			this.tableContainer.appendChild(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"preferences"}));
 			this.toggleReorder();
 		};
 		
 		/**
 		 * Apply filter for values of a column.
 		 * Creates a {@link tfw.dialog|dialog} with filter.
-		 * @param {Object} obj - filter button that triggered the event
-		 * @param {dynamicTableClass} dynamicTable - reference to "this"
+		 * @param {number} column - order number of searched column
 		 */
-		this.filter = function (obj, dynamicTable) {
-			var col = obj.getAttribute("data-filter-col");			
-			if (dynamicTable.data.cols[col].hidden) {
+		this.filter = function (column) {
+			var dynamicTable = this;
+			if (dynamicTable.data.cols[column].hidden) {
 				console.error("Tried to apply filter on a hidden column.");
 				return;
 			}
-			else if(!"filter" in dynamicTable.data.cols[col] || !dynamicTable.data.cols[col].filter){
+			else if(!"filter" in dynamicTable.data.cols[column] || !dynamicTable.data.cols[column].filter){
 				console.error("Tried to apply filter on a column with no filter.");
 				return;
 			}
 			c = document.createElement("div");
-			var type = dynamicTable.data.cols[col].type;
+			var type = dynamicTable.data.cols[column].type;
 			
 			switch(type){
 				case "checkbox":
@@ -1896,18 +1874,18 @@ var tfw = {
 								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
 							}
 						});
-					filter.setAttribute("data-filter-col", col);
+					filter.setAttribute("data-filter-col", column);
 					c.add(filter);
 				break;
 				case "number":
 					var minV,
 					maxV;
-					minV = maxV = dynamicTable.data.rows[0].cols[col];
+					minV = maxV = dynamicTable.data.rows[0].cols[column];
 					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
-						if (dynamicTable.data.rows[i].cols[col] < minV) {
-							minV = dynamicTable.data.rows[i].cols[col];
-						} else if (dynamicTable.data.rows[i].cols[col] > maxV) {
-							maxV = dynamicTable.data.rows[i].cols[col];
+						if (dynamicTable.data.rows[i].cols[column] < minV) {
+							minV = dynamicTable.data.rows[i].cols[column];
+						} else if (dynamicTable.data.rows[i].cols[column] > maxV) {
+							maxV = dynamicTable.data.rows[i].cols[column];
 						}
 					}
 					var f1 = tfw.input({
@@ -1944,20 +1922,20 @@ var tfw = {
 							value : maxV,
 							legend : "To:"
 						}); ;
-					f1.querySelector(".rangeMin").setAttribute("data-filter-col", col);
-					f2.querySelector(".rangeMax").setAttribute("data-filter-col", col);
+					f1.querySelector(".rangeMin").setAttribute("data-filter-col", column);
+					f2.querySelector(".rangeMax").setAttribute("data-filter-col", column);
 					c.add(f1);
 					c.add(f2);
 				break;
 				case  "date":
 					var minV,
 					maxV;
-					minV = maxV = dynamicTable.data.rows[0].cols[col];
+					minV = maxV = dynamicTable.data.rows[0].cols[column];
 					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
-						if (dynamicTable.data.rows[i].cols[col] < minV) {
-							minV = dynamicTable.data.rows[i].cols[col];
-						} else if (dynamicTable.data.rows[i].cols[col] > maxV) {
-							maxV = dynamicTable.data.rows[i].cols[col];
+						if (dynamicTable.data.rows[i].cols[column] < minV) {
+							minV = dynamicTable.data.rows[i].cols[column];
+						} else if (dynamicTable.data.rows[i].cols[column] > maxV) {
+							maxV = dynamicTable.data.rows[i].cols[column];
 						}
 					}
 					var f1 = tfw.input({
@@ -1982,8 +1960,8 @@ var tfw = {
 					c.add(f2);
 					tfw.calendar(f1.querySelector("input"));
 					tfw.calendar(f2.querySelector("input"));
-					f1.querySelector(".dateMin").setAttribute("data-filter-col", col);
-					f2.querySelector(".dateMax").setAttribute("data-filter-col", col);
+					f1.querySelector(".dateMin").setAttribute("data-filter-col", column);
+					f2.querySelector(".dateMax").setAttribute("data-filter-col", column);
 				break;
 				default:
 					console.error("Tried to apply filter on type that is not supported.");
@@ -1995,8 +1973,7 @@ var tfw = {
 				title:"Filter",
 				children:[c],
 				buttons:[
-				  //{text:"Ok",default:1,action:function(){window.alert("ok")}},
-				  {text:"Zavřít",action:desktop.closeTopLayer}
+				  {text:"Close",action:desktop.closeTopLayer}
 				]
 			});
 		}
@@ -2110,7 +2087,6 @@ var tfw = {
 		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
 		 * Requires .hideColumn{display:none}
 		 * @param {number} column - order number of column
-		 * @todo Don't show controls in table footer but in a dialog
 		 * @todo Save user preferences (to localStorage/server)
 		 */
 		this.toggleColumn = function (column) {
@@ -2119,6 +2095,38 @@ var tfw = {
 				cells[i].toggleClass("hideColumn");
 			}
 		};
+		
+		/**
+		 * Toggle visibility of a column.
+		 * Creates a {@link tfw.dialog|dialog} with checkboxes.
+		 */
+		this.toggleColumnDialog = function () {
+			var dynamicTable = this;
+			c = document.createElement("div");
+			for (var j = 0; j < this.data.cols.length; j++) {
+				if (this.data.cols[j].hidden) {
+					continue;
+				}
+				var checkbox = tfw.checkbox({
+						text : this.data.cols[j].name,
+						value : 1,
+						onchange : function () {
+							dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));
+						}
+					});
+				checkbox.setAttribute("data-filter-col", j);
+				c.add(checkbox);
+			}
+			var dlg=tfw.dialog({
+				width:300,
+				height:300,
+				title:"Show/hide columns",
+				children:[c],
+				buttons:[
+				  {text:"Close",action:desktop.closeTopLayer}
+				]
+			});
+		}
 	},
 	/**
 	 * Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
