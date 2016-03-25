@@ -1489,8 +1489,10 @@ var tfw = {
 	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
 	 * @todo Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 	 * @param {Object} params - table parameters
-	 * @param {string} [params.id="dynamicTable"] - Table ID (name) that identifies the table (in database, HTML IDs)
-	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function that is fired when row editing is triggered.
+	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
+	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
+	 * @param {string} [params.id="dynamicTable"] - table ID (name) - required for field (cell) updates
+	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function that is fired when row editing is triggered
 	 * @example
 	 * function myRowEditFunction(order){
 	 * 	// ...
@@ -1499,6 +1501,8 @@ var tfw = {
 	 *  tfw.dynamicTable(
 	 *   {
 	 *    id: "table1",
+	 *    baseURL: "data.php",
+	 *    urlParams: "token=Nd5qPxH&timestamp=1234567890"
 	 *    rowEdit: myRowEditFunction
 	 *   }
 	 *  )
@@ -1544,11 +1548,15 @@ var tfw = {
 		 */
 		this.labelFalse = "No";
 		/**
-		 * URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling {@link tfw.dynamicTableClass#reload|reload()}.
 		 * @var {string}
-		 * @public
+		 * @private
 		 */
-		this.url = "";
+		var baseURL = params.baseURL;
+		/**
+		 * @var {string}
+		 * @private
+		 */
+		var urlParams = ("urlParams" in params) ? params.urlParams : "";
 		/**
 		 * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
 		 * @var {Object}
@@ -1590,12 +1598,11 @@ var tfw = {
 		 * @see tfw.dynamicTableClass#paint
 		 * @see tfw.decodeJSON
 		 * @todo Don't repaint table, just change values.
-		 * @todo Don't use hardcoded base URL
 		 */
 		this.reload = function () {
 			that = this;
 			tfw.ajaxGet({
-				url : "data.php?t=" + tableId + "&a=load",
+				url : baseURL+"?t=" + tableId + "&a=load" + (urlParams ? ("&"+urlParams) : ""),
 				onload : function (hr) {
 					that.data = tfw.decodeJSON(hr.responseText);
 					that.paint();

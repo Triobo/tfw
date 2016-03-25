@@ -40,7 +40,6 @@ Triobo. This is a singleton (a single "instance" of a "class").
         * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
         * _instance_
             * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
-            * [.url](#tfw.dynamicTableClass+url) : <code>string</code>
             * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
             * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
             * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
@@ -111,7 +110,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
     * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
     * _instance_
         * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
-        * [.url](#tfw.dynamicTableClass+url) : <code>string</code>
         * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
         * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
         * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
@@ -142,12 +140,14 @@ Class for creating dynamic tables.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | table parameters |
-| [params.id] | <code>string</code> | <code>&quot;\&quot;dynamicTable\&quot;&quot;</code> | Table ID (name) that identifies the table (in database, HTML IDs) |
-| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function that is fired when row editing is triggered. |
+| params.baseURL | <code>string</code> |  | URL of script (etc.) handling data, without query string |
+| [params.urlParams] | <code>string</code> |  | general parameters appended to requests (e.g. a token) |
+| [params.id] | <code>string</code> | <code>&quot;\&quot;dynamicTable\&quot;&quot;</code> | table ID (name) - required for field (cell) updates |
+| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function that is fired when row editing is triggered |
 
 **Example**  
 ```js
-function myRowEditFunction(order){	// ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   rowEdit: myRowEditFunction  } ));
+function myRowEditFunction(order){	// ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   baseURL: "data.php",   urlParams: "token=Nd5qPxH&timestamp=1234567890"   rowEdit: myRowEditFunction  } ));
 ```
 <a name="tfw.dynamicTableClass+tableContainer"></a>
 #### dynamicTableClass.tableContainer : <code>Object</code>
@@ -155,12 +155,6 @@ DIV containing the table.
 
 **Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Read only**: true  
-<a name="tfw.dynamicTableClass+url"></a>
-#### dynamicTableClass.url : <code>string</code>
-URL parameters (appended to URL after the quotation mark "?") in the form "name1=value1&name2=value2". Has to be set before calling [reload()](#tfw.dynamicTableClass+reload).
-
-**Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Access:** public  
 <a name="tfw.dynamicTableClass+data"></a>
 #### dynamicTableClass.data : <code>Object</code>
 Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be called to fill this.
@@ -228,7 +222,6 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 **Todo**
 
 - [ ] Don't repaint table, just change values.
-- [ ] Don't use hardcoded base URL
 
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
