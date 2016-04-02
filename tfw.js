@@ -1485,7 +1485,6 @@ var tfw = {
 	 * @class
 	 * @todo View preferences (width, order of columns)
 	 * @todo Allow editing of simple cells
-	 * @todo Implement server parameter t - name of table
 	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
 	 * @todo Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 	 * @param {Object} params - table parameters
