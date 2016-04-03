@@ -61,6 +61,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
         * _inner_
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
+            * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
     * [.calendar](#tfw.calendar)
         * [new calendar(input)](#new_tfw.calendar_new)
         * _static_
@@ -101,9 +102,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 
 - [ ] View preferences (width, order of columns)
 - [ ] Allow editing of simple cells
-- [ ] Implement server parameter t - name of table
 - [ ] Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
-- [ ] Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -131,6 +130,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
     * _inner_
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
+        * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
 
 <a name="new_tfw.dynamicTableClass_new"></a>
 #### new dynamicTableClass(params)
@@ -143,7 +143,8 @@ Class for creating dynamic tables.
 | params.baseURL | <code>string</code> |  | URL of script (etc.) handling data, without query string |
 | [params.urlParams] | <code>string</code> |  | general parameters appended to requests (e.g. a token) |
 | [params.id] | <code>string</code> | <code>&quot;\&quot;dynamicTable\&quot;&quot;</code> | table ID (name) - required for field (cell) updates |
-| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function that is fired when row editing is triggered |
+| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing is triggered |
+| [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
 
 **Example**  
 ```js
@@ -173,8 +174,8 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | cols[].hidden | <code>boolean</code> |  | hidden |
 | cols[].type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "checkbox", "date", "order" |
 | cols[].sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
-| cols[].search | <code>number</code> | <code>0</code> | whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere |
-| cols[].filter | <code>boolean</code> | <code>false</code> | whether to allow filtering (depends on type) |
+| cols[].filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
+| cols[].subtable | <code>boolean</code> | <code>false</code> | whether this column should contain a link to subtable (handled by goToSub) |
 | rows | <code>Array.&lt;Object&gt;</code> |  | list of rows |
 | rows[].id | <code>number</code> |  | row ID |
 | rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
@@ -355,6 +356,17 @@ Function that handles row editing.
 | Param | Type | Description |
 | --- | --- | --- |
 | order | <code>number</code> | order of the row being edited |
+
+<a name="tfw.dynamicTableClass..goToSub"></a>
+#### dynamicTableClass~goToSub : <code>function</code>
+Function that handles moving to subordinate table.
+
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| rowID | <code>number</code> | ID of the row being edited |
+| column | <code>number</code> | order number of column in which the callback was triggered |
 
 <a name="tfw.calendar"></a>
 ### tfw.calendar

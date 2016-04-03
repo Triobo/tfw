@@ -1486,12 +1486,12 @@ var tfw = {
 	 * @todo View preferences (width, order of columns)
 	 * @todo Allow editing of simple cells
 	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
-	 * @todo Implement "child" tables (e.g. link from list of releases to list of articles in a release) - add callback(s)
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
 	 * @param {string} [params.id="dynamicTable"] - table ID (name) - required for field (cell) updates
-	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function that is fired when row editing is triggered
+	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing is triggered
+	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
 	 * @example
 	 * function myRowEditFunction(order){
 	 * 	// ...
@@ -1568,8 +1568,8 @@ var tfw = {
 		 * @property {boolean} cols[].hidden - hidden
 		 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "checkbox", "date", "order"
 		 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
-		 * @property {number} [cols[].search=0] - whether to allow searching, 0=disabled, 1=match from beginning, 2=match anywhere
-		 * @property {boolean} [cols[].filter=false] - whether to allow filtering (depends on type)
+		 * @property {(boolean|number)} [cols[].filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
+		 * @property {boolean} [cols[].subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
 		 * @property {Object[]} rows - list of rows
 		 * @property {number} rows[].id - row ID
 		 * @property {string[]} rows[].cols - contents for each column (HTML)
@@ -1584,6 +1584,16 @@ var tfw = {
 		 * @private
 		 */
 		var rowEdit = ("rowEdit" in params) ? params.rowEdit : null;
+		/**
+		 * Function that handles moving to subordinate table.
+		 * @callback tfw.dynamicTableClass~goToSub
+		 * @param {number} rowID - ID of the row being edited
+		 * @param {number} column - order number of column in which the callback was triggered
+		 */
+		/**
+		 * @private
+		 */
+		var goToSub = ("goToSub" in params) ? params.goToSub : null;
 		/**
 		 * Get table container (for inserting into document).
 		 * @returns {Object} Returns the table container (HTML element).
@@ -1733,43 +1743,7 @@ var tfw = {
 
 			o.add(thead = document.createElement("thead"));
 
-			var anySearchAllowed = false;
-			r = tfw.tr({
-					className : 'search'
-				});
-			for (var j = 0; j < this.data.cols.length; j++) {
-				if (this.data.cols[j].hidden) {
-					continue;
-				}
-				c = document.createElement("th");
-				if (this.data.cols[j].search) {
-					var searchInput = tfw.input({
-							type : "text",
-							placeholder : "Search " + ((this.data.cols[j].search == 1) ? "beginning with" : "including") + "..."
-						});
-					searchInput.setAttribute("data-search-type", this.data.cols[j].search);
-					searchInput.setAttribute("data-filter-col", j);
-					searchInput.onkeyup = function () {
-						dynamicTable.filterSearch(this.getAttribute("data-filter-col"),
-							this.value,
-							this.getAttribute("data-search-type"));
-					}
-					c.add(searchInput);
-
-					anySearchAllowed = true;
-				} else {
-					c.innerHTML = "&nbsp;";
-				}
-				r.add(c);
-			}
-			if (anySearchAllowed) {
-				thead.add(r);
-			}
-
 			thead.add(r = tfw.tr({className:'headlines'}));
-			if (rowEdit) {
-				r.appendChild(document.createElement("th"));
-			}
 			for (var j = 0; j < this.data.cols.length; j++) {
 				c = document.createElement("th");
 				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
@@ -1802,6 +1776,9 @@ var tfw = {
 				if (!("h" in this.data.cols[j]))
 					r.add(c);
 			}
+			if (rowEdit) {
+				r.add(document.createElement("th"));
+			}
 
 			o.add(tbody = document.createElement("tbody"));
 			for (var i = 0; i < this.data.rows.length; i++) {
@@ -1810,11 +1787,7 @@ var tfw = {
 				}));
 				r.setAttribute("data-rowID", this.data.rows[i].id);
 				
-				if (rowEdit) {
-					r.appendChild(tfw.td({children:[tfw.icon({action:rowEdit.bind(dynamicTable, i)})]}));
-				}
-				
-				for (var j = 0; j < this.data.cols.length; j++)
+				for (var j = 0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
 						var params = {},
 						val = this.data.rows[i].cols[j];
@@ -1845,10 +1818,26 @@ var tfw = {
 								params.innerHTML = val;
 							}
 						}
+						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
+							if(!("children" in params)){
+								params.children = [];
+							}
+							params.children.push(tfw.icon({
+								action:goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j),
+								style:"width:18px;height:18px;float:right;margin:1px 0;background:#8cc url('pics/sipkaVpravo.png') no-repeat center center"
+								}));
+						}
 						r.add(c = tfw.td(params));
 					}
+				}
+				
+				if (rowEdit) {
+					r.add(tfw.td({children:[tfw.icon({
+						action:rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id),
+						style:"width:18px;height:18px;background:url('pics/zpravy.png') no-repeat center center;background-size:18px 18px;"})]}));
+				}
 			}
-			this.tableContainer.appendChild(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"preferences"}));
+			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"preferences"}));
 			this.toggleReorder();
 		};
 		
@@ -1968,6 +1957,20 @@ var tfw = {
 					f1.querySelector(".dateMin").setAttribute("data-filter-col", column);
 					f2.querySelector(".dateMax").setAttribute("data-filter-col", column);
 				break;
+				case "text":
+					var searchInput = tfw.input({
+							type : "text",
+							placeholder : "Search " + ((this.data.cols[column].filter === 1) ? "beginning with" : "including") + "..."
+						});
+					searchInput.setAttribute("data-search-type", this.data.cols[column].search);
+					searchInput.setAttribute("data-filter-col", column);
+					searchInput.onkeyup = function () {
+						dynamicTable.filterSearch(this.getAttribute("data-filter-col"),
+							this.value,
+							this.getAttribute("data-search-type"));
+					}
+					c.add(searchInput);
+				break;
 				default:
 					console.error("Tried to apply filter on type that is not supported.");
 					return;
@@ -2037,7 +2040,7 @@ var tfw = {
 			var tbody = this.tableContainer.querySelector("tbody");
 			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
 			for (var i = 0; i < tbody.rows.length; i++) {
-				var matches = value == "" || tbody.rows[i].cells[column].textContent.toLowerCase()[searchFunc](value.toLowerCase());
+				var matches = (value == "") || tbody.rows[i].cells[column].textContent.toLowerCase()[searchFunc](value.toLowerCase());
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('searchFilterInvalid');
 			}
 		};
