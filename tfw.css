@@ -508,11 +508,15 @@ table.dynamicTable{
 }
 
 .dynamicTable tr.draggable{
-	cursor:grab;
+	cursor: -webkit-grab;
+	cursor: -moz-grab;
+	cursor: grab;
 }
 
 .dynamicTable tr.draggable:active{
-	cursor:grabbing;
+	cursor: -webkit-grabbing;
+	cursor: -moz-grabbing;
+	cursor: grabbing;
 }
 
 /*********************/

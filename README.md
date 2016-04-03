@@ -51,6 +51,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
             * [.paint()](#tfw.dynamicTableClass+paint)
+            * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
             * [.filter(column)](#tfw.dynamicTableClass+filter)
             * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
@@ -102,7 +103,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 
 - [ ] View preferences (width, order of columns)
 - [ ] Allow editing of simple cells
-- [ ] Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
+- [ ] Implement server actions - load (all rows), new (add new row, return ID), savedata (edit 1 cell (id, col) - special for order), watch (long polling), delete (row)
+- [ ] Enable localization
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -120,6 +122,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint()](#tfw.dynamicTableClass+paint)
+        * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(column)](#tfw.dynamicTableClass+filter)
         * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
@@ -256,10 +259,14 @@ Refresh the content of the table using data gotten by (re)loading.Empties the t
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
-- [ ] Enable localization
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
 - [ ] Adjust icons (filter, settings, edit)
 
+<a name="tfw.dynamicTableClass+prepareCalendar"></a>
+#### dynamicTableClass.prepareCalendar()
+Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCalendar) callback, if null.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+filter"></a>
 #### dynamicTableClass.filter(column)
 Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.

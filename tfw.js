@@ -1485,7 +1485,8 @@ var tfw = {
 	 * @class
 	 * @todo View preferences (width, order of columns)
 	 * @todo Allow editing of simple cells
-	 * @todo Implement server actions - load (all rows), new (add new row, return ID), write (edit 1 cell - special for order), watch (long polling), delete (row)
+	 * @todo Implement server actions - load (all rows), new (add new row, return ID), savedata (edit 1 cell (id, col) - special for order), watch (long polling), delete (row)
+	 * @todo Enable localization
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
@@ -1702,7 +1703,6 @@ var tfw = {
 		 * Assumes that there is only 1 order column and that data are sorted by that column.
 		 * @listens onclick
 		 * @listens onkeyup
-		 * @todo Enable localization
 		 * @todo Change drag&dropping so that it is clear where the dragged row will end
 		 * @todo Adjust icons (filter, settings, edit)
 		 */
@@ -1842,6 +1842,25 @@ var tfw = {
 		};
 		
 		/**
+		 * Prepare calendar class for use. Sets the {@link tfw.calendar.placeCalendar} callback, if null.
+		 */
+		this.prepareCalendar = function() {
+			if(tfw.calendar.placeCalendar == null){
+				tfw.calendar.placeCalendar = function(cal){
+					var dlg=tfw.dialog({
+						width:300,
+						height:300,
+						title:"Choose a date",
+						children:[cal],
+						buttons:[
+						  {text:"Close",action:desktop.closeTopLayer}
+						]
+					});
+				};
+			}
+		}
+		
+		/**
 		 * Apply filter for values of a column.
 		 * Creates a {@link tfw.dialog|dialog} with filter.
 		 * @param {number} column - order number of searched column
@@ -1952,6 +1971,7 @@ var tfw = {
 						}); ;
 					c.add(f1);
 					c.add(f2);
+					this.prepareCalendar();
 					tfw.calendar(f1.querySelector("input"));
 					tfw.calendar(f2.querySelector("input"));
 					f1.querySelector(".dateMin").setAttribute("data-filter-col", column);
@@ -2195,7 +2215,7 @@ var tfw = {
 		}
 
 		if (tfw.calendar.placeCalendar != null) {
-			tfw.calendar.placeCalendar(calendarContainer, input);
+			input.addEventListener("click", function(){tfw.calendar.placeCalendar(calendarContainer, input);});
 		} else {
 			console.error("Calendar widget was not added to the document - no callback was set.");
 		}
