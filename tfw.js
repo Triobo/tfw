@@ -210,7 +210,7 @@ var desktop = {
 /**
  * Triobo framework. This is a singleton (a single "instance" of a "class").
  * @class
- * @todo http://www.w3schools.com/js/js_reserved.asp
+ * @todo Replace {@link http://www.w3schools.com/js/js_reserved.asp|reserved words} in function names
  */
 var tfw = {
     /**
@@ -1165,12 +1165,21 @@ var tfw = {
 	 * @param {string} o.url - URL of server script with data
 	 * @param {function} o.onload - function to call when request has successfully completed
 	 * @param {number} [o.autohide=0] - whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately)
+	 * @param {string} [o.method="GET"] - HTTP method to be used (GET or POST)
+	 * @param {string} [o.parameters=null] - parameters to be send with the request (e.g. POST)
 	 * @return {Object} - Returns XMLHttpRequest object
 	 * @see tfw.ajaxIncludeParams
 	 * @see tfw.ajaxOnErrorCode
 	 * @see tfw.ajaxOnError
 	 */
 	ajaxGet : function (o) {
+		if(!("method" in o)){
+			o.method = "GET";
+		}
+		if(!("parameters" in o)){
+			o.parameters = null;
+		}
+		
 		var httpRequest = new XMLHttpRequest();
 		httpRequest.onreadystatechange = function (e) {
 			if (httpRequest.readyState === 4) {
@@ -1195,9 +1204,19 @@ var tfw = {
 		if (tfw.ajaxIncludeParams)
 			ur += "&" + tfw.ajaxIncludeParams();
 		console.info("Desktop ajaxGet " + ur);
-		httpRequest.open("GET", ur);
-		httpRequest.setRequestHeader("Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0");
-		httpRequest.send();
+		httpRequest.open(o.method, ur);
+		switch(o.method){
+			case "GET":
+				httpRequest.setRequestHeader("Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0");
+			break;
+			case "POST":
+				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				http.setRequestHeader("Content-length", o.parameters.length);
+				http.setRequestHeader("Connection", "close");
+			break;
+		}
+		
+		httpRequest.send(o.parameters);
 		if (o.autohide)
 			desktop.working((o.autohide == 2) ? 1 : 0);
 		return (httpRequest);
@@ -1485,7 +1504,6 @@ var tfw = {
 	 * @class
 	 * @todo View preferences (width, order of columns)
 	 * @todo Allow editing of simple cells
-	 * @todo Implement server actions - load (all rows), new (add new row, return ID), savedata (edit 1 cell (id, col) - special for order), watch (long polling), delete (row)
 	 * @todo Enable localization
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
@@ -1607,19 +1625,43 @@ var tfw = {
 		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTableClass#paint|paints} the table.
 		 * @see tfw.dynamicTableClass#paint
 		 * @see tfw.decodeJSON
-		 * @todo Don't repaint table, just change values.
 		 */
 		this.reload = function () {
-			that = this;
-			tfw.ajaxGet({
-				url : baseURL+"?t=" + tableId + "&a=load" + (urlParams ? ("&"+urlParams) : ""),
-				onload : function (hr) {
-					that.data = tfw.decodeJSON(hr.responseText);
-					that.paint();
-				},
-				autohide : 0
+			var dynamicTable = this;
+			serverCall({
+				action: tfw.dynamicTableClass.serverActions.LOAD,
+				callback: function(receivedData){
+					dynamicTable.data = receivedData;
+					dynamicTable.paint();
+				}
 			});
 		};
+		
+		/**
+		 * Function that handles data received from server.
+		 * @callback tfw.dynamicTableClass~serverCallback
+		 * @param {Object} receivedData - JSON decoded data received from request
+		 */
+		/**
+		 * @param {Object} params - query parameters
+		 * @param {tfw.dynamicTableClass.serverActions} params.action - server action
+		 * @param {tfw.dynamicTableClass~serverCallback} params.callback - callback that receives data
+		 * @param {string} [params.parameters=null] - parameters to be send with the request (e.g. POST)
+		 */
+		function serverCall(params){
+			var method = 
+			tfw.ajaxGet({
+				url : baseURL+"?t=" + tableId + "&a=" + params.action.name + (urlParams ? ("&"+urlParams) : ""),
+				method : ("method" in params.action) ? params.action.method : "GET",
+				parameters : params.parameters,
+				onload : function (hr) {
+					var receivedData = tfw.decodeJSON(hr.responseText);
+					if(params.callback != null){
+						params.callback(receivedData);
+					}
+				}
+			});
+		}
 
 		/**
 		 * Test if no filters are applied and table is sorted by column of type 'order'.
@@ -1679,11 +1721,22 @@ var tfw = {
 				 : null;
 			}
 		}
+		
+		/**
+		 * @param {Object} params - update parameters
+		 * @param {number} params.id - ID of edited row
+		 * @param {number} params.col - order number of edited column
+		 */
+		function serverUpdateCell(params){
+			serverCall({
+				action: tfw.dynamicTableClass.serverActions.SAVE,
+				parameters: "id="+params.id+"&col="+params.col
+			});
+		}
 
 		/**
 		 * Reflect a change in order in the table.
 		 * @param {Object} element - row that was dropped (HTML element)
-		 * @todo Reflect on server
 		 */
 		this.orderChange = function (element) {
 			var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML) - 1;
@@ -1694,19 +1747,18 @@ var tfw = {
 				var cell = rows[i].getElementsByTagName("td")[orderColumn];
 				cell.innerHTML = parseInt(cell.innerHTML) + 1;
 			}
-			//serverCall(originalRowOrder, droppedRowOrder, ...)
+			serverUpdateCell({
+				id : element.dataset.rowid,
+				col : orderColumn
+			});
 		}
 		
 		/**
-		 * Refresh the content of the table using data gotten by (re)loading.
-		 * Empties the table and recreates it using {@link tfw.dynamicTableClass#data|data}.
-		 * Assumes that there is only 1 order column and that data are sorted by that column.
+		 * @private
 		 * @listens onclick
 		 * @listens onkeyup
-		 * @todo Change drag&dropping so that it is clear where the dragged row will end
-		 * @todo Adjust icons (filter, settings, edit)
 		 */
-		this.paint = function () {
+		function createAndFillTable(tableHTMLId){
 			var o,
 			thead,
 			tbody,
@@ -1716,6 +1768,7 @@ var tfw = {
 			dynamicTable = this;
 			this.tableContainer.innerHTML = "";
 			this.tableContainer.add(o = tfw.table({
+						id : tableHTMLId,
 						className : 'dynamicTable'
 					}));
 
@@ -1785,7 +1838,7 @@ var tfw = {
 				tbody.add(r = tfw.tr({
 					id: "rowID-"+this.data.rows[i].id
 				}));
-				r.setAttribute("data-rowID", this.data.rows[i].id);
+				r.setAttribute("data-rowid", this.data.rows[i].id);
 				
 				for (var j = 0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
@@ -1838,6 +1891,25 @@ var tfw = {
 				}
 			}
 			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"preferences"}));
+		}
+		
+		/**
+		 * Refresh the content of the table using data gotten by (re)loading.
+		 * Assumes that there is only 1 order column and that data is initially sorted by that column.
+		 * @todo Change drag&dropping so that it is clear where the dragged row will end
+		 * @todo Adjust icons (filter, settings, edit)
+		 * @todo Implement reloading (just change values)
+		 */
+		this.paint = function () {
+			var tableHTMLId = 'dynamicTable-'+tableId;
+			
+			if(document.getElementById(tableHTMLId) == null){
+				createAndFillTable.call(this, tableHTMLId);
+			}
+			else{
+				console.error("Dynamic table reloading not implemented yet.");
+			}
+			
 			this.toggleReorder();
 		};
 		
@@ -2327,6 +2399,29 @@ var tfw = {
 		}
 	}
 }
+
+/**
+ * @typedef {Object} tfw.dynamicTableClass.serverAction
+ * @property {string} name - action name sent to server
+ * @property {string} [method="GET"] - HTTP method to use (e.g. GET, POST)
+ */
+/**
+ * Implemented server actions.
+ * @readonly
+ * @enum {tfw.dynamicTableClass.serverAction}
+ */
+tfw.dynamicTableClass.serverActions = {
+	/** load all rows */
+	LOAD: {name:"load"},
+	/** add new row, return ID */
+	NEW: {name:"new",method:"POST"},
+	/** edit 1 cell (id, col) - special for order */
+	SAVE: {name:"savedata",method:"PATCH"},
+	/** long polling */
+	WATCH: {name:"watch"},
+	/** delete row */
+	DELETE: {name:"delete",method:"DELETE"}
+};
 
 /**
  * List of months' names.

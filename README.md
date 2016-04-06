@@ -31,7 +31,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
 **Kind**: global class  
 **Todo**
 
-- [ ] http://www.w3schools.com/js/js_reserved.asp
+- [ ] Replace [reserved words](http://www.w3schools.com/js/js_reserved.asp) in function names
 
 
 * [tfw](#tfw)
@@ -60,9 +60,15 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
             * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
             * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
+        * _static_
+            * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
+            * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
         * _inner_
+            * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
+            * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
             * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
+            * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
     * [.calendar](#tfw.calendar)
         * [new calendar(input)](#new_tfw.calendar_new)
         * _static_
@@ -103,7 +109,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 
 - [ ] View preferences (width, order of columns)
 - [ ] Allow editing of simple cells
-- [ ] Implement server actions - load (all rows), new (add new row, return ID), savedata (edit 1 cell (id, col) - special for order), watch (long polling), delete (row)
 - [ ] Enable localization
 
 
@@ -131,9 +136,15 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
         * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
         * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
+    * _static_
+        * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
+        * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
     * _inner_
+        * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
+        * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
+        * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
 
 <a name="new_tfw.dynamicTableClass_new"></a>
 #### new dynamicTableClass(params)
@@ -223,10 +234,6 @@ Reload (or load) data from server.Sends a GET request to "data.php", decodes JS
 - tfw.dynamicTableClass#paint
 - tfw.decodeJSON
 
-**Todo**
-
-- [ ] Don't repaint table, just change values.
-
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
 Test if no filters are applied and table is sorted by column of type 'order'.
@@ -243,10 +250,6 @@ Toggle reordering of rows via drag & drop.Reflects the value of a private varia
 Reflect a change in order in the table.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Todo**
-
-- [ ] Reflect on server
-
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -254,13 +257,14 @@ Reflect a change in order in the table.
 
 <a name="tfw.dynamicTableClass+paint"></a>
 #### dynamicTableClass.paint()
-Refresh the content of the table using data gotten by (re)loading.Empties the table and recreates it using [data](#tfw.dynamicTableClass+data).Assumes that there is only 1 order column and that data are sorted by that column.
+Refresh the content of the table using data gotten by (re)loading.Assumes that there is only 1 order column and that data is initially sorted by that column.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
 - [ ] Adjust icons (filter, settings, edit)
+- [ ] Implement reloading (just change values)
 
 <a name="tfw.dynamicTableClass+prepareCalendar"></a>
 #### dynamicTableClass.prepareCalendar()
@@ -354,6 +358,53 @@ Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideCo
 Toggle visibility of a column.Creates a [dialog](tfw.dialog) with checkboxes.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+<a name="tfw.dynamicTableClass.serverActions"></a>
+#### dynamicTableClass.serverActions : <code>enum</code>
+Implemented server actions.
+
+**Kind**: static enum property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| LOAD | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;load&quot;}</code> | load all rows |
+| NEW | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;new&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | add new row, return ID |
+| SAVE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;savedata&quot;,&quot;method&quot;:&quot;PATCH&quot;}</code> | edit 1 cell (id, col) - special for order |
+| WATCH | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;watch&quot;}</code> | long polling |
+| DELETE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;delete&quot;,&quot;method&quot;:&quot;DELETE&quot;}</code> | delete row |
+
+<a name="tfw.dynamicTableClass.serverAction"></a>
+#### dynamicTableClass.serverAction : <code>Object</code>
+**Kind**: static typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | action name sent to server |
+| method | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to use (e.g. GET, POST) |
+
+<a name="tfw.dynamicTableClass..serverCall"></a>
+#### dynamicTableClass~serverCall(params)
+**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | query parameters |
+| params.action | <code>[serverActions](#tfw.dynamicTableClass.serverActions)</code> |  | server action |
+| params.callback | <code>[serverCallback](#tfw.dynamicTableClass..serverCallback)</code> |  | callback that receives data |
+| [params.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
+
+<a name="tfw.dynamicTableClass..serverUpdateCell"></a>
+#### dynamicTableClass~serverUpdateCell(params)
+**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | update parameters |
+| params.id | <code>number</code> | ID of edited row |
+| params.col | <code>number</code> | order number of edited column |
+
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 #### dynamicTableClass~rowEdit : <code>function</code>
 Function that handles row editing.
@@ -374,6 +425,16 @@ Function that handles moving to subordinate table.
 | --- | --- | --- |
 | rowID | <code>number</code> | ID of the row being edited |
 | column | <code>number</code> | order number of column in which the callback was triggered |
+
+<a name="tfw.dynamicTableClass..serverCallback"></a>
+#### dynamicTableClass~serverCallback : <code>function</code>
+Function that handles data received from server.
+
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| receivedData | <code>Object</code> | JSON decoded data received from request |
 
 <a name="tfw.calendar"></a>
 ### tfw.calendar
@@ -678,6 +739,8 @@ Get data from server via AJAX.
 | o.url | <code>string</code> |  | URL of server script with data |
 | o.onload | <code>function</code> |  | function to call when request has successfully completed |
 | [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately) |
+| [o.method] | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to be used (GET or POST) |
+| [o.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
 <a name="tfw.encodeFormValues"></a>
 ### tfw.encodeFormValues(fields) ⇒ <code>string</code>
