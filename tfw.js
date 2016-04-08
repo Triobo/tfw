@@ -1201,15 +1201,25 @@ var tfw = {
 		}
 
 		var ur = o.url;
-		if (tfw.ajaxIncludeParams)
-			ur += "&" + tfw.ajaxIncludeParams();
-		console.info("Desktop ajaxGet " + ur);
+		if (tfw.ajaxIncludeParams){
+			switch(o.method){
+				case "GET":
+					ur += "&" + tfw.ajaxIncludeParams();
+				break;
+				case "POST":
+					o.parameters += "&" + tfw.ajaxIncludeParams();
+				break;
+			}
+		}
+			
+		console.info("Desktop ajax "+o.method+" " + ur);
 		httpRequest.open(o.method, ur);
 		switch(o.method){
 			case "GET":
 				httpRequest.setRequestHeader("Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0");
 			break;
 			case "POST":
+				http.setRequestHeader("Cache-Control", "no-cache");
 				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 				http.setRequestHeader("Content-length", o.parameters.length);
 				http.setRequestHeader("Connection", "close");
@@ -1220,6 +1230,17 @@ var tfw = {
 		if (o.autohide)
 			desktop.working((o.autohide == 2) ? 1 : 0);
 		return (httpRequest);
+	},
+	/**
+	 * Post data to server via AJAX.
+	 * @memberof tfw
+	 * @param {Object} o - parameters object (see {@link tfw.ajaxGet})
+	 * @return {Object} - Returns XMLHttpRequest object
+	 * @see tfw.ajaxGet
+	 */
+	ajaxPost : function (o) {
+		o.method = "POST";
+		return ajaxGet(o);
 	},
 	/**
 	 * Encode all items as URL.
@@ -2416,11 +2437,11 @@ tfw.dynamicTableClass.serverActions = {
 	/** add new row, return ID */
 	NEW: {name:"new",method:"POST"},
 	/** edit 1 cell (id, col) - special for order */
-	SAVE: {name:"savedata",method:"PATCH"},
+	SAVE: {name:"savedata",method:"POST"},
 	/** long polling */
 	WATCH: {name:"watch"},
 	/** delete row */
-	DELETE: {name:"delete",method:"DELETE"}
+	DELETE: {name:"delete",method:"POST"}
 };
 
 /**
