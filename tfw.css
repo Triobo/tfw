@@ -341,6 +341,12 @@ button:disabled:hover {
 .tfwCheckbox div.checked {
   background-color: #fc5;/*orange*/
 }
+.tfwCheckbox:after{
+	content: "No";
+}
+.tfwCheckbox.checked:after{
+	content: "Yes";
+}
 
 /* icon */
 .tfwIcon {

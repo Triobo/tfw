@@ -616,6 +616,7 @@ var tfw = {
 		if ("value" in params)
 			x._value = params.value ? 1 : 0;
 
+		x.className += x._value ? " checked" : "";
 		b.className = x._value ? "checked" : "";
 		x.add(b);
 
@@ -626,10 +627,14 @@ var tfw = {
 		Object.defineProperty(x, "value", {
 			set : function (val) {
 				var b = this.childNodes[0];
-				if (val)
+				if (val){
 					b.addClass("checked");
-				else
+					x.addClass("checked");
+				}
+				else{
 					b.removeClass("checked");
+					x.removeClass("checked");
+				}
 				this._value = val;
 				if (this.onchange)
 					this.onchange();
@@ -1219,10 +1224,8 @@ var tfw = {
 				httpRequest.setRequestHeader("Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0");
 			break;
 			case "POST":
-				http.setRequestHeader("Cache-Control", "no-cache");
-				http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-				http.setRequestHeader("Content-length", o.parameters.length);
-				http.setRequestHeader("Connection", "close");
+				httpRequest.setRequestHeader("Cache-Control", "no-cache");
+				httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 			break;
 		}
 		
@@ -1524,7 +1527,6 @@ var tfw = {
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @todo View preferences (width, order of columns)
-	 * @todo Allow editing of simple cells
 	 * @todo Enable localization
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
@@ -1574,18 +1576,6 @@ var tfw = {
 		 * @default
 		 */
 		this.descSortingSymbol = "&uarr;";
-		/**
-		 * Default label for true.
-		 * @const {string}
-		 * @default
-		 */
-		this.labelTrue = "Yes";
-		/**
-		 * Default label for false.
-		 * @const {string}
-		 * @default
-		 */
-		this.labelFalse = "No";
 		/**
 		 * @var {string}
 		 * @private
@@ -1670,7 +1660,6 @@ var tfw = {
 		 * @param {string} [params.parameters=null] - parameters to be send with the request (e.g. POST)
 		 */
 		function serverCall(params){
-			var method = 
 			tfw.ajaxGet({
 				url : baseURL+"?t=" + tableId + "&a=" + params.action.name + (urlParams ? ("&"+urlParams) : ""),
 				method : ("method" in params.action) ? params.action.method : "GET",
@@ -1747,11 +1736,23 @@ var tfw = {
 		 * @param {Object} params - update parameters
 		 * @param {number} params.id - ID of edited row
 		 * @param {number} params.col - order number of edited column
+		 * @param {number} params.value - new value
 		 */
 		function serverUpdateCell(params){
 			serverCall({
 				action: tfw.dynamicTableClass.serverActions.SAVE,
-				parameters: "id="+params.id+"&col="+params.col
+				parameters: "id="+params.id+"&col="+params.col+"&value="+encodeURIComponent(params.value)
+			});
+		}
+		
+		/**
+		 * this should refer to an input field in a dynamic table (HTML element)
+		 */
+		function updateInput(){
+			serverUpdateCell({
+				id: this.closest('tr').dataset.rowid,
+				col: this.closest('td').dataset.col,
+				value: this.value
 			});
 		}
 
@@ -1770,7 +1771,8 @@ var tfw = {
 			}
 			serverUpdateCell({
 				id : element.dataset.rowid,
-				col : orderColumn
+				col : orderColumn,
+				value : droppedRowOrder + 1
 			});
 		}
 		
@@ -1867,29 +1869,43 @@ var tfw = {
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
 							var id = "tfwDynamicTable-" + i + "-" + j;
-							if (this.data.cols[j].type == "checkbox") {
-								params.children = [tfw.checkbox({
+							switch(this.data.cols[j].type){
+								case "checkbox":
+									params.children = [tfw.checkbox({
 										id : id,
 										value : (val ? 1 : 0),
-										text : (val ? this.labelTrue : this.labelFalse),
-										'disabled' : true
-									})]
-							} else if (this.data.cols[j].type == "number") {
-								params.children = [tfw.input({
+										onchange: updateInput
+									})];
+								break;
+								case "number":
+									params.children = [tfw.input({
 										type : "number",
 										id : id,
 										value : val,
-										'disabled' : true
+										onchange: updateInput
 									})];
-							} else if (this.data.cols[j].type == "date") {
-								params.children = [tfw.input({
+								break;
+								case "date":
+									this.prepareCalendar();
+									var calendarCell;
+									params.children = [calendarCell=tfw.input({
 										type : "text",
 										id : id,
 										value : val.match(/\d{4,}-\d{2}-\d{2}/)[0],
-										'disabled' : true
+										onchange: updateInput
 									})];
-							} else {
-								params.innerHTML = val;
+									tfw.calendar(calendarCell);
+								break;
+								case "text":
+									params.children = [tfw.input({
+										type : "text",
+										id : id,
+										value : val,
+										onchange: updateInput
+									})];
+								break;
+								default:
+									params.innerHTML = val;
 							}
 						}
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
@@ -1902,6 +1918,7 @@ var tfw = {
 								}));
 						}
 						r.add(c = tfw.td(params));
+						c.dataset.col = j;
 					}
 				}
 				
@@ -2064,7 +2081,6 @@ var tfw = {
 						}); ;
 					c.add(f1);
 					c.add(f2);
-					this.prepareCalendar();
 					tfw.calendar(f1.querySelector("input"));
 					tfw.calendar(f2.querySelector("input"));
 					f1.querySelector(".dateMin").setAttribute("data-filter-col", column);

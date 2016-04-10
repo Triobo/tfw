@@ -43,8 +43,6 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
             * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
             * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
-            * [.labelTrue](#tfw.dynamicTableClass+labelTrue) : <code>string</code>
-            * [.labelFalse](#tfw.dynamicTableClass+labelFalse) : <code>string</code>
             * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTableClass+reload)
             * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
@@ -66,6 +64,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
         * _inner_
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
             * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+            * [~updateInput()](#tfw.dynamicTableClass..updateInput)
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
             * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
             * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -93,6 +92,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
     * [.td(params)](#tfw.td) ⇒ <code>Object</code>
     * [.slider(params)](#tfw.slider) ⇒ <code>Object</code>
     * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>Object</code>
+    * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>Object</code>
     * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
     * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
     * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>Object</code>
@@ -108,7 +108,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Todo**
 
 - [ ] View preferences (width, order of columns)
-- [ ] Allow editing of simple cells
 - [ ] Enable localization
 
 
@@ -119,8 +118,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
         * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
         * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
-        * [.labelTrue](#tfw.dynamicTableClass+labelTrue) : <code>string</code>
-        * [.labelFalse](#tfw.dynamicTableClass+labelFalse) : <code>string</code>
         * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
@@ -142,6 +139,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
     * _inner_
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
         * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+        * [~updateInput()](#tfw.dynamicTableClass..updateInput)
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -206,18 +204,6 @@ Descending sorting symbol.
 
 **Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>&quot;&amp;uarr;&quot;</code>  
-<a name="tfw.dynamicTableClass+labelTrue"></a>
-#### dynamicTableClass.labelTrue : <code>string</code>
-Default label for true.
-
-**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Default**: <code>&quot;Yes&quot;</code>  
-<a name="tfw.dynamicTableClass+labelFalse"></a>
-#### dynamicTableClass.labelFalse : <code>string</code>
-Default label for false.
-
-**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Default**: <code>&quot;No&quot;</code>  
 <a name="tfw.dynamicTableClass+getTable"></a>
 #### dynamicTableClass.getTable() ⇒ <code>Object</code>
 Get table container (for inserting into document).
@@ -370,9 +356,9 @@ Implemented server actions.
 | --- | --- | --- | --- |
 | LOAD | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;load&quot;}</code> | load all rows |
 | NEW | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;new&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | add new row, return ID |
-| SAVE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;savedata&quot;,&quot;method&quot;:&quot;PATCH&quot;}</code> | edit 1 cell (id, col) - special for order |
+| SAVE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;savedata&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | edit 1 cell (id, col) - special for order |
 | WATCH | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;watch&quot;}</code> | long polling |
-| DELETE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;delete&quot;,&quot;method&quot;:&quot;DELETE&quot;}</code> | delete row |
+| DELETE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;delete&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | delete row |
 
 <a name="tfw.dynamicTableClass.serverAction"></a>
 #### dynamicTableClass.serverAction : <code>Object</code>
@@ -404,7 +390,13 @@ Implemented server actions.
 | params | <code>Object</code> | update parameters |
 | params.id | <code>number</code> | ID of edited row |
 | params.col | <code>number</code> | order number of edited column |
+| params.value | <code>number</code> | new value |
 
+<a name="tfw.dynamicTableClass..updateInput"></a>
+#### dynamicTableClass~updateInput()
+this should refer to an input field in a dynamic table (HTML element)
+
+**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 #### dynamicTableClass~rowEdit : <code>function</code>
 Function that handles row editing.
@@ -741,6 +733,18 @@ Get data from server via AJAX.
 | [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately) |
 | [o.method] | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to be used (GET or POST) |
 | [o.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
+
+<a name="tfw.ajaxPost"></a>
+### tfw.ajaxPost(o) ⇒ <code>Object</code>
+Post data to server via AJAX.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>Object</code> - - Returns XMLHttpRequest object  
+**See**: tfw.ajaxGet  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| o | <code>Object</code> | parameters object (see [ajaxGet](#tfw.ajaxGet)) |
 
 <a name="tfw.encodeFormValues"></a>
 ### tfw.encodeFormValues(fields) ⇒ <code>string</code>
