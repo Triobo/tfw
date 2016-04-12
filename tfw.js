@@ -1804,6 +1804,9 @@ var tfw = {
 			o.add(thead = document.createElement("thead"));
 
 			thead.add(r = tfw.tr({className:'headlines'}));
+			if (rowEdit) {
+				r.add(document.createElement("th"));
+			}
 			for (var j = 0; j < this.data.cols.length; j++) {
 				c = document.createElement("th");
 				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
@@ -1834,9 +1837,7 @@ var tfw = {
 				if (!("h" in this.data.cols[j]))
 					r.add(c);
 			}
-			if (rowEdit) {
-				r.add(document.createElement("th"));
-			}
+
 
 			o.add(tbody = document.createElement("tbody"));
 			for (var i = 0; i < this.data.rows.length; i++) {
@@ -1844,71 +1845,67 @@ var tfw = {
 					id: "rowID-"+this.data.rows[i].id
 				}));
 				r.setAttribute("data-rowid", this.data.rows[i].id);
+
+				if (rowEdit) {
+					r.add(tfw.td({style:"width:18px;",children:[b=tfw.div({className:"rowedit",text:"<div></div>"})]}));
+  				b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
+				}
 				
 				for (var j = 0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
-						var params = {},
+						var params = {};
+						params.children=[];
+						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
+							params.children.push(b=tfw.div({className:"subtable",text:"<div></div>"}));
+						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
+						}
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
 							var id = "tfwDynamicTable-" + i + "-" + j;
 							switch(this.data.cols[j].type){
 								case "checkbox":
-									params.children = [tfw.checkbox({
+									params.children.push(tfw.checkbox({
 										id : id,
 										value : (val ? 1 : 0),
 										onchange: updateInput
-									})];
+									}));
 								break;
 								case "number":
-									params.children = [tfw.input({
+									params.children.push(tfw.input({
 										type : "number",
 										id : id,
 										value : val,
 										onchange: updateInput
-									})];
+									}));
 								break;
 								case "date":
 									this.prepareCalendar();
 									var calendarCell;
-									params.children = [calendarCell=tfw.input({
+									params.children.push(calendarCell=tfw.input({
 										type : "text",
 										id : id,
 										value : val.match(/\d{4,}-\d{2}-\d{2}/)[0],
 										onchange: updateInput
-									})];
+									}));
 									tfw.calendar(calendarCell);
 								break;
 								case "text":
-									params.children = [tfw.input({
+									params.children.push(tfw.input({
 										type : "text",
 										id : id,
 										value : val,
 										onchange: updateInput
-									})];
+									}));
 								break;
 								default:
 									params.innerHTML = val;
 							}
-						}
-						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
-							if(!("children" in params)){
-								params.children = [];
-							}
-							params.children.push(tfw.icon({
-								action:goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j),
-								style:"width:18px;height:18px;float:right;margin:1px 0;background:#8cc url('pics/sipkaVpravo.png') no-repeat center center"
-								}));
 						}
 						r.add(c = tfw.td(params));
 						c.dataset.col = j;
 					}
 				}
 				
-				if (rowEdit) {
-					r.add(tfw.td({children:[tfw.icon({
-						action:rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id),
-						style:"width:18px;height:18px;background:url('pics/zpravy.png') no-repeat center center;background-size:18px 18px;"})]}));
-				}
 			}
 			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"preferences"}));
 		}
