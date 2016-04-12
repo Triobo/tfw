@@ -341,12 +341,12 @@ button:disabled:hover {
 .tfwCheckbox div.checked {
   background-color: #fc5;/*orange*/
 }
-.tfwCheckbox:after{
+/*.tfwCheckbox:after{
 	content: "No";
 }
 .tfwCheckbox.checked:after{
 	content: "Yes";
-}
+}*/
 
 /* icon */
 .tfwIcon {
@@ -524,6 +524,15 @@ table.dynamicTable{
 	cursor: -moz-grabbing;
 	cursor: grabbing;
 }
+.dynamicTable tr td {
+  padding: 0;
+}
+.dynamicTable tr td input, .dynamicTable tr td input:focus {
+  border: none;
+  box-shadow:none;
+  margin:0;
+  width: 100%; 
+}
 
 /*********************/
 
@@ -606,4 +615,39 @@ table.dynamicTable{
 
 .calendarInput:hover {
   background-color:#fc5;
+}
+
+
+/* CSS arrows */
+
+.tfwArrow {
+  display:inline-block;
+  width:0px;
+  height:0px;
+  margin:3px 0;  
+  cursor: pointer;
+}
+.tfwArrow.up {
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-bottom:10px solid #8cc;/*azure*/
+}
+.tfwArrow.up.active {
+  border-bottom-color:#fc5;/*orange*/
+}
+.tfwArrow.down {
+  border-left:6px solid transparent;
+  border-right:6px solid transparent;
+  border-top:10px solid #8cc;/*azure*/
+}
+.tfwArrow.down.active {
+  border-top-color:#fc5;/*orange*/
+}
+.tfwArrow.filter {
+  border-left:4px solid #ddd;
+  border-right:4px solid #ddd;
+  border-top:5px solid #8cc;/*azure*/
+  width:  4px;
+  height: 5px;
+  background-color: #8cc;/*azure*/;
 }

@@ -1564,22 +1564,6 @@ var tfw = {
 		this.tableContainer = tfw.div({
 				innerHTML : AJAX_LOADER
 			});
-		/**
-		 * Ascending sorting symbol.
-		 * @const {string}
-		 * @default
-		 */
-		this.ascSortingSymbol = "&darr;";
-		/**
-		 * Descending sorting symbol.
-		 * @const {string}
-		 * @default
-		 */
-		this.descSortingSymbol = "&uarr;";
-		/**
-		 * @var {string}
-		 * @private
-		 */
 		var baseURL = params.baseURL;
 		/**
 		 * @var {string}
@@ -1826,28 +1810,26 @@ var tfw = {
 				if ("w" in this.data.cols[j])
 					c.style.width = this.data.cols[j].width;
 				if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
-					var b1 = tfw.button({
-							className : 'tfwDtSort',
-							innerHTML : this.descSortingSymbol
-						}),
-					b2 = tfw.button({
-							className : 'tfwDtSort',
-							innerHTML : this.ascSortingSymbol
-						});
-					b1.setAttribute('data-sort-order', 'desc');
-					b2.setAttribute('data-sort-order', 'asc');
-					var sortingButtons = [b1, b2];
-					for (var i = 0; i < sortingButtons.length; i++) {
-						sortingButtons[i].onclick = function(event){dynamicTable.sort(this, dynamicTable);};
-						sortingButtons[i].setAttribute('data-sort-col', j);
-						c.add(sortingButtons[i]);
-					}
+  				var b;
+  				c.add(b=tfw.div({className:"tfwArrow down",style:"float:right;"}));
+    				b.setAttribute("data-sort-order", "desc");
+    				b.setAttribute("data-sort-col", j);    				
+    				b.onclick=function(){
+      				dynamicTable.sort(this,dynamicTable);
+      		  };
+      		c.add(b=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
+    				b.setAttribute("data-sort-order", "asc");
+    				b.setAttribute("data-sort-col", j);
+    				b.onclick=function(){
+      				dynamicTable.sort(this,dynamicTable);
+      		  };
 				}
 				if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
-					var b = tfw.button({className:'tfwDtFilter'+this.data.cols[j].type,innerHTML:"f",
-						onclick:function(event){dynamicTable.filter.call(dynamicTable, this.dataset.filterCol);}});
-					b.setAttribute('data-filter-col', j);
-					c.add(b);
+  				c.add(b=tfw.div({className:"tfwArrow filter",style:"float:right;"}));
+  				b.setAttribute("data-filter-col", j);
+  				b.onclick=function(){
+    				dynamicTable.filter.call(dynamicTable, this.dataset.filterCol);
+  				}
 				}
 				if (!("h" in this.data.cols[j]))
 					r.add(c);
