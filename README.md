@@ -41,8 +41,6 @@ Triobo. This is a singleton (a single "instance" of a "class").
         * _instance_
             * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
             * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
-            * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
-            * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
             * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTableClass+reload)
             * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
@@ -52,6 +50,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
             * [.filter(column)](#tfw.dynamicTableClass+filter)
             * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
+            * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
             * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
             * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
@@ -65,6 +64,7 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
             * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
             * [~updateInput()](#tfw.dynamicTableClass..updateInput)
+            * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
             * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
             * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -76,9 +76,12 @@ Triobo. This is a singleton (a single "instance" of a "class").
             * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
         * _inner_
             * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
+    * [.strings](#tfw.strings) : <code>enum</code>
     * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
     * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
     * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
+    * [.insertStyle(style)](#tfw.insertStyle)
+    * [.init()](#tfw.init)
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
     * [.select(params)](#tfw.select) ⇒ <code>Object</code>
     * [.button(params)](#tfw.button) ⇒ <code>Object</code>
@@ -116,8 +119,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
     * _instance_
         * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
         * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
-        * [.ascSortingSymbol](#tfw.dynamicTableClass+ascSortingSymbol) : <code>string</code>
-        * [.descSortingSymbol](#tfw.dynamicTableClass+descSortingSymbol) : <code>string</code>
         * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
@@ -127,6 +128,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(column)](#tfw.dynamicTableClass+filter)
         * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
+        * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
         * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
         * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
@@ -140,6 +142,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
         * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
         * [~updateInput()](#tfw.dynamicTableClass..updateInput)
+        * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -160,7 +163,19 @@ Class for creating dynamic tables.
 
 **Example**  
 ```js
-function myRowEditFunction(order){	// ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   baseURL: "data.php",   urlParams: "token=Nd5qPxH&timestamp=1234567890"   rowEdit: myRowEditFunction  } ));
+function myRowEditFunction(order){
+	// ...
+}
+var table = document.body.appendChild(
+ tfw.dynamicTable(
+  {
+   id: "table1",
+   baseURL: "data.php",
+   urlParams: "token=Nd5qPxH&timestamp=1234567890"
+   rowEdit: myRowEditFunction
+  }
+ )
+);
 ```
 <a name="tfw.dynamicTableClass+tableContainer"></a>
 #### dynamicTableClass.tableContainer : <code>Object</code>
@@ -192,18 +207,6 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | rows[].id | <code>number</code> |  | row ID |
 | rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
-<a name="tfw.dynamicTableClass+ascSortingSymbol"></a>
-#### dynamicTableClass.ascSortingSymbol : <code>string</code>
-Ascending sorting symbol.
-
-**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Default**: <code>&quot;&amp;darr;&quot;</code>  
-<a name="tfw.dynamicTableClass+descSortingSymbol"></a>
-#### dynamicTableClass.descSortingSymbol : <code>string</code>
-Descending sorting symbol.
-
-**Kind**: instance constant of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Default**: <code>&quot;&amp;uarr;&quot;</code>  
 <a name="tfw.dynamicTableClass+getTable"></a>
 #### dynamicTableClass.getTable() ⇒ <code>Object</code>
 Get table container (for inserting into document).
@@ -212,7 +215,8 @@ Get table container (for inserting into document).
 **Returns**: <code>Object</code> - Returns the table container (HTML element).  
 <a name="tfw.dynamicTableClass+reload"></a>
 #### dynamicTableClass.reload()
-Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTableClass+paint) the table.
+Reload (or load) data from server.
+Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTableClass+paint) the table.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**
@@ -228,7 +232,9 @@ Test if no filters are applied and table is sorted by column of type 'order'.
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
 <a name="tfw.dynamicTableClass+toggleReorder"></a>
 #### dynamicTableClass.toggleReorder()
-Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
+Toggle reordering of rows via drag & drop.
+Reflects the value of a private variable set by onclick events fired with filters.
+Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+orderChange"></a>
@@ -243,7 +249,8 @@ Reflect a change in order in the table.
 
 <a name="tfw.dynamicTableClass+paint"></a>
 #### dynamicTableClass.paint()
-Refresh the content of the table using data gotten by (re)loading.Assumes that there is only 1 order column and that data is initially sorted by that column.
+Refresh the content of the table using data gotten by (re)loading.
+Assumes that there is only 1 order column and that data is initially sorted by that column.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
@@ -259,7 +266,8 @@ Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCale
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+filter"></a>
 #### dynamicTableClass.filter(column)
-Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
+Apply filter for values of a column.
+Creates a [dialog](tfw.dialog) with filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -269,7 +277,8 @@ Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
 
 <a name="tfw.dynamicTableClass+sort"></a>
 #### dynamicTableClass.sort(obj, dynamicTable)
-Apply sorting by values (text without HTML) of a column.Text fields are sorted locale aware, with empty strings always last.
+Apply sorting by values (text without HTML) of a column.
+Text fields are sorted locale aware, with empty strings always last.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -278,9 +287,22 @@ Apply sorting by values (text without HTML) of a column.Text fields are sorted 
 | obj | <code>Object</code> | sorting button that triggered the event |
 | dynamicTable | <code>dynamicTableClass</code> | reference to "this" |
 
+<a name="tfw.dynamicTableClass+setActiveFilterInColumn"></a>
+#### dynamicTableClass.setActiveFilterInColumn(column, on)
+Set status of filter icon in a column.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**See**: tfw.dynamicTableClass~setActiveArrow  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| column | <code>number</code> | column number |
+| on | <code>boolean</code> | whether to toggle active on or off |
+
 <a name="tfw.dynamicTableClass+filterSearch"></a>
 #### dynamicTableClass.filterSearch(column, value, [searchType])
-Apply search filter (case insensitive).Requires .searchFilterInvalid{display:none}
+Apply search filter (case insensitive).
+Requires .searchFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -292,7 +314,8 @@ Apply search filter (case insensitive).Requires .searchFilterInvalid{display:no
 
 <a name="tfw.dynamicTableClass+filterBoolean"></a>
 #### dynamicTableClass.filterBoolean(column, searchType)
-Apply boolean filter.Requires .booleanFilterInvalid{display:none}
+Apply boolean filter.
+Requires .booleanFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -303,7 +326,8 @@ Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 
 <a name="tfw.dynamicTableClass+filterNumeric"></a>
 #### dynamicTableClass.filterNumeric(column, compareValue, cmp)
-Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
+Apply numeric filter.
+Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -315,7 +339,8 @@ Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{d
 
 <a name="tfw.dynamicTableClass+filterDate"></a>
 #### dynamicTableClass.filterDate(column, compareValue, cmp)
-Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
+Apply date filter.
+Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -327,7 +352,8 @@ Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:no
 
 <a name="tfw.dynamicTableClass+toggleColumn"></a>
 #### dynamicTableClass.toggleColumn(column)
-Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideColumn{display:none}
+Toggle visibility of a column. Only hides TDs in TBODY and THs.
+Requires .hideColumn{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
@@ -341,7 +367,8 @@ Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideCo
 
 <a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
 #### dynamicTableClass.toggleColumnDialog()
-Toggle visibility of a column.Creates a [dialog](tfw.dialog) with checkboxes.
+Toggle visibility of a column.
+Creates a [dialog](tfw.dialog) with checkboxes.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass.serverActions"></a>
@@ -397,6 +424,17 @@ Implemented server actions.
 this should refer to an input field in a dynamic table (HTML element)
 
 **Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+<a name="tfw.dynamicTableClass..setActiveArrow"></a>
+#### dynamicTableClass~setActiveArrow(element, base)
+Set active arrow (and make other arrows of same group inactive).
+
+**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| element | <code>Object</code> | arrow to make active (HTML element) |
+| base | <code>Object</code> | where to search for arrows (HTML element) |
+
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 #### dynamicTableClass~rowEdit : <code>function</code>
 Function that handles row editing.
@@ -452,7 +490,14 @@ Class for enhancing date input fields. Requires CSS styling.
 
 **Example**  
 ```js
-tfw.calendar.placeCalendar = function(cal, input){ input.parentNode.insertBefore(cal, input);}var input = tfw.input({value:"2016-03-07"});document.body.appendChild(input);tfw.calendar(input);
+tfw.calendar.placeCalendar = function(cal, input){
+ input.parentNode.insertBefore(cal, input);
+}
+
+var input = tfw.input({value:"2016-03-07"});
+document.body.appendChild(input);
+
+tfw.calendar(input);
 ```
 <a name="tfw.calendar.months"></a>
 #### calendar.months : <code>Array.&lt;String&gt;</code>
@@ -474,7 +519,8 @@ Function called when a calendar widget is created.
 **Default**: <code></code>  
 <a name="tfw.calendar..placeCalendar"></a>
 #### calendar~placeCalendar : <code>function</code>
-Callback function that puts calendar widget for an input field into page.Most likely create an overlay that closes calendar when user clicks somewhere else.
+Callback function that puts calendar widget for an input field into page.
+Most likely create an overlay that closes calendar when user clicks somewhere else.
 
 **Kind**: inner typedef of <code>[calendar](#tfw.calendar)</code>  
 
@@ -482,6 +528,19 @@ Callback function that puts calendar widget for an input field into page.Most l
 | --- | --- | --- |
 | calendar | <code>Object</code> | calendar widget (HTML element) |
 | input | <code>Object</code> | related input field (HTML element) |
+
+<a name="tfw.strings"></a>
+### tfw.strings : <code>enum</code>
+Strings that are output by tfw functions. Change them for localization.
+
+**Kind**: static enum property of <code>[tfw](#tfw)</code>  
+**Default**: <code>&quot;{\&quot;CHECKBOX_FALSE\&quot;:\&quot;No\&quot;,\&quot;CHECKBOX_TRUE\&quot;:\&quot;Yes\&quot;}&quot;</code>  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| CHECKBOX_FALSE | <code>string</code> | <code>&quot;No&quot;</code> | Label for checkbox with false value. |
+| CHECKBOX_TRUE | <code>string</code> | <code>&quot;Yes&quot;</code> | Label for checkbox with true value. |
 
 <a name="tfw.ajaxIncludeParams"></a>
 ### tfw.ajaxIncludeParams : <code>function</code>
@@ -505,6 +564,22 @@ Handles HTTP errors (HTTP codes other than 200).
 
 - [ ] Implement
 
+<a name="tfw.insertStyle"></a>
+### tfw.insertStyle(style)
+Add Javascript-generated CSS to the document.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| style | <code>string</code> | CSS to be added |
+
+<a name="tfw.init"></a>
+### tfw.init()
+Initialization needed to run tfw functions (e.g. adds required CSS styling).
+Can be run multiple times (after adding localized strings).
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
 <a name="tfw.fillElemDefs"></a>
 ### tfw.fillElemDefs(element, params)
 Set parameters of a HTML element.
@@ -770,7 +845,8 @@ Decode JSON data, show error in case they are invalid.
 
 <a name="tfw.dynamicTable"></a>
 ### tfw.dynamicTable(params) ⇒ <code>Object</code>
-Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.Class instance's properties are mirrored into the HTML element.
+Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
+Class instance's properties are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>Object</code> - table (HTML element)  

@@ -20,6 +20,15 @@ function $(id) {
 HTMLElement.prototype.hasClass = function (c) {
     return (this.className.split(' ').indexOf(c) != -1);
 }
+HTMLElement.prototype.hasAnyClass = function (c) {
+	var searchedClasses = c.split(' ');
+	for(var i in searchedClasses){
+		if(this.className.split(' ').indexOf(searchedClasses[i]) != -1){
+			return true;
+		}
+	}
+    return false;
+}
 HTMLElement.prototype.addClass = function (c) {
     if (!this.hasClass(c)) {
         if (this.className) {
@@ -213,6 +222,39 @@ var desktop = {
  * @todo Replace {@link http://www.w3schools.com/js/js_reserved.asp|reserved words} in function names
  */
 var tfw = {
+	/**
+	 * Strings that are output by tfw functions. Change them for localization.
+	 * @enum {string}
+	 * @default
+	 */
+	strings : {
+		/** Label for checkbox with false value. */
+		CHECKBOX_FALSE: 'No',
+		/** Label for checkbox with true value. */
+		CHECKBOX_TRUE: 'Yes'
+	},
+	/**
+	 * Add Javascript-generated CSS to the document.
+	 * @param {string} style - CSS to be added
+	 */
+	insertStyle : function(style){
+		if(document.getElementById("tfwInsertStyle") == null){
+			var styleElement = document.createElement("style");
+			styleElement.setAttribute("id", "tfwInsertStyle");
+			document.getElementsByTagName("head")[0].add(styleElement);
+		}
+		var insertedStyle = document.getElementById("tfwInsertStyle");
+		insertedStyle.innerHTML += style;
+	},
+	/**
+	 * Initialization needed to run tfw functions (e.g. adds required CSS styling).
+	 * Can be run multiple times (after adding localized strings).
+	 */
+	init : function(){
+		var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"'+tfw.strings.CHECKBOX_FALSE+'"}' + "\n" +
+						 '.tfwDynamicTable .tfwCheckbox.checked:after{content:"'+tfw.strings.CHECKBOX_TRUE+'"}';
+		tfw.insertStyle(tfwStyling);
+	},
     /**
      * Set parameters of a HTML element.
      * @memberof tfw
@@ -1739,7 +1781,45 @@ var tfw = {
 				value: this.value
 			});
 		}
-
+		
+		/**
+		 * Set active arrow (and make other arrows of same group inactive).
+		 * @param {Object} element - arrow to make active (HTML element)
+		 * @param {Object} base - where to search for arrows (HTML element)
+		 */
+		function setActiveArrow(element, base, on){
+			if(typeof(base) != "undefined" && base != null){
+				var arrowType = null, arrowGroup = null;
+				var arrowGroups = [
+					["filter"],
+					["up","down"]
+				];
+				for(var j in arrowGroups){
+					var arrowTypes = arrowGroups[j];
+					for(var i in arrowTypes){
+						if(element.hasClass(arrowTypes[i])){
+							arrowGroup = arrowTypes;
+							arrowType = arrowTypes[i];
+						}
+					}
+				}
+				if(arrowType == null){
+					console.error("setActiveArrow called on invalid element.");
+				}
+				else{
+					var otherArrows = base.getElementsByClassName("tfwArrow");
+					for(var i=0;i<otherArrows.length;i++){
+						if(otherArrows[i].hasAnyClass(arrowGroup.join(' '))){
+							otherArrows[i].removeClass("active");
+						}
+					}
+				}
+			}
+			if(element != null && (typeof(on) == "undefined" || on)){
+				element.addClass("active");
+			}
+		}
+		
 		/**
 		 * Reflect a change in order in the table.
 		 * @param {Object} element - row that was dropped (HTML element)
@@ -1776,7 +1856,7 @@ var tfw = {
 			this.tableContainer.innerHTML = "";
 			this.tableContainer.add(o = tfw.table({
 						id : tableHTMLId,
-						className : 'dynamicTable'
+						className : 'tfwDynamicTable'
 					}));
 
 			for (var j = 0; j < this.data.cols.length; j++) {
@@ -1804,10 +1884,12 @@ var tfw = {
 			o.add(thead = document.createElement("thead"));
 
 			thead.add(r = tfw.tr({className:'headlines'}));
+			var j = 0;
 			if (rowEdit) {
 				r.add(document.createElement("th"));
+				j++;
 			}
-			for (var j = 0; j < this.data.cols.length; j++) {
+			for (; j < this.data.cols.length; j++) {
 				c = document.createElement("th");
 				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
 				if ("w" in this.data.cols[j])
@@ -1818,12 +1900,14 @@ var tfw = {
     				b.setAttribute("data-sort-order", "desc");
     				b.setAttribute("data-sort-col", j);    				
     				b.onclick=function(){
+						setActiveArrow(this, dynamicTable.tableContainer);
       				dynamicTable.sort(this,dynamicTable);
       		  };
       		c.add(b=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
     				b.setAttribute("data-sort-order", "asc");
     				b.setAttribute("data-sort-col", j);
     				b.onclick=function(){
+						setActiveArrow(this, dynamicTable.tableContainer);
       				dynamicTable.sort(this,dynamicTable);
       		  };
 				}
@@ -1845,13 +1929,15 @@ var tfw = {
 					id: "rowID-"+this.data.rows[i].id
 				}));
 				r.setAttribute("data-rowid", this.data.rows[i].id);
-
+				
+				var j = 0;
 				if (rowEdit) {
 					r.add(tfw.td({style:"width:18px;",children:[b=tfw.div({className:"rowedit",text:"<div></div>"})]}));
-  				b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
+					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
+					j++;
 				}
 				
-				for (var j = 0; j < this.data.cols.length; j++) {
+				for (; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
 						var params = {};
 						params.children=[];
@@ -1950,6 +2036,23 @@ var tfw = {
 		}
 		
 		/**
+		 * Default filter values.
+		 * @private
+		 */
+		var defaultFilterValues = {
+			bool: "0",
+			number: false, //[min, max]
+			date: false, //[min, max]
+			text: ""
+		};
+		
+		/**
+		 * Currently applied filter values.
+		 * @private
+		 */
+		var filterValues = JSON.parse(JSON.stringify(defaultFilterValues)); //copy
+		
+		/**
 		 * Apply filter for values of a column.
 		 * Creates a {@link tfw.dialog|dialog} with filter.
 		 * @param {number} column - order number of searched column
@@ -1971,7 +2074,7 @@ var tfw = {
 				case "checkbox":
 					var filter = tfw.select({
 							list : "Both;Yes;No",
-							value : 0,
+							value : filterValues.bool,
 							onchange : function () {
 								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
 							}
@@ -1990,6 +2093,7 @@ var tfw = {
 							maxV = dynamicTable.data.rows[i].cols[column];
 						}
 					}
+					defaultFilterValues.number = [minV, maxV];
 					var f1 = tfw.input({
 							type : "number",
 							className : "rangeMin",
@@ -2004,7 +2108,7 @@ var tfw = {
 							},
 							min : minV,
 							max : maxV,
-							value : minV,
+							value : (filterValues.number) ? filterValues.number[0] : minV,
 							legend : "From:"
 						});
 					var f2 = tfw.input({
@@ -2021,7 +2125,7 @@ var tfw = {
 							},
 							min : minV,
 							max : maxV,
-							value : maxV,
+							value : (filterValues.number) ? filterValues.number[1] : maxV,
 							legend : "To:"
 						}); ;
 					f1.querySelector(".rangeMin").setAttribute("data-filter-col", column);
@@ -2040,13 +2144,14 @@ var tfw = {
 							maxV = dynamicTable.data.rows[i].cols[column];
 						}
 					}
+					defaultFilterValues.date = [minV, maxV];
 					var f1 = tfw.input({
 							type : "text",
 							className : "dateMin",
 							onchange : function () {
 								dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, 1);
 							},
-							value : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
+							value : (filterValues.date) ? filterValues.date[0] : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
 							legend : "From:"
 						});
 					var f2 = tfw.input({
@@ -2055,7 +2160,7 @@ var tfw = {
 							onchange : function () {
 								dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, -1);
 							},
-							value : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
+							value : (filterValues.date) ? filterValues.date[1] : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
 							legend : "To:"
 						}); ;
 					c.add(f1);
@@ -2068,7 +2173,8 @@ var tfw = {
 				case "text":
 					var searchInput = tfw.input({
 							type : "text",
-							placeholder : "Search " + ((this.data.cols[column].filter === 1) ? "beginning with" : "including") + "..."
+							placeholder : "Search " + ((this.data.cols[column].filter === 1) ? "beginning with" : "including") + "...",
+							value : filterValues.text
 						});
 					searchInput.setAttribute("data-search-type", this.data.cols[column].search);
 					searchInput.setAttribute("data-filter-col", column);
@@ -2137,6 +2243,19 @@ var tfw = {
 				tbody.appendChild(rows.namedItem(arr[i].id));
 			}
 		};
+		
+		/**
+		 * Set status of filter icon in a column.
+		 * @param {number} column - column number
+		 * @param {boolean} on - whether to toggle active on or off
+		 * @see tfw.dynamicTableClass~setActiveArrow
+		 */
+		this.setActiveFilterInColumn = function(column, on){
+			var base = this.tableContainer.getElementsByClassName("headlines")[0].getElementsByTagName("th")[column];
+			var filterIcon = base.getElementsByClassName("tfwArrow filter")[0];
+			setActiveArrow(filterIcon, base, on);
+		}
+		
 		/**
 		 * Apply search filter (case insensitive).
 		 * Requires .searchFilterInvalid{display:none}
@@ -2145,10 +2264,13 @@ var tfw = {
 		 * @param {number} [searchType=2] - type of search (1 = starts with, 2 = includes)
 		 */
 		this.filterSearch = function (column, value, searchType) {
+			filterValues.text = value;
+			this.setActiveFilterInColumn(column, (value !== defaultFilterValues.text));
+			
 			var tbody = this.tableContainer.querySelector("tbody");
 			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
 			for (var i = 0; i < tbody.rows.length; i++) {
-				var matches = (value == "") || tbody.rows[i].cells[column].textContent.toLowerCase()[searchFunc](value.toLowerCase());
+				var matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type='text']").value.toLowerCase()[searchFunc](value.toLowerCase());
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('searchFilterInvalid');
 			}
 		};
@@ -2159,6 +2281,9 @@ var tfw = {
 		 * @param {string} searchType - search type ("0" = both, "1" = only true, "2" = only false)
 		 */
 		this.filterBoolean = function (column, searchType) {
+			filterValues.bool = searchType;
+			this.setActiveFilterInColumn(column, (searchType !== defaultFilterValues.bool));
+			
 			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
 				var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
@@ -2174,6 +2299,10 @@ var tfw = {
 		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
 		 */
 		this.filterNumeric = function (column, compareValue, cmp) {
+			var index = (cmp == 1) ? 0 : 1;
+			filterValues.number[index] = compareValue;
+			this.setActiveFilterInColumn(column, compareValue != defaultFilterValues.number[index]);
+			
 			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
 				var value = parseInt(tbody.rows[i].cells[column].querySelector("input").value);
@@ -2189,6 +2318,10 @@ var tfw = {
 		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
 		 */
 		this.filterDate = function (column, compareValue, cmp) {
+			var index = (cmp == 1) ? 0 : 1;
+			filterValues.date[index] = compareValue;
+			this.setActiveFilterInColumn(column, compareValue != defaultFilterValues.date[index]);
+			
 			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
 				var value = tbody.rows[i].cells[column].textContent;
@@ -2465,6 +2598,8 @@ tfw.calendar.daysShort = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
  * @default
  */
 tfw.calendar.placeCalendar = null;
+
+window.addEventListener("load", tfw.init);
 
 /**
  * Function package for preparing HTML elements.
