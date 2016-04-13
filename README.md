@@ -102,6 +102,7 @@ Create a new layer.
     * [.init()](#tfw.init)
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
     * [.select(params)](#tfw.select) ⇒ <code>Object</code>
+    * [.dropDown(params)](#tfw.dropDown) ⇒ <code>Object</code>
     * [.button(params)](#tfw.button) ⇒ <code>Object</code>
     * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
     * [.input(params)](#tfw.input) ⇒ <code>Object</code>
@@ -605,6 +606,30 @@ Create a select field with specified parameters.
 | params.list | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> | list of options as string "label1;label2" or "label1|value1;label2|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text) |
 | [params.list[].id] | <code>string</code> | value (defaults to numeric index of option) |
 | params.list[].t | <code>string</code> | label |
+
+<a name="tfw.dropDown"></a>
+### tfw.dropDown(params) ⇒ <code>Object</code>
+Create a dropdown menu.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>Object</code> - Created dropdown menu (HTML element).  
+**See**: tfw.select  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | dropdown parameters |
+| [params.legend] | <code>string</code> |  | label |
+| [params.legendWidth] | <code>string</code> |  | label CSS width (including unit) |
+| [params.containerId] | <code>string</code> |  | ID of containing paragraph |
+| [params.containerStyle] | <code>string</code> |  | CSS styling of containing paragraph |
+| [params.id] | <code>string</code> |  | dropdown ID |
+| [params.className] | <code>string</code> |  | dropdown classes (separated by spaces) |
+| [params.style] | <code>string</code> |  | dropdown CSS styling |
+| [params.itemWidth] | <code>number</code> | <code>0</code> | width of an item |
+| [params.itemHeight] | <code>number</code> | <code>20</code> | height of an item |
+| [params.onchange] | <code>function</code> |  | function to call when value changes (onchange) |
+| params.list | <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> |  | list of options passed to [select](#tfw.select) |
+| [params.value] | <code>string</code> |  | default (selected) value |
 
 <a name="tfw.button"></a>
 ### tfw.button(params) ⇒ <code>Object</code>

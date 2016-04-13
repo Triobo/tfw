@@ -448,41 +448,73 @@ var tfw = {
         }
         return element;
     },
-    dropDown : function (n) {
+	/**
+	 * Create a dropdown menu.
+	 * @param {Object} params - dropdown parameters
+	 * @param {string} [params.legend] - label
+	 * @param {string} [params.legendWidth] - label CSS width (including unit)
+	 * @param {string} [params.containerId] - ID of containing paragraph
+	 * @param {string} [params.containerStyle] - CSS styling of containing paragraph
+	 * @param {string} [params.id] - dropdown ID
+	 * @param {string} [params.className] - dropdown classes (separated by spaces)
+	 * @param {string} [params.style] - dropdown CSS styling
+	 * @param {number} [params.itemWidth=0] - width of an item
+	 * @param {number} [params.itemHeight=20] - height of an item
+	 * @param {function} [params.onchange] - function to call when value changes (onchange)
+	 * @param {(string[]|Object[])} params.list - list of options passed to {@link tfw.select}
+	 * @param {string} [params.value] - default (selected) value
+	 * @return {Object} Created dropdown menu (HTML element).
+	 * @see tfw.select
+	 */
+    dropDown : function (params) {
         var y = document.createElement("p");
         y.className = "tfwContainer";
-        if (n.legend) {
+        if (params.legend) {
             var l = document.createElement("span");
             l.style.display = "inline-block";
-            l.innerHTML = n.legend;
-            if (n.legendWidth)
-                l.style.width = n.legendWidth;
-            if (n.containerId)
-                y.id = n.containerId;
-            if (n.containerStyle)
-                y.style.cssText = n.containerStyle;
+            l.innerHTML = params.legend;
+            if (params.legendWidth){
+                l.style.width = params.legendWidth;
+			}
+            if (params.containerId){
+                y.id = params.containerId;
+			}
+            if (params.containerStyle){
+                y.style.cssText = params.containerStyle;
+			}
             y.add(l);
         }
         var x = tfw.div({});
-        if (n.id)
-            x.id = n.id;
-        if (n.className)
-            x.className = "tfwDropDown " + n.className;
-        else
+        if (params.id){
+            x.id = params.id;
+		}
+        if (params.className){
+            x.className = "tfwDropDown " + params.className;
+		}
+        else {
             x.className = "tfwDropDown";
-        if (n.style)
-            x.style.cssText = n.style;
-        if (n.itemWidth)
-            x.itemWidth = n.itemWidth;
-        else
+		}
+        if (params.style){
+            x.style.cssText = params.style;
+		}
+        if (params.itemWidth){
+            x.itemWidth = params.itemWidth;
+		}
+        else {
             x.itemWidth = 0;
-        if (n.itemHeight)
-            x.itemHeight = n.itemHeight;
-        else
+		}
+        if (params.itemHeight){
+            x.itemHeight = params.itemHeight;
+		}
+        else {
             x.itemHeight = 20;
-        if (n.onchange)
-            x.onchange = n.onchange;
-        x.onmousedown = function(e){e.preventDefault();};
+		}
+        if (params.onchange){
+            x.onchange = params.onchange;
+		}
+        x.onmousedown = function(e){
+			e.preventDefault();
+		};
         x.onclick = function () {
             var b;
             desktop.newLayer({
@@ -490,18 +522,21 @@ var tfw = {
                 modal : "auto"
             });
             var rect = x.getBoundingClientRect();
-            var vyska = n.list.length * x.itemHeight;
-            if (n.maxHeight)
-                if (vyska > n.maxHeight)
-                    vyska = n.maxHeight;
-            if (vyska > 210)
+            var vyska = params.list.length * x.itemHeight;
+            if (params.maxHeight){
+                if (vyska > params.maxHeight){
+                    vyska = params.maxHeight;
+				}
+			}
+            if (vyska > 210){
                 vyska = 210;
+			}
             desktop.layers[desktop.activeLayer].add(c = tfw.div({
                         style : "overflow:hidden;position:absolute;left:" + rect.left + "px;top:" + (rect.top + rect.height) + "px"
                     }));
             c.add(b = tfw.select({
-                        id : "drop" + n.id,
-                        list : n.list,
+                        id : "drop" + params.id,
+                        list : params.list,
                         value : x.value,
                         style : "width:" + (rect.width - 2 + x.itemWidth) + "px;position:relative;top:-1px;height:" + vyska + "px;",
                         onchange : function () {
@@ -510,34 +545,39 @@ var tfw = {
                                     x.innerHTML = this.childNodes[i].innerHTML;
                                     x.value = this.childNodes[i].value;
                                 }
-                            if (x.onchange)
+                            if (x.onchange){
                                 x.onchange();
+							}
                         }
                     }));
             b.style.webkitTransform = "translateY(-" + vyska + "px)";
-            window.setTimeout('$(\"' + "drop" + n.id + '\").style.webkitTransform=\"\";', 10);
+            window.setTimeout('$(\"' + "drop" + params.id + '\").style.webkitTransform=\"\";', 10);
         };
-        if (("value" in n) && n.list)
-            for (var i = 0; i < n.list.length; i++)
-                if (typeof n.list[i] === 'object') {
-                    if (n.list[i].id == n.value)
-                        x.innerHTML = n.list[i].t;
+        if (("value" in params) && params.list){
+            for (var i = 0; i < params.list.length; i++){
+                if (typeof params.list[i] === 'object') {
+                    if (params.list[i].id == params.value)
+                        x.innerHTML = params.list[i].t;
                 } else {
-                    if (i == n.value)
-                        x.innerHTML = n.list[i];
+                    if (i == params.value)
+                        x.innerHTML = params.list[i];
                 }
-        if ("value" in n)
-            x.value = n.value;
+			}
+		}
+        if ("value" in params){
+            x.value = params.value;
+		}
         x.setValue = function (a) {
             x.value = a;
-            for (i = 0; i < n.list.length; i++)
-                if (typeof n.list[i] === 'object') {
-                    if (n.list[i].id == a)
-                        x.innerHTML = n.list[i].t;
+            for (i = 0; i < params.list.length; i++){
+                if (typeof params.list[i] === 'object') {
+                    if (params.list[i].id == a)
+                        x.innerHTML = params.list[i].t;
                 } else {
                     if (i == a)
-                        x.innerHTML = n.list[i];
+                        x.innerHTML = params.list[i];
                 }
+			}
         }
 
         y.add(x);
