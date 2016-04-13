@@ -245,7 +245,25 @@ var tfw = {
 		/** Label for checkbox with true value. */
 		CHECKBOX_TRUE: 'Yes',
 		/** Word for 'both' (e.g. both true and false) */
-		BOTH: 'Both'
+		BOTH: 'Both',
+		/** Label for preferences button in dynamic tables */
+		BUTTON_PREFERENCES: 'preferences',
+		/** Calendar prompt */
+		CHOOSE_DATE: 'Choose a date',
+		/** Close button label */
+		CLOSE: 'Close',
+		/** Minimum input label */
+		LOW_BOUND_LABEL: 'From:',
+		/** Maximum input label */
+		HIGH_BOUND_LABEL: 'To:',
+		/** Placeholder when searching from beginning of string */
+		SEARCH_BEGINNING: 'Search beginning with…',
+		/** Placeholder when searching anywhere in a string */
+		SEARCH_ANYWHERE: 'Search including…',
+		/** Filter dialog header */
+		FILTER: 'Filter',
+		/** Columns' visibility toggle header */
+		TOGGLE_COLUMNS: 'Show/hide columns'
 	},
 	/**
 	 * Add Javascript-generated CSS to the document.
@@ -1634,7 +1652,6 @@ var tfw = {
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @todo View preferences (width, order of columns)
-	 * @todo Enable localization
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
@@ -1842,7 +1859,7 @@ var tfw = {
 		function updateInput(){
 			serverUpdateCell({
 				id: this.closest('tr').dataset.rowid,
-				col: this.closest('td').dataset.col,
+				col: this.closest('td').dataset.dataCol,
 				value: this.value
 			});
 		}
@@ -1916,75 +1933,73 @@ var tfw = {
 			tbody,
 			r,
 			c,
-			visibleColsCount = 0,
+			columnOrder,
 			dynamicTable = this;
 			this.tableContainer.innerHTML = "";
 			this.tableContainer.add(o = tfw.table({
 						id : tableHTMLId,
 						className : 'tfwDynamicTable'
 					}));
-
 			for (var j = 0; j < this.data.cols.length; j++) {
-				if (this.data.cols[j].hidden) {
-					continue;
-				} else {
-					visibleColsCount++;
-					if (this.data.cols[j].type == "order") {
-						sortedByOrder = true; //assumed
-						orderColumn = j;
-						this.data.cols[j].sort = true;
-						o.addEventListener("click", function (event) {
-							var tbody = dynamicTable.tableContainer.querySelector("tbody");
-							var col = event.target.getAttribute("data-sort-col");
-							var order = event.target.getAttribute("data-sort-order");
-							if (col) {
-								sortedByOrder = (dynamicTable.data.cols[col].type == "order" && order == 'asc');
-							}
-							dynamicTable.toggleReorder();
-						});
-					}
+				if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
+					sortedByOrder = true; //assumed
+					this.data.cols[j].sort = true;
+					o.addEventListener("click", function (event) {
+						var tbody = dynamicTable.tableContainer.querySelector("tbody");
+						var col = event.target.dataset.dataCol;
+						var order = event.target.dataset.sortOrder;
+						if (col) {
+							sortedByOrder = (dynamicTable.data.cols[col].type == "order" && order == 'asc');
+						}
+						dynamicTable.toggleReorder();
+					});
 				}
 			}
 
 			o.add(thead = document.createElement("thead"));
 
 			thead.add(r = tfw.tr({className:'headlines'}));
-			var j = 0;
+			columnOrder = 0;
 			if (rowEdit) {
 				r.add(document.createElement("th"));
-				j++;
+				columnOrder++;
 			}
-			for (; j < this.data.cols.length; j++) {
-				c = document.createElement("th");
-				c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
-				if ("w" in this.data.cols[j])
-					c.style.width = this.data.cols[j].width;
-				if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
-  				var b;
-  				c.add(b=tfw.div({className:"tfwArrow down",style:"float:right;"}));
-    				b.setAttribute("data-sort-order", "desc");
-    				b.setAttribute("data-sort-col", j);    				
-    				b.onclick=function(){
-						setActiveArrow(this, dynamicTable.tableContainer);
-      				dynamicTable.sort(this,dynamicTable);
-      		  };
-      		c.add(b=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
-    				b.setAttribute("data-sort-order", "asc");
-    				b.setAttribute("data-sort-col", j);
-    				b.onclick=function(){
-						setActiveArrow(this, dynamicTable.tableContainer);
-      				dynamicTable.sort(this,dynamicTable);
-      		  };
-				}
-				if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
-  				c.add(b=tfw.div({className:"tfwArrow filter",style:"float:right;"}));
-  				b.setAttribute("data-filter-col", j);
-  				b.onclick=function(){
-    				dynamicTable.filter.call(dynamicTable, this.dataset.filterCol);
-  				}
-				}
-				if (!("h" in this.data.cols[j]))
+			for (var j = 0; j < this.data.cols.length; j++) {
+				if (!("h" in this.data.cols[j])){
+					c = document.createElement("th");
+					c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
+					if ("w" in this.data.cols[j]){
+						c.style.width = this.data.cols[j].width;
+					}
+					if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
+						var b;
+						c.add(b=tfw.div({className:"tfwArrow down",style:"float:right;"}));
+							b.dataset.dataCol = j;
+							b.dataset.sortOrder = "desc";
+							b.onclick=function(){
+								setActiveArrow(this, dynamicTable.tableContainer);
+							dynamicTable.sort(this,dynamicTable);
+						};
+						c.add(b=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
+							b.dataset.dataCol = j;
+							b.dataset.sortOrder = "asc";
+							b.onclick=function(){
+								setActiveArrow(this, dynamicTable.tableContainer);
+							dynamicTable.sort(this,dynamicTable);
+						};
+					}
+					if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
+						c.add(b=tfw.div({className:"tfwArrow filter",style:"float:right;"}));
+						b.dataset.dataCol = j;
+						b.onclick=function(){
+							dynamicTable.filter.call(dynamicTable, this.dataset.dataCol);
+						}
+					}
 					r.add(c);
+					
+					this.data.cols[j].columnOrder = columnOrder;
+					columnOrder++;
+				}
 			}
 
 
@@ -1994,15 +2009,15 @@ var tfw = {
 					id: "rowID-"+this.data.rows[i].id
 				}));
 				r.setAttribute("data-rowid", this.data.rows[i].id);
+				columnOrder = 0;
 				
-				var j = 0;
 				if (rowEdit) {
 					r.add(tfw.td({style:"width:18px;",children:[b=tfw.div({className:"rowedit",text:"<div></div>"})]}));
 					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
-					j++;
+					columnOrder++;
 				}
 				
-				for (; j < this.data.cols.length; j++) {
+				for (var j=0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
 						var params = {};
 						params.children=[];
@@ -2012,7 +2027,7 @@ var tfw = {
 						}
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
-							var id = "tfwDynamicTable-" + i + "-" + j;
+							var id = "tfwDynamicTable-" + i + "-" + columnOrder;
 							switch(this.data.cols[j].type){
 								case "checkbox":
 									params.children.push(tfw.checkbox({
@@ -2053,12 +2068,13 @@ var tfw = {
 							}
 						}
 						r.add(c = tfw.td(params));
-						c.dataset.col = j;
+						c.dataset.dataCol = j;
+						columnOrder++;
 					}
 				}
 				
 			}
-			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"preferences"}));
+			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:tfw.strings.BUTTON_PREFERENCES}));
 		}
 		
 		/**
@@ -2090,10 +2106,10 @@ var tfw = {
 					var dlg=tfw.dialog({
 						width:300,
 						height:300,
-						title:"Choose a date",
+						title:tfw.strings.CHOOSE_DATE,
 						children:[cal],
 						buttons:[
-						  {text:"Close",action:desktop.closeTopLayer}
+						  {text:tfw.strings.CLOSE,action:desktop.closeTopLayer}
 						]
 					});
 				};
@@ -2120,20 +2136,21 @@ var tfw = {
 		/**
 		 * Apply filter for values of a column.
 		 * Creates a {@link tfw.dialog|dialog} with filter.
-		 * @param {number} column - order number of searched column
+		 * @param {number} dataCol - order of searched column (in data)
 		 */
-		this.filter = function (column) {
+		this.filter = function (dataCol) {
 			var dynamicTable = this;
-			if (dynamicTable.data.cols[column].hidden) {
+			var column = dynamicTable.data.cols[dataCol].columnOrder;
+			if (dynamicTable.data.cols[dataCol].hidden) {
 				console.error("Tried to apply filter on a hidden column.");
 				return;
 			}
-			else if(!"filter" in dynamicTable.data.cols[column] || !dynamicTable.data.cols[column].filter){
+			else if(!"filter" in dynamicTable.data.cols[dataCol] || !dynamicTable.data.cols[dataCol].filter){
 				console.error("Tried to apply filter on a column with no filter.");
 				return;
 			}
 			c = document.createElement("div");
-			var type = dynamicTable.data.cols[column].type;
+			var type = dynamicTable.data.cols[dataCol].type;
 			
 			switch(type){
 				case "checkbox":
@@ -2141,21 +2158,21 @@ var tfw = {
 							list : [tfw.strings.BOTH,tfw.strings.CHECKBOX_TRUE,tfw.strings.CHECKBOX_FALSE].join(";"),
 							value : filterValues.bool,
 							onchange : function () {
-								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
+								dynamicTable.filterBoolean(this.dataset.columnOrder, this.value);
 							}
 						});
-					filter.setAttribute("data-filter-col", column);
+					filter.dataset.columnOrder = column;
 					c.add(filter);
 				break;
 				case "number":
 					var minV,
 					maxV;
-					minV = maxV = dynamicTable.data.rows[0].cols[column];
+					minV = maxV = dynamicTable.data.rows[0].cols[dataCol];
 					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
-						if (dynamicTable.data.rows[i].cols[column] < minV) {
-							minV = dynamicTable.data.rows[i].cols[column];
-						} else if (dynamicTable.data.rows[i].cols[column] > maxV) {
-							maxV = dynamicTable.data.rows[i].cols[column];
+						if (dynamicTable.data.rows[i].cols[dataCol] < minV) {
+							minV = dynamicTable.data.rows[i].cols[dataCol];
+						} else if (dynamicTable.data.rows[i].cols[dataCol] > maxV) {
+							maxV = dynamicTable.data.rows[i].cols[dataCol];
 						}
 					}
 					defaultFilterValues.number = [minV, maxV];
@@ -2169,12 +2186,12 @@ var tfw = {
 									max.value = max.min;
 									max.onchange();
 								}
-								dynamicTable.filterNumeric(this.getAttribute("data-filter-col"), this.value, 1);
+								dynamicTable.filterNumeric(this.dataset.columnOrder, this.value, 1);
 							},
 							min : minV,
 							max : maxV,
 							value : (filterValues.number) ? filterValues.number[0] : minV,
-							legend : "From:"
+							legend : tfw.strings.LOW_BOUND_LABEL
 						});
 					var f2 = tfw.input({
 							type : "number",
@@ -2186,27 +2203,26 @@ var tfw = {
 									min.value = min.max;
 									min.onchange();
 								}
-								dynamicTable.filterNumeric(this.getAttribute("data-filter-col"), this.value, -1);
+								dynamicTable.filterNumeric(this.dataset.columnOrder, this.value, -1);
 							},
 							min : minV,
 							max : maxV,
 							value : (filterValues.number) ? filterValues.number[1] : maxV,
-							legend : "To:"
+							legend : tfw.strings.HIGH_BOUND_LABEL
 						}); ;
-					f1.querySelector(".rangeMin").setAttribute("data-filter-col", column);
-					f2.querySelector(".rangeMax").setAttribute("data-filter-col", column);
+					f1.querySelector(".rangeMin").dataset.columnOrder = f2.querySelector(".rangeMax").dataset.columnOrder = column;
 					c.add(f1);
 					c.add(f2);
 				break;
 				case  "date":
 					var minV,
 					maxV;
-					minV = maxV = dynamicTable.data.rows[0].cols[column];
+					minV = maxV = dynamicTable.data.rows[0].cols[dataCol];
 					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
-						if (dynamicTable.data.rows[i].cols[column] < minV) {
-							minV = dynamicTable.data.rows[i].cols[column];
-						} else if (dynamicTable.data.rows[i].cols[column] > maxV) {
-							maxV = dynamicTable.data.rows[i].cols[column];
+						if (dynamicTable.data.rows[i].cols[dataCol] < minV) {
+							minV = dynamicTable.data.rows[i].cols[dataCol];
+						} else if (dynamicTable.data.rows[i].cols[dataCol] > maxV) {
+							maxV = dynamicTable.data.rows[i].cols[dataCol];
 						}
 					}
 					defaultFilterValues.date = [minV, maxV];
@@ -2214,39 +2230,38 @@ var tfw = {
 							type : "text",
 							className : "dateMin",
 							onchange : function () {
-								dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, 1);
+								dynamicTable.filterDate(this.dataset.columnOrder, this.value, 1);
 							},
 							value : (filterValues.date) ? filterValues.date[0] : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
-							legend : "From:"
+							legend : tfw.strings.LOW_BOUND_LABEL
 						});
 					var f2 = tfw.input({
 							type : "text",
 							className : "dateMax",
 							onchange : function () {
-								dynamicTable.filterDate(this.getAttribute("data-filter-col"), this.value, -1);
+								dynamicTable.filterDate(this.dataset.columnOrder, this.value, -1);
 							},
 							value : (filterValues.date) ? filterValues.date[1] : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
-							legend : "To:"
+							legend : tfw.strings.HIGH_BOUND_LABEL
 						}); ;
 					c.add(f1);
 					c.add(f2);
 					tfw.calendar(f1.querySelector("input"));
 					tfw.calendar(f2.querySelector("input"));
-					f1.querySelector(".dateMin").setAttribute("data-filter-col", column);
-					f2.querySelector(".dateMax").setAttribute("data-filter-col", column);
+					f1.querySelector(".dateMin").dataset.columnOrder = f2.querySelector(".dateMax").dataset.columnOrder = column;
 				break;
 				case "text":
 					var searchInput = tfw.input({
 							type : "text",
-							placeholder : "Search " + ((this.data.cols[column].filter === 1) ? "beginning with" : "including") + "...",
+							placeholder : (this.data.cols[dataCol].filter === 1) ? tfw.strings.SEARCH_BEGINNING : tfw.strings.SEARCH_ANYWHERE,
 							value : filterValues.text
 						});
-					searchInput.setAttribute("data-search-type", this.data.cols[column].search);
-					searchInput.setAttribute("data-filter-col", column);
+					searchInput.dataset.searchType = this.data.cols[dataCol].search;
+					searchInput.dataset.columnOrder = column;
 					searchInput.onkeyup = function () {
-						dynamicTable.filterSearch(this.getAttribute("data-filter-col"),
+						dynamicTable.filterSearch(this.dataset.columnOrder,
 							this.value,
-							this.getAttribute("data-search-type"));
+							this.dataset.searchType);
 					}
 					c.add(searchInput);
 				break;
@@ -2257,10 +2272,10 @@ var tfw = {
 			var dlg=tfw.dialog({
 				width:300,
 				height:300,
-				title:"Filter",
+				title:tfw.strings.FILTER,
 				children:[c],
 				buttons:[
-				  {text:"Close",action:desktop.closeTopLayer}
+				  {text:tfw.strings.CLOSE,action:desktop.closeTopLayer}
 				]
 			});
 		}
@@ -2273,8 +2288,9 @@ var tfw = {
 		 */
 		this.sort = function (obj, dynamicTable) {
 			var tbody = obj.closest("table").querySelector("tbody"),
-			col = obj.getAttribute("data-sort-col"),
-			asc = (obj.getAttribute("data-sort-order") == "asc" ? 1 : -1);
+			dataCol = obj.dataset.dataCol,
+			col = dynamicTable.data.cols[dataCol].columnOrder,
+			asc = (obj.dataset.sortOrder == "asc" ? 1 : -1);
 			var rows = tbody.rows,
 			rlen = rows.length,
 			arr = new Array(),
@@ -2292,7 +2308,7 @@ var tfw = {
 					value : val
 				};
 			}
-			if(dynamicTable.data.cols[col].type == "text"){
+			if(dynamicTable.data.cols[dataCol].type == "text"){
 				arr.sort(function (a, b) {
 					return (a.value === "" && b.value === "") ? (cmp(a.id, b.id) * asc) : ((a.value === "") ? 1 : ((b.value === "") ? -1 : ((a.value.localeCompare(b.value) || cmp(a.id, b.id)) * asc)));
 				});
@@ -2418,26 +2434,25 @@ var tfw = {
 			var dynamicTable = this;
 			c = document.createElement("div");
 			for (var j = 0; j < this.data.cols.length; j++) {
-				if (this.data.cols[j].hidden) {
-					continue;
+				if (!this.data.cols[j].hidden) {
+					var checkbox = tfw.checkbox({
+							text : this.data.cols[j].name,
+							value : 1,
+							onchange : function () {
+								dynamicTable.toggleColumn(this.dataset.dataCol);
+							}
+						});
+					checkbox.dataset.dataCol = j;
+					c.add(checkbox);
 				}
-				var checkbox = tfw.checkbox({
-						text : this.data.cols[j].name,
-						value : 1,
-						onchange : function () {
-							dynamicTable.toggleColumn(this.getAttribute("data-filter-col"));
-						}
-					});
-				checkbox.setAttribute("data-filter-col", j);
-				c.add(checkbox);
 			}
 			var dlg=tfw.dialog({
 				width:300,
 				height:300,
-				title:"Show/hide columns",
+				title:tfw.strings.TOGGLE_COLUMNS,
 				children:[c],
 				buttons:[
-				  {text:"Close",action:desktop.closeTopLayer}
+				  {text:tfw.strings.CLOSE,action:desktop.closeTopLayer}
 				]
 			});
 		}

@@ -66,7 +66,7 @@ Create a new layer.
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
             * [.paint()](#tfw.dynamicTableClass+paint)
             * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
-            * [.filter(column)](#tfw.dynamicTableClass+filter)
+            * [.filter(dataCol)](#tfw.dynamicTableClass+filter)
             * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
             * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
             * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
@@ -131,7 +131,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Todo**
 
 - [ ] View preferences (width, order of columns)
-- [ ] Enable localization
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -146,7 +145,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint()](#tfw.dynamicTableClass+paint)
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
-        * [.filter(column)](#tfw.dynamicTableClass+filter)
+        * [.filter(dataCol)](#tfw.dynamicTableClass+filter)
         * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
         * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
@@ -269,14 +268,14 @@ Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCale
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+filter"></a>
-#### dynamicTableClass.filter(column)
+#### dynamicTableClass.filter(dataCol)
 Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| column | <code>number</code> | order number of searched column |
+| dataCol | <code>number</code> | order of searched column (in data) |
 
 <a name="tfw.dynamicTableClass+sort"></a>
 #### dynamicTableClass.sort(obj, dynamicTable)
@@ -522,7 +521,7 @@ Callback function that puts calendar widget for an input field into page.Most l
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;CHECKBOX_FALSE\&quot;:\&quot;No\&quot;,\&quot;CHECKBOX_TRUE\&quot;:\&quot;Yes\&quot;,\&quot;BOTH\&quot;:\&quot;Both\&quot;}&quot;</code>  
+**Default**: <code>&quot;{\&quot;CHECKBOX_FALSE\&quot;:\&quot;No\&quot;,\&quot;CHECKBOX_TRUE\&quot;:\&quot;Yes\&quot;,\&quot;BOTH\&quot;:\&quot;Both\&quot;,\&quot;BUTTON_PREFERENCES\&quot;:\&quot;preferences\&quot;,\&quot;CHOOSE_DATE\&quot;:\&quot;Choose a date\&quot;,\&quot;CLOSE\&quot;:\&quot;Close\&quot;,\&quot;LOW_BOUND_LABEL\&quot;:\&quot;From:\&quot;,\&quot;HIGH_BOUND_LABEL\&quot;:\&quot;To:\&quot;,\&quot;SEARCH_BEGINNING\&quot;:\&quot;Search beginning with…\&quot;,\&quot;SEARCH_ANYWHERE\&quot;:\&quot;Search including…\&quot;,\&quot;FILTER\&quot;:\&quot;Filter\&quot;,\&quot;TOGGLE_COLUMNS\&quot;:\&quot;Show/hide columns\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -530,6 +529,15 @@ Strings that are output by tfw functions. Change them for localization.
 | CHECKBOX_FALSE | <code>string</code> | <code>&quot;No&quot;</code> | Label for checkbox with false value. |
 | CHECKBOX_TRUE | <code>string</code> | <code>&quot;Yes&quot;</code> | Label for checkbox with true value. |
 | BOTH | <code>string</code> | <code>&quot;Both&quot;</code> | Word for 'both' (e.g. both true and false) |
+| BUTTON_PREFERENCES | <code>string</code> | <code>&quot;preferences&quot;</code> | Label for preferences button in dynamic tables |
+| CHOOSE_DATE | <code>string</code> | <code>&quot;Choose a date&quot;</code> | Calendar prompt |
+| CLOSE | <code>string</code> | <code>&quot;Close&quot;</code> | Close button label |
+| LOW_BOUND_LABEL | <code>string</code> | <code>&quot;From:&quot;</code> | Minimum input label |
+| HIGH_BOUND_LABEL | <code>string</code> | <code>&quot;To:&quot;</code> | Maximum input label |
+| SEARCH_BEGINNING | <code>string</code> | <code>&quot;Search beginning with…&quot;</code> | Placeholder when searching from beginning of string |
+| SEARCH_ANYWHERE | <code>string</code> | <code>&quot;Search including…&quot;</code> | Placeholder when searching anywhere in a string |
+| FILTER | <code>string</code> | <code>&quot;Filter&quot;</code> | Filter dialog header |
+| TOGGLE_COLUMNS | <code>string</code> | <code>&quot;Show/hide columns&quot;</code> | Columns' visibility toggle header |
 
 <a name="tfw.ajaxIncludeParams"></a>
 ### tfw.ajaxIncludeParams : <code>function</code>
