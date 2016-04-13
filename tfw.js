@@ -132,21 +132,33 @@ var desktop = {
             desktop.activeLayer--;
         }
     },
-    newLayer : function (co) {
-        if (co.modal)
-            if (co.modal == "auto")
-                co.modal = desktop.layers[desktop.activeLayer].hasClass("modal") ? 1 : 0;
+	/**
+	 * Create a new layer.
+	 * @param {Object} params - layer parameters
+	 * @param {(boolean|string)} [params.modal] - whether to add class modal (if set to "auto", copies from currently active layer)
+	 * @param {boolean} [params.autoclose=false] - whether to close layer by clicking it
+	 * @param {boolean} [param.overlay=false] - whether to add overlay to this layer
+	 * @listens click
+	 * @listens mousemove
+	 * @listens mouseup
+	 */
+    newLayer : function (params) {
+        if (params.modal){
+            if (params.modal == "auto"){
+                params.modal = desktop.layers[desktop.activeLayer].hasClass("modal") ? 1 : 0;
+			}
+		}
         desktop.activeLayer++;
         desktop.div.add(desktop.layers[desktop.activeLayer] = tfw.div({
                     id : "tfwLayer" + desktop.activeLayer,
-                    className : "tfwLayer" + (co.modal ? " modal" : "")
+                    className : "tfwLayer" + (params.modal ? " modal" : "")
                 }));
-        if (co.autoclose) {
+        if (params.autoclose) {
             desktop.layers[desktop.activeLayer].addEventListener("click", function () {
                 desktop.closeTopLayer();
             }, false);
         };
-        if (co.overlay) {
+        if (params.overlay) {
             desktop.layers[desktop.activeLayer].add(tfw.div({
                     id : "tfwLayerOverlay" + desktop.activeLayer,
                     className : "tfwLayerOverlay"
@@ -1577,7 +1589,7 @@ var tfw = {
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
-	 * @param {string} [params.id="dynamicTable"] - table ID (name) - required for field (cell) updates
+	 * @param {string} [params.id='dynamicTable'] - table ID (name) - required for field (cell) updates
 	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing is triggered
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
 	 * @example

@@ -22,9 +22,27 @@
 <a name="desktop"></a>
 ## desktop
 **Kind**: global class  
+
+* [desktop](#desktop)
+    * [new desktop()](#new_desktop_new)
+    * [.newLayer(params)](#desktop.newLayer)
+
 <a name="new_desktop_new"></a>
 ### new desktop()
 Triobo. This is a singleton (a single "instance" of a "class").
+
+<a name="desktop.newLayer"></a>
+### desktop.newLayer(params)
+Create a new layer.
+
+**Kind**: static method of <code>[desktop](#desktop)</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | layer parameters |
+| [params.modal] | <code>boolean</code> &#124; <code>string</code> |  | whether to add class modal (if set to "auto", copies from currently active layer) |
+| [params.autoclose] | <code>boolean</code> | <code>false</code> | whether to close layer by clicking it |
+| [param.overlay] | <code>boolean</code> | <code>false</code> | whether to add overlay to this layer |
 
 <a name="tfw"></a>
 ## tfw
@@ -157,25 +175,13 @@ Class for creating dynamic tables.
 | params | <code>Object</code> |  | table parameters |
 | params.baseURL | <code>string</code> |  | URL of script (etc.) handling data, without query string |
 | [params.urlParams] | <code>string</code> |  | general parameters appended to requests (e.g. a token) |
-| [params.id] | <code>string</code> | <code>&quot;\&quot;dynamicTable\&quot;&quot;</code> | table ID (name) - required for field (cell) updates |
+| [params.id] | <code>string</code> | <code>&quot;&#x27;dynamicTable&#x27;&quot;</code> | table ID (name) - required for field (cell) updates |
 | [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing is triggered |
 | [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
 
 **Example**  
 ```js
-function myRowEditFunction(order){
-	// ...
-}
-var table = document.body.appendChild(
- tfw.dynamicTable(
-  {
-   id: "table1",
-   baseURL: "data.php",
-   urlParams: "token=Nd5qPxH&timestamp=1234567890"
-   rowEdit: myRowEditFunction
-  }
- )
-);
+function myRowEditFunction(order){	// ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   baseURL: "data.php",   urlParams: "token=Nd5qPxH&timestamp=1234567890"   rowEdit: myRowEditFunction  } ));
 ```
 <a name="tfw.dynamicTableClass+tableContainer"></a>
 #### dynamicTableClass.tableContainer : <code>Object</code>
@@ -215,8 +221,7 @@ Get table container (for inserting into document).
 **Returns**: <code>Object</code> - Returns the table container (HTML element).  
 <a name="tfw.dynamicTableClass+reload"></a>
 #### dynamicTableClass.reload()
-Reload (or load) data from server.
-Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTableClass+paint) the table.
+Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTableClass+paint) the table.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**
@@ -232,9 +237,7 @@ Test if no filters are applied and table is sorted by column of type 'order'.
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
 <a name="tfw.dynamicTableClass+toggleReorder"></a>
 #### dynamicTableClass.toggleReorder()
-Toggle reordering of rows via drag & drop.
-Reflects the value of a private variable set by onclick events fired with filters.
-Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
+Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+orderChange"></a>
@@ -249,8 +252,7 @@ Reflect a change in order in the table.
 
 <a name="tfw.dynamicTableClass+paint"></a>
 #### dynamicTableClass.paint()
-Refresh the content of the table using data gotten by (re)loading.
-Assumes that there is only 1 order column and that data is initially sorted by that column.
+Refresh the content of the table using data gotten by (re)loading.Assumes that there is only 1 order column and that data is initially sorted by that column.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
@@ -266,8 +268,7 @@ Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCale
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+filter"></a>
 #### dynamicTableClass.filter(column)
-Apply filter for values of a column.
-Creates a [dialog](tfw.dialog) with filter.
+Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -277,8 +278,7 @@ Creates a [dialog](tfw.dialog) with filter.
 
 <a name="tfw.dynamicTableClass+sort"></a>
 #### dynamicTableClass.sort(obj, dynamicTable)
-Apply sorting by values (text without HTML) of a column.
-Text fields are sorted locale aware, with empty strings always last.
+Apply sorting by values (text without HTML) of a column.Text fields are sorted locale aware, with empty strings always last.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -301,8 +301,7 @@ Set status of filter icon in a column.
 
 <a name="tfw.dynamicTableClass+filterSearch"></a>
 #### dynamicTableClass.filterSearch(column, value, [searchType])
-Apply search filter (case insensitive).
-Requires .searchFilterInvalid{display:none}
+Apply search filter (case insensitive).Requires .searchFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -314,8 +313,7 @@ Requires .searchFilterInvalid{display:none}
 
 <a name="tfw.dynamicTableClass+filterBoolean"></a>
 #### dynamicTableClass.filterBoolean(column, searchType)
-Apply boolean filter.
-Requires .booleanFilterInvalid{display:none}
+Apply boolean filter.Requires .booleanFilterInvalid{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -326,8 +324,7 @@ Requires .booleanFilterInvalid{display:none}
 
 <a name="tfw.dynamicTableClass+filterNumeric"></a>
 #### dynamicTableClass.filterNumeric(column, compareValue, cmp)
-Apply numeric filter.
-Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
+Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -339,8 +336,7 @@ Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
 
 <a name="tfw.dynamicTableClass+filterDate"></a>
 #### dynamicTableClass.filterDate(column, compareValue, cmp)
-Apply date filter.
-Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
+Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -352,8 +348,7 @@ Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
 
 <a name="tfw.dynamicTableClass+toggleColumn"></a>
 #### dynamicTableClass.toggleColumn(column)
-Toggle visibility of a column. Only hides TDs in TBODY and THs.
-Requires .hideColumn{display:none}
+Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideColumn{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
@@ -367,8 +362,7 @@ Requires .hideColumn{display:none}
 
 <a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
 #### dynamicTableClass.toggleColumnDialog()
-Toggle visibility of a column.
-Creates a [dialog](tfw.dialog) with checkboxes.
+Toggle visibility of a column.Creates a [dialog](tfw.dialog) with checkboxes.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass.serverActions"></a>
@@ -490,14 +484,7 @@ Class for enhancing date input fields. Requires CSS styling.
 
 **Example**  
 ```js
-tfw.calendar.placeCalendar = function(cal, input){
- input.parentNode.insertBefore(cal, input);
-}
-
-var input = tfw.input({value:"2016-03-07"});
-document.body.appendChild(input);
-
-tfw.calendar(input);
+tfw.calendar.placeCalendar = function(cal, input){ input.parentNode.insertBefore(cal, input);}var input = tfw.input({value:"2016-03-07"});document.body.appendChild(input);tfw.calendar(input);
 ```
 <a name="tfw.calendar.months"></a>
 #### calendar.months : <code>Array.&lt;String&gt;</code>
@@ -519,8 +506,7 @@ Function called when a calendar widget is created.
 **Default**: <code></code>  
 <a name="tfw.calendar..placeCalendar"></a>
 #### calendar~placeCalendar : <code>function</code>
-Callback function that puts calendar widget for an input field into page.
-Most likely create an overlay that closes calendar when user clicks somewhere else.
+Callback function that puts calendar widget for an input field into page.Most likely create an overlay that closes calendar when user clicks somewhere else.
 
 **Kind**: inner typedef of <code>[calendar](#tfw.calendar)</code>  
 
@@ -576,8 +562,7 @@ Add Javascript-generated CSS to the document.
 
 <a name="tfw.init"></a>
 ### tfw.init()
-Initialization needed to run tfw functions (e.g. adds required CSS styling).
-Can be run multiple times (after adding localized strings).
+Initialization needed to run tfw functions (e.g. adds required CSS styling).Can be run multiple times (after adding localized strings).
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 <a name="tfw.fillElemDefs"></a>
@@ -845,8 +830,7 @@ Decode JSON data, show error in case they are invalid.
 
 <a name="tfw.dynamicTable"></a>
 ### tfw.dynamicTable(params) ⇒ <code>Object</code>
-Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
-Class instance's properties are mirrored into the HTML element.
+Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.Class instance's properties are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>Object</code> - table (HTML element)  
