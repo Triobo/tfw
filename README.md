@@ -100,6 +100,7 @@ Create a new layer.
     * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
     * [.insertStyle(style)](#tfw.insertStyle)
     * [.init()](#tfw.init)
+    * [.localize(newStrings)](#tfw.localize)
     * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
     * [.select(params)](#tfw.select) ⇒ <code>Object</code>
     * [.dropDown(params)](#tfw.dropDown) ⇒ <code>Object</code>
@@ -521,13 +522,14 @@ Callback function that puts calendar widget for an input field into page.Most l
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;CHECKBOX_FALSE\&quot;:\&quot;No\&quot;,\&quot;CHECKBOX_TRUE\&quot;:\&quot;Yes\&quot;}&quot;</code>  
+**Default**: <code>&quot;{\&quot;CHECKBOX_FALSE\&quot;:\&quot;No\&quot;,\&quot;CHECKBOX_TRUE\&quot;:\&quot;Yes\&quot;,\&quot;BOTH\&quot;:\&quot;Both\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | CHECKBOX_FALSE | <code>string</code> | <code>&quot;No&quot;</code> | Label for checkbox with false value. |
 | CHECKBOX_TRUE | <code>string</code> | <code>&quot;Yes&quot;</code> | Label for checkbox with true value. |
+| BOTH | <code>string</code> | <code>&quot;Both&quot;</code> | Word for 'both' (e.g. both true and false) |
 
 <a name="tfw.ajaxIncludeParams"></a>
 ### tfw.ajaxIncludeParams : <code>function</code>
@@ -566,6 +568,17 @@ Add Javascript-generated CSS to the document.
 Initialization needed to run tfw functions (e.g. adds required CSS styling).Can be run multiple times (after adding localized strings).
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+<a name="tfw.localize"></a>
+### tfw.localize(newStrings)
+Add new translations and re-[init](#tfw.init) tfw.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.init  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| newStrings | <code>[strings](#tfw.strings)</code> | translated strings to be used (keys same as in [strings](#tfw.strings)) |
+
 <a name="tfw.fillElemDefs"></a>
 ### tfw.fillElemDefs(element, params)
 Set parameters of a HTML element.

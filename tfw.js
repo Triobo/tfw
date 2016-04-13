@@ -243,7 +243,9 @@ var tfw = {
 		/** Label for checkbox with false value. */
 		CHECKBOX_FALSE: 'No',
 		/** Label for checkbox with true value. */
-		CHECKBOX_TRUE: 'Yes'
+		CHECKBOX_TRUE: 'Yes',
+		/** Word for 'both' (e.g. both true and false) */
+		BOTH: 'Both'
 	},
 	/**
 	 * Add Javascript-generated CSS to the document.
@@ -267,9 +269,16 @@ var tfw = {
 						 '.tfwDynamicTable .tfwCheckbox.checked:after{content:"'+tfw.strings.CHECKBOX_TRUE+'"}';
 		tfw.insertStyle(tfwStyling);
 	},
-	localize : function(o){
-  	for (var str in o) tfw.strings[str]=o[str];
-  	/* todo: přepsat CSS */
+	/**
+	 * Add new translations and re-{@link tfw.init|init} tfw.
+	 * @param {tfw.strings} newStrings - translated strings to be used (keys same as in {@link tfw.strings})
+	 * @see tfw.init
+	 */
+	localize : function(newStrings){
+		for (var stringKey in newStrings){
+			tfw.strings[stringKey] = newStrings[stringKey];
+		}
+		tfw.init();
 	},
     /**
      * Set parameters of a HTML element.
@@ -2129,7 +2138,7 @@ var tfw = {
 			switch(type){
 				case "checkbox":
 					var filter = tfw.select({
-							list : "Both;Yes;No",
+							list : [tfw.strings.BOTH,tfw.strings.CHECKBOX_TRUE,tfw.strings.CHECKBOX_FALSE].join(";"),
 							value : filterValues.bool,
 							onchange : function () {
 								dynamicTable.filterBoolean(this.getAttribute("data-filter-col"), this.value);
