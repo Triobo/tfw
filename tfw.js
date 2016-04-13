@@ -255,6 +255,10 @@ var tfw = {
 						 '.tfwDynamicTable .tfwCheckbox.checked:after{content:"'+tfw.strings.CHECKBOX_TRUE+'"}';
 		tfw.insertStyle(tfwStyling);
 	},
+	localize : function(o){
+  	for (var str in o) tfw.strings[str]=o[str];
+  	/* todo: přepsat CSS */
+	},
     /**
      * Set parameters of a HTML element.
      * @memberof tfw
