@@ -153,11 +153,9 @@ var desktop = {
                     id : "tfwLayer" + desktop.activeLayer,
                     className : "tfwLayer" + (params.modal ? " modal" : "")
                 }));
-        if (params.autoclose) {
-            desktop.layers[desktop.activeLayer].addEventListener("click", function () {
-                desktop.closeTopLayer();
-            }, false);
-        };
+        if(params.autoclose){
+			desktop.layers[desktop.activeLayer].addEventListener("click", desktop.closeTopLayer);
+		}
         if (params.overlay) {
             desktop.layers[desktop.activeLayer].add(tfw.div({
                     id : "tfwLayerOverlay" + desktop.activeLayer,
@@ -248,8 +246,6 @@ var tfw = {
 		BOTH: 'Both',
 		/** Label for preferences button in dynamic tables */
 		BUTTON_PREFERENCES: 'preferences',
-		/** Calendar prompt */
-		CHOOSE_DATE: 'Choose a date',
 		/** Close button label */
 		CLOSE: 'Close',
 		/** Minimum input label */
@@ -260,8 +256,6 @@ var tfw = {
 		SEARCH_BEGINNING: 'Search beginning with…',
 		/** Placeholder when searching anywhere in a string */
 		SEARCH_ANYWHERE: 'Search including…',
-		/** Filter dialog header */
-		FILTER: 'Filter',
 		/** Columns' visibility toggle header */
 		TOGGLE_COLUMNS: 'Show/hide columns'
 	},
@@ -476,6 +470,26 @@ var tfw = {
         return element;
     },
 	/**
+	 * Create a new layer and a wrapper that starts at a given element.
+	 * @param {Object} element - HTML element
+	 * @param {Object} params - parameters for {@link desktop.newLayer}
+	 * @param {boolean} [above=false] - whether to position above element instead of below
+	 * @return {Object} Created wrapper (HTML element)
+	 * @see desktop.newLayer
+	 */
+	createLayerAndWrapperAtElement : function (element, params, above) {
+		if(typeof(above) == "undefined"){
+			above = false;
+		}
+		desktop.newLayer(params);
+		var rect = element.getBoundingClientRect();
+		var wrapper;
+		desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
+			style : "overflow:hidden;position:absolute;left:" + rect.left + "px;"+(above ? 'bottom' : 'top')+":" + (above ? (window.innerHeight-rect.top) : rect.bottom) + "px"
+		}));
+		return wrapper;
+	},
+	/**
 	 * Create a dropdown menu.
 	 * @param {Object} params - dropdown parameters
 	 * @param {string} [params.legend] - label
@@ -543,12 +557,6 @@ var tfw = {
 			e.preventDefault();
 		};
         x.onclick = function () {
-            var b;
-            desktop.newLayer({
-                autoclose : true,
-                modal : "auto"
-            });
-            var rect = x.getBoundingClientRect();
             var vyska = params.list.length * x.itemHeight;
             if (params.maxHeight){
                 if (vyska > params.maxHeight){
@@ -558,9 +566,9 @@ var tfw = {
             if (vyska > 210){
                 vyska = 210;
 			}
-            desktop.layers[desktop.activeLayer].add(c = tfw.div({
-                        style : "overflow:hidden;position:absolute;left:" + rect.left + "px;top:" + (rect.top + rect.height) + "px"
-                    }));
+			var rect = x.getBoundingClientRect();
+			var c = tfw.createLayerAndWrapperAtElement(x, {autoclose : true,modal : "auto"});
+			var b;
             c.add(b = tfw.select({
                         id : "drop" + params.id,
                         list : params.list,
@@ -2017,7 +2025,7 @@ var tfw = {
 						c.add(b=tfw.div({className:"tfwArrow filter",style:"float:right;"}));
 						b.dataset.dataCol = j;
 						b.onclick=function(){
-							dynamicTable.filter.call(dynamicTable, this.dataset.dataCol);
+							dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
 						}
 					}
 					r.add(c);
@@ -2144,16 +2152,9 @@ var tfw = {
 		 */
 		this.prepareCalendar = function() {
 			if(tfw.calendar.placeCalendar == null){
-				tfw.calendar.placeCalendar = function(cal){
-					var dlg=tfw.dialog({
-						width:300,
-						height:300,
-						title:tfw.strings.CHOOSE_DATE,
-						children:[cal],
-						buttons:[
-						  {text:tfw.strings.CLOSE,action:desktop.closeTopLayer}
-						]
-					});
+				tfw.calendar.placeCalendar = function(cal, input){
+					var wrapper = tfw.createLayerAndWrapperAtElement(input, {autoclose: true,modal : "auto"});
+					wrapper.add(cal);
 				};
 			}
 		}
@@ -2178,21 +2179,22 @@ var tfw = {
 		/**
 		 * Apply filter for values of a column.
 		 * Creates a {@link tfw.dialog|dialog} with filter.
+		 * @param {Object} filterElement - element to position new layer to (HTML element)
 		 * @param {number} dataCol - order of searched column (in data)
 		 */
-		this.filter = function (dataCol) {
+		this.filter = function (filterElement, dataCol) {
 			var dynamicTable = this;
-			var column = dynamicTable.data.cols[dataCol].columnOrder;
-			if (dynamicTable.data.cols[dataCol].hidden) {
+			var column = this.data.cols[dataCol].columnOrder;
+			if (this.data.cols[dataCol].hidden) {
 				console.error("Tried to apply filter on a hidden column.");
 				return;
 			}
-			else if(!"filter" in dynamicTable.data.cols[dataCol] || !dynamicTable.data.cols[dataCol].filter){
+			else if(!"filter" in this.data.cols[dataCol] || !this.data.cols[dataCol].filter){
 				console.error("Tried to apply filter on a column with no filter.");
 				return;
 			}
 			c = document.createElement("div");
-			var type = dynamicTable.data.cols[dataCol].type;
+			var type = this.data.cols[dataCol].type;
 			
 			switch(type){
 				case "checkbox":
@@ -2204,17 +2206,18 @@ var tfw = {
 							}
 						});
 					filter.dataset.columnOrder = column;
+					filter.addEventListener("click", function(event){event.stopPropagation();});
 					c.add(filter);
 				break;
 				case "number":
 					var minV,
 					maxV;
-					minV = maxV = dynamicTable.data.rows[0].cols[dataCol];
-					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
-						if (dynamicTable.data.rows[i].cols[dataCol] < minV) {
-							minV = dynamicTable.data.rows[i].cols[dataCol];
-						} else if (dynamicTable.data.rows[i].cols[dataCol] > maxV) {
-							maxV = dynamicTable.data.rows[i].cols[dataCol];
+					minV = maxV = this.data.rows[0].cols[dataCol];
+					for (var i = 1; i < this.data.rows.length; i++) {
+						if (this.data.rows[i].cols[dataCol] < minV) {
+							minV = this.data.rows[i].cols[dataCol];
+						} else if (this.data.rows[i].cols[dataCol] > maxV) {
+							maxV = this.data.rows[i].cols[dataCol];
 						}
 					}
 					defaultFilterValues.number = [minV, maxV];
@@ -2255,16 +2258,18 @@ var tfw = {
 					f1.querySelector(".rangeMin").dataset.columnOrder = f2.querySelector(".rangeMax").dataset.columnOrder = column;
 					c.add(f1);
 					c.add(f2);
+					f1.addEventListener("click", function(event){event.stopPropagation();});
+					f2.addEventListener("click", function(event){event.stopPropagation();});
 				break;
 				case  "date":
 					var minV,
 					maxV;
-					minV = maxV = dynamicTable.data.rows[0].cols[dataCol];
-					for (var i = 1; i < dynamicTable.data.rows.length; i++) {
-						if (dynamicTable.data.rows[i].cols[dataCol] < minV) {
-							minV = dynamicTable.data.rows[i].cols[dataCol];
-						} else if (dynamicTable.data.rows[i].cols[dataCol] > maxV) {
-							maxV = dynamicTable.data.rows[i].cols[dataCol];
+					minV = maxV = this.data.rows[0].cols[dataCol];
+					for (var i = 1; i < this.data.rows.length; i++) {
+						if (this.data.rows[i].cols[dataCol] < minV) {
+							minV = this.data.rows[i].cols[dataCol];
+						} else if (this.data.rows[i].cols[dataCol] > maxV) {
+							maxV = this.data.rows[i].cols[dataCol];
 						}
 					}
 					defaultFilterValues.date = [minV, maxV];
@@ -2291,6 +2296,8 @@ var tfw = {
 					tfw.calendar(f1.querySelector("input"));
 					tfw.calendar(f2.querySelector("input"));
 					f1.querySelector(".dateMin").dataset.columnOrder = f2.querySelector(".dateMax").dataset.columnOrder = column;
+					f1.addEventListener("click", function(event){event.stopPropagation();});
+					f2.addEventListener("click", function(event){event.stopPropagation();});
 				break;
 				case "text":
 					var searchInput = tfw.input({
@@ -2306,20 +2313,14 @@ var tfw = {
 							this.dataset.searchType);
 					}
 					c.add(searchInput);
+					searchInput.addEventListener("click", function(event){event.stopPropagation();});
 				break;
 				default:
 					console.error("Tried to apply filter on type that is not supported.");
 					return;
 			}
-			var dlg=tfw.dialog({
-				width:300,
-				height:300,
-				title:tfw.strings.FILTER,
-				children:[c],
-				buttons:[
-				  {text:tfw.strings.CLOSE,action:desktop.closeTopLayer}
-				]
-			});
+			var wrapper = tfw.createLayerAndWrapperAtElement(filterElement.closest('th'), {autoclose: true, modal: "auto"}, true);
+			wrapper.add(c);
 		}
 		
 		/**
