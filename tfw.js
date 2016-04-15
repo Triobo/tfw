@@ -1924,6 +1924,31 @@ var tfw = {
 		
 		/**
 		 * @private
+		 * @param {Object} cell - the cell from which to move (TD)
+		 * @param {number} column - order number of column in which the cell is in
+		 * @param {number} shift - how many rows to move by (positive = down, negative = up)
+		 */
+		function moveFocusToCell(cell, column, shift){
+			var row = cell.parentNode;
+			while(shift < 0){
+				row = row.previousSibling;
+				if(row == null){
+					return;
+				}
+				shift++;
+			}
+			while(shift > 0){
+				row = row.nextSibling;
+				if(row == null){
+					return;
+				}
+				shift--;
+			}
+			row.children[column].querySelector("input").focus();
+		}
+		
+		/**
+		 * @private
 		 * @listens onclick
 		 * @listens onkeyup
 		 */
@@ -2028,6 +2053,7 @@ var tfw = {
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
 							var id = "tfwDynamicTable-" + i + "-" + columnOrder;
+							var setKeys = null;
 							switch(this.data.cols[j].type){
 								case "checkbox":
 									params.children.push(tfw.checkbox({
@@ -2037,7 +2063,7 @@ var tfw = {
 									}));
 								break;
 								case "number":
-									params.children.push(tfw.input({
+									params.children.push(setKeys=tfw.input({
 										type : "number",
 										id : id,
 										value : val,
@@ -2056,7 +2082,7 @@ var tfw = {
 									tfw.calendar(calendarCell);
 								break;
 								case "text":
-									params.children.push(tfw.input({
+									params.children.push(setKeys=tfw.input({
 										type : "text",
 										id : id,
 										value : val,
@@ -2065,6 +2091,22 @@ var tfw = {
 								break;
 								default:
 									params.innerHTML = val;
+							}
+							if(setKeys != null){
+								setKeys.dataset.columnOrder = columnOrder;
+								setKeys.addEventListener("keyup", function(event){
+									switch(event.keyCode){
+										case 38: //up
+											var shift = -1;
+										break;
+										case 40: //down
+											var shift = 1;
+										break;
+										default:
+											return;
+									}
+									moveFocusToCell(this.closest('td'), this.dataset.columnOrder, shift);
+								});
 							}
 						}
 						r.add(c = tfw.td(params));
