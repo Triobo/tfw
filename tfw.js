@@ -1741,27 +1741,110 @@ var tfw = {
 		 */
 		var goToSub = ("goToSub" in params) ? params.goToSub : null;
 		/**
+		 * User preferences.
+		 * @private
+		 * @var {Object}
+		 */
+		var preferences = null;
+		/**
+		 * Load user preferences.
+		 * @private
+		 * @param {function} callback - callback to fire when done loading
+		 * @todo Fire callback even if loading is not successfull
+		 */
+		function loadPreferences(callback){
+			var dynamicTable = this;
+			serverCall({
+				action: tfw.dynamicTableClass.serverActions.PREF_GET,
+				callback: function(receivedData){
+					if(receivedData == null){
+						preferences = {};
+					}
+					else{
+						preferences = receivedData;
+					}
+					callback();
+				}
+			});
+		}
+		/**
+		 * Save user preferences.
+		 * @private
+		 */
+		function savePreferences(){
+			var dynamicTable = this;
+			serverCall({
+				action: tfw.dynamicTableClass.serverActions.PREF_SET,
+				parameters: "data="+JSON.stringify(preferences),
+			});
+		}
+		/**
+		 * Save user's preference.
+		 * @param {string} key - preference key (name)
+		 * @param value - preference value (any type)
+		 */
+		this.setPreference = function(key, value){
+			if(preferences == null){
+				console.error("Preferences were not loaded yet.");
+				return;
+			}
+			preferences[key] = value;
+			savePreferences();
+		}
+		/**
+		 * Read user's preference.
+		 * @param {string} key - preference key (name)
+		 * @return {Object} preference value (any type)
+		 */
+		this.getPreference = function(key){
+			if(preferences == null){
+				console.error("Preferences were not loaded yet.");
+				return;
+			}
+			if(key in preferences){
+				return preferences[key];
+			}
+			else{
+				//console.error("Trying to get unset preference '"+key+"'");
+				return null;
+			}
+		}
+		/**
 		 * Get table container (for inserting into document).
 		 * @returns {Object} Returns the table container (HTML element).
 		 */
 		this.getTable = function () {
 			return this.tableContainer;
 		};
+		/** @private */
+		var ajaxPendingCalls = 0;
+		/** @private */
+		function ifEverythingReadyCallPaint(){
+			if(--ajaxPendingCalls <= 0){
+				this.paint();
+			}
+		}
 		/**
 		 * Reload (or load) data from server.
-		 * Sends a GET request to "data.php", decodes JSON and {@link tfw.dynamicTableClass#paint|paints} the table.
+		 * Loads preferences and data, then {@link tfw.dynamicTableClass#paint|paint}s the table.
 		 * @see tfw.dynamicTableClass#paint
-		 * @see tfw.decodeJSON
+		 * @see tfw.dynamicTableClass~serverCall
 		 */
 		this.reload = function () {
 			var dynamicTable = this;
+			if(ajaxPendingCalls > 0){
+				console.error("Dynamic table reload called before last reload finished.");
+				return;
+			}
+			ajaxPendingCalls = 2;
 			serverCall({
 				action: tfw.dynamicTableClass.serverActions.LOAD,
 				callback: function(receivedData){
 					dynamicTable.data = receivedData;
-					dynamicTable.paint();
+					ifEverythingReadyCallPaint.call(dynamicTable);
 				}
 			});
+			loadPreferences(ifEverythingReadyCallPaint.bind(this));
 		};
 		
 		/**
@@ -1772,8 +1855,10 @@ var tfw = {
 		/**
 		 * @param {Object} params - query parameters
 		 * @param {tfw.dynamicTableClass.serverActions} params.action - server action
-		 * @param {tfw.dynamicTableClass~serverCallback} params.callback - callback that receives data
+		 * @param {tfw.dynamicTableClass~serverCallback} [params.callback] - callback that receives data
 		 * @param {string} [params.parameters=null] - parameters to be send with the request (e.g. POST)
+		 * @see tfw.ajaxGet
+		 * @see tfw.decodeJSON
 		 */
 		function serverCall(params){
 			tfw.ajaxGet({
@@ -2131,7 +2216,6 @@ var tfw = {
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Assumes that there is only 1 order column and that data is initially sorted by that column.
 		 * @todo Change drag&dropping so that it is clear where the dragged row will end
-		 * @todo Adjust icons (filter, settings, edit)
 		 * @todo Implement reloading (just change values)
 		 */
 		this.paint = function () {
@@ -2144,11 +2228,23 @@ var tfw = {
 				console.error("Dynamic table reloading not implemented yet.");
 			}
 			
+			//apply preferences
+				//filters
+				var filters = {"Search":3, "Boolean":2, "Numeric":3, "Date":3};
+				for(var i=0;i<filters.length;i++){
+					var filterName = "filter"+filters[i];
+					var filterValue = this.getPreference(filterName);
+					if(filterValue != null){
+						this[filterName].apply(this, filterValue);
+					}
+				}
+			
 			this.toggleReorder();
 		};
 		
 		/**
 		 * Prepare calendar class for use. Sets the {@link tfw.calendar.placeCalendar} callback, if null.
+		 * @todo Use as (default) placeCalendar for all calendars
 		 */
 		this.prepareCalendar = function() {
 			if(tfw.calendar.placeCalendar == null){
@@ -2390,6 +2486,7 @@ var tfw = {
 		this.filterSearch = function (column, value, searchType) {
 			filterValues.text = value;
 			this.setActiveFilterInColumn(column, (value !== defaultFilterValues.text));
+			this.setPreference("filterSearch", arguments);
 			
 			var tbody = this.tableContainer.querySelector("tbody");
 			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
@@ -2407,6 +2504,7 @@ var tfw = {
 		this.filterBoolean = function (column, searchType) {
 			filterValues.bool = searchType;
 			this.setActiveFilterInColumn(column, (searchType !== defaultFilterValues.bool));
+			this.setPreference("filterBoolean", arguments);
 			
 			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
@@ -2426,6 +2524,7 @@ var tfw = {
 			var index = (cmp == 1) ? 0 : 1;
 			filterValues.number[index] = compareValue;
 			this.setActiveFilterInColumn(column, compareValue != defaultFilterValues.number[index]);
+			this.setPreference("filterBoolean", arguments);
 			
 			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
@@ -2445,6 +2544,7 @@ var tfw = {
 			var index = (cmp == 1) ? 0 : 1;
 			filterValues.date[index] = compareValue;
 			this.setActiveFilterInColumn(column, compareValue != defaultFilterValues.date[index]);
+			this.setPreference("filterDate", arguments);
 			
 			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
@@ -2460,7 +2560,6 @@ var tfw = {
 		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
 		 * Requires .hideColumn{display:none}
 		 * @param {number} column - order number of column
-		 * @todo Save user preferences (to localStorage/server)
 		 */
 		this.toggleColumn = function (column) {
 			var cells = this.tableContainer.querySelectorAll("tbody td:nth-child(" + (parseInt(column) + 1) + "), th:nth-child(" + (parseInt(column) + 1) + ")");
@@ -2692,7 +2791,11 @@ tfw.dynamicTableClass.serverActions = {
 	/** long polling */
 	WATCH: {name:"watch"},
 	/** delete row */
-	DELETE: {name:"delete",method:"POST"}
+	DELETE: {name:"delete",method:"POST"},
+	/** load user's preferences */
+	PREF_GET: {name:"getusersettings"},
+	/** save user's preferences */
+	PREF_SET: {name:"setusersettings",method:"POST"}
 };
 
 /**

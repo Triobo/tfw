@@ -59,6 +59,8 @@ Create a new layer.
         * _instance_
             * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
             * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
+            * [.setPreference(key, value)](#tfw.dynamicTableClass+setPreference)
+            * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
             * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTableClass+reload)
             * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
@@ -139,6 +141,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
     * _instance_
         * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
         * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
+        * [.setPreference(key, value)](#tfw.dynamicTableClass+setPreference)
+        * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
         * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
@@ -215,6 +219,28 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | rows[].id | <code>number</code> |  | row ID |
 | rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
+<a name="tfw.dynamicTableClass+setPreference"></a>
+#### dynamicTableClass.setPreference(key, value)
+Save user's preference.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>string</code> | preference key (name) |
+| value |  | preference value (any type) |
+
+<a name="tfw.dynamicTableClass+getPreference"></a>
+#### dynamicTableClass.getPreference(key) ⇒ <code>Object</code>
+Read user's preference.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Returns**: <code>Object</code> - preference value (any type)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| key | <code>string</code> | preference key (name) |
+
 <a name="tfw.dynamicTableClass+getTable"></a>
 #### dynamicTableClass.getTable() ⇒ <code>Object</code>
 Get table container (for inserting into document).
@@ -223,13 +249,13 @@ Get table container (for inserting into document).
 **Returns**: <code>Object</code> - Returns the table container (HTML element).  
 <a name="tfw.dynamicTableClass+reload"></a>
 #### dynamicTableClass.reload()
-Reload (or load) data from server.Sends a GET request to "data.php", decodes JSON and [paints](#tfw.dynamicTableClass+paint) the table.
+Reload (or load) data from server.Loads preferences and data, then [paint](#tfw.dynamicTableClass+paint)s the table.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**
 
 - tfw.dynamicTableClass#paint
-- tfw.decodeJSON
+- tfw.dynamicTableClass~serverCall
 
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
@@ -260,7 +286,6 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 **Todo**
 
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
-- [ ] Adjust icons (filter, settings, edit)
 - [ ] Implement reloading (just change values)
 
 <a name="tfw.dynamicTableClass+prepareCalendar"></a>
@@ -268,6 +293,10 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCalendar) callback, if null.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Todo**
+
+- [ ] Use as (default) placeCalendar for all calendars
+
 <a name="tfw.dynamicTableClass+filter"></a>
 #### dynamicTableClass.filter(filterElement, dataCol)
 Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
@@ -354,10 +383,6 @@ Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:no
 Toggle visibility of a column. Only hides TDs in TBODY and THs.Requires .hideColumn{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Todo**
-
-- [ ] Save user preferences (to localStorage/server)
-
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -383,6 +408,8 @@ Implemented server actions.
 | SAVE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;savedata&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | edit 1 cell (id, col) - special for order |
 | WATCH | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;watch&quot;}</code> | long polling |
 | DELETE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;delete&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | delete row |
+| PREF_GET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;getusersettings&quot;}</code> | load user's preferences |
+| PREF_SET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;setusersettings&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | save user's preferences |
 
 <a name="tfw.dynamicTableClass.serverAction"></a>
 #### dynamicTableClass.serverAction : <code>Object</code>
@@ -397,12 +424,17 @@ Implemented server actions.
 <a name="tfw.dynamicTableClass..serverCall"></a>
 #### dynamicTableClass~serverCall(params)
 **Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**See**
+
+- tfw.ajaxGet
+- tfw.decodeJSON
+
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | query parameters |
 | params.action | <code>[serverActions](#tfw.dynamicTableClass.serverActions)</code> |  | server action |
-| params.callback | <code>[serverCallback](#tfw.dynamicTableClass..serverCallback)</code> |  | callback that receives data |
+| [params.callback] | <code>[serverCallback](#tfw.dynamicTableClass..serverCallback)</code> |  | callback that receives data |
 | [params.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
 <a name="tfw.dynamicTableClass..serverUpdateCell"></a>
