@@ -59,7 +59,7 @@ Create a new layer.
         * _instance_
             * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
             * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
-            * [.setPreference(key, value)](#tfw.dynamicTableClass+setPreference)
+            * [.setPreference(key, [value])](#tfw.dynamicTableClass+setPreference)
             * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
             * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTableClass+reload)
@@ -71,14 +71,12 @@ Create a new layer.
             * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
             * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
             * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
-            * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
-            * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
-            * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
-            * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
+            * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
             * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
             * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
         * _static_
             * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
+            * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
             * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
         * _inner_
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
@@ -88,6 +86,7 @@ Create a new layer.
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
             * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
             * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
+            * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
     * [.calendar](#tfw.calendar)
         * [new calendar(input)](#new_tfw.calendar_new)
         * _static_
@@ -141,7 +140,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
     * _instance_
         * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
         * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
-        * [.setPreference(key, value)](#tfw.dynamicTableClass+setPreference)
+        * [.setPreference(key, [value])](#tfw.dynamicTableClass+setPreference)
         * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
         * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
@@ -153,14 +152,12 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
         * [.sort(obj, dynamicTable)](#tfw.dynamicTableClass+sort)
         * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
-        * [.filterSearch(column, value, [searchType])](#tfw.dynamicTableClass+filterSearch)
-        * [.filterBoolean(column, searchType)](#tfw.dynamicTableClass+filterBoolean)
-        * [.filterNumeric(column, compareValue, cmp)](#tfw.dynamicTableClass+filterNumeric)
-        * [.filterDate(column, compareValue, cmp)](#tfw.dynamicTableClass+filterDate)
+        * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
         * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
         * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
     * _static_
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
+        * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
         * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
     * _inner_
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
@@ -170,6 +167,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
+        * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
 
 <a name="new_tfw.dynamicTableClass_new"></a>
 #### new dynamicTableClass(params)
@@ -211,7 +209,7 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | cols[].name | <code>string</code> |  | name (HTML) |
 | cols[].width | <code>number</code> |  | width |
 | cols[].hidden | <code>boolean</code> |  | hidden |
-| cols[].type | <code>string</code> | <code>null</code> | type of field, possible values: null (general), "text", "number", "checkbox", "date", "order" |
+| cols[].type | <code>[colTypes](#tfw.dynamicTableClass.colTypes)</code> | <code></code> | type of field (string) |
 | cols[].sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
 | cols[].filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
 | cols[].subtable | <code>boolean</code> | <code>false</code> | whether this column should contain a link to subtable (handled by goToSub) |
@@ -220,7 +218,7 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
 <a name="tfw.dynamicTableClass+setPreference"></a>
-#### dynamicTableClass.setPreference(key, value)
+#### dynamicTableClass.setPreference(key, [value])
 Save user's preference.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
@@ -228,7 +226,7 @@ Save user's preference.
 | Param | Type | Description |
 | --- | --- | --- |
 | key | <code>string</code> | preference key (name) |
-| value |  | preference value (any type) |
+| [value] |  | preference value (any type) - if not set, preference is deleted |
 
 <a name="tfw.dynamicTableClass+getPreference"></a>
 #### dynamicTableClass.getPreference(key) ⇒ <code>Object</code>
@@ -263,6 +261,10 @@ Test if no filters are applied and table is sorted by column of type 'order'.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
+**Todo**
+
+- [ ] Read preferences instead
+
 <a name="tfw.dynamicTableClass+toggleReorder"></a>
 #### dynamicTableClass.toggleReorder()
 Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
@@ -331,52 +333,18 @@ Set status of filter icon in a column.
 | column | <code>number</code> | column number |
 | on | <code>boolean</code> | whether to toggle active on or off |
 
-<a name="tfw.dynamicTableClass+filterSearch"></a>
-#### dynamicTableClass.filterSearch(column, value, [searchType])
-Apply search filter (case insensitive).Requires .searchFilterInvalid{display:none}
+<a name="tfw.dynamicTableClass+filterAny"></a>
+#### dynamicTableClass.filterAny(dataCol, value, [searchType], [dontSave])
+Apply any filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| column | <code>number</code> |  | order number of searched column |
-| value | <code>string</code> |  | searched string |
-| [searchType] | <code>number</code> | <code>2</code> | type of search (1 = starts with, 2 = includes) |
-
-<a name="tfw.dynamicTableClass+filterBoolean"></a>
-#### dynamicTableClass.filterBoolean(column, searchType)
-Apply boolean filter.Requires .booleanFilterInvalid{display:none}
-
-**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| column | <code>number</code> | order number of searched column |
-| searchType | <code>string</code> | search type ("0" = both, "1" = only true, "2" = only false) |
-
-<a name="tfw.dynamicTableClass+filterNumeric"></a>
-#### dynamicTableClass.filterNumeric(column, compareValue, cmp)
-Apply numeric filter.Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
-
-**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| column | <code>number</code> | order number of searched column |
-| compareValue | <code>string</code> | value to compare to (can be "") |
-| cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
-
-<a name="tfw.dynamicTableClass+filterDate"></a>
-#### dynamicTableClass.filterDate(column, compareValue, cmp)
-Apply date filter.Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
-
-**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| column | <code>number</code> | order number of searched column |
-| compareValue | <code>string</code> | value to compare to (can be "") |
-| cmp | <code>number</code> | type of comparison (1 means greater than, -1 means lower than) |
+| dataCol | <code>number</code> |  | order number of filtered column (in data) |
+| value | <code>[filterValue](#tfw.dynamicTableClass..filterValue)</code> |  | value to filter by |
+| [searchType] | <code>number</code> | <code>2</code> | type of search for TEXT (1 = starts with, 2 = includes) |
+| [dontSave] | <code>boolean</code> | <code>false</code> | dont save into preferences (for TEXT) |
 
 <a name="tfw.dynamicTableClass+toggleColumn"></a>
 #### dynamicTableClass.toggleColumn(column)
@@ -410,6 +378,22 @@ Implemented server actions.
 | DELETE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;delete&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | delete row |
 | PREF_GET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;getusersettings&quot;}</code> | load user's preferences |
 | PREF_SET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;setusersettings&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | save user's preferences |
+
+<a name="tfw.dynamicTableClass.colTypes"></a>
+#### dynamicTableClass.colTypes : <code>enum</code>
+Types of columns (and filters).
+
+**Kind**: static enum property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| TEXT | <code>string</code> | <code>&quot;text&quot;</code> | 
+| NUMBER | <code>string</code> | <code>&quot;number&quot;</code> | 
+| CHECKBOX | <code>string</code> | <code>&quot;checkbox&quot;</code> | 
+| DATE | <code>string</code> | <code>&quot;date&quot;</code> | 
+| ORDER | <code>string</code> | <code>&quot;order&quot;</code> | 
 
 <a name="tfw.dynamicTableClass.serverAction"></a>
 #### dynamicTableClass.serverAction : <code>Object</code>
@@ -495,6 +479,11 @@ Function that handles data received from server.
 | --- | --- | --- |
 | receivedData | <code>Object</code> | JSON decoded data received from request |
 
+<a name="tfw.dynamicTableClass..filterValue"></a>
+#### dynamicTableClass~filterValue : <code>string</code> &#124; <code>Object</code>
+Value by which the table can be filtered.
+
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.calendar"></a>
 ### tfw.calendar
 **Kind**: static class of <code>[tfw](#tfw)</code>  

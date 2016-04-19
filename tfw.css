@@ -479,7 +479,7 @@ button:disabled:hover {
 
 /*****************/
 
-.searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .dateFilterInvalid1, .dateFilterInvalid-1, .hideColumn{
+.hideColumn{
 	display:none;
 }
 

@@ -1712,7 +1712,7 @@ var tfw = {
 		 * @property {string} cols[].name - name (HTML)
 		 * @property {number} cols[].width - width
 		 * @property {boolean} cols[].hidden - hidden
-		 * @property {string} [cols[].type=null] - type of field, possible values: null (general), "text", "number", "checkbox", "date", "order"
+		 * @property {?tfw.dynamicTableClass.colTypes} [cols[].type=null] - type of field (string)
 		 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
 		 * @property {(boolean|number)} [cols[].filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
 		 * @property {boolean} [cols[].subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
@@ -1781,14 +1781,18 @@ var tfw = {
 		/**
 		 * Save user's preference.
 		 * @param {string} key - preference key (name)
-		 * @param value - preference value (any type)
+		 * @param [value] - preference value (any type) - if not set, preference is deleted
 		 */
 		this.setPreference = function(key, value){
 			if(preferences == null){
 				console.error("Preferences were not loaded yet.");
 				return;
 			}
-			preferences[key] = value;
+			if(typeof(value) != "undefined"){
+				preferences[key] = value;
+			} else {
+				delete preferences[key];
+			}
 			savePreferences();
 		}
 		/**
@@ -1877,6 +1881,7 @@ var tfw = {
 		/**
 		 * Test if no filters are applied and table is sorted by column of type 'order'.
 		 * @return {boolean} True if reordering can be done, false otherwise.
+		 * @todo Read preferences instead
 		 */
 		this.reorderEnabled = function () {
 			return sortedByOrder && (this.tableContainer.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length == 0);
@@ -2046,6 +2051,13 @@ var tfw = {
 		 * @listens onkeyup
 		 */
 		function createAndFillTable(tableHTMLId){
+			//add CSS styling for filters
+			var filterCSS = "";
+			for(var dataCol=0;dataCol<this.data.cols.length;dataCol++){
+				filterCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none !important}\n";
+			}
+			tfw.insertStyle(filterCSS);
+			
 			var o,
 			thead,
 			tbody,
@@ -2148,14 +2160,14 @@ var tfw = {
 							var id = "tfwDynamicTable-" + i + "-" + columnOrder;
 							var setKeys = null;
 							switch(this.data.cols[j].type){
-								case "checkbox":
+								case tfw.dynamicTableClass.colTypes.CHECKBOX:
 									params.children.push(tfw.checkbox({
 										id : id,
 										value : (val ? 1 : 0),
 										onchange: updateInput
 									}));
 								break;
-								case "number":
+								case tfw.dynamicTableClass.colTypes.NUMBER:
 									params.children.push(setKeys=tfw.input({
 										type : "number",
 										id : id,
@@ -2163,7 +2175,7 @@ var tfw = {
 										onchange: updateInput
 									}));
 								break;
-								case "date":
+								case tfw.dynamicTableClass.colTypes.DATE:
 									this.prepareCalendar();
 									var calendarCell;
 									params.children.push(calendarCell=tfw.input({
@@ -2174,7 +2186,7 @@ var tfw = {
 									}));
 									tfw.calendar(calendarCell);
 								break;
-								case "text":
+								case tfw.dynamicTableClass.colTypes.TEXT:
 									params.children.push(setKeys=tfw.input({
 										type : "text",
 										id : id,
@@ -2213,6 +2225,11 @@ var tfw = {
 		}
 		
 		/**
+		 * @private
+		 */
+		var defaultFilterValues = null;
+		
+		/**
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Assumes that there is only 1 order column and that data is initially sorted by that column.
 		 * @todo Change drag&dropping so that it is clear where the dragged row will end
@@ -2228,16 +2245,45 @@ var tfw = {
 				console.error("Dynamic table reloading not implemented yet.");
 			}
 			
-			//apply preferences
-				//filters
-				var filters = {"Search":3, "Boolean":2, "Numeric":3, "Date":3};
-				for(var i=0;i<filters.length;i++){
-					var filterName = "filter"+filters[i];
-					var filterValue = this.getPreference(filterName);
-					if(filterValue != null){
-						this[filterName].apply(this, filterValue);
+			//calculate filter default values
+			defaultFilterValues = [];
+			for(var i=0;i<this.data.cols.length;i++){
+				if(this.data.cols[i].filter){
+					var defaultValue;
+					switch(this.data.cols[i].type){
+						case tfw.dynamicTableClass.colTypes.CHECKBOX:
+							defaultValue = "0";
+						break;
+						case tfw.dynamicTableClass.colTypes.TEXT:
+							defaultValue = "";
+						break;
+						case tfw.dynamicTableClass.colTypes.DATE:
+							var columnValues = this.data.rows.map(function(row){return row.cols[i];}).sort(),
+								minV = columnValues[0],
+								maxV = columnValues.pop();
+							defaultValue = {min:minV, max:maxV};
+						break;
+						case tfw.dynamicTableClass.colTypes.NUMBER:
+							var columnValues = this.data.rows.map(function(row){return row.cols[i];}),
+								minV = Math.min.apply(null, columnValues),
+								maxV = Math.max.apply(null, columnValues);
+							defaultValue = {min:minV, max:maxV};
+						break;
+						default:
+							console.error("Cannot calculate default value for filter on field of unsupported type '"+this.data.cols[i].type+"'");
+					}
+					defaultFilterValues[i] = defaultValue;
+				}
+			}
+			
+			var filterValues = this.getPreference("filterValues");
+			if(filterValues != null){
+				for(var dataCol in filterValues){
+					if(filterValues[dataCol] != null){
+						this.filterAny(dataCol, filterValues[dataCol], this.data.cols[dataCol].type, true);
 					}
 				}
+			}
 			
 			this.toggleReorder();
 		};
@@ -2256,21 +2302,52 @@ var tfw = {
 		}
 		
 		/**
-		 * Default filter values.
-		 * @private
+		 * Value by which the table can be filtered.
+		 * @typedef {(string|{min:(string|number),max:(string|number)})} tfw.dynamicTableClass~filterValue
 		 */
-		var defaultFilterValues = {
-			bool: "0",
-			number: false, //[min, max]
-			date: false, //[min, max]
-			text: ""
-		};
+		/**
+		 * @private
+		 * @param {tfw.dynamicTableClass~filterValue} value - filter value
+		 * @param {number} dataCol - order of filtered column (in data)
+		 */
+		this.setFilterPreferenceIfNotDefault = function(value, dataCol){
+			var filterValues = this.getPreference("filterValues");
+			if(filterValues == null){
+				filterValues = {};
+			}
+			
+			if(isfilterValueDefault(value, dataCol)){
+				delete filterValues[dataCol];
+			}
+			else {
+				filterValues[dataCol] = value;
+			}
+			
+			this.setPreference("filterValues", filterValues);
+		}
+		/**
+		 * @private
+		 * @param {number} dataCol - order of filtered column (in data)
+		 * @return {tfw.dynamicTableClass~filterValue} filter value
+		 */
+		this.getFilterPreference = function(dataCol){
+			var filterValues = this.getPreference("filterValues");
+			if(filterValues != null && dataCol in filterValues){
+				return filterValues[dataCol];
+			}
+			else{
+				return null;
+			}
+		}
 		
 		/**
-		 * Currently applied filter values.
 		 * @private
+		 * @param {tfw.dynamicTableClass~filterValue} value - filter value
+		 * @param {number} dataCol - order of filtered column (in data)
 		 */
-		var filterValues = JSON.parse(JSON.stringify(defaultFilterValues)); //copy
+		function isfilterValueDefault(value, dataCol){
+			return value === defaultFilterValues[dataCol];
+		}
 		
 		/**
 		 * Apply filter for values of a column.
@@ -2291,33 +2368,25 @@ var tfw = {
 			}
 			c = document.createElement("div");
 			var type = this.data.cols[dataCol].type;
+			var value = this.getFilterPreference(dataCol);
 			
 			switch(type){
-				case "checkbox":
+				case tfw.dynamicTableClass.colTypes.CHECKBOX:
 					var filter = tfw.select({
 							list : [tfw.strings.BOTH,tfw.strings.CHECKBOX_TRUE,tfw.strings.CHECKBOX_FALSE].join(";"),
-							value : filterValues.bool,
+							value : value,
 							onchange : function () {
-								dynamicTable.filterBoolean(this.dataset.columnOrder, this.value);
+								dynamicTable.filterAny(this.dataset.dataCol, this.value);
 							}
 						});
-					filter.dataset.columnOrder = column;
+					filter.dataset.dataCol = dataCol;
 					filter.addEventListener("click", function(event){event.stopPropagation();});
 					c.add(filter);
 				break;
-				case "number":
-					var minV,
-					maxV;
-					minV = maxV = this.data.rows[0].cols[dataCol];
-					for (var i = 1; i < this.data.rows.length; i++) {
-						if (this.data.rows[i].cols[dataCol] < minV) {
-							minV = this.data.rows[i].cols[dataCol];
-						} else if (this.data.rows[i].cols[dataCol] > maxV) {
-							maxV = this.data.rows[i].cols[dataCol];
-						}
-					}
-					defaultFilterValues.number = [minV, maxV];
-					var f1 = tfw.input({
+				case tfw.dynamicTableClass.colTypes.NUMBER:
+					var minV = defaultFilterValues[dataCol].min,
+						maxV = defaultFilterValues[dataCol].max,
+						f1 = tfw.input({
 							type : "number",
 							className : "rangeMin",
 							onchange : function () {
@@ -2327,14 +2396,14 @@ var tfw = {
 									max.value = max.min;
 									max.onchange();
 								}
-								dynamicTable.filterNumeric(this.dataset.columnOrder, this.value, 1);
+								dynamicTable.filterAny(this.dataset.dataCol, this.value);
 							},
 							min : minV,
 							max : maxV,
-							value : (filterValues.number) ? filterValues.number[0] : minV,
+							value : (value) ? value.min : minV,
 							legend : tfw.strings.LOW_BOUND_LABEL
-						});
-					var f2 = tfw.input({
+						}),
+						f2 = tfw.input({
 							type : "number",
 							className : "rangeMax",
 							onchange : function () {
@@ -2344,75 +2413,68 @@ var tfw = {
 									min.value = min.max;
 									min.onchange();
 								}
-								dynamicTable.filterNumeric(this.dataset.columnOrder, this.value, -1);
+								dynamicTable.filterAny(this.dataset.dataCol, this.value, -1);
 							},
 							min : minV,
 							max : maxV,
-							value : (filterValues.number) ? filterValues.number[1] : maxV,
+							value : (value) ? value.max : maxV,
 							legend : tfw.strings.HIGH_BOUND_LABEL
-						}); ;
-					f1.querySelector(".rangeMin").dataset.columnOrder = f2.querySelector(".rangeMax").dataset.columnOrder = column;
+						});
+					f1.querySelector(".rangeMin").dataset.dataCol = f2.querySelector(".rangeMax").dataset.dataCol = dataCol;
 					c.add(f1);
 					c.add(f2);
 					f1.addEventListener("click", function(event){event.stopPropagation();});
 					f2.addEventListener("click", function(event){event.stopPropagation();});
 				break;
-				case  "date":
-					var minV,
-					maxV;
-					minV = maxV = this.data.rows[0].cols[dataCol];
-					for (var i = 1; i < this.data.rows.length; i++) {
-						if (this.data.rows[i].cols[dataCol] < minV) {
-							minV = this.data.rows[i].cols[dataCol];
-						} else if (this.data.rows[i].cols[dataCol] > maxV) {
-							maxV = this.data.rows[i].cols[dataCol];
-						}
-					}
-					defaultFilterValues.date = [minV, maxV];
-					var f1 = tfw.input({
+				case tfw.dynamicTableClass.colTypes.DATE:
+					var minV = defaultFilterValues[dataCol].min,
+						maxV = defaultFilterValues[dataCol].max,
+						f1 = tfw.input({
 							type : "text",
 							className : "dateMin",
 							onchange : function () {
-								dynamicTable.filterDate(this.dataset.columnOrder, this.value, 1);
+								dynamicTable.filterAny(this.dataset.dataCol, {min:this.value,max:this.closest('div').querySelector('.dateMax').value});
 							},
-							value : (filterValues.date) ? filterValues.date[0] : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
+							value : (value) ? value.min : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
 							legend : tfw.strings.LOW_BOUND_LABEL
-						});
-					var f2 = tfw.input({
+						}),
+						f2 = tfw.input({
 							type : "text",
 							className : "dateMax",
 							onchange : function () {
-								dynamicTable.filterDate(this.dataset.columnOrder, this.value, -1);
+								dynamicTable.filterAny(this.dataset.dataCol, {min:this.closest('div').querySelector('.dateMin').value,max:this.value});
 							},
-							value : (filterValues.date) ? filterValues.date[1] : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
+							value : (value) ? value.max : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
 							legend : tfw.strings.HIGH_BOUND_LABEL
 						}); ;
 					c.add(f1);
 					c.add(f2);
 					tfw.calendar(f1.querySelector("input"));
 					tfw.calendar(f2.querySelector("input"));
-					f1.querySelector(".dateMin").dataset.columnOrder = f2.querySelector(".dateMax").dataset.columnOrder = column;
+					f1.querySelector(".dateMin").dataset.dataCol = f2.querySelector(".dateMax").dataset.dataCol = dataCol;
 					f1.addEventListener("click", function(event){event.stopPropagation();});
 					f2.addEventListener("click", function(event){event.stopPropagation();});
 				break;
-				case "text":
+				case tfw.dynamicTableClass.colTypes.TEXT:
 					var searchInput = tfw.input({
 							type : "text",
 							placeholder : (this.data.cols[dataCol].filter === 1) ? tfw.strings.SEARCH_BEGINNING : tfw.strings.SEARCH_ANYWHERE,
-							value : filterValues.text
+							value : value,
+							onchange : function(){dynamicTable.filterAny(this.dataset.dataCol, this.value, this.dataset.searchType);}
 						});
 					searchInput.dataset.searchType = this.data.cols[dataCol].search;
-					searchInput.dataset.columnOrder = column;
+					searchInput.dataset.dataCol = dataCol;
 					searchInput.onkeyup = function () {
-						dynamicTable.filterSearch(this.dataset.columnOrder,
+						dynamicTable.filterAny(this.dataset.dataCol,
 							this.value,
-							this.dataset.searchType);
+							this.dataset.searchType,
+							true);
 					}
 					c.add(searchInput);
 					searchInput.addEventListener("click", function(event){event.stopPropagation();});
 				break;
 				default:
-					console.error("Tried to apply filter on type that is not supported.");
+					console.error("Tried to apply filter on type that is not supported: '"+type+"'");
 					return;
 			}
 			var wrapper = tfw.createLayerAndWrapperAtElement(filterElement.closest('th'), {autoclose: true, modal: "auto"}, true);
@@ -2477,85 +2539,50 @@ var tfw = {
 		}
 		
 		/**
-		 * Apply search filter (case insensitive).
-		 * Requires .searchFilterInvalid{display:none}
-		 * @param {number} column - order number of searched column
-		 * @param {string} value - searched string
-		 * @param {number} [searchType=2] - type of search (1 = starts with, 2 = includes)
+		 * Apply any filter.
+		 * @param {number} dataCol - order number of filtered column (in data)
+		 * @param {tfw.dynamicTableClass~filterValue} value - value to filter by
+		 * @param {number} [searchType=2] - type of search for TEXT (1 = starts with, 2 = includes)
+		 * @param {boolean} [dontSave=false] - dont save into preferences (for TEXT)
 		 */
-		this.filterSearch = function (column, value, searchType) {
-			filterValues.text = value;
-			this.setActiveFilterInColumn(column, (value !== defaultFilterValues.text));
-			this.setPreference("filterSearch", arguments);
+		this.filterAny = function(dataCol, value, searchType, dontSave){
+			var column = this.data.cols[dataCol].columnOrder;
+			var type = this.data.cols[dataCol].type;
 			
-			var tbody = this.tableContainer.querySelector("tbody");
-			var searchFunc = (searchType == 1) ? "startsWith" : "includes";
-			for (var i = 0; i < tbody.rows.length; i++) {
-				var matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type='text']").value.toLowerCase()[searchFunc](value.toLowerCase());
-				tbody.rows[i][matches ? 'removeClass' : 'addClass']('searchFilterInvalid');
+			//update current filter values
+			if(typeof(dontSave) == "undefined" || !dontSave){
+				this.setFilterPreferenceIfNotDefault(value, dataCol);
 			}
-		};
-		/**
-		 * Apply boolean filter.
-		 * Requires .booleanFilterInvalid{display:none}
-		 * @param {number} column - order number of searched column
-		 * @param {string} searchType - search type ("0" = both, "1" = only true, "2" = only false)
-		 */
-		this.filterBoolean = function (column, searchType) {
-			filterValues.bool = searchType;
-			this.setActiveFilterInColumn(column, (searchType !== defaultFilterValues.bool));
-			this.setPreference("filterBoolean", arguments);
+			
+			this.setActiveFilterInColumn(column, !isfilterValueDefault(value, dataCol));
 			
 			var tbody = this.tableContainer.querySelector("tbody");
-			for (var i = 0; i < tbody.rows.length; i++) {
-				var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
-				var matches = (searchType === "0") || (searchType === "1" && value) || (searchType === "2" && !value);
-				tbody.rows[i][matches ? 'removeClass' : 'addClass']('booleanFilterInvalid');
+			if(typeof(searchType) != "undefined"){
+				var searchFunc = (searchType == 1) ? "startsWith" : "includes";
 			}
-		};
-		/**
-		 * Apply numeric filter.
-		 * Requires .numericFilterInvalid1, .numericFilterInvalid-1{display:none}
-		 * @param {number} column - order number of searched column
-		 * @param {string} compareValue - value to compare to (can be "")
-		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
-		 */
-		this.filterNumeric = function (column, compareValue, cmp) {
-			var index = (cmp == 1) ? 0 : 1;
-			filterValues.number[index] = compareValue;
-			this.setActiveFilterInColumn(column, compareValue != defaultFilterValues.number[index]);
-			this.setPreference("filterBoolean", arguments);
-			
-			var tbody = this.tableContainer.querySelector("tbody");
 			for (var i = 0; i < tbody.rows.length; i++) {
-				var value = parseInt(tbody.rows[i].cells[column].querySelector("input").value);
-				var matches = (value === "" || (value - compareValue) * cmp >= 0);
-				tbody.rows[i][matches ? 'removeClass' : 'addClass']('numericFilterInvalid' + cmp);
-			}
-		};
-		/**
-		 * Apply date filter.
-		 * Requires .dateFilterInvalid1, .dateFilterInvalid-1{display:none}
-		 * @param {number} column - order number of searched column
-		 * @param {string} compareValue - value to compare to (can be "")
-		 * @param {number} cmp - type of comparison (1 means greater than, -1 means lower than)
-		 */
-		this.filterDate = function (column, compareValue, cmp) {
-			var index = (cmp == 1) ? 0 : 1;
-			filterValues.date[index] = compareValue;
-			this.setActiveFilterInColumn(column, compareValue != defaultFilterValues.date[index]);
-			this.setPreference("filterDate", arguments);
-			
-			var tbody = this.tableContainer.querySelector("tbody");
-			for (var i = 0; i < tbody.rows.length; i++) {
-				var value = tbody.rows[i].cells[column].textContent;
-				if (!value) {
-					value = tbody.rows[i].cells[column].querySelector("input").value;
+				var matches = true;
+				switch(type){
+					case tfw.dynamicTableClass.colTypes.CHECKBOX:
+						var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
+						matches = (searchType === "0") || (searchType === "1" && value) || (searchType === "2" && !value);
+					break;
+					case tfw.dynamicTableClass.colTypes.TEXT:
+						matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type='text']").value.toLowerCase()[searchFunc](value.toLowerCase());
+					break;
+					case tfw.dynamicTableClass.colTypes.NUMBER:
+						var rowValue = parseInt(tbody.rows[i].cells[column].querySelector("input").rowValue);
+						matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
+					break;
+					case tfw.dynamicTableClass.colTypes.DATE:
+						var rowValue = tbody.rows[i].cells[column].querySelector("input").value;
+						matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
+					break;
 				}
-				var matches = (value === "" || (cmp >= 0 && value >= compareValue) || (cmp <= 0 && value <= compareValue));
-				tbody.rows[i][matches ? 'removeClass' : 'addClass']('dateFilterInvalid' + cmp);
+				tbody.rows[i][matches ? 'removeClass' : 'addClass']('filter'+dataCol+'Invalid');
 			}
-		};
+		}
+		
 		/**
 		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
 		 * Requires .hideColumn{display:none}
@@ -2796,6 +2823,19 @@ tfw.dynamicTableClass.serverActions = {
 	PREF_GET: {name:"getusersettings"},
 	/** save user's preferences */
 	PREF_SET: {name:"setusersettings",method:"POST"}
+};
+
+/**
+ * Types of columns (and filters).
+ * @readonly
+ * @enum {string}
+ */
+tfw.dynamicTableClass.colTypes = {
+	TEXT: "text",
+	NUMBER: "number",
+	CHECKBOX: "checkbox",
+	DATE: "date",
+	ORDER: "order"
 };
 
 /**
