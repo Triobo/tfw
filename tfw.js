@@ -250,8 +250,6 @@ var tfw = {
 		FROM: 'From:',
 		/** Maximum input label */
 		TO: 'To:',
-		/** Placeholder when searching from beginning of string */
-		SEARCH_BEGINNING: 'Search beginning with…',
 		/** Placeholder when searching anywhere in a string */
 		FILTER: 'Filter…',
 		/** Columns' visibility toggle header */
@@ -1886,7 +1884,7 @@ var tfw = {
 		/**
 		 * Test if no filters are applied and table is sorted by column of type 'order'.
 		 * @return {boolean} True if reordering can be done, false otherwise.
-		 * @todo Read preferences instead
+		 * @todo FIX - read preferences instead
 		 */
 		this.reorderEnabled = function () {
 			return sortedByOrder && (this.tableContainer.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length == 0);
@@ -1976,8 +1974,8 @@ var tfw = {
 			if(typeof(base) != "undefined" && base != null){
 				var arrowType = null, arrowGroup = null;
 				var arrowGroups = [
-					["filter"],
-					["up","down"]
+					[tfw.dynamicTableClass.arrowTypes.FILTER],
+					[tfw.dynamicTableClass.arrowTypes.UP,tfw.dynamicTableClass.arrowTypes.DOWN]
 				];
 				for(var j in arrowGroups){
 					var arrowTypes = arrowGroups[j];
@@ -2108,9 +2106,9 @@ var tfw = {
 					}
 					if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
 						var b1, b2;
-						c.add(b1=tfw.div({className:"tfwArrow down",style:"float:right;"}));
+						c.add(b1=tfw.div({className:"tfwArrow "+tfw.dynamicTableClass.arrowTypes.DOWN,style:"float:right;"}));
 							b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
-						c.add(b2=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
+						c.add(b2=tfw.div({className:"tfwArrow "+tfw.dynamicTableClass.arrowTypes.UP,style:"float:right;position:relative;left:2px;"}));
 							b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
 						b1.dataset.dataCol = b2.dataset.dataCol = j;
 						b1.onclick = b2.onclick = function(){
@@ -2119,7 +2117,7 @@ var tfw = {
 						};
 					}
 					if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
-						c.add(b=tfw.div({className:"tfwArrow filter",style:"float:right;"}));
+						c.add(b=tfw.div({className:"tfwArrow "+tfw.dynamicTableClass.arrowTypes.FILTER,style:"float:right;"}));
 						b.dataset.dataCol = j;
 						b.onclick=function(){
 							dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
@@ -2458,7 +2456,6 @@ var tfw = {
 				case tfw.dynamicTableClass.colTypes.TEXT:
 					var searchInput = tfw.input({
 							type : "text",
-/*							placeholder : (this.data.cols[dataCol].filter === 1) ? tfw.strings.SEARCH_BEGINNING : tfw.strings.SEARCH_ANYWHERE,*/
 							placeholder : tfw.strings.FILTER,
 							value : value,
 							onchange : function(){dynamicTable.filterAny(this.dataset.dataCol, this.value, this.dataset.searchType);}
@@ -2515,7 +2512,6 @@ var tfw = {
 			}
 			else{
 				arr.sort(function (a, b) {
-					//return (a.value == b.value) ? 0 : ((a.value > b.value) ? asc : (-1 * asc));
 					return cmp(a.value, b.value) * asc;
 				});
 			}
@@ -2529,11 +2525,12 @@ var tfw = {
 		 * Set status of filter icon in a column.
 		 * @param {number} column - column number
 		 * @param {boolean} on - whether to toggle active on or off
+		 * @param {tfw.dynamicTableClass.arrowTypes} arrowType - type of arrow
 		 * @see tfw.dynamicTableClass~setActiveArrow
 		 */
-		this.setActiveFilterInColumn = function(column, on){
+		this.setActiveFilterInColumn = function(column, on, arrowType){
 			var base = this.tableContainer.getElementsByClassName("headlines")[0].getElementsByTagName("th")[column];
-			var filterIcon = base.getElementsByClassName("tfwArrow filter")[0];
+			var filterIcon = base.getElementsByClassName("tfwArrow "+arrowType)[0];
 			setActiveArrow(filterIcon, base, on);
 		}
 		
@@ -2553,7 +2550,7 @@ var tfw = {
 				this.setFilterPreferenceIfNotDefault(value, dataCol);
 			}
 			
-			this.setActiveFilterInColumn(column, !isfilterValueDefault(value, dataCol));
+			this.setActiveFilterInColumn(column, !isfilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
 			
 			var tbody = this.tableContainer.querySelector("tbody");
 			if(typeof(searchType) != "undefined"){
@@ -2845,6 +2842,17 @@ tfw.dynamicTableClass.colTypes = {
 tfw.dynamicTableClass.sortTypes = {
 	ASC: 1,
 	DESC: -1
+};
+
+/**
+ * Types of "arrows".
+ * @readonly
+ * @enum {string}
+ */
+tfw.dynamicTableClass.arrowTypes = {
+	FILTER: "filter",
+	UP: "up",
+	DOWN: "down"
 };
 
 /**
