@@ -13,6 +13,9 @@
 .fa-calendar:before {
   content: "\f073";
 }
+.fa-plus:before {
+  content: "\f067";
+}
 
 
 html,body {height:100%;}
@@ -498,6 +501,19 @@ button:disabled:hover {
 
 .hideColumn{
 	display:none;
+}
+
+.tfwDynamicTable{
+	width: auto;
+}
+.tfwDynamicTable th, .tfwDynamicTable td{
+	width: 130px;
+	height: 19px;
+	padding: 0;
+	margin: 0;
+}
+.tfwDynamicTable .rowEditCell{
+	width:18px;
 }
 
 table.tfwDynamicTable{

@@ -2094,7 +2094,10 @@ var tfw = {
 			thead.add(r = tfw.tr({className:'headlines'}));
 			columnOrder = 0;
 			if (rowEdit) {
-				r.add(document.createElement("th"));
+				var th = document.createElement("th");
+				th.innerHTML = "&nbsp;";
+				th.className = "rowEditCell";
+				r.add(th);
 				columnOrder++;
 			}
 			for (var j = 0; j < this.data.cols.length; j++) {
@@ -2139,7 +2142,7 @@ var tfw = {
 				columnOrder = 0;
 				
 				if (rowEdit) {
-					r.add(tfw.td({style:"width:18px;",children:[b=tfw.div({className:"rowedit",text:"<div></div>"})]}));
+					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.div({className:"rowedit",text:"<div></div>"})]}));
 					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
 					columnOrder++;
 				}
