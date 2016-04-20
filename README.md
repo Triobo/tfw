@@ -70,7 +70,7 @@ Create a new layer.
             * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
             * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
             * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
-            * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
+            * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
             * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
             * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
             * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
@@ -78,6 +78,7 @@ Create a new layer.
             * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
             * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
             * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
+            * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
             * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
         * _inner_
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
@@ -152,7 +153,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
         * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
-        * [.setActiveFilterInColumn(column, on)](#tfw.dynamicTableClass+setActiveFilterInColumn)
+        * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
         * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
         * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
@@ -160,6 +161,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
         * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
         * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
+        * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
         * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
     * _inner_
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
@@ -278,7 +280,7 @@ Test if no filters are applied and table is sorted by column of type 'order'.
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
 **Todo**
 
-- [ ] Read preferences instead
+- [ ] FIX - read preferences instead
 
 <a name="tfw.dynamicTableClass+toggleReorder"></a>
 #### dynamicTableClass.toggleReorder()
@@ -342,7 +344,7 @@ Text fields are sorted locale aware, with empty strings always last.
 | asc | <code>[sortTypes](#tfw.dynamicTableClass.sortTypes)</code> | sorting type (ascending or descending) |
 
 <a name="tfw.dynamicTableClass+setActiveFilterInColumn"></a>
-#### dynamicTableClass.setActiveFilterInColumn(column, on)
+#### dynamicTableClass.setActiveFilterInColumn(column, on, arrowType, [arrowBase])
 Set status of filter icon in a column.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
@@ -352,6 +354,8 @@ Set status of filter icon in a column.
 | --- | --- | --- |
 | column | <code>number</code> | column number |
 | on | <code>boolean</code> | whether to toggle active on or off |
+| arrowType | <code>[arrowTypes](#tfw.dynamicTableClass.arrowTypes)</code> | type of arrow |
+| [arrowBase] | <code>HTMLElement</code> | base to pass to [setActiveArrow](#tfw.dynamicTableClass..setActiveArrow) (defaults to column's heading) |
 
 <a name="tfw.dynamicTableClass+filterAny"></a>
 #### dynamicTableClass.filterAny(dataCol, value, [searchType], [dontSave])
@@ -429,6 +433,20 @@ Types of sorting.
 | --- | --- | --- |
 | ASC | <code>number</code> | <code>1</code> | 
 | DESC | <code>number</code> | <code>-1</code> | 
+
+<a name="tfw.dynamicTableClass.arrowTypes"></a>
+#### dynamicTableClass.arrowTypes : <code>enum</code>
+Types of "arrows".
+
+**Kind**: static enum property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| FILTER | <code>string</code> | <code>&quot;filter&quot;</code> | 
+| UP | <code>string</code> | <code>&quot;up&quot;</code> | 
+| DOWN | <code>string</code> | <code>&quot;down&quot;</code> | 
 
 <a name="tfw.dynamicTableClass.serverAction"></a>
 #### dynamicTableClass.serverAction : <code>Object</code>
@@ -587,7 +605,7 @@ Most likely create an overlay that closes calendar when user clicks somewhere el
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;CLOSE\&quot;:\&quot;Close\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;SEARCH_BEGINNING\&quot;:\&quot;Search beginning with…\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;TOGGLE_COLUMNS\&quot;:\&quot;Show/hide columns\&quot;}&quot;</code>  
+**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;CLOSE\&quot;:\&quot;Close\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;TOGGLE_COLUMNS\&quot;:\&quot;Show/hide columns\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -598,7 +616,6 @@ Strings that are output by tfw functions. Change them for localization.
 | CLOSE | <code>string</code> | <code>&quot;Close&quot;</code> | Close button label |
 | FROM | <code>string</code> | <code>&quot;From:&quot;</code> | Minimum input label |
 | TO | <code>string</code> | <code>&quot;To:&quot;</code> | Maximum input label |
-| SEARCH_BEGINNING | <code>string</code> | <code>&quot;Search beginning with…&quot;</code> | Placeholder when searching from beginning of string |
 | FILTER | <code>string</code> | <code>&quot;Filter…&quot;</code> | Placeholder when searching anywhere in a string |
 | TOGGLE_COLUMNS | <code>string</code> | <code>&quot;Show/hide columns&quot;</code> | Columns' visibility toggle header |
 

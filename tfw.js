@@ -2112,7 +2112,6 @@ var tfw = {
 							b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
 						b1.dataset.dataCol = b2.dataset.dataCol = j;
 						b1.onclick = b2.onclick = function(){
-							setActiveArrow(this, dynamicTable.tableContainer);
 							dynamicTable.sort.call(dynamicTable, this.dataset.dataCol, this.dataset.sortOrder);
 						};
 					}
@@ -2274,6 +2273,7 @@ var tfw = {
 				}
 			}
 			
+			//apply filters
 			var filterValues = this.getPreference("filterValues");
 			if(filterValues != null){
 				for(var dataCol in filterValues){
@@ -2282,6 +2282,13 @@ var tfw = {
 					}
 				}
 			}
+			
+			//apply sorting
+			var sorting = this.getPreference("sorting");
+			if(sorting != null){
+				this.sort(sorting.dataCol, sorting.asc, true);
+			}
+			
 			
 			this.toggleReorder();
 		};
@@ -2485,7 +2492,14 @@ var tfw = {
 		 * @param {number} dataCol - order of column (in data)
 		 * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
 		 */
-		this.sort = function (dataCol, asc) {
+		this.sort = function (dataCol, asc, dontSave) {
+			if(typeof(dontSave) == "undefined" || !dontSave){
+				this.setPreference("sorting", {dataCol:dataCol,asc:asc});
+			}
+			
+			var column = this.data.cols[dataCol].columnOrder;
+			this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? "UP" : "DOWN"], this.tableContainer);
+			
 			var tbody = this.tableContainer.querySelector("tbody"),
 				col = this.data.cols[dataCol].columnOrder,
 				rows = tbody.rows,
@@ -2526,12 +2540,13 @@ var tfw = {
 		 * @param {number} column - column number
 		 * @param {boolean} on - whether to toggle active on or off
 		 * @param {tfw.dynamicTableClass.arrowTypes} arrowType - type of arrow
+		 * @param {?HTMLElement} [arrowBase] - base to pass to {@link tfw.dynamicTableClass~setActiveArrow} (defaults to column's heading)
 		 * @see tfw.dynamicTableClass~setActiveArrow
 		 */
-		this.setActiveFilterInColumn = function(column, on, arrowType){
+		this.setActiveFilterInColumn = function(column, on, arrowType, arrowBase){
 			var base = this.tableContainer.getElementsByClassName("headlines")[0].getElementsByTagName("th")[column];
 			var filterIcon = base.getElementsByClassName("tfwArrow "+arrowType)[0];
-			setActiveArrow(filterIcon, base, on);
+			setActiveArrow(filterIcon, (typeof(arrowBase) != "undefined") ? arrowBase : base, on);
 		}
 		
 		/**
