@@ -2107,20 +2107,15 @@ var tfw = {
 						c.style.width = this.data.cols[j].width;
 					}
 					if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
-						var b;
-						c.add(b=tfw.div({className:"tfwArrow down",style:"float:right;"}));
-							b.dataset.dataCol = j;
-							b.dataset.sortOrder = "desc";
-							b.onclick=function(){
-								setActiveArrow(this, dynamicTable.tableContainer);
-							dynamicTable.sort(this,dynamicTable);
-						};
-						c.add(b=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
-							b.dataset.dataCol = j;
-							b.dataset.sortOrder = "asc";
-							b.onclick=function(){
-								setActiveArrow(this, dynamicTable.tableContainer);
-							dynamicTable.sort(this,dynamicTable);
+						var b1, b2;
+						c.add(b1=tfw.div({className:"tfwArrow down",style:"float:right;"}));
+							b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
+						c.add(b2=tfw.div({className:"tfwArrow up",style:"float:right;position:relative;left:2px;"}));
+							b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
+						b1.dataset.dataCol = b2.dataset.dataCol = j;
+						b1.onclick = b2.onclick = function(){
+							setActiveArrow(this, dynamicTable.tableContainer);
+							dynamicTable.sort.call(dynamicTable, this.dataset.dataCol, this.dataset.sortOrder);
 						};
 					}
 					if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
@@ -2490,18 +2485,16 @@ var tfw = {
 		/**
 		 * Apply sorting by values (text without HTML) of a column.
 		 * Text fields are sorted locale aware, with empty strings always last.
-		 * @param {Object} obj - sorting button that triggered the event
-		 * @param {dynamicTableClass} dynamicTable - reference to "this"
+		 * @param {number} dataCol - order of column (in data)
+		 * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
 		 */
-		this.sort = function (obj, dynamicTable) {
-			var tbody = obj.closest("table").querySelector("tbody"),
-			dataCol = obj.dataset.dataCol,
-			col = dynamicTable.data.cols[dataCol].columnOrder,
-			asc = (obj.dataset.sortOrder == "asc" ? 1 : -1);
-			var rows = tbody.rows,
-			rlen = rows.length,
-			arr = new Array(),
-			i;
+		this.sort = function (dataCol, asc) {
+			var tbody = this.tableContainer.querySelector("tbody"),
+				col = this.data.cols[dataCol].columnOrder,
+				rows = tbody.rows,
+				rlen = rows.length,
+				arr = new Array(),
+				i;
 			for (i = 0; i < rlen; i++) {
 				var val = rows[i].cells[col].textContent.trim();
 				if (!val) {
@@ -2515,7 +2508,7 @@ var tfw = {
 					value : val
 				};
 			}
-			if(dynamicTable.data.cols[dataCol].type == "text"){
+			if(this.data.cols[dataCol].type == "text"){
 				arr.sort(function (a, b) {
 					return (a.value === "" && b.value === "") ? (cmp(a.id, b.id) * asc) : ((a.value === "") ? 1 : ((b.value === "") ? -1 : ((a.value.localeCompare(b.value) || cmp(a.id, b.id)) * asc)));
 				});
@@ -2842,6 +2835,16 @@ tfw.dynamicTableClass.colTypes = {
 	CHECKBOX: "checkbox",
 	DATE: "date",
 	ORDER: "order"
+};
+
+/**
+ * Types of sorting.
+ * @readonly
+ * @enum {number}
+ */
+tfw.dynamicTableClass.sortTypes = {
+	ASC: 1,
+	DESC: -1
 };
 
 /**
