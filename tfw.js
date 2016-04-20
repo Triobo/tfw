@@ -239,23 +239,21 @@ var tfw = {
 	 */
 	strings : {
 		/** Label for checkbox with false value. */
-		CHECKBOX_FALSE: 'No',
+		NO: 'No',
 		/** Label for checkbox with true value. */
-		CHECKBOX_TRUE: 'Yes',
-		/** Word for 'both' (e.g. both true and false) */
-		BOTH: 'Both',
-		/** Label for preferences button in dynamic tables */
-		BUTTON_PREFERENCES: 'preferences',
+		YES: 'Yes',
+		/** Word for 'all' (e.g. both true and false) */
+		ALL: 'All',
 		/** Close button label */
 		CLOSE: 'Close',
 		/** Minimum input label */
-		LOW_BOUND_LABEL: 'From:',
+		FROM: 'From:',
 		/** Maximum input label */
-		HIGH_BOUND_LABEL: 'To:',
+		TO: 'To:',
 		/** Placeholder when searching from beginning of string */
 		SEARCH_BEGINNING: 'Search beginning with…',
 		/** Placeholder when searching anywhere in a string */
-		SEARCH_ANYWHERE: 'Search including…',
+		FILTER: 'Filter…',
 		/** Columns' visibility toggle header */
 		TOGGLE_COLUMNS: 'Show/hide columns'
 	},
@@ -277,8 +275,8 @@ var tfw = {
 	 * Can be run multiple times (after adding localized strings).
 	 */
 	init : function(){
-		var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"'+tfw.strings.CHECKBOX_FALSE+'"}' + "\n" +
-						 '.tfwDynamicTable .tfwCheckbox.checked:after{content:"'+tfw.strings.CHECKBOX_TRUE+'"}';
+		var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"'+tfw.strings.NO+'"}' + "\n" +
+						 '.tfwDynamicTable .tfwCheckbox.checked:after{content:"'+tfw.strings.YES+'"}';
 		tfw.insertStyle(tfwStyling);
 	},
 	/**
@@ -2221,7 +2219,7 @@ var tfw = {
 				}
 				
 			}
-			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:tfw.strings.BUTTON_PREFERENCES}));
+			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"<i class='fa fa-cog'></i>"}));
 		}
 		
 		/**
@@ -2373,7 +2371,7 @@ var tfw = {
 			switch(type){
 				case tfw.dynamicTableClass.colTypes.CHECKBOX:
 					var filter = tfw.select({
-							list : [tfw.strings.BOTH,tfw.strings.CHECKBOX_TRUE,tfw.strings.CHECKBOX_FALSE].join(";"),
+							list : [tfw.strings.ALL,tfw.strings.YES,tfw.strings.NO].join(";"),
 							value : value,
 							onchange : function () {
 								dynamicTable.filterAny(this.dataset.dataCol, this.value);
@@ -2401,7 +2399,7 @@ var tfw = {
 							min : minV,
 							max : maxV,
 							value : (value) ? value.min : minV,
-							legend : tfw.strings.LOW_BOUND_LABEL
+							legend : tfw.strings.FROM
 						}),
 						f2 = tfw.input({
 							type : "number",
@@ -2418,7 +2416,7 @@ var tfw = {
 							min : minV,
 							max : maxV,
 							value : (value) ? value.max : maxV,
-							legend : tfw.strings.HIGH_BOUND_LABEL
+							legend : tfw.strings.TO
 						});
 					f1.querySelector(".rangeMin").dataset.dataCol = f2.querySelector(".rangeMax").dataset.dataCol = dataCol;
 					c.add(f1);
@@ -2436,7 +2434,7 @@ var tfw = {
 								dynamicTable.filterAny(this.dataset.dataCol, {min:this.value,max:this.closest('div').querySelector('.dateMax').value});
 							},
 							value : (value) ? value.min : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
-							legend : tfw.strings.LOW_BOUND_LABEL
+							legend : tfw.strings.FROM
 						}),
 						f2 = tfw.input({
 							type : "text",
@@ -2445,7 +2443,7 @@ var tfw = {
 								dynamicTable.filterAny(this.dataset.dataCol, {min:this.closest('div').querySelector('.dateMin').value,max:this.value});
 							},
 							value : (value) ? value.max : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
-							legend : tfw.strings.HIGH_BOUND_LABEL
+							legend : tfw.strings.TO
 						}); ;
 					c.add(f1);
 					c.add(f2);
@@ -2458,7 +2456,8 @@ var tfw = {
 				case tfw.dynamicTableClass.colTypes.TEXT:
 					var searchInput = tfw.input({
 							type : "text",
-							placeholder : (this.data.cols[dataCol].filter === 1) ? tfw.strings.SEARCH_BEGINNING : tfw.strings.SEARCH_ANYWHERE,
+/*							placeholder : (this.data.cols[dataCol].filter === 1) ? tfw.strings.SEARCH_BEGINNING : tfw.strings.SEARCH_ANYWHERE,*/
+							placeholder : tfw.strings.FILTER,
 							value : value,
 							onchange : function(){dynamicTable.filterAny(this.dataset.dataCol, this.value, this.dataset.searchType);}
 						});
