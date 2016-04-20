@@ -1771,9 +1771,16 @@ var tfw = {
 		 */
 		function savePreferences(){
 			var dynamicTable = this;
+			
+			//FIX: convert array to object
+			var savedPreferences = {};
+			for(var prop in preferences){
+				savedPreferences[prop] = preferences[prop];
+			}
+			
 			serverCall({
 				action: tfw.dynamicTableClass.serverActions.PREF_SET,
-				parameters: "data="+JSON.stringify(preferences),
+				parameters: "data="+JSON.stringify(savedPreferences),
 			});
 		}
 		/**
