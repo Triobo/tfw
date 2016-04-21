@@ -551,11 +551,12 @@ button:disabled:hover {
 	margin: 0;
 	padding: 0;
 	overflow: hidden;
-	max-width: 100%;
 	box-sizing: border-box;
 }
 .tfwDynamicTable{
 	border: 0;
+	overflow: auto;
+	max-width: 100%;
 }
 .tfwDynamicTable tr{
 	float: none;
@@ -615,6 +616,9 @@ button:disabled:hover {
 }
 .tfwDynamicTable tr td .tfwCheckbox {
   padding: 2px 2px 0px 2px;
+}
+.tfwDynamicTable td input[type='text'], .tfwDynamicTable td input[type='number']{
+	width: 100%;
 }
 .tfwDynamicTable td.withSubtable input[type='text'], .tfwDynamicTable td.withSubtable input[type='number'], .tfwDynamicTable td input.calendarInput[type='text']{
 	width: calc(100% - 24px); /* icon width */
