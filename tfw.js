@@ -2150,7 +2150,7 @@ var tfw = {
 				columnOrder = 0;
 				
 				if (rowEdit) {
-					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.span({className:"rowEditIcon"})]}));
+					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.span({className:"rowEditIcon",text:"<i class='fa fa-info'></i>"})]}));
 					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
 					columnOrder++;
 				}
@@ -2161,7 +2161,7 @@ var tfw = {
 						params.children=[];
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
 							params.className = "withSubtable";
-							params.children.push(b=tfw.div({className:"subtable",text:"<div></div>"}));
+							params.children.push(b=tfw.div({className:"subtable",text:"<i class='fa fa-caret-down'></i>"}));
 						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
 						}
 						val = this.data.rows[i].cols[j];
