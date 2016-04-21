@@ -2059,7 +2059,14 @@ var tfw = {
 			for(var dataCol=0;dataCol<this.data.cols.length;dataCol++){
 				filterCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none !important}\n";
 			}
-			tfw.insertStyle(filterCSS);
+			
+			var tableWidth = this.data.cols.reduce(function(previous,current){return parseInt(current.width)+previous},0);
+			if(rowEdit){
+				tableWidth += 18;
+			}
+			
+			var widthCSS = "#"+tableHTMLId+"{width:"+tableWidth+"px}";
+			tfw.insertStyle(filterCSS+widthCSS);
 			
 			var o,
 			thead,
@@ -2103,6 +2110,7 @@ var tfw = {
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!("h" in this.data.cols[j])){
 					c = document.createElement("th");
+					if ("width" in this.data.cols[j]) cellWidth=this.data.cols[j].width;
 					c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
 					if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
 						var b1, b2;
@@ -2122,6 +2130,9 @@ var tfw = {
 							dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
 						}
 					}
+					if ("width" in this.data.cols[j]){
+						c.style.width = this.data.cols[j].width;
+					}
 					r.add(c);
 					
 					this.data.cols[j].columnOrder = columnOrder;
@@ -2139,22 +2150,19 @@ var tfw = {
 				columnOrder = 0;
 				
 				if (rowEdit) {
-					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.div({})]}));
+					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.span({className:"rowEditIcon"})]}));
 					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
 					columnOrder++;
 				}
 				
 				for (var j=0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
-						var params = {}, cellWidth="200px";
+						var params = {};
 						params.children=[];
-  					if ("width" in this.data.cols[j]) cellWidth=this.data.cols[j].width;
-            var contentWidth=cellWidth;
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
 							params.className = "withSubtable";
 							params.children.push(b=tfw.div({className:"subtable",text:"<div></div>"}));
 						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
-						  contentWidth=(parseInt(cellWidth)-20)+"px";
 						}
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
@@ -2171,7 +2179,6 @@ var tfw = {
 								case tfw.dynamicTableClass.colTypes.NUMBER:
 									params.children.push(setKeys=tfw.input({
 										type : "number",
-										style:"width:"+contentWidth,
 										id : id,
 										value : val,
 										onchange: updateInput
@@ -2181,7 +2188,6 @@ var tfw = {
 									this.prepareCalendar();
 									params.children.push(tfw.calendar(tfw.input({
 										type : "text",
-										style:"width:"+contentWidth,
 										id : id,
 										value : val.match(/\d{4,}-\d{2}-\d{2}/)[0],
 										onchange: updateInput
@@ -2190,7 +2196,6 @@ var tfw = {
 								case tfw.dynamicTableClass.colTypes.TEXT:
 									params.children.push(setKeys=tfw.input({
 										type : "text",
-										style:"width:"+contentWidth,
 										id : id,
 										value : val,
 										onchange: updateInput
@@ -2218,7 +2223,9 @@ var tfw = {
 						}
 						r.add(c = tfw.td(params));
 						c.dataset.dataCol = j;
-						c.style.width = cellWidth;
+						if("width" in this.data.cols[j]){
+							c.style.width = this.data.cols[j].width;
+						}
 						columnOrder++;
 					}
 				}
@@ -2701,7 +2708,6 @@ var tfw = {
 		input.addClass("calendarInput");
 		input._calendar = this;
 		input.setAttribute("pattern", "[0-9]{4,}-[0-9]{2}-[0-9]{2}");
-		input.setAttribute("size", 10);
 
 		var calendarContainer = document.createElement("div");
 		calendarContainer.addClass("calendarWidget");
