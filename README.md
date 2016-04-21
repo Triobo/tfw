@@ -72,6 +72,7 @@ Create a new layer.
             * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
             * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
             * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
+            * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
             * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
             * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
         * _static_
@@ -156,6 +157,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
         * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
+        * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
         * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
         * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
     * _static_
@@ -382,6 +384,11 @@ Apply any filter.
 | [searchType] | <code>number</code> | <code>2</code> | type of search for TEXT (1 = starts with, 2 = includes) |
 | [dontSave] | <code>boolean</code> | <code>false</code> | dont save into preferences (for TEXT) |
 
+<a name="tfw.dynamicTableClass+resetFilters"></a>
+#### dynamicTableClass.resetFilters()
+Reset all applied filters.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+toggleColumn"></a>
 #### dynamicTableClass.toggleColumn(column)
 Toggle visibility of a column. Only hides TDs in TBODY and THs.

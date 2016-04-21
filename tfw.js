@@ -2269,6 +2269,12 @@ var tfw = {
 							dynamicTable.toggleColumnDialog.call(dynamicTable, this)
 						},
 						innerHTML: "<span class='fa fa-cog'></span>"
+					}),
+					tfw.button({
+						onclick: function(){
+							dynamicTable.resetFilters.call(dynamicTable);
+						},
+						innerHTML: "<span class='tfwArrow filter reset'></span>"
 					})
 				]}),
 			]}));
@@ -2277,6 +2283,7 @@ var tfw = {
 		
 		/**
 		 * @private
+		 * @var {Object}
 		 */
 		var defaultFilterValues = null;
 		
@@ -2310,7 +2317,7 @@ var tfw = {
 			}
 			
 			//calculate filter default values
-			defaultFilterValues = [];
+			defaultFilterValues = {};
 			for(var i=0;i<this.data.cols.length;i++){
 				if(this.data.cols[i].filter){
 					var defaultValue;
@@ -2381,21 +2388,24 @@ var tfw = {
 		 * @private
 		 * @param {tfw.dynamicTableClass~filterValue} value - filter value
 		 * @param {number} dataCol - order of filtered column (in data)
+		 * @param {boolean} [save=true] - whether to save immidiatelly
 		 */
-		this.setFilterPreferenceIfNotDefault = function(value, dataCol){
+		this.setFilterPreferenceIfNotDefault = function(value, dataCol, save){
 			var filterValues = this.getPreference("filterValues");
 			if(filterValues == null){
 				filterValues = {};
 			}
 			
-			if(isfilterValueDefault(value, dataCol)){
+			if(this.isFilterValueDefault(value, dataCol)){
 				delete filterValues[dataCol];
 			}
 			else {
 				filterValues[dataCol] = value;
 			}
 			
-			this.setPreference("filterValues", filterValues);
+			if(typeof(save) == "undefined" || save){
+				this.setPreference("filterValues", filterValues);
+			}
 		}
 		/**
 		 * @private
@@ -2417,7 +2427,7 @@ var tfw = {
 		 * @param {tfw.dynamicTableClass~filterValue} value - filter value
 		 * @param {number} dataCol - order of filtered column (in data)
 		 */
-		function isfilterValueDefault(value, dataCol){
+		this.isFilterValueDefault = function(value, dataCol){
 			if(typeof(value) == "object" && ("min" in value || "max" in value)){
 				return (!("min" in value) || value.min === defaultFilterValues[dataCol].min)
 					&& (!("max" in value) || value.max === defaultFilterValues[dataCol].max);
@@ -2681,11 +2691,9 @@ var tfw = {
 			}
 			
 			//update current filter values
-			if(typeof(dontSave) == "undefined" || !dontSave){
-				this.setFilterPreferenceIfNotDefault(value, dataCol);
-			}
+			this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof(dontSave) == "undefined" || !dontSave));
 			
-			this.setActiveFilterInColumn(column, !isfilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
+			this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
 			
 			var tbody = this.tableContainer.querySelector("tbody");
 			if(typeof(searchType) != "undefined"){
@@ -2713,6 +2721,23 @@ var tfw = {
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('filter'+dataCol+'Invalid');
 			}
 			updateRowCounts.call(this);
+		}
+		
+		/** Reset all applied filters. */
+		this.resetFilters = function(){
+			var last = null;
+			for(var i=0;i<this.data.cols.length;i++){
+				if("filter" in this.data.cols){
+					var value = this.getFilterPreference(i);
+					if(value != null && !this.isFilterValueDefault(value, i)){
+						this.filterAny(i, defaultFilterValues[i], null, true);
+						last = i;
+					}
+				}
+			}
+			if(last != null){
+				this.filterAny(last, defaultFilterValues[last]); //save
+			}
 		}
 		
 		/**
