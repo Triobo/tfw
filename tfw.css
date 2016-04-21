@@ -566,6 +566,10 @@ table.tfwDynamicTable{
 .tfwDynamicTable td.withSubtable input[type='text']{
 	width: calc(100% - 20px);
 }
+.tfwDynamicTable td input.calendarInput[type='text']{
+	width: calc(100% - 17px);
+}
+
 .tfwDynamicTable tr td .subtable {
   float:right;
   cursor: pointer;
@@ -603,6 +607,13 @@ table.tfwDynamicTable{
 }
 
 /*********************/
+
+.tfwCalendarIcon{
+	width: 15px;
+	height: 15px;
+	margin-left: 2px;
+	cursor: pointer;
+}
 
 .calendarWidget {
   width:188px;
@@ -675,11 +686,11 @@ table.tfwDynamicTable{
 
 .calendarInput {
   height:18px;
-  background:#8cc url("https://editor.triobo.com/v351/pics/calendar.png") right 1px no-repeat;
+  /*background:#8cc url("https://editor.triobo.com/v351/pics/calendar.png") right 1px no-repeat;*/
   margin:0px;
   border-radius:3px;
   cursor:pointer;
-  color: white;
+  /*color: white;*/
 }
 
 .calendarInput:hover {
