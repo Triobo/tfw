@@ -500,7 +500,7 @@ button:disabled:hover {
 /*****************/
 
 .hideColumn{
-	display:none;
+	display:none !important;
 }
 
 /* reset */

@@ -244,16 +244,12 @@ var tfw = {
 		YES: 'Yes',
 		/** Word for 'all' (e.g. both true and false) */
 		ALL: 'All',
-		/** Close button label */
-		CLOSE: 'Close',
 		/** Minimum input label */
 		FROM: 'From:',
 		/** Maximum input label */
 		TO: 'To:',
 		/** Placeholder when searching anywhere in a string */
-		FILTER: 'Filter…',
-		/** Columns' visibility toggle header */
-		TOGGLE_COLUMNS: 'Show/hide columns'
+		FILTER: 'Filter…'
 	},
 	/**
 	 * Add Javascript-generated CSS to the document.
@@ -2231,7 +2227,7 @@ var tfw = {
 				}
 				
 			}
-			this.tableContainer.add(tfw.button({onclick:dynamicTable.toggleColumnDialog.bind(dynamicTable),innerHTML:"<i class='fa fa-cog'></i>"}));
+			this.tableContainer.add(tfw.button({onclick:function(){dynamicTable.toggleColumnDialog.call(dynamicTable, this)},innerHTML:"<i class='fa fa-cog'></i>"}));
 		}
 		
 		/**
@@ -2622,8 +2618,9 @@ var tfw = {
 		/**
 		 * Toggle visibility of a column.
 		 * Creates a {@link tfw.dialog|dialog} with checkboxes.
+		 * @param {HTMLElement} element - above which element should checkboxes be positioned
 		 */
-		this.toggleColumnDialog = function () {
+		this.toggleColumnDialog = function (element) {
 			var dynamicTable = this;
 			c = document.createElement("div");
 			for (var j = 0; j < this.data.cols.length; j++) {
@@ -2639,15 +2636,8 @@ var tfw = {
 					c.add(checkbox);
 				}
 			}
-			var dlg=tfw.dialog({
-				width:300,
-				height:300,
-				title:tfw.strings.TOGGLE_COLUMNS,
-				children:[c],
-				buttons:[
-				  {text:tfw.strings.CLOSE,action:desktop.closeTopLayer}
-				]
-			});
+			var wrapper = tfw.createLayerAndWrapperAtElement(element, {autoclose: true, modal: "auto", overlay: true}, true);
+			wrapper.add(c);
 		}
 	},
 	/**
