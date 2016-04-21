@@ -2152,8 +2152,9 @@ var tfw = {
 						var params = {};
 						params.children=[];
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
+							params.className = "withSubtable";
 							params.children.push(b=tfw.div({className:"subtable",text:"<div></div>"}));
-						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
+							b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
 						}
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {

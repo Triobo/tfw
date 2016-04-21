@@ -507,7 +507,7 @@ button:disabled:hover {
 	width: auto;
 }
 .tfwDynamicTable th, .tfwDynamicTable td{
-	width: 130px;
+	/*width: 130px;*/
 	height: 19px;
 	padding: 0;
 	margin: 0;
@@ -562,6 +562,9 @@ table.tfwDynamicTable{
 }
 .tfwDynamicTable tbody td input[type='text']{
 	width: 100%;
+}
+.tfwDynamicTable td.withSubtable input[type='text']{
+	width: calc(100% - 20px);
 }
 .tfwDynamicTable tr td .subtable {
   float:right;
