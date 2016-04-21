@@ -692,7 +692,7 @@ button:disabled:hover {
   border-bottom:10px solid #888;
 }
 .tfwArrow.up.active {
-  border-bottom-color:#fc5;/*orange*/
+  border-bottom-color:#8cc;/*azure*/
 }
 .tfwArrow.down {
   border-left:6px solid transparent;
@@ -700,7 +700,7 @@ button:disabled:hover {
   border-top:10px solid #888;
 }
 .tfwArrow.down.active {
-  border-top-color:#fc5;/*orange*/
+  border-top-color:#8cc;/*azure*/
 }
 .tfwArrow.filter {
   border-left:4px solid #ddd;
@@ -711,6 +711,6 @@ button:disabled:hover {
   background-color: #888;
 }
 .tfwArrow.filter.active{
-	background-color: #fc5;/*orange*/
-	border-top-color: #fc5;/*orange*/
+	background-color: #8cc;/*azure*/
+	border-top-color: #8cc;/*azure*/
 }
