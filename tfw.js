@@ -2072,7 +2072,7 @@ var tfw = {
 				"#"+tableHTMLId+" tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
 			
 			if(bodyHeight != null){
-				tableCSS += "#"+tableHTMLId+" > tbody{overflow:auto;height: "+bodyHeight+"}\n";
+				tableCSS += "#"+tableHTMLId+" > tbody{overflow:auto;max-height: "+bodyHeight+"}\n";
 			}
 			tfw.insertStyle(tableCSS);
 			

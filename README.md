@@ -188,6 +188,7 @@ Class for creating dynamic tables.
 | [params.id] | <code>string</code> | <code>&quot;&#x27;dynamicTable&#x27;&quot;</code> | table ID (name) - required for field (cell) updates |
 | [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing is triggered |
 | [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
+| [params.bodyHeight] | <code>string</code> |  | (CSS) height of table body including unit (to make header and footer always visible) |
 
 **Example**  
 ```js
@@ -199,8 +200,9 @@ var table = document.body.appendChild(
   {
    id: "table1",
    baseURL: "data.php",
-   urlParams: "token=Nd5qPxH&timestamp=1234567890"
-   rowEdit: myRowEditFunction
+   urlParams: "token=Nd5qPxH&timestamp=1234567890",
+   rowEdit: myRowEditFunction,
+   bodyHeight: "300px"
   }
  )
 );
