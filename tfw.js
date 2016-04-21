@@ -1658,6 +1658,7 @@ var tfw = {
 	 * @param {string} [params.id='dynamicTable'] - table ID (name) - required for field (cell) updates
 	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing is triggered
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
+	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
 	 * @example
 	 * function myRowEditFunction(order){
 	 * 	// ...
@@ -1667,8 +1668,9 @@ var tfw = {
 	 *   {
 	 *    id: "table1",
 	 *    baseURL: "data.php",
-	 *    urlParams: "token=Nd5qPxH&timestamp=1234567890"
-	 *    rowEdit: myRowEditFunction
+	 *    urlParams: "token=Nd5qPxH&timestamp=1234567890",
+	 *    rowEdit: myRowEditFunction,
+	 *    bodyHeight: "300px"
 	 *   }
 	 *  )
 	 * );
@@ -1694,6 +1696,11 @@ var tfw = {
 		 * @private
 		 */
 		var urlParams = ("urlParams" in params) ? params.urlParams : "";
+		/**
+		 * @var {string}
+		 * @private
+		 */
+		var bodyHeight = ("bodyHeight" in params) ? params.bodyHeight : null;
 		/**
 		 * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
 		 * @var {Object}
@@ -2051,9 +2058,9 @@ var tfw = {
 		 */
 		function createAndFillTable(tableHTMLId){
 			//add CSS styling for filters
-			var filterCSS = "";
+			var tableCSS = "";
 			for(var dataCol=0;dataCol<this.data.cols.length;dataCol++){
-				filterCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none !important}\n";
+				tableCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none !important}\n";
 			}
 			
 			var tableWidth = this.data.cols.reduce(function(previous,current){return parseInt(current.width)+previous},0);
@@ -2061,9 +2068,13 @@ var tfw = {
 				tableWidth += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
 			}
 			
-			var widthCSS = "#"+tableHTMLId+"{width:"+tableWidth+"px}\n" +
-				".tfwDynamicTable tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
-			tfw.insertStyle(filterCSS+widthCSS);
+			tableCSS += "#"+tableHTMLId+"{width:"+tableWidth+"px}\n" +
+				"#"+tableHTMLId+" tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
+			
+			if(bodyHeight != null){
+				tableCSS += "#"+tableHTMLId+" > tbody{overflow:auto;height: "+bodyHeight+"}\n";
+			}
+			tfw.insertStyle(tableCSS);
 			
 			var o,
 			thead,
@@ -2228,6 +2239,11 @@ var tfw = {
 				}
 				
 			}
+			if(bodyHeight != null){
+				var tableWidth = parseInt(document.defaultView.getComputedStyle(o, null).getPropertyValue("width"));
+				o.style.width = thead.style.width = tbody.style.width = (tableWidth + 10)+"px";
+			}
+			
 			this.tableContainer.add(tfw.button({onclick:function(){dynamicTable.toggleColumnDialog.call(dynamicTable, this)},innerHTML:"<i class='fa fa-cog'></i>"}));
 		}
 		

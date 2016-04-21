@@ -581,8 +581,10 @@ button:disabled:hover {
 .tfwDynamicTable tr > :last-child{
 	border-right-width: 1px;
 }
+.tfwDynamicTable thead tr, .tfwDynamicTable thead th{
+	background-color: #222;
+}
 .tfwDynamicTable tr.headlines th {
-  background-color: #222;
   color: white;
   border-color: #222;
   padding: 3px 6px 0px;
