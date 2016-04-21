@@ -2104,9 +2104,6 @@ var tfw = {
 				if (!("h" in this.data.cols[j])){
 					c = document.createElement("th");
 					c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
-					if ("w" in this.data.cols[j]){
-						c.style.width = this.data.cols[j].width;
-					}
 					if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
 						var b1, b2;
 						c.add(b1=tfw.div({className:"tfwArrow "+tfw.dynamicTableClass.arrowTypes.DOWN,style:"float:right;"}));
@@ -2142,18 +2139,21 @@ var tfw = {
 				columnOrder = 0;
 				
 				if (rowEdit) {
-					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.div({className:"rowedit",text:"<div></div>"})]}));
+					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.div({})]}));
 					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
 					columnOrder++;
 				}
 				
 				for (var j=0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
-						var params = {};
+						var params = {}, cellWidth="200px";
 						params.children=[];
+  					if ("width" in this.data.cols[j]) cellWidth=this.data.cols[j].width;
+            var contentWidth=cellWidth;
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
 							params.children.push(b=tfw.div({className:"subtable",text:"<div></div>"}));
 						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
+						  contentWidth=(parseInt(cellWidth)-20)+"px";
 						}
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
@@ -2170,6 +2170,7 @@ var tfw = {
 								case tfw.dynamicTableClass.colTypes.NUMBER:
 									params.children.push(setKeys=tfw.input({
 										type : "number",
+										style:"width:"+contentWidth,
 										id : id,
 										value : val,
 										onchange: updateInput
@@ -2180,6 +2181,7 @@ var tfw = {
 									var calendarCell;
 									params.children.push(calendarCell=tfw.input({
 										type : "text",
+										style:"width:"+contentWidth,
 										id : id,
 										value : val.match(/\d{4,}-\d{2}-\d{2}/)[0],
 										onchange: updateInput
@@ -2189,6 +2191,7 @@ var tfw = {
 								case tfw.dynamicTableClass.colTypes.TEXT:
 									params.children.push(setKeys=tfw.input({
 										type : "text",
+										style:"width:"+contentWidth,
 										id : id,
 										value : val,
 										onchange: updateInput
@@ -2216,6 +2219,7 @@ var tfw = {
 						}
 						r.add(c = tfw.td(params));
 						c.dataset.dataCol = j;
+						c.style.width = cellWidth;
 						columnOrder++;
 					}
 				}
