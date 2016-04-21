@@ -2526,7 +2526,7 @@ var tfw = {
 				}
 				arr[i] = {
 					id : rows[i].id,
-					value : val
+					value : parseInt(val)
 				};
 			}
 			if(this.data.cols[dataCol].type == "text"){
