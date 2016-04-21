@@ -2151,6 +2151,7 @@ var tfw = {
   					if ("width" in this.data.cols[j]) cellWidth=this.data.cols[j].width;
             var contentWidth=cellWidth;
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
+							params.className = "withSubtable";
 							params.children.push(b=tfw.div({className:"subtable",text:"<div></div>"}));
 						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
 						  contentWidth=(parseInt(cellWidth)-20)+"px";
@@ -2178,15 +2179,13 @@ var tfw = {
 								break;
 								case tfw.dynamicTableClass.colTypes.DATE:
 									this.prepareCalendar();
-									var calendarCell;
-									params.children.push(calendarCell=tfw.input({
+									params.children.push(tfw.calendar(tfw.input({
 										type : "text",
 										style:"width:"+contentWidth,
 										id : id,
 										value : val.match(/\d{4,}-\d{2}-\d{2}/)[0],
 										onchange: updateInput
-									}));
-									tfw.calendar(calendarCell);
+									})));
 								break;
 								case tfw.dynamicTableClass.colTypes.TEXT:
 									params.children.push(setKeys=tfw.input({
@@ -2672,14 +2671,37 @@ var tfw = {
 	 * document.body.appendChild(input);
 	 *
 	 * tfw.calendar(input);
-	 * @param {Object} input - input field to turn into calendar field (HTML element)
+	 * @example
+	 * tfw.calendar.placeCalendar = function(cal, input){
+	 *  input.parentNode.insertBefore(cal, input);
+	 * }
+	 *
+	 * var input = tfw.input({value:"2016-03-07"});
+	 * var calendar = tfw.calendar(input);
+	 * document.body.appendChild(calendar);
+	 * @param {HTMLElement} input - input field to turn into calendar field
+	 * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
 	 */
 	calendar : function (input) {
-		var self = this;
-		var calendarInput = input;
+		var self = this,
+			calendarInput = input,
+			calendarWrapper = document.createElement("span"),
+			calendarIcon = document.createElement("span");
+		calendarWrapper.className = "tfwCalendarWrapper";
+		if(input.parentNode){
+			input.parentNode.insertBefore(calendarWrapper, input);
+		}
+		calendarWrapper.appendChild(input);
+				
+		
+		calendarWrapper.appendChild(calendarIcon);
+		calendarIcon.className = "tfwCalendarIcon fa fa-calendar";
+		calendarIcon._calendarInput = input;
+		
 		input.addClass("calendarInput");
 		input._calendar = this;
 		input.setAttribute("pattern", "[0-9]{4,}-[0-9]{2}-[0-9]{2}");
+		input.setAttribute("size", 10);
 
 		var calendarContainer = document.createElement("div");
 		calendarContainer.addClass("calendarWidget");
@@ -2703,7 +2725,7 @@ var tfw = {
 		}
 
 		if (tfw.calendar.placeCalendar != null) {
-			input.addEventListener("click", function(){tfw.calendar.placeCalendar(calendarContainer, input);});
+			calendarIcon.addEventListener("click", function(){tfw.calendar.placeCalendar(calendarContainer, input);});
 		} else {
 			console.error("Calendar widget was not added to the document - no callback was set.");
 		}
@@ -2782,8 +2804,8 @@ var tfw = {
 			calendarContainer.add(week);
 		}
 
-		input.addEventListener("click", function (event) {
-			var selectedDate = this.value.split("-");
+		calendarIcon.addEventListener("click", function (event) {
+			var selectedDate = this._calendarInput.value.split("-");
 			setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
 			paint();
 		});
@@ -2813,6 +2835,8 @@ var tfw = {
 				calendarInput.onchange();
 			}
 		}
+		
+		return calendarWrapper;
 	}
 }
 

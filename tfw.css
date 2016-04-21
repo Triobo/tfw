@@ -556,6 +556,13 @@ button:disabled:hover {
 .tfwDynamicTable tr td .tfwCheckbox {
   padding: 2px 2px 0px 2px;
 }
+.tfwDynamicTable td.withSubtable input[type='text']{
+	width: calc(100% - 20px);
+}
+.tfwDynamicTable td input.calendarInput[type='text']{
+	width: calc(100% - 17px);
+}
+
 .tfwDynamicTable tr td .subtable {
   float:right;
   cursor: pointer;
@@ -593,6 +600,13 @@ button:disabled:hover {
 }
 
 /*********************/
+
+.tfwCalendarIcon{
+	width: 15px;
+	height: 15px;
+	margin-left: 2px;
+	cursor: pointer;
+}
 
 .calendarWidget {
   width:188px;
@@ -662,7 +676,6 @@ button:disabled:hover {
   background-color: #fc5;/*orange*/
   color:black;
 }
-
 
 /* CSS arrows */
 
