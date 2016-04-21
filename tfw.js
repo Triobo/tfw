@@ -2601,8 +2601,8 @@ var tfw = {
 				var matches = true;
 				switch(type){
 					case tfw.dynamicTableClass.colTypes.CHECKBOX:
-						var value = tbody.rows[i].cells[column].querySelector(".checked") != null;
-						matches = (searchType === "0") || (searchType === "1" && value) || (searchType === "2" && !value);
+						var checked = tbody.rows[i].cells[column].querySelector(".checked") != null;
+						matches = (value === "0") || (value === "1" && checked) || (value === "2" && !checked);
 					break;
 					case tfw.dynamicTableClass.colTypes.TEXT:
 						matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type='text']").value.toLowerCase()[searchFunc](value.toLowerCase());
