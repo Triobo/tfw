@@ -2118,7 +2118,6 @@ var tfw = {
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!("h" in this.data.cols[j])){
 					c = document.createElement("th");
-					if ("width" in this.data.cols[j]) cellWidth=this.data.cols[j].width;
 					c.innerHTML = "<span>"+this.data.cols[j].name+"</span>";
 					if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
 						var b1, b2;
@@ -2244,13 +2243,55 @@ var tfw = {
 				o.style.width = thead.style.width = tbody.style.width = (tableWidth + 10)+"px";
 			}
 			
-			this.tableContainer.add(tfw.button({onclick:function(){dynamicTable.toggleColumnDialog.call(dynamicTable, this)},innerHTML:"<i class='fa fa-cog'></i>"}));
+			var tfoot;
+			o.add(tfoot = document.createElement("tfoot"));
+			tfoot.add(tfw.tr({children:[
+				tfw.td({children:[
+					tfw.button({
+						onclick: function(){
+							
+						},
+						innerHTML: "<span class='fa fa-plus'></span>"
+					})
+				]}),
+				tfw.td({children:[
+					tfw.span({
+						className: "visibleRowsCount"
+					}),
+					document.createTextNode("/"),
+					tfw.span({
+						className: "totalRowsCount"
+					})
+				]}),
+				tfw.td({children:[
+					tfw.button({
+						onclick: function(){
+							dynamicTable.toggleColumnDialog.call(dynamicTable, this)
+						},
+						innerHTML: "<span class='fa fa-cog'></span>"
+					})
+				]}),
+			]}));
+			updateRowCounts.call(dynamicTable);
 		}
 		
 		/**
 		 * @private
 		 */
 		var defaultFilterValues = null;
+		
+		/**
+		 * @private
+		 */
+		function updateRowCounts(){
+			var rows = this.tableContainer.querySelectorAll("tbody tr");
+			this.tableContainer.querySelector(".visibleRowsCount").innerHTML = [].slice.call(rows).reduce(
+				function(previous, current){
+					return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
+				},
+			0);
+			this.tableContainer.querySelector(".totalRowsCount").innerHTML = rows.length;
+		}
 		
 		/**
 		 * Refresh the content of the table using data gotten by (re)loading.
@@ -2671,6 +2712,7 @@ var tfw = {
 				}
 				tbody.rows[i][matches ? 'removeClass' : 'addClass']('filter'+dataCol+'Invalid');
 			}
+			updateRowCounts.call(this);
 		}
 		
 		/**

@@ -576,6 +576,16 @@ button:disabled:hover {
 	width: 200px; /* default */
 	background-color: transparent;
 }
+.tfwDynamicTable > tfoot > tr > td{
+	width: 33.3%;
+	height: 33px;
+}
+.tfwDynamicTable > tfoot > tr > td:nth-child(2){
+	text-align: center;
+}
+.tfwDynamicTable > tfoot > tr > td:last-child{
+	text-align: right;
+}
 .tfwDynamicTable tr:last-of-type > *{
 	border-bottom-width: 1px;
 }
