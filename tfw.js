@@ -2377,6 +2377,10 @@ var tfw = {
 		 * @param {number} dataCol - order of filtered column (in data)
 		 */
 		function isfilterValueDefault(value, dataCol){
+			if(typeof(value) == "object" && ("min" in value || "max" in value)){
+				return (!("min" in value) || value.min === defaultFilterValues[dataCol].min)
+					&& (!("max" in value) || value.max === defaultFilterValues[dataCol].max);
+			}
 			return value === defaultFilterValues[dataCol];
 		}
 		
@@ -2385,6 +2389,7 @@ var tfw = {
 		 * Creates a {@link tfw.dialog|dialog} with filter.
 		 * @param {Object} filterElement - element to position new layer to (HTML element)
 		 * @param {number} dataCol - order of searched column (in data)
+		 * @todo Change rangeMin/rangeMax/dateMin/dateMax classes + {@link tfw.dynamicTableClass#filterAny}
 		 */
 		this.filter = function (filterElement, dataCol) {
 			var dynamicTable = this;
@@ -2581,10 +2586,58 @@ var tfw = {
 		 * @param {tfw.dynamicTableClass~filterValue} value - value to filter by
 		 * @param {number} [searchType=2] - type of search for TEXT (1 = starts with, 2 = includes)
 		 * @param {boolean} [dontSave=false] - dont save into preferences (for TEXT)
+		 * @todo Better behaviour when min and max are crossed (min > max)
 		 */
 		this.filterAny = function(dataCol, value, searchType, dontSave){
 			var column = this.data.cols[dataCol].columnOrder;
 			var type = this.data.cols[dataCol].type;
+			
+			//reset invalid/unset values to defaults
+			if([tfw.dynamicTableClass.colTypes.NUMBER, tfw.dynamicTableClass.colTypes.DATE].indexOf(type) != -1){
+				var originalValue = JSON.parse(JSON.stringify(value)); //deep copy
+				for(var p in value){
+					switch(type){
+						case tfw.dynamicTableClass.colTypes.NUMBER:
+							value[p] = parseInt(value[p]);
+							if(!value[p].match(/^[0-9]+$/)){
+								value[p] = defaultFilterValues[dataCol][p];
+							}
+						break;
+						case tfw.dynamicTableClass.colTypes.DATE:
+							if(!value[p].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)){
+								value[p] = defaultFilterValues[dataCol][p];
+							}
+						break;
+					}
+				}
+			
+				if(value.min < defaultFilterValues[dataCol].min){
+					value.min = defaultFilterValues[dataCol].min;
+				}
+				if(value.max > defaultFilterValues[dataCol].max){
+					value.max = defaultFilterValues[dataCol].max;
+				}
+				
+				if(value.min > value.max){
+					//could be better
+					value.min = defaultFilterValues[dataCol].min;
+					value.max = defaultFilterValues[dataCol].max;
+				}
+				for(var p in value){
+					if(value[p] != originalValue[p]){
+						var prefix;
+						switch(type){
+							case tfw.dynamicTableClass.colTypes.NUMBER:
+								prefix = "range";
+							break;
+							case tfw.dynamicTableClass.colTypes.DATE:
+								prefix = "date";
+							break;
+						}
+						desktop.div.querySelector(".tfwContainer ."+prefix+"M"+p.substring(1)).value = value[p];
+					}
+				}
+			}
 			
 			//update current filter values
 			if(typeof(dontSave) == "undefined" || !dontSave){

@@ -329,6 +329,10 @@ Apply filter for values of a column.
 Creates a [dialog](tfw.dialog) with filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Todo**
+
+- [ ] Change rangeMin/rangeMax/dateMin/dateMax classes + [filterAny](#tfw.dynamicTableClass+filterAny)
+
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -366,6 +370,10 @@ Set status of filter icon in a column.
 Apply any filter.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Todo**
+
+- [ ] Better behaviour when min and max are crossed (min > max)
+
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
