@@ -2058,10 +2058,11 @@ var tfw = {
 			
 			var tableWidth = this.data.cols.reduce(function(previous,current){return parseInt(current.width)+previous},0);
 			if(rowEdit){
-				tableWidth += 18;
+				tableWidth += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
 			}
 			
-			var widthCSS = "#"+tableHTMLId+"{width:"+tableWidth+"px}";
+			var widthCSS = "#"+tableHTMLId+"{width:"+tableWidth+"px}\n" +
+				".tfwDynamicTable tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
 			tfw.insertStyle(filterCSS+widthCSS);
 			
 			var o,
@@ -2146,7 +2147,7 @@ var tfw = {
 				columnOrder = 0;
 				
 				if (rowEdit) {
-					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.span({className:"rowEditIcon",text:"<i class='fa fa-info'></i>"})]}));
+					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.span({className:"rowEditIcon clickable fa invert fa-info"})]}));
 					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
 					columnOrder++;
 				}
@@ -2157,7 +2158,7 @@ var tfw = {
 						params.children=[];
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
 							params.className = "withSubtable";
-							params.children.push(b=tfw.div({className:"subtable",text:"<i class='fa fa-caret-down'></i>"}));
+							params.children.push(b=tfw.div({className:"subtable clickable fa invert fa-caret-down"}));
 						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
 						}
 						val = this.data.rows[i].cols[j];
@@ -2673,9 +2674,13 @@ var tfw = {
 	 *  input.parentNode.insertBefore(cal, input);
 	 * }
 	 *
-	 * var input = tfw.input({value:"2016-03-07"});
-	 * var calendar = tfw.calendar(input);
-	 * document.body.appendChild(calendar);
+	 * document.body.appendChild(
+	 *  tfw.calendar(
+	 *   tfw.input({
+	 *    value: "2016-03-07"
+	 *   })
+	 *  )
+	 * );
 	 * @param {HTMLElement} input - input field to turn into calendar field
 	 * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
 	 */
@@ -2692,7 +2697,7 @@ var tfw = {
 				
 		
 		calendarWrapper.appendChild(calendarIcon);
-		calendarIcon.className = "tfwCalendarIcon fa fa-calendar";
+		calendarIcon.className = "tfwCalendarIcon fa invert clickable fa-calendar";
 		calendarIcon._calendarInput = input;
 		
 		input.addClass("calendarInput");
@@ -2896,6 +2901,14 @@ tfw.dynamicTableClass.arrowTypes = {
 	UP: "up",
 	DOWN: "down"
 };
+
+/**
+ * Width of column with row edit icon (icon's width including padding, border, margin + cell's padding + border), in pixels
+ * @var {number}
+ * @readonly
+ * @default
+ */
+tfw.dynamicTableClass.ROW_EDIT_WIDTH = 25;
 
 /**
  * List of months' names.

@@ -73,12 +73,13 @@ Create a new layer.
             * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
             * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
             * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
-            * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
+            * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
         * _static_
             * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
             * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
             * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
             * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
+            * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
             * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
         * _inner_
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
@@ -156,12 +157,13 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
         * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
-        * [.toggleColumnDialog()](#tfw.dynamicTableClass+toggleColumnDialog)
+        * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
     * _static_
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
         * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
         * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
         * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
+        * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
         * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
     * _inner_
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
@@ -382,11 +384,16 @@ Requires .hideColumn{display:none}
 | column | <code>number</code> | order number of column |
 
 <a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
-#### dynamicTableClass.toggleColumnDialog()
+#### dynamicTableClass.toggleColumnDialog(element)
 Toggle visibility of a column.
 Creates a [dialog](tfw.dialog) with checkboxes.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| element | <code>HTMLElement</code> | above which element should checkboxes be positioned |
+
 <a name="tfw.dynamicTableClass.serverActions"></a>
 #### dynamicTableClass.serverActions : <code>enum</code>
 Implemented server actions.
@@ -448,6 +455,13 @@ Types of "arrows".
 | UP | <code>string</code> | <code>&quot;up&quot;</code> | 
 | DOWN | <code>string</code> | <code>&quot;down&quot;</code> | 
 
+<a name="tfw.dynamicTableClass.ROW_EDIT_WIDTH"></a>
+#### dynamicTableClass.ROW_EDIT_WIDTH : <code>number</code>
+Width of column with row edit icon (icon's width including padding, border, margin + cell's padding + border), in pixels
+
+**Kind**: static property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Default**: <code>25</code>  
+**Read only**: true  
 <a name="tfw.dynamicTableClass.serverAction"></a>
 #### dynamicTableClass.serverAction : <code>Object</code>
 **Kind**: static typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
@@ -554,10 +568,11 @@ Value by which the table can be filtered.
 #### new calendar(input)
 Class for enhancing date input fields. Requires CSS styling.
 
+**Returns**: <code>HTMLElement</code> - Returns input wrapper (for inserting into DOM in case input was not inserted yet)  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| input | <code>Object</code> | input field to turn into calendar field (HTML element) |
+| input | <code>HTMLElement</code> | input field to turn into calendar field |
 
 **Example**  
 ```js
@@ -569,6 +584,20 @@ var input = tfw.input({value:"2016-03-07"});
 document.body.appendChild(input);
 
 tfw.calendar(input);
+```
+**Example**  
+```js
+tfw.calendar.placeCalendar = function(cal, input){
+ input.parentNode.insertBefore(cal, input);
+}
+
+document.body.appendChild(
+ tfw.calendar(
+  tfw.input({
+   value: "2016-03-07"
+  })
+ )
+);
 ```
 <a name="tfw.calendar.months"></a>
 #### calendar.months : <code>Array.&lt;String&gt;</code>
@@ -605,7 +634,7 @@ Most likely create an overlay that closes calendar when user clicks somewhere el
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;CLOSE\&quot;:\&quot;Close\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;TOGGLE_COLUMNS\&quot;:\&quot;Show/hide columns\&quot;}&quot;</code>  
+**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -613,11 +642,9 @@ Strings that are output by tfw functions. Change them for localization.
 | NO | <code>string</code> | <code>&quot;No&quot;</code> | Label for checkbox with false value. |
 | YES | <code>string</code> | <code>&quot;Yes&quot;</code> | Label for checkbox with true value. |
 | ALL | <code>string</code> | <code>&quot;All&quot;</code> | Word for 'all' (e.g. both true and false) |
-| CLOSE | <code>string</code> | <code>&quot;Close&quot;</code> | Close button label |
 | FROM | <code>string</code> | <code>&quot;From:&quot;</code> | Minimum input label |
 | TO | <code>string</code> | <code>&quot;To:&quot;</code> | Maximum input label |
 | FILTER | <code>string</code> | <code>&quot;Filter…&quot;</code> | Placeholder when searching anywhere in a string |
-| TOGGLE_COLUMNS | <code>string</code> | <code>&quot;Show/hide columns&quot;</code> | Columns' visibility toggle header |
 
 <a name="tfw.ajaxIncludeParams"></a>
 ### tfw.ajaxIncludeParams : <code>function</code>
