@@ -9,7 +9,13 @@
  */
 var AJAX_LOADER = "<div class='tfwDivContentLoader'><span></span></div>";
 
+/**
+ * @param {number} a
+ * @param {number} b
+ */ 
 function cmp(a, b){
+	a = parseInt(a);
+	b = parseInt(b);
 	return a < b ? -1 : a > b;
 }
 
@@ -2583,37 +2589,22 @@ var tfw = {
 			this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? "UP" : "DOWN"], this.tableContainer);
 			
 			var tbody = this.tableContainer.querySelector("tbody"),
-				col = this.data.cols[dataCol].columnOrder,
-				rows = tbody.rows,
-				rlen = rows.length,
-				arr = new Array(),
+				type = this.data.cols[dataCol].type,
 				i;
-			for (i = 0; i < rlen; i++) {
-				var val = rows[i].cells[col].textContent.trim();
-				if (!val) {
-					var input = rows[i].cells[col].querySelector("input, select");
-					if(input != null){
-						val = input.value;
-					}
-				}
-				arr[i] = {
-					id : rows[i].id,
-					value : parseInt(val)
-				};
-			}
-			if(this.data.cols[dataCol].type == "text"){
-				arr.sort(function (a, b) {
-					return (a.value === "" && b.value === "") ? (cmp(a.id, b.id) * asc) : ((a.value === "") ? 1 : ((b.value === "") ? -1 : ((a.value.localeCompare(b.value) || cmp(a.id, b.id)) * asc)));
+			if([tfw.dynamicTableClass.colTypes.NUMBER,tfw.dynamicTableClass.colTypes.CHECKBOX].indexOf(type) != -1){
+				this.data.rows.sort(function (row1, row2) {
+					var a = row1.cols[dataCol], b = row2.cols[dataCol];
+					return ((a != b) ? cmp(a, b) : cmp(row1.id, row2.id)) * asc;
 				});
 			}
 			else{
-				arr.sort(function (a, b) {
-					return cmp(a.value, b.value) * asc;
+				this.data.rows.sort(function (row1, row2) {
+					var a = row1.cols[dataCol], b = row2.cols[dataCol];
+					return (a === "" && b === "") ? (cmp(row1.id, row2.id) * asc) : ((a === "") ? 1 : ((b === "") ? -1 : ((a.localeCompare(b) || cmp(row1.id, row2.id)) * asc)));
 				});
 			}
-			
-			for (i = 0; i < rlen; i++) {
-				tbody.appendChild(rows.namedItem(arr[i].id));
+			for(i=0;i<this.data.rows.length;i++){
+				tbody.appendChild(tbody.rows.namedItem("rowID-"+this.data.rows[i].id));
 			}
 		};
 		
