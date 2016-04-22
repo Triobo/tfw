@@ -19,6 +19,13 @@
 </dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#cmp">cmp(a, b)</a></dt>
+<dd></dd>
+</dl>
+
 <a name="desktop"></a>
 ## desktop
 **Kind**: global class  
@@ -73,7 +80,8 @@ Create a new layer.
             * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
             * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
             * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
-            * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
+            * [.toggleColumn(dataCol, [dontSave])](#tfw.dynamicTableClass+toggleColumn)
+                * [~hiddenColumns](#tfw.dynamicTableClass+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
             * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
         * _static_
             * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
@@ -158,7 +166,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
         * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
-        * [.toggleColumn(column)](#tfw.dynamicTableClass+toggleColumn)
+        * [.toggleColumn(dataCol, [dontSave])](#tfw.dynamicTableClass+toggleColumn)
+            * [~hiddenColumns](#tfw.dynamicTableClass+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
         * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
     * _static_
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
@@ -229,8 +238,8 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | --- | --- | --- | --- |
 | cols | <code>Array.&lt;Object&gt;</code> |  | list of columns |
 | cols[].name | <code>string</code> |  | name (HTML) |
-| cols[].width | <code>number</code> |  | width |
-| cols[].hidden | <code>boolean</code> |  | hidden |
+| cols[].width | <code>number</code> | <code>200</code> | width (in pixels) |
+| cols[].hidden | <code>boolean</code> | <code>false</code> | hidden |
 | cols[].type | <code>[colTypes](#tfw.dynamicTableClass.colTypes)</code> | <code></code> | type of field (string) |
 | cols[].sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
 | cols[].filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
@@ -390,16 +399,20 @@ Reset all applied filters.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+toggleColumn"></a>
-#### dynamicTableClass.toggleColumn(column)
-Toggle visibility of a column. Only hides TDs in TBODY and THs.
+#### dynamicTableClass.toggleColumn(dataCol, [dontSave])
+Toggle visibility of a column. Only hides cells in TBODY and THEAD.
 Requires .hideColumn{display:none}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| column | <code>number</code> | order number of column |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| dataCol | <code>number</code> |  | number of column (in data) |
+| [dontSave] | <code>boolean</code> | <code>false</code> | don't save into preferences |
 
+<a name="tfw.dynamicTableClass+toggleColumn..hiddenColumns"></a>
+##### toggleColumn~hiddenColumns : <code>Array.&lt;boolean&gt;</code>
+**Kind**: inner property of <code>[toggleColumn](#tfw.dynamicTableClass+toggleColumn)</code>  
 <a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
 #### dynamicTableClass.toggleColumnDialog(element)
 Toggle visibility of a column.
@@ -1104,3 +1117,12 @@ Function package for preparing HTML elements.
 HTML to show when some content is being loaded.
 
 **Kind**: global constant  
+<a name="cmp"></a>
+## cmp(a, b)
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| a | <code>number</code> | 
+| b | <code>number</code> | 
+

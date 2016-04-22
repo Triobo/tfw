@@ -2368,6 +2368,16 @@ var tfw = {
 				this.sort(sorting.dataCol, sorting.asc, true);
 			}
 			
+			//hide columns
+			var hiddenColumns = this.getPreference("hiddenColumns");
+			if(hiddenColumns != null){
+				for(var dataCol in hiddenColumns){
+					if(hiddenColumns[dataCol] === true){
+						this.toggleColumn(dataCol, true);
+					}
+				}
+			}
+			
 			
 			this.toggleReorder();
 		};
@@ -2734,8 +2744,9 @@ var tfw = {
 		 * Toggle visibility of a column. Only hides cells in TBODY and THEAD.
 		 * Requires .hideColumn{display:none}
 		 * @param {number} dataCol - number of column (in data)
+		 * @param {boolean} [dontSave=false] - don't save into preferences
 		 */
-		this.toggleColumn = function (dataCol) {
+		this.toggleColumn = function (dataCol, dontSave) {
 			var column = this.data.cols[dataCol].columnOrder;
 			var visible;
 			var cells = [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column+1) + "), thead tr > :nth-child(" + (column+1) + ")"))
@@ -2745,6 +2756,16 @@ var tfw = {
 				});
 			var table = this.tableContainer.querySelector(".tfwDynamicTable");
 			table.style.width = (parseInt(table.style.width) + (visible ? 1 : -1) * this.data.cols[dataCol].width) + "px";
+			if(typeof(dontSave) == "undefined" || !dontSave){
+				/** @var {boolean[]} */
+				var hiddenColumns = this.getPreference("hiddenColumns") || [];
+				if(visible){
+					delete hiddenColumns[dataCol];
+				} else {
+					hiddenColumns[dataCol] = true;
+				}
+				this.setPreference("hiddenColumns", hiddenColumns);
+			}
 		};
 		
 		/**
@@ -2753,13 +2774,14 @@ var tfw = {
 		 * @param {HTMLElement} element - above which element should checkboxes be positioned
 		 */
 		this.toggleColumnDialog = function (element) {
-			var dynamicTable = this;
-			c = document.createElement("div");
+			var dynamicTable = this,
+				hiddenColumns = this.getPreference("hiddenColumns"),
+				c = document.createElement("div");
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!this.data.cols[j].hidden) {
 					var checkbox = tfw.checkbox({
 							text : this.data.cols[j].name,
-							value : 1,
+							value : (hiddenColumns != null && hiddenColumns[j] === true) ? 0 : 1,
 							onchange : function () {
 								dynamicTable.toggleColumn(this.dataset.dataCol);
 							}
