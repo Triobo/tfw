@@ -1715,8 +1715,8 @@ var tfw = {
 		 * @readonly
 		 * @property {Object[]} cols - list of columns
 		 * @property {string} cols[].name - name (HTML)
-		 * @property {number} cols[].width - width
-		 * @property {boolean} cols[].hidden - hidden
+		 * @property {number} [cols[].width=200] - width (in pixels)
+		 * @property {boolean} [cols[].hidden=false] - hidden
 		 * @property {?tfw.dynamicTableClass.colTypes} [cols[].type=null] - type of field (string)
 		 * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
 		 * @property {(boolean|number)} [cols[].filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
@@ -2073,9 +2073,9 @@ var tfw = {
 			if(rowEdit){
 				tableWidth += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
 			}
+			tableWidth += 10; //scrollbar
 			
-			tableCSS += "#"+tableHTMLId+"{width:"+tableWidth+"px}\n" +
-				"#"+tableHTMLId+" tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
+			tableCSS += "#"+tableHTMLId+" tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
 			
 			if(bodyHeight != null){
 				tableCSS += "#"+tableHTMLId+" > tbody{overflow:auto;max-height: "+bodyHeight+"}\n";
@@ -2094,6 +2094,7 @@ var tfw = {
 						id : tableHTMLId,
 						className : 'tfwDynamicTable'
 					}));
+			o.style.width = tableWidth+"px";
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
 					sortedByOrder = true; //assumed
@@ -2143,9 +2144,13 @@ var tfw = {
 							dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
 						}
 					}
-					if ("width" in this.data.cols[j]){
-						c.style.width = this.data.cols[j].width;
+					if (!("width" in this.data.cols[j])){
+						this.data.cols[j].width = 200;
 					}
+					else{
+						this.data.cols[j].width = parseInt(this.data.cols[j].width);
+					}
+					c.style.width = this.data.cols[j].width + "px";
 					r.add(c);
 					
 					this.data.cols[j].columnOrder = columnOrder;
@@ -2236,17 +2241,11 @@ var tfw = {
 						}
 						r.add(c = tfw.td(params));
 						c.dataset.dataCol = j;
-						if("width" in this.data.cols[j]){
-							c.style.width = this.data.cols[j].width;
-						}
+						c.style.width = this.data.cols[j].width+"px";
 						columnOrder++;
 					}
 				}
 				
-			}
-			if(bodyHeight != null){
-				var tableWidth = parseInt(document.defaultView.getComputedStyle(o, null).getPropertyValue("width"));
-				o.style.width = thead.style.width = tbody.style.width = (tableWidth + 10)+"px";
 			}
 			
 			var tfoot;
@@ -2732,15 +2731,20 @@ var tfw = {
 		}
 		
 		/**
-		 * Toggle visibility of a column. Only hides TDs in TBODY and THs.
+		 * Toggle visibility of a column. Only hides cells in TBODY and THEAD.
 		 * Requires .hideColumn{display:none}
-		 * @param {number} column - order number of column
+		 * @param {number} dataCol - number of column (in data)
 		 */
-		this.toggleColumn = function (column) {
-			var cells = this.tableContainer.querySelectorAll("tbody td:nth-child(" + (parseInt(column) + 1) + "), th:nth-child(" + (parseInt(column) + 1) + ")");
-			for (var i = 0; i < cells.length; i++) {
-				cells[i].toggleClass("hideColumn");
-			}
+		this.toggleColumn = function (dataCol) {
+			var column = this.data.cols[dataCol].columnOrder;
+			var visible;
+			var cells = [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column+1) + "), thead tr > :nth-child(" + (column+1) + ")"))
+				.forEach(function(cell){
+					visible = cell.hasClass("hideColumn");
+					cell.toggleClass("hideColumn");
+				});
+			var table = this.tableContainer.querySelector(".tfwDynamicTable");
+			table.style.width = (parseInt(table.style.width) + (visible ? 1 : -1) * this.data.cols[dataCol].width) + "px";
 		};
 		
 		/**

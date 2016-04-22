@@ -573,7 +573,6 @@ button:disabled:hover {
 	border: 0 solid #eee;
 	border-left-width: 1px;
 	border-top-width: 1px;
-	width: 200px; /* default */
 	background-color: transparent;
 }
 .tfwDynamicTable > tfoot > tr > td{
