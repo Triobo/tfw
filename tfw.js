@@ -2600,7 +2600,7 @@ var tfw = {
 			var tbody = this.tableContainer.querySelector("tbody"),
 				type = this.data.cols[dataCol].type,
 				i;
-			if([tfw.dynamicTableClass.colTypes.NUMBER,tfw.dynamicTableClass.colTypes.CHECKBOX].indexOf(type) != -1){
+			if([tfw.dynamicTableClass.colTypes.NUMBER,tfw.dynamicTableClass.colTypes.ORDER,tfw.dynamicTableClass.colTypes.CHECKBOX].indexOf(type) != -1){
 				this.data.rows.sort(function (row1, row2) {
 					var a = row1.cols[dataCol], b = row2.cols[dataCol];
 					return ((a != b) ? cmp(a, b) : cmp(row1.id, row2.id)) * asc;
