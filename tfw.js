@@ -1664,6 +1664,7 @@ var tfw = {
 	 * @param {string} [params.id='dynamicTable'] - table ID (name) - required for field (cell) updates
 	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing is triggered
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
+	 * @param {boolean} [params.rowAdd] - Whether to allow adding new rows
 	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
 	 * @example
 	 * function myRowEditFunction(id){
@@ -1707,6 +1708,11 @@ var tfw = {
 		 * @private
 		 */
 		var bodyHeight = ("bodyHeight" in params) ? params.bodyHeight : null;
+		/**
+		 * @var {boolean}
+		 * @private
+		 */
+		var addRowEnabled = ("rowAdd" in params) ? params.rowAdd : false;
 		/**
 		 * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
 		 * @var {Object}
@@ -2253,14 +2259,14 @@ var tfw = {
 			var tfoot;
 			o.add(tfoot = document.createElement("tfoot"));
 			tfoot.add(tfw.tr({children:[
-				tfw.td({children:[
+				tfw.td(addRowEnabled ? {children:[
 					tfw.button({
 						onclick: function(){
 							
 						},
 						innerHTML: "<span class='fa fa-plus'></span>"
 					})
-				]}),
+				]} : {}),
 				tfw.td({children:[
 					tfw.span({
 						className: "visibleRowsCount"
