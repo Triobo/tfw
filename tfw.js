@@ -1666,7 +1666,7 @@ var tfw = {
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
 	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
 	 * @example
-	 * function myRowEditFunction(order){
+	 * function myRowEditFunction(id){
 	 * 	// ...
 	 * }
 	 * var table = document.body.appendChild(
@@ -1729,7 +1729,7 @@ var tfw = {
 		/**
 		 * Function that handles row editing.
 		 * @callback tfw.dynamicTableClass~rowEdit
-		 * @param {number} order - order of the row being edited
+		 * @param {number} id - ID of the row being edited
 		 */
 		/**
 		 * @private

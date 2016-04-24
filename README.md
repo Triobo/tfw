@@ -203,7 +203,7 @@ Class for creating dynamic tables.
 
 **Example**  
 ```js
-function myRowEditFunction(order){
+function myRowEditFunction(id){
 	// ...
 }
 var table = document.body.appendChild(
@@ -553,7 +553,7 @@ Function that handles row editing.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| order | <code>number</code> | order of the row being edited |
+| id | <code>number</code> | ID of the row being edited |
 
 <a name="tfw.dynamicTableClass..goToSub"></a>
 #### dynamicTableClass~goToSub : <code>function</code>
