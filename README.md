@@ -93,6 +93,7 @@ Create a new layer.
         * _inner_
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
             * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+            * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
             * [~updateInput()](#tfw.dynamicTableClass..updateInput)
             * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
@@ -179,6 +180,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
     * _inner_
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
         * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+        * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
         * [~updateInput()](#tfw.dynamicTableClass..updateInput)
         * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
@@ -293,10 +295,6 @@ Test if no filters are applied and table is sorted by column of type 'order'.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
-**Todo**
-
-- [ ] FIX - read preferences instead
-
 <a name="tfw.dynamicTableClass+toggleReorder"></a>
 #### dynamicTableClass.toggleReorder()
 Toggle reordering of rows via drag & drop.
@@ -436,7 +434,8 @@ Implemented server actions.
 | --- | --- | --- | --- |
 | LOAD | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;load&quot;}</code> | load all rows |
 | NEW | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;new&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | add new row, return ID |
-| SAVE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;savedata&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | edit 1 cell (id, col) - special for order |
+| SAVE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;savedata&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | edit 1 cell (id, col) |
+| CHANGE_ORDER | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;changeorder&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | change order of rows - updates multiple rows |
 | WATCH | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;watch&quot;}</code> | long polling |
 | DELETE | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;delete&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | delete row |
 | PREF_GET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;getusersettings&quot;}</code> | load user's preferences |
@@ -528,6 +527,16 @@ Width of column with row edit icon (icon's width including padding, border, marg
 | params.id | <code>number</code> | ID of edited row |
 | params.col | <code>number</code> | order number of edited column |
 | params.value | <code>number</code> | new value |
+
+<a name="tfw.dynamicTableClass..serverUpdateOrder"></a>
+#### dynamicTableClass~serverUpdateOrder(params)
+**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | update parameters |
+| params.id | <code>number</code> | ID of edited row |
+| params.neworder | <code>number</code> | new order number of edited row |
 
 <a name="tfw.dynamicTableClass..updateInput"></a>
 #### dynamicTableClass~updateInput()

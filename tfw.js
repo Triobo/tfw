@@ -1893,17 +1893,13 @@ var tfw = {
 		/**
 		 * Test if no filters are applied and table is sorted by column of type 'order'.
 		 * @return {boolean} True if reordering can be done, false otherwise.
-		 * @todo FIX - read preferences instead
 		 */
 		this.reorderEnabled = function () {
-			return sortedByOrder && (this.tableContainer.querySelectorAll(".searchFilterInvalid, .booleanFilterInvalid, .numericFilterInvalid1, .numericFilterInvalid-1, .hideColumn").length == 0);
+			var sorting = this.getPreference("sorting");
+			var sortedByOrder = sorting != null && ("dataCol" in sorting) && sorting.dataCol == orderColumn && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC;
+			return sortedByOrder && this.getVisibleRowsCount() == this.getTotalRowsCount();
 		}
 
-		/**
-		 * @private
-		 * @var {boolean}
-		 */
-		var sortedByOrder = false;
 		/**
 		 * @private
 		 * @var {number}
@@ -1964,6 +1960,18 @@ var tfw = {
 		}
 		
 		/**
+		 * @param {Object} params - update parameters
+		 * @param {number} params.id - ID of edited row
+		 * @param {number} params.neworder - new order number of edited row
+		 */
+		function serverUpdateOrder(params){
+			serverCall({
+				action: tfw.dynamicTableClass.serverActions.CHANGE_ORDER,
+				parameters: "id="+params.id+"&neworder="+params.neworder
+			});
+		}
+		
+		/**
 		 * this should refer to an input field in a dynamic table (HTML element)
 		 */
 		function updateInput(){
@@ -2019,16 +2027,18 @@ var tfw = {
 		this.orderChange = function (element) {
 			var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML) - 1;
 			var droppedRowOrder = Array.prototype.indexOf.call(element.parentNode.children, element);
+			
 			element.getElementsByTagName("td")[orderColumn].innerHTML = droppedRowOrder + 1;
-			var rows = this.tableContainer.querySelectorAll("tbody tr");
-			for (var i = droppedRowOrder + 1; i <= originalRowOrder; i++) {
-				var cell = rows[i].getElementsByTagName("td")[orderColumn];
-				cell.innerHTML = parseInt(cell.innerHTML) + 1;
+			
+			var rows = this.tableContainer.querySelector("tbody").rows;
+			var p = (originalRowOrder < droppedRowOrder); //true <=> dragged down
+			for(var i = (p ? originalRowOrder : (droppedRowOrder+1)) ; (p ? (i < droppedRowOrder) : (i <= originalRowOrder)) ; i++){
+				var cell = rows[i].cells[orderColumn];
+				cell.innerHTML = parseInt(cell.innerHTML) + (p ? -1 : 1);
 			}
-			serverUpdateCell({
+			serverUpdateOrder({
 				id : element.dataset.rowid,
-				col : orderColumn,
-				value : droppedRowOrder + 1
+				neworder : droppedRowOrder + 1
 			});
 		}
 		
@@ -2097,17 +2107,9 @@ var tfw = {
 			o.style.width = tableWidth+"px";
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
-					sortedByOrder = true; //assumed
 					this.data.cols[j].sort = true;
-					o.addEventListener("click", function (event) {
-						var tbody = dynamicTable.tableContainer.querySelector("tbody");
-						var col = event.target.dataset.dataCol;
-						var order = event.target.dataset.sortOrder;
-						if (col) {
-							sortedByOrder = (dynamicTable.data.cols[col].type == "order" && order == 'asc');
-						}
-						dynamicTable.toggleReorder();
-					});
+					orderColumn = j;
+					o.addEventListener("click", dynamicTable.toggleReorder.bind(dynamicTable));
 				}
 			}
 
@@ -3016,8 +3018,10 @@ tfw.dynamicTableClass.serverActions = {
 	LOAD: {name:"load"},
 	/** add new row, return ID */
 	NEW: {name:"new",method:"POST"},
-	/** edit 1 cell (id, col) - special for order */
+	/** edit 1 cell (id, col) */
 	SAVE: {name:"savedata",method:"POST"},
+	/** change order of rows - updates multiple rows */
+	CHANGE_ORDER: {name:"changeorder",method:"POST"},
 	/** long polling */
 	WATCH: {name:"watch"},
 	/** delete row */
