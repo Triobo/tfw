@@ -1662,7 +1662,7 @@ var tfw = {
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
 	 * @param {string} [params.id='dynamicTable'] - table ID (name) - required for field (cell) updates
-	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing is triggered
+	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing/adding is triggered
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
 	 * @param {boolean} [params.rowAdd] - Whether to allow adding new rows
 	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
@@ -1709,11 +1709,6 @@ var tfw = {
 		 */
 		var bodyHeight = ("bodyHeight" in params) ? params.bodyHeight : null;
 		/**
-		 * @var {boolean}
-		 * @private
-		 */
-		var addRowEnabled = ("rowAdd" in params) ? params.rowAdd : false;
-		/**
 		 * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
 		 * @var {Object}
 		 * @default null
@@ -1735,12 +1730,20 @@ var tfw = {
 		/**
 		 * Function that handles row editing.
 		 * @callback tfw.dynamicTableClass~rowEdit
-		 * @param {number} id - ID of the row being edited
+		 * @param {number} id - ID of the row being edited or 0 if new row is being inserted
 		 */
 		/**
 		 * @private
 		 */
 		var rowEdit = ("rowEdit" in params) ? params.rowEdit : null;
+		/**
+		 * @var {boolean}
+		 * @private
+		 */
+		var addRowEnabled = ("rowAdd" in params) ? params.rowAdd : false;
+		if(addRowEnabled && typeof(rowEdit) != "function"){
+			console.error("No callback was set for adding new rows.");
+		}
 		/**
 		 * Function that handles moving to subordinate table.
 		 * @callback tfw.dynamicTableClass~goToSub
@@ -2177,7 +2180,7 @@ var tfw = {
 				
 				if (rowEdit) {
 					r.add(tfw.td({className:"rowEditCell",children:[b=tfw.span({className:"rowEditIcon clickable fa invert fa-info"})]}));
-					b.onclick=rowEdit.bind(dynamicTable, dynamicTable.data.rows[i].id);
+					b.onclick=rowEdit.bind(null, dynamicTable.data.rows[i].id);
 					columnOrder++;
 				}
 				
@@ -2188,7 +2191,7 @@ var tfw = {
 						if("subtable" in this.data.cols[j] && this.data.cols[j].subtable){
 							params.className = "withSubtable";
 							params.children.push(b=tfw.div({className:"subtable clickable fa invert fa-caret-down"}));
-						  b.onclick=goToSub.bind(dynamicTable, dynamicTable.data.rows[i].id, j);
+						  b.onclick=goToSub.bind(null, dynamicTable.data.rows[i].id, j);
 						}
 						val = this.data.rows[i].cols[j];
 						if ("type" in this.data.cols[j]) {
@@ -2261,9 +2264,7 @@ var tfw = {
 			tfoot.add(tfw.tr({children:[
 				tfw.td(addRowEnabled ? {children:[
 					tfw.button({
-						onclick: function(){
-							
-						},
+						onclick: rowEdit.bind(null, 0),
 						innerHTML: "<span class='fa fa-plus'></span>"
 					})
 				]} : {}),

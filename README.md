@@ -199,7 +199,7 @@ Class for creating dynamic tables.
 | params.baseURL | <code>string</code> |  | URL of script (etc.) handling data, without query string |
 | [params.urlParams] | <code>string</code> |  | general parameters appended to requests (e.g. a token) |
 | [params.id] | <code>string</code> | <code>&quot;&#x27;dynamicTable&#x27;&quot;</code> | table ID (name) - required for field (cell) updates |
-| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing is triggered |
+| [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing/adding is triggered |
 | [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
 | [params.rowAdd] | <code>boolean</code> |  | Whether to allow adding new rows |
 | [params.bodyHeight] | <code>string</code> |  | (CSS) height of table body including unit (to make header and footer always visible) |
@@ -563,7 +563,7 @@ Function that handles row editing.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| id | <code>number</code> | ID of the row being edited |
+| id | <code>number</code> | ID of the row being edited or 0 if new row is being inserted |
 
 <a name="tfw.dynamicTableClass..goToSub"></a>
 #### dynamicTableClass~goToSub : <code>function</code>
