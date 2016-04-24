@@ -1658,6 +1658,7 @@ var tfw = {
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @todo View preferences (width, order of columns)
+	 * @todo Allow "watch" explicitly / enable disabling it
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
@@ -1871,6 +1872,69 @@ var tfw = {
 			});
 			loadPreferences(ifEverythingReadyCallPaint.bind(this));
 		};
+		
+		
+		
+		/**
+		 * Watch for updates from the server.
+		 * @todo Change checkbox value so that it's not sent back to server
+		 * @todo Handle update of cell that is currently being edited
+		 */
+		this.serverWatch = function(){
+			var dynamicTable = this;
+			serverCall({
+				action: tfw.dynamicTableClass.serverActions.WATCH,
+				callback: function(changes){
+					console.log(changes);
+					return; //TO DO: remove...
+					for(var i=0;i<changes.length;i++){
+						if("stat" in changes[i]){
+							switch(changes[i].stat){
+								case "change":
+									var rowID = changes[i].id;
+									var dataCol = changes[i].col;
+									var column = dynamicTable.data.cols[dataCol].columnOrder;
+									var newValue = changes[i].value;
+									
+									var rowOrder = null;
+									for(var j=0;j<dynamicTable.data.rows.length;j++){
+										if(dynamicTable.data.rows[j].id == rowID){
+											rowOrder = j;
+											break;
+										}
+									}
+									if(rowOrder == null){
+										console.error("Row that is not present in the table was updated.");
+									} else {
+										dynamicTable.data.rows[rowOrder].cols[dataCol] = newValue;
+										var cell = dynamicTable.tableContainer.querySelector("tbody").rows[rowOrder].cells[column];
+										switch(dynamicTable.data.cols[dataCol].type){
+											case tfw.dynamicTableClass.colTypes.CHECKBOX:
+												cell.querySelector(".tfwCheckbox").value = newValue;
+											break;
+											case tfw.dynamicTableClass.colTypes.NUMBER:
+											case tfw.dynamicTableClass.colTypes.DATE:
+											case tfw.dynamicTableClass.colTypes.TEXT:
+												cell.querySelector("input").value = newValue;
+											break;
+											default:
+												cell.innerHTML = newValue;
+										}
+									}
+								break;
+								case "new":
+								
+								break;
+								case "delete":
+								
+								break;
+							}
+						}
+					}
+					dynamicTable.serverWatch();
+				}
+			});
+		}
 		
 		/**
 		 * Function that handles data received from server.
@@ -2396,6 +2460,8 @@ var tfw = {
 			
 			
 			this.toggleReorder();
+			
+			this.serverWatch();
 		};
 		
 		/**

@@ -70,6 +70,7 @@ Create a new layer.
             * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
             * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
             * [.reload()](#tfw.dynamicTableClass+reload)
+            * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
             * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
@@ -146,6 +147,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Todo**
 
 - [ ] View preferences (width, order of columns)
+- [ ] Allow "watch" explicitly / enable disabling it
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -157,6 +159,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
         * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
+        * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
@@ -289,6 +292,16 @@ Loads preferences and data, then [paint](#tfw.dynamicTableClass+paint)s the tabl
 
 - tfw.dynamicTableClass#paint
 - tfw.dynamicTableClass~serverCall
+
+<a name="tfw.dynamicTableClass+serverWatch"></a>
+#### dynamicTableClass.serverWatch()
+Watch for updates from the server.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Todo**
+
+- [ ] Change checkbox value so that it's not sent back to server
+- [ ] Handle update of cell that is currently being edited
 
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
