@@ -2292,17 +2292,24 @@ var tfw = {
 		 */
 		var defaultFilterValues = null;
 		
-		/**
-		 * @private
-		 */
+		/** @private */
 		function updateRowCounts(){
-			var rows = this.tableContainer.querySelectorAll("tbody tr");
-			this.tableContainer.querySelector(".visibleRowsCount").innerHTML = [].slice.call(rows).reduce(
+			this.tableContainer.querySelector(".visibleRowsCount").innerHTML = this.getVisibleRowsCount();
+			this.tableContainer.querySelector(".totalRowsCount").innerHTML = this.getTotalRowsCount();
+		}
+		
+		/** @private */
+		this.getVisibleRowsCount = function(){
+			return [].slice.call(this.tableContainer.querySelectorAll("tbody tr")).reduce(
 				function(previous, current){
 					return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
 				},
 			0);
-			this.tableContainer.querySelector(".totalRowsCount").innerHTML = rows.length;
+		}
+		
+		/** @private */
+		this.getTotalRowsCount = function(){
+			return this.tableContainer.querySelectorAll("tbody tr").length;
 		}
 		
 		/**
