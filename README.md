@@ -147,7 +147,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
 **Todo**
 
 - [ ] View preferences (width, order of columns)
-- [ ] Allow "watch" explicitly / enable disabling it
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -204,8 +203,9 @@ Class for creating dynamic tables.
 | [params.id] | <code>string</code> | <code>&quot;&#x27;dynamicTable&#x27;&quot;</code> | table ID (name) - required for field (cell) updates |
 | [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing/adding is triggered |
 | [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
-| [params.rowAdd] | <code>boolean</code> |  | Whether to allow adding new rows |
+| [params.rowAdd] | <code>boolean</code> | <code>false</code> | whether to allow adding new rows |
 | [params.bodyHeight] | <code>string</code> |  | (CSS) height of table body including unit (to make header and footer always visible) |
+| [params.watchChanges] | <code>boolean</code> | <code>false</code> | whether to allow [watching](dynamicTableClass#serverWatch) for changes (long polling) |
 
 **Example**  
 ```js

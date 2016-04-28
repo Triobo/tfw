@@ -1662,15 +1662,15 @@ var tfw = {
 	 * Class for creating dynamic tables.
 	 * @class
 	 * @todo View preferences (width, order of columns)
-	 * @todo Allow "watch" explicitly / enable disabling it
 	 * @param {Object} params - table parameters
 	 * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
 	 * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
 	 * @param {string} [params.id='dynamicTable'] - table ID (name) - required for field (cell) updates
 	 * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing/adding is triggered
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
-	 * @param {boolean} [params.rowAdd] - Whether to allow adding new rows
+	 * @param {boolean} [params.rowAdd=false] - whether to allow adding new rows
 	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
+	 * @param {boolean} [params.watchChanges=false] - whether to allow {@link dynamicTableClass#serverWatch|watching} for changes (long polling)
 	 * @example
 	 * function myRowEditFunction(id){
 	 * 	// ...
@@ -1749,6 +1749,11 @@ var tfw = {
 		if(addRowEnabled && typeof(rowEdit) != "function"){
 			console.error("No callback was set for adding new rows.");
 		}
+		/**
+		 * @var {boolean}
+		 * @private
+		 */
+		var watchChanges = ("watchChanges" in params) ? params.watchChanges : false;
 		/**
 		 * Function that handles moving to subordinate table.
 		 * @callback tfw.dynamicTableClass~goToSub
@@ -2465,7 +2470,9 @@ var tfw = {
 			
 			this.toggleReorder();
 			
-			this.serverWatch();
+			if(watchChanges){
+				this.serverWatch();
+			}
 		};
 		
 		/**
