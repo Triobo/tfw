@@ -1886,8 +1886,7 @@ var tfw = {
 		
 		/**
 		 * Watch for updates from the server.
-		 * @todo Change checkbox value so that it's not sent back to server
-		 * @todo Handle update of cell that is currently being edited
+		 * @see tfw.dynamicTableClass#paint
 		 */
 		this.serverWatch = function(){
 			var dynamicTable = this;
@@ -2392,6 +2391,9 @@ var tfw = {
 		 * Assumes that there is only 1 order column and that data is initially sorted by that column.
 		 * @param {tfw.dynamicTableClass~dataChange[]} [changes] - changes made to data (loaded by {@link tfw.dynamicTableClass#serverWatch|watch})
 		 * @todo Change drag&dropping so that it is clear where the dragged row will end
+		 * @todo Add temporary class hasBeenChanged to edited cells.
+		 * @todo Change checkbox value so that it's not sent back to server
+		 * @todo Handle update of cell that is currently being edited
 		 */
 		this.paint = function (changes) {
 			var tableHTMLId = 'dynamicTable-'+tableId;

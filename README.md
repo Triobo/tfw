@@ -300,11 +300,7 @@ Loads preferences and data, then [paint](#tfw.dynamicTableClass+paint)s the tabl
 Watch for updates from the server.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Todo**
-
-- [ ] Change checkbox value so that it's not sent back to server
-- [ ] Handle update of cell that is currently being edited
-
+**See**: tfw.dynamicTableClass#paint  
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
 Test if no filters are applied and table is sorted by column of type 'order'.
@@ -349,6 +345,9 @@ Assumes that there is only 1 order column and that data is initially sorted by t
 **Todo**
 
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
+- [ ] Add temporary class hasBeenChanged to edited cells.
+- [ ] Change checkbox value so that it's not sent back to server
+- [ ] Handle update of cell that is currently being edited
 
 
 | Param | Type | Description |
