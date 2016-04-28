@@ -492,6 +492,7 @@ var tfw = {
 	 * @param {Object} params - dropdown parameters
 	 * @param {string} [params.legend] - label
 	 * @param {string} [params.legendWidth] - label CSS width (including unit)
+	 * @param {string} [params.legendStyle] - label CSS styling
 	 * @param {string} [params.containerId] - ID of containing paragraph
 	 * @param {string} [params.containerStyle] - CSS styling of containing paragraph
 	 * @param {string} [params.id] - dropdown ID
@@ -2234,7 +2235,9 @@ var tfw = {
 
 
 			o.add(tbody = document.createElement("tbody"));
-		  if(bodyHeight != null) tbody.style.maxHeight=bodyHeight;
+			if(bodyHeight != null){
+				tbody.style.maxHeight = bodyHeight;
+			}
 
 			for (var i = 0; i < this.data.rows.length; i++) {
 				tbody.add(r = tfw.tr({

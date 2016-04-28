@@ -816,6 +816,7 @@ Create a dropdown menu.
 | params | <code>Object</code> |  | dropdown parameters |
 | [params.legend] | <code>string</code> |  | label |
 | [params.legendWidth] | <code>string</code> |  | label CSS width (including unit) |
+| [params.legendStyle] | <code>string</code> |  | label CSS styling |
 | [params.containerId] | <code>string</code> |  | ID of containing paragraph |
 | [params.containerStyle] | <code>string</code> |  | CSS styling of containing paragraph |
 | [params.id] | <code>string</code> |  | dropdown ID |
