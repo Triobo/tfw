@@ -73,6 +73,7 @@ Create a new layer.
             * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
             * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+            * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
             * [.paint([changes])](#tfw.dynamicTableClass+paint)
             * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
@@ -95,7 +96,6 @@ Create a new layer.
             * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
             * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
             * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
-            * [~updateInput()](#tfw.dynamicTableClass..updateInput)
             * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
             * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
@@ -162,6 +162,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+        * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint([changes])](#tfw.dynamicTableClass+paint)
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
@@ -184,7 +185,6 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
         * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
         * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
-        * [~updateInput()](#tfw.dynamicTableClass..updateInput)
         * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
@@ -318,6 +318,18 @@ Reflects the value of a private variable set by onclick events fired with filter
 Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+<a name="tfw.dynamicTableClass+updateInput"></a>
+#### dynamicTableClass.updateInput(input)
+Updates data and sends change to server.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**See**: tfw.dynamicTableClass~serverUpdateCell  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| input | <code>HTMLElement</code> | input field in a cell of dynamic table |
+| input.value | <code>string</code> | value that can be obtained |
+
 <a name="tfw.dynamicTableClass+orderChange"></a>
 #### dynamicTableClass.orderChange(element)
 Reflect a change in order in the table.
@@ -558,11 +570,6 @@ Width of column with row edit icon (icon's width including padding, border, marg
 | params.id | <code>number</code> | ID of edited row |
 | params.neworder | <code>number</code> | new order number of edited row |
 
-<a name="tfw.dynamicTableClass..updateInput"></a>
-#### dynamicTableClass~updateInput()
-this should refer to an input field in a dynamic table (HTML element)
-
-**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass..setActiveArrow"></a>
 #### dynamicTableClass~setActiveArrow(element, base)
 Set active arrow (and make other arrows of same group inactive).
@@ -607,14 +614,17 @@ Function that handles data received from server.
 
 <a name="tfw.dynamicTableClass..dataChange"></a>
 #### dynamicTableClass~dataChange : <code>Object</code>
+Object representing an update/insertion/deletion in data.
+Type of change is determined by present properties.
+
 **Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| stat | <code>string</code> | type of change, one of "change", "new", "delete" |
-| id | <code>number</code> | ID of row |
-| [col] | <code>number</code> | column number of cell (in data) - for "change" only |
-| [value] | <code>string</code> | new value of cell - for "change" only |
+| id | <code>number</code> | ID of row - if neither col nor cols are present, implies deletion |
+| [col] | <code>number</code> | column number of updated cell (in data) - implies update |
+| [value] | <code>string</code> | new value of updated cell - for change only |
+| [cols] | <code>Array.&lt;string&gt;</code> | values of inserted row - implies insertion |
 
 <a name="tfw.dynamicTableClass..filterValue"></a>
 #### dynamicTableClass~filterValue : <code>string</code> &#124; <code>Object</code>

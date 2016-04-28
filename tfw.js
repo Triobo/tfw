@@ -2011,13 +2011,26 @@ var tfw = {
 		}
 		
 		/**
-		 * this should refer to an input field in a dynamic table (HTML element)
+		 * Updates data and sends change to server.
+		 * @param {HTMLElement} input - input field in a cell of dynamic table
+		 * @param {string} input.value - value that can be obtained
+		 * @see tfw.dynamicTableClass~serverUpdateCell
 		 */
-		function updateInput(){
+		this.updateInput = function(input){
+			var rowID = input.closest('tr').dataset.rowid;
+			var dataCol = input.closest('td').dataset.dataCol;
+			var value = input.value;
+			var rowOrder = this.getDataRowById(rowID);
+			if(rowOrder == null){
+				console.error("Input was updated in a row with ID not present in data.");
+			}
+			
+			this.data.rows[rowOrder].cols[dataCol] = value;
+			
 			serverUpdateCell({
-				id: this.closest('tr').dataset.rowid,
-				col: this.closest('td').dataset.dataCol,
-				value: this.value
+				id: rowID,
+				col: dataCol,
+				value: value
 			});
 		}
 		
@@ -2214,6 +2227,8 @@ var tfw = {
 					columnOrder++;
 				}
 				
+				var updateInputCallback = function(){dynamicTable.updateInput.call(dynamicTable, this);};
+				
 				for (var j=0; j < this.data.cols.length; j++) {
 					if (!("h" in this.data.cols[j])) {
 						var params = {};
@@ -2232,7 +2247,7 @@ var tfw = {
 									params.children.push(tfw.checkbox({
 										id : id,
 										value : (val ? 1 : 0),
-										onchange: updateInput
+										onchange: updateInputCallback
 									}));
 								break;
 								case tfw.dynamicTableClass.colTypes.NUMBER:
@@ -2240,7 +2255,7 @@ var tfw = {
 										type : "number",
 										id : id,
 										value : val,
-										onchange: updateInput
+										onchange: updateInputCallback
 									}));
 								break;
 								case tfw.dynamicTableClass.colTypes.DATE:
@@ -2249,7 +2264,7 @@ var tfw = {
 										type : "text",
 										id : id,
 										value : val.match(/\d{4,}-\d{2}-\d{2}/)[0],
-										onchange: updateInput
+										onchange: updateInputCallback
 									})));
 								break;
 								case tfw.dynamicTableClass.colTypes.TEXT:
@@ -2257,7 +2272,7 @@ var tfw = {
 										type : "text",
 										id : id,
 										value : val,
-										onchange: updateInput
+										onchange: updateInputCallback
 									}));
 								break;
 								default:
@@ -2351,12 +2366,26 @@ var tfw = {
 			return this.tableContainer.querySelectorAll("tbody tr").length;
 		}
 		
+		/** @private */
+		this.getDataRowById = function(rowID){
+			var rowOrder = null;
+			for(var j=0;j<this.data.rows.length;j++){
+				if(this.data.rows[j].id == rowID){
+					rowOrder = j;
+					break;
+				}
+			}
+			return rowOrder;
+		}
+		
 		/**
+		 * Object representing an update/insertion/deletion in data.
+		 * Type of change is determined by present properties.
 		 * @typedef {Object} tfw.dynamicTableClass~dataChange
-		 * @param {string} stat - type of change, one of "change", "new", "delete"
-		 * @param {number} id - ID of row
-		 * @param {number} [col] - column number of cell (in data) - for "change" only
-		 * @param {string} [value] - new value of cell - for "change" only
+		 * @param {number} id - ID of row - if neither col nor cols are present, implies deletion
+		 * @param {number} [col] - column number of updated cell (in data) - implies update
+		 * @param {string} [value] - new value of updated cell - for change only
+		 * @param {string[]} [cols] - values of inserted row - implies insertion
 		 */
 		/**
 		 * Refresh the content of the table using data gotten by (re)loading.
@@ -2376,47 +2405,38 @@ var tfw = {
 			} else if(typeof(changes) != "undefined") {
 				console.log(changes);
 				for(var i=0;i<changes.length;i++){
-					if("stat" in changes[i]){
-						switch(changes[i].stat){
-							case "change":
-								var rowID = changes[i].id;
-								var dataCol = changes[i].col;
-								var column = this.data.cols[dataCol].columnOrder;
-								var newValue = changes[i].value;
-								
-								var rowOrder = null;
-								for(var j=0;j<this.data.rows.length;j++){
-									if(this.data.rows[j].id == rowID){
-										rowOrder = j;
-										break;
-									}
+					if("col" in changes[i]){ //update
+						var rowID = changes[i].id;
+						var dataCol = changes[i].col;
+						var column = this.data.cols[dataCol].columnOrder;
+						var newValue = changes[i].value;
+						
+						var rowOrder = this.getDataRowById(rowID);
+						if(rowOrder == null){
+							console.error("Row that is not present in the table was updated.");
+						} else {
+							if(newValue != this.data.rows[rowOrder].cols[dataCol]){
+								console.log(this.data.rows[rowOrder].cols[dataCol]+" -> "+newValue);
+								this.data.rows[rowOrder].cols[dataCol] = newValue;
+								var cell = this.tableContainer.querySelector("tbody").rows[rowOrder].cells[column];
+								switch(this.data.cols[dataCol].type){
+									case tfw.dynamicTableClass.colTypes.CHECKBOX:
+										cell.querySelector(".tfwCheckbox").value = newValue;
+									break;
+									case tfw.dynamicTableClass.colTypes.NUMBER:
+									case tfw.dynamicTableClass.colTypes.DATE:
+									case tfw.dynamicTableClass.colTypes.TEXT:
+										cell.querySelector("input").value = newValue;
+									break;
+									default:
+										cell.innerHTML = newValue;
 								}
-								if(rowOrder == null){
-									console.error("Row that is not present in the table was updated.");
-								} else {
-									this.data.rows[rowOrder].cols[dataCol] = newValue;
-									var cell = this.tableContainer.querySelector("tbody").rows[rowOrder].cells[column];
-									switch(this.data.cols[dataCol].type){
-										case tfw.dynamicTableClass.colTypes.CHECKBOX:
-											cell.querySelector(".tfwCheckbox").value = newValue;
-										break;
-										case tfw.dynamicTableClass.colTypes.NUMBER:
-										case tfw.dynamicTableClass.colTypes.DATE:
-										case tfw.dynamicTableClass.colTypes.TEXT:
-											cell.querySelector("input").value = newValue;
-										break;
-										default:
-											cell.innerHTML = newValue;
-									}
-								}
-							break;
-							case "new":
-							
-							break;
-							case "delete":
-							
-							break;
+							}
 						}
+					} else if("cols" in changes[i]) { //insertion
+						
+					} else { //deletion
+						
 					}
 				}
 			} else{
