@@ -515,6 +515,9 @@ var tfw = {
             if (params.legendWidth){
                 l.style.width = params.legendWidth;
 			}
+            if (params.legendStyle){
+                l.style.cssText = params.legendStyle;
+			}
             if (params.containerId){
                 y.id = params.containerId;
 			}

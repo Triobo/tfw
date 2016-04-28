@@ -249,14 +249,14 @@ button:disabled:hover {
   display:inline-block;
 }
 
-.tfwDialog .nazev {
+.tfwDialog .subtitle, .tfwDialog .nazev {
   border-top:1px solid #8cc;/*azure*/
   margin-top:8px;
   font-weight:bold;
   color: #8cc;/*azure*/
 }
 
-.tfwDialog .nadpis {
+.tfwDialog .title, .tfwDialog .nadpis {
   border-bottom:1px solid #8cc;/*azure*/
   margin-top:8px;
   font-size:120%;
@@ -362,6 +362,7 @@ button:disabled:hover {
   background-color: #fff;
   color:#000;
   cursor:pointer;
+  box-sizing: border-box;    
 }
 
 .tfwDropDown:after {
