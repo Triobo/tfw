@@ -2159,10 +2159,6 @@ var tfw = {
 			tableWidth += 10; //scrollbar
 			
 			tableCSS += "#"+tableHTMLId+" tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
-			
-			if(bodyHeight != null){
-				tableCSS += "#"+tableHTMLId+" > tbody{overflow:auto;max-height: "+bodyHeight+"}\n";
-			}
 			tfw.insertStyle(tableCSS);
 			
 			var o,
@@ -2235,6 +2231,8 @@ var tfw = {
 
 
 			o.add(tbody = document.createElement("tbody"));
+		  if(bodyHeight != null) tbody.style.maxHeight=bodyHeight;
+
 			for (var i = 0; i < this.data.rows.length; i++) {
 				tbody.add(r = tfw.tr({
 					id: "rowID-"+this.data.rows[i].id

@@ -563,6 +563,9 @@ button:disabled:hover {
 	clear: both;
 	background-color: white;
 }
+.tfwDynamicTable tbody {
+  overflow-y: scroll;
+}
 .tfwDynamicTable tbody tr:hover {
   background-color: #eee;
 }
