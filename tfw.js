@@ -1670,7 +1670,7 @@ var tfw = {
 	 * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
 	 * @param {boolean} [params.rowAdd=false] - whether to allow adding new rows
 	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
-	 * @param {boolean} [params.watchChanges=false] - whether to allow {@link dynamicTableClass#serverWatch|watching} for changes (long polling)
+	 * @param {boolean} [params.watchChanges=false] - whether to allow {@link tfw.dynamicTableClass#serverWatch|watching} for changes (long polling)
 	 * @example
 	 * function myRowEditFunction(id){
 	 * 	// ...
@@ -1894,53 +1894,10 @@ var tfw = {
 			serverCall({
 				action: tfw.dynamicTableClass.serverActions.WATCH,
 				callback: function(changes){
-					console.log(changes);
-					return; //TO DO: remove...
-					for(var i=0;i<changes.length;i++){
-						if("stat" in changes[i]){
-							switch(changes[i].stat){
-								case "change":
-									var rowID = changes[i].id;
-									var dataCol = changes[i].col;
-									var column = dynamicTable.data.cols[dataCol].columnOrder;
-									var newValue = changes[i].value;
-									
-									var rowOrder = null;
-									for(var j=0;j<dynamicTable.data.rows.length;j++){
-										if(dynamicTable.data.rows[j].id == rowID){
-											rowOrder = j;
-											break;
-										}
-									}
-									if(rowOrder == null){
-										console.error("Row that is not present in the table was updated.");
-									} else {
-										dynamicTable.data.rows[rowOrder].cols[dataCol] = newValue;
-										var cell = dynamicTable.tableContainer.querySelector("tbody").rows[rowOrder].cells[column];
-										switch(dynamicTable.data.cols[dataCol].type){
-											case tfw.dynamicTableClass.colTypes.CHECKBOX:
-												cell.querySelector(".tfwCheckbox").value = newValue;
-											break;
-											case tfw.dynamicTableClass.colTypes.NUMBER:
-											case tfw.dynamicTableClass.colTypes.DATE:
-											case tfw.dynamicTableClass.colTypes.TEXT:
-												cell.querySelector("input").value = newValue;
-											break;
-											default:
-												cell.innerHTML = newValue;
-										}
-									}
-								break;
-								case "new":
-								
-								break;
-								case "delete":
-								
-								break;
-							}
-						}
+					if(changes.length > 0){
+						dynamicTable.paint(changes);
 					}
-					dynamicTable.serverWatch();
+					//dynamicTable.serverWatch();
 				}
 			});
 		}
@@ -2395,18 +2352,74 @@ var tfw = {
 		}
 		
 		/**
+		 * @typedef {Object} tfw.dynamicTableClass~dataChange
+		 * @param {string} stat - type of change, one of "change", "new", "delete"
+		 * @param {number} id - ID of row
+		 * @param {number} [col] - column number of cell (in data) - for "change" only
+		 * @param {string} [value] - new value of cell - for "change" only
+		 */
+		/**
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Assumes that there is only 1 order column and that data is initially sorted by that column.
+		 * @param {tfw.dynamicTableClass~dataChange[]} [changes] - changes made to data (loaded by {@link tfw.dynamicTableClass#serverWatch|watch})
 		 * @todo Change drag&dropping so that it is clear where the dragged row will end
-		 * @todo Implement reloading (just change values)
 		 */
-		this.paint = function () {
+		this.paint = function (changes) {
 			var tableHTMLId = 'dynamicTable-'+tableId;
 			
 			if(document.getElementById(tableHTMLId) == null){
 				createAndFillTable.call(this, tableHTMLId);
-			}
-			else{
+				
+				if(watchChanges){
+					this.serverWatch();
+				}
+			} else if(typeof(changes) != "undefined") {
+				console.log(changes);
+				for(var i=0;i<changes.length;i++){
+					if("stat" in changes[i]){
+						switch(changes[i].stat){
+							case "change":
+								var rowID = changes[i].id;
+								var dataCol = changes[i].col;
+								var column = this.data.cols[dataCol].columnOrder;
+								var newValue = changes[i].value;
+								
+								var rowOrder = null;
+								for(var j=0;j<this.data.rows.length;j++){
+									if(this.data.rows[j].id == rowID){
+										rowOrder = j;
+										break;
+									}
+								}
+								if(rowOrder == null){
+									console.error("Row that is not present in the table was updated.");
+								} else {
+									this.data.rows[rowOrder].cols[dataCol] = newValue;
+									var cell = this.tableContainer.querySelector("tbody").rows[rowOrder].cells[column];
+									switch(this.data.cols[dataCol].type){
+										case tfw.dynamicTableClass.colTypes.CHECKBOX:
+											cell.querySelector(".tfwCheckbox").value = newValue;
+										break;
+										case tfw.dynamicTableClass.colTypes.NUMBER:
+										case tfw.dynamicTableClass.colTypes.DATE:
+										case tfw.dynamicTableClass.colTypes.TEXT:
+											cell.querySelector("input").value = newValue;
+										break;
+										default:
+											cell.innerHTML = newValue;
+									}
+								}
+							break;
+							case "new":
+							
+							break;
+							case "delete":
+							
+							break;
+						}
+					}
+				}
+			} else{
 				console.error("Dynamic table reloading not implemented yet.");
 			}
 			
@@ -2469,10 +2482,6 @@ var tfw = {
 			
 			
 			this.toggleReorder();
-			
-			if(watchChanges){
-				this.serverWatch();
-			}
 		};
 		
 		/**

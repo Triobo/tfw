@@ -74,7 +74,7 @@ Create a new layer.
             * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
             * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
             * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
-            * [.paint()](#tfw.dynamicTableClass+paint)
+            * [.paint([changes])](#tfw.dynamicTableClass+paint)
             * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
             * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
             * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
@@ -100,6 +100,7 @@ Create a new layer.
             * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
             * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
             * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
+            * [~dataChange](#tfw.dynamicTableClass..dataChange) : <code>Object</code>
             * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
     * [.calendar](#tfw.calendar)
         * [new calendar(input)](#new_tfw.calendar_new)
@@ -162,7 +163,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
-        * [.paint()](#tfw.dynamicTableClass+paint)
+        * [.paint([changes])](#tfw.dynamicTableClass+paint)
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
         * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
@@ -188,6 +189,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
+        * [~dataChange](#tfw.dynamicTableClass..dataChange) : <code>Object</code>
         * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
 
 <a name="new_tfw.dynamicTableClass_new"></a>
@@ -205,7 +207,7 @@ Class for creating dynamic tables.
 | [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
 | [params.rowAdd] | <code>boolean</code> | <code>false</code> | whether to allow adding new rows |
 | [params.bodyHeight] | <code>string</code> |  | (CSS) height of table body including unit (to make header and footer always visible) |
-| [params.watchChanges] | <code>boolean</code> | <code>false</code> | whether to allow [watching](dynamicTableClass#serverWatch) for changes (long polling) |
+| [params.watchChanges] | <code>boolean</code> | <code>false</code> | whether to allow [watching](#tfw.dynamicTableClass+serverWatch) for changes (long polling) |
 
 **Example**  
 ```js
@@ -327,7 +329,7 @@ Reflect a change in order in the table.
 | element | <code>Object</code> | row that was dropped (HTML element) |
 
 <a name="tfw.dynamicTableClass+paint"></a>
-#### dynamicTableClass.paint()
+#### dynamicTableClass.paint([changes])
 Refresh the content of the table using data gotten by (re)loading.
 Assumes that there is only 1 order column and that data is initially sorted by that column.
 
@@ -335,7 +337,11 @@ Assumes that there is only 1 order column and that data is initially sorted by t
 **Todo**
 
 - [ ] Change drag&dropping so that it is clear where the dragged row will end
-- [ ] Implement reloading (just change values)
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| [changes] | <code>[Array.&lt;dataChange&gt;](#tfw.dynamicTableClass..dataChange)</code> | changes made to data (loaded by [watch](#tfw.dynamicTableClass+serverWatch)) |
 
 <a name="tfw.dynamicTableClass+prepareCalendar"></a>
 #### dynamicTableClass.prepareCalendar()
@@ -598,6 +604,17 @@ Function that handles data received from server.
 | Param | Type | Description |
 | --- | --- | --- |
 | receivedData | <code>Object</code> | JSON decoded data received from request |
+
+<a name="tfw.dynamicTableClass..dataChange"></a>
+#### dynamicTableClass~dataChange : <code>Object</code>
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| stat | <code>string</code> | type of change, one of "change", "new", "delete" |
+| id | <code>number</code> | ID of row |
+| [col] | <code>number</code> | column number of cell (in data) - for "change" only |
+| [value] | <code>string</code> | new value of cell - for "change" only |
 
 <a name="tfw.dynamicTableClass..filterValue"></a>
 #### dynamicTableClass~filterValue : <code>string</code> &#124; <code>Object</code>
