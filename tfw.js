@@ -2170,7 +2170,7 @@ var tfw = {
 			//add CSS styling for filters
 			var tableCSS = "";
 			for(var dataCol=0;dataCol<this.data.cols.length;dataCol++){
-				tableCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none !important}\n";
+				tableCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none}\n";
 			}
 			tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-"+tableHTMLId);
 			
