@@ -116,7 +116,7 @@ Create a new layer.
         * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
         * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
         * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
-        * [.insertStyle(style)](#tfw.insertStyle)
+        * [.insertStyle(style, [tag])](#tfw.insertStyle)
         * [.init()](#tfw.init)
         * [.localize(newStrings)](#tfw.localize)
         * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
@@ -314,6 +314,7 @@ Watch for updates from the server.
 #### dynamicTableClass.destroy()
 A "destructor" for table.
 Aborts all pending requests created by current table.
+Removes associated CSS.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**: tfw.dynamicTableClass~serverCall  
@@ -767,7 +768,7 @@ Handles HTTP errors (HTTP codes other than 200).
 - [ ] Implement
 
 <a name="tfw.insertStyle"></a>
-### tfw.insertStyle(style)
+### tfw.insertStyle(style, [tag])
 Add Javascript-generated CSS to the document.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
@@ -775,6 +776,7 @@ Add Javascript-generated CSS to the document.
 | Param | Type | Description |
 | --- | --- | --- |
 | style | <code>string</code> | CSS to be added |
+| [tag] | <code>string</code> | identify (tag) CSS for overriding |
 
 <a name="tfw.init"></a>
 ### tfw.init()

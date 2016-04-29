@@ -260,15 +260,23 @@ var tfw = {
 	/**
 	 * Add Javascript-generated CSS to the document.
 	 * @param {string} style - CSS to be added
+	 * @param {string} [tag] - identify (tag) CSS for overriding
 	 */
-	insertStyle : function(style){
-		if(document.getElementById("tfwInsertStyle") == null){
+	insertStyle : function(style, tag){
+		var id = "tfwInsertStyle";
+		if(typeof(tag) != "undefined"){
+			id += "-"+tag;
+		}
+		if(document.getElementById(id) == null){
 			var styleElement = document.createElement("style");
-			styleElement.setAttribute("id", "tfwInsertStyle");
+			styleElement.setAttribute("id", id);
 			document.getElementsByTagName("head")[0].add(styleElement);
 		}
-		var insertedStyle = document.getElementById("tfwInsertStyle");
-		insertedStyle.innerHTML += style;
+		if(typeof(tag) == "undefined"){
+			document.getElementById(id).innerHTML += style;
+		} else {
+			document.getElementById(id).innerHTML = style;
+		}
 	},
 	/**
 	 * Initialization needed to run tfw functions (e.g. adds required CSS styling).
@@ -277,7 +285,7 @@ var tfw = {
 	init : function(){
 		var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"'+tfw.strings.NO+'"}' + "\n" +
 						 '.tfwDynamicTable .tfwCheckbox.checked:after{content:"'+tfw.strings.YES+'"}';
-		tfw.insertStyle(tfwStyling);
+		tfw.insertStyle(tfwStyling, "tfwDynamicTable-checkbox");
 	},
 	/**
 	 * Add new translations and re-{@link tfw.init|init} tfw.
@@ -1952,12 +1960,15 @@ var tfw = {
 		/**
 		 * A "destructor" for table.
 		 * Aborts all pending requests created by current table.
+		 * Removes associated CSS.
 		 * @see tfw.dynamicTableClass~serverCall
 		 */
 		this.destroy = function(){
 			for(var i=0;i<pendingHttpRequests.length;i++){
 				pendingHttpRequests[i].abort();
 			}
+			
+			document.getElementById("tfwDynamicTableStyling-"+tableHTMLId).remove();
 		}
 
 		/**
@@ -2161,15 +2172,7 @@ var tfw = {
 			for(var dataCol=0;dataCol<this.data.cols.length;dataCol++){
 				tableCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none !important}\n";
 			}
-			
-			var tableWidth = this.data.cols.reduce(function(previous,current){return parseInt(current.width)+previous},0);
-			if(rowEdit){
-				tableWidth += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
-			}
-			tableWidth += 10; //scrollbar
-			
-			tableCSS += "#"+tableHTMLId+" tr > .rowEditCell{width:"+tfw.dynamicTableClass.ROW_EDIT_WIDTH+"px}\n";
-			tfw.insertStyle(tableCSS);
+			tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-"+tableHTMLId);
 			
 			var o,
 			thead,
@@ -2180,10 +2183,17 @@ var tfw = {
 			dynamicTable = this;
 			this.tableContainer.innerHTML = "";
 			this.tableContainer.add(o = tfw.table({
-						id : tableHTMLId,
-						className : 'tfwDynamicTable'
-					}));
+				id : tableHTMLId,
+				className : 'tfwDynamicTable'
+			}));
+			
+			var tableWidth = this.data.cols.reduce(function(previous,current){return parseInt(current.width)+previous},0);
+			if(rowEdit){
+				tableWidth += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
+			}
+			tableWidth += 10; //scrollbar
 			o.style.width = tableWidth+"px";
+			
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
 					this.data.cols[j].sort = true;
