@@ -61,81 +61,85 @@ Create a new layer.
 
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
-    * [.dynamicTableClass](#tfw.dynamicTableClass)
-        * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
-        * _instance_
-            * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
-            * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
-            * [.setPreference(key, [value])](#tfw.dynamicTableClass+setPreference)
-            * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
-            * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
-            * [.reload()](#tfw.dynamicTableClass+reload)
-            * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
-            * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
-            * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
-            * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
-            * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
-            * [.paint([changes])](#tfw.dynamicTableClass+paint)
-            * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
-            * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
-            * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
-            * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
-            * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
-            * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
-            * [.toggleColumn(dataCol, [dontSave])](#tfw.dynamicTableClass+toggleColumn)
-                * [~hiddenColumns](#tfw.dynamicTableClass+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
-            * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
-        * _static_
-            * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
-            * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
-            * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
-            * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
-            * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
-            * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
-        * _inner_
-            * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
-            * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
-            * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
-            * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
-            * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
-            * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
-            * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
-            * [~dataChange](#tfw.dynamicTableClass..dataChange) : <code>Object</code>
-            * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
-    * [.calendar](#tfw.calendar)
-        * [new calendar(input)](#new_tfw.calendar_new)
-        * _static_
-            * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
-            * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
-            * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
-        * _inner_
-            * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
-    * [.strings](#tfw.strings) : <code>enum</code>
-    * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
-    * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
-    * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
-    * [.insertStyle(style)](#tfw.insertStyle)
-    * [.init()](#tfw.init)
-    * [.localize(newStrings)](#tfw.localize)
-    * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
-    * [.select(params)](#tfw.select) ⇒ <code>Object</code>
-    * [.createLayerAndWrapperAtElement(element, params, [above])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>Object</code>
-    * [.dropDown(params)](#tfw.dropDown) ⇒ <code>Object</code>
-    * [.button(params)](#tfw.button) ⇒ <code>Object</code>
-    * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
-    * [.input(params)](#tfw.input) ⇒ <code>Object</code>
-    * [.textArea(params)](#tfw.textArea) ⇒ <code>Object</code>
-    * [.checkbox(params)](#tfw.checkbox) ⇒ <code>Object</code>
-    * [.icon(params)](#tfw.icon) ⇒ <code>Object</code>
-    * [.table(params)](#tfw.table) ⇒ <code>Object</code>
-    * [.tr(params)](#tfw.tr) ⇒ <code>Object</code>
-    * [.td(params)](#tfw.td) ⇒ <code>Object</code>
-    * [.slider(params)](#tfw.slider) ⇒ <code>Object</code>
-    * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>Object</code>
-    * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>Object</code>
-    * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
-    * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
-    * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>Object</code>
+    * _static_
+        * [.dynamicTableClass](#tfw.dynamicTableClass)
+            * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
+            * _instance_
+                * [.tableContainer](#tfw.dynamicTableClass+tableContainer) : <code>Object</code>
+                * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
+                * [.setPreference(key, [value])](#tfw.dynamicTableClass+setPreference)
+                * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
+                * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
+                * [.reload()](#tfw.dynamicTableClass+reload)
+                * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
+                * [.destroy()](#tfw.dynamicTableClass+destroy)
+                * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
+                * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+                * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
+                * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
+                * [.paint([changes])](#tfw.dynamicTableClass+paint)
+                * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
+                * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
+                * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
+                * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
+                * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
+                * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
+                * [.toggleColumn(dataCol, [dontSave])](#tfw.dynamicTableClass+toggleColumn)
+                    * [~hiddenColumns](#tfw.dynamicTableClass+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
+                * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
+            * _static_
+                * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
+                * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
+                * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
+                * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
+                * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
+                * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
+            * _inner_
+                * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
+                * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+                * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
+                * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
+                * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
+                * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
+                * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
+                * [~dataChange](#tfw.dynamicTableClass..dataChange) : <code>Object</code>
+                * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
+        * [.calendar](#tfw.calendar)
+            * [new calendar(input)](#new_tfw.calendar_new)
+            * _static_
+                * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
+                * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
+                * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+            * _inner_
+                * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
+        * [.strings](#tfw.strings) : <code>enum</code>
+        * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
+        * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
+        * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
+        * [.insertStyle(style)](#tfw.insertStyle)
+        * [.init()](#tfw.init)
+        * [.localize(newStrings)](#tfw.localize)
+        * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
+        * [.select(params)](#tfw.select) ⇒ <code>Object</code>
+        * [.createLayerAndWrapperAtElement(element, params, [above])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>Object</code>
+        * [.dropDown(params)](#tfw.dropDown) ⇒ <code>Object</code>
+        * [.button(params)](#tfw.button) ⇒ <code>Object</code>
+        * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
+        * [.input(params)](#tfw.input) ⇒ <code>Object</code>
+        * [.textArea(params)](#tfw.textArea) ⇒ <code>Object</code>
+        * [.checkbox(params)](#tfw.checkbox) ⇒ <code>Object</code>
+        * [.icon(params)](#tfw.icon) ⇒ <code>Object</code>
+        * [.table(params)](#tfw.table) ⇒ <code>Object</code>
+        * [.tr(params)](#tfw.tr) ⇒ <code>Object</code>
+        * [.td(params)](#tfw.td) ⇒ <code>Object</code>
+        * [.slider(params)](#tfw.slider) ⇒ <code>Object</code>
+        * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
+        * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
+        * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
+        * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
+        * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>Object</code>
+    * _inner_
+        * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
 
 <a name="new_tfw_new"></a>
 ### new tfw()
@@ -160,6 +164,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
         * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
+        * [.destroy()](#tfw.dynamicTableClass+destroy)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
@@ -301,6 +306,17 @@ Watch for updates from the server.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**: tfw.dynamicTableClass#paint  
+**Todo**
+
+- [ ] Call again after finishing
+
+<a name="tfw.dynamicTableClass+destroy"></a>
+#### dynamicTableClass.destroy()
+A "destructor" for table.
+Aborts all pending requests created by current table.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**See**: tfw.dynamicTableClass~serverCall  
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
 Test if no filters are applied and table is sorted by column of type 'order'.
@@ -534,6 +550,9 @@ Width of column with row edit icon (icon's width including padding, border, marg
 
 <a name="tfw.dynamicTableClass..serverCall"></a>
 #### dynamicTableClass~serverCall(params)
+Send a table-specific request to server.
+If table is [destroy](#tfw.dynamicTableClass+destroy)ed, pending requests are aborted.
+
 **Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**
 
@@ -1021,11 +1040,11 @@ Create a slider with specified parameters.
 | [params.postText] | <code>string</code> |  | text after slider |
 
 <a name="tfw.ajaxGet"></a>
-### tfw.ajaxGet(o) ⇒ <code>Object</code>
+### tfw.ajaxGet(o) ⇒ <code>XMLHttpRequest</code>
 Get data from server via AJAX.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - - Returns XMLHttpRequest object  
+**Returns**: <code>XMLHttpRequest</code> - - Returns XMLHttpRequest object  
 **See**
 
 - tfw.ajaxIncludeParams
@@ -1037,17 +1056,17 @@ Get data from server via AJAX.
 | --- | --- | --- | --- |
 | o | <code>Object</code> |  | parameters object |
 | o.url | <code>string</code> |  | URL of server script with data |
-| o.onload | <code>function</code> |  | function to call when request has successfully completed |
+| o.onload | <code>[ajaxGetCallback](#tfw..ajaxGetCallback)</code> |  | function to call when request has successfully completed |
 | [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately) |
 | [o.method] | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to be used (GET or POST) |
 | [o.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
 <a name="tfw.ajaxPost"></a>
-### tfw.ajaxPost(o) ⇒ <code>Object</code>
+### tfw.ajaxPost(o) ⇒ <code>XMLHttpRequest</code>
 Post data to server via AJAX.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - - Returns XMLHttpRequest object  
+**Returns**: <code>XMLHttpRequest</code> - - Returns XMLHttpRequest object  
 **See**: tfw.ajaxGet  
 
 | Param | Type | Description |
@@ -1088,6 +1107,17 @@ Class instance's properties are mirrored into the HTML element.
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | table parameters (see [dynamicTableClass](#tfw.dynamicTableClass)) |
+
+<a name="tfw..ajaxGetCallback"></a>
+### tfw~ajaxGetCallback : <code>function</code>
+Callback after successfull HTTP request.
+
+**Kind**: inner typedef of <code>[tfw](#tfw)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| httpRequest | <code>XMLHttpRequest</code> | associated XMLHttpRequest object |
+| httpRequest.responseText | <code>string</code> | server response |
 
 <a name="prvek"></a>
 ## prvek

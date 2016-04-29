@@ -1299,15 +1299,21 @@ var tfw = {
 	 */
 	ajaxOnError : null,
 	/**
+	 * Callback after successfull HTTP request.
+	 * @callback tfw~ajaxGetCallback
+	 * @param {XMLHttpRequest} httpRequest - associated XMLHttpRequest object
+	 * @param {string} httpRequest.responseText - server response
+	 */
+	/**
 	 * Get data from server via AJAX.
 	 * @memberof tfw
 	 * @param {Object} o - parameters object
 	 * @param {string} o.url - URL of server script with data
-	 * @param {function} o.onload - function to call when request has successfully completed
+	 * @param {tfw~ajaxGetCallback} o.onload - function to call when request has successfully completed
 	 * @param {number} [o.autohide=0] - whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately)
 	 * @param {string} [o.method="GET"] - HTTP method to be used (GET or POST)
 	 * @param {string} [o.parameters=null] - parameters to be send with the request (e.g. POST)
-	 * @return {Object} - Returns XMLHttpRequest object
+	 * @return {XMLHttpRequest} - Returns XMLHttpRequest object
 	 * @see tfw.ajaxIncludeParams
 	 * @see tfw.ajaxOnErrorCode
 	 * @see tfw.ajaxOnError
@@ -1331,12 +1337,15 @@ var tfw = {
 						if (rt.substr(0, 1) == "#")
 							pe = 1;
 					}
-					if (pe)
+					if (pe) {
 						tfw.ajaxOnErrorCode(rt);
-					else
+					}
+					else {
 						o.onload(httpRequest);
-				} else if (tfw.ajaxOnError)
+					}
+				} else if (tfw.ajaxOnError){
 					tfw.ajaxOnError();
+				}
 			}
 		}
 
@@ -1365,15 +1374,16 @@ var tfw = {
 		}
 		
 		httpRequest.send(o.parameters);
-		if (o.autohide)
+		if (o.autohide){
 			desktop.working((o.autohide == 2) ? 1 : 0);
-		return (httpRequest);
+		}
+		return httpRequest;
 	},
 	/**
 	 * Post data to server via AJAX.
 	 * @memberof tfw
 	 * @param {Object} o - parameters object (see {@link tfw.ajaxGet})
-	 * @return {Object} - Returns XMLHttpRequest object
+	 * @return {XMLHttpRequest} - Returns XMLHttpRequest object
 	 * @see tfw.ajaxGet
 	 */
 	ajaxPost : function (o) {
@@ -1887,6 +1897,7 @@ var tfw = {
 		/**
 		 * Watch for updates from the server.
 		 * @see tfw.dynamicTableClass#paint
+		 * @todo Call again after finishing
 		 */
 		this.serverWatch = function(){
 			var dynamicTable = this;
@@ -1902,11 +1913,18 @@ var tfw = {
 		}
 		
 		/**
+		 * @private
+		 * @var {XMLHttpRequest[]}
+		 */
+		var pendingHttpRequests = [];
+		/**
 		 * Function that handles data received from server.
 		 * @callback tfw.dynamicTableClass~serverCallback
 		 * @param {Object} receivedData - JSON decoded data received from request
 		 */
 		/**
+		 * Send a table-specific request to server.
+		 * If table is {@link tfw.dynamicTableClass#destroy|destroy}ed, pending requests are aborted.
 		 * @param {Object} params - query parameters
 		 * @param {tfw.dynamicTableClass.serverActions} params.action - server action
 		 * @param {tfw.dynamicTableClass~serverCallback} [params.callback] - callback that receives data
@@ -1915,17 +1933,31 @@ var tfw = {
 		 * @see tfw.decodeJSON
 		 */
 		function serverCall(params){
-			tfw.ajaxGet({
-				url : baseURL+"?t=" + tableId + "&a=" + params.action.name + (urlParams ? ("&"+urlParams) : ""),
-				method : ("method" in params.action) ? params.action.method : "GET",
-				parameters : params.parameters,
-				onload : function (hr) {
-					var receivedData = tfw.decodeJSON(hr.responseText);
-					if(params.callback != null){
-						params.callback(receivedData);
+			pendingHttpRequests.push(
+				tfw.ajaxGet({
+					url : baseURL+"?t=" + tableId + "&a=" + params.action.name + (urlParams ? ("&"+urlParams) : ""),
+					method : ("method" in params.action) ? params.action.method : "GET",
+					parameters : params.parameters,
+					onload : function (hr) {
+						pendingHttpRequests.splice(pendingHttpRequests.indexOf(hr), 1);
+						var receivedData = tfw.decodeJSON(hr.responseText);
+						if(params.callback != null){
+							params.callback(receivedData);
+						}
 					}
-				}
-			});
+				})
+			);
+		}
+		
+		/**
+		 * A "destructor" for table.
+		 * Aborts all pending requests created by current table.
+		 * @see tfw.dynamicTableClass~serverCall
+		 */
+		this.destroy = function(){
+			for(var i=0;i<pendingHttpRequests.length;i++){
+				pendingHttpRequests[i].abort();
+			}
 		}
 
 		/**
