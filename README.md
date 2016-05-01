@@ -27,6 +27,7 @@
 </dl>
 
 <a name="desktop"></a>
+
 ## desktop
 **Kind**: global class  
 
@@ -35,10 +36,12 @@
     * [.newLayer(params)](#desktop.newLayer)
 
 <a name="new_desktop_new"></a>
+
 ### new desktop()
 Triobo. This is a singleton (a single "instance" of a "class").
 
 <a name="desktop.newLayer"></a>
+
 ### desktop.newLayer(params)
 Create a new layer.
 
@@ -52,6 +55,7 @@ Create a new layer.
 | [param.overlay] | <code>boolean</code> | <code>false</code> | whether to add overlay to this layer |
 
 <a name="tfw"></a>
+
 ## tfw
 **Kind**: global class  
 **Todo**
@@ -142,10 +146,12 @@ Create a new layer.
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
 
 <a name="new_tfw_new"></a>
+
 ### new tfw()
 Triobo framework. This is a singleton (a single "instance" of a "class").
 
 <a name="tfw.dynamicTableClass"></a>
+
 ### tfw.dynamicTableClass
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **See**: AJAX_LOADER  
@@ -198,6 +204,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
 
 <a name="new_tfw.dynamicTableClass_new"></a>
+
 #### new dynamicTableClass(params)
 Class for creating dynamic tables.
 
@@ -232,12 +239,14 @@ var table = document.body.appendChild(
 );
 ```
 <a name="tfw.dynamicTableClass+tableContainer"></a>
+
 #### dynamicTableClass.tableContainer : <code>Object</code>
 DIV containing the table.
 
 **Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Read only**: true  
 <a name="tfw.dynamicTableClass+data"></a>
+
 #### dynamicTableClass.data : <code>Object</code>
 Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be called to fill this.
 
@@ -262,6 +271,7 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 | rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
 
 <a name="tfw.dynamicTableClass+setPreference"></a>
+
 #### dynamicTableClass.setPreference(key, [value])
 Save user's preference.
 
@@ -273,6 +283,7 @@ Save user's preference.
 | [value] |  | preference value (any type) - if not set, preference is deleted |
 
 <a name="tfw.dynamicTableClass+getPreference"></a>
+
 #### dynamicTableClass.getPreference(key) ⇒ <code>Object</code>
 Read user's preference.
 
@@ -284,12 +295,14 @@ Read user's preference.
 | key | <code>string</code> | preference key (name) |
 
 <a name="tfw.dynamicTableClass+getTable"></a>
+
 #### dynamicTableClass.getTable() ⇒ <code>Object</code>
 Get table container (for inserting into document).
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>Object</code> - Returns the table container (HTML element).  
 <a name="tfw.dynamicTableClass+reload"></a>
+
 #### dynamicTableClass.reload()
 Reload (or load) data from server.
 Loads preferences and data, then [paint](#tfw.dynamicTableClass+paint)s the table.
@@ -301,6 +314,7 @@ Loads preferences and data, then [paint](#tfw.dynamicTableClass+paint)s the tabl
 - tfw.dynamicTableClass~serverCall
 
 <a name="tfw.dynamicTableClass+serverWatch"></a>
+
 #### dynamicTableClass.serverWatch()
 Watch for updates from the server.
 
@@ -311,6 +325,7 @@ Watch for updates from the server.
 - [ ] Call again after finishing
 
 <a name="tfw.dynamicTableClass+destroy"></a>
+
 #### dynamicTableClass.destroy()
 A "destructor" for table.
 Aborts all pending requests created by current table.
@@ -319,12 +334,14 @@ Removes associated CSS.
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**: tfw.dynamicTableClass~serverCall  
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
+
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
 Test if no filters are applied and table is sorted by column of type 'order'.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
 <a name="tfw.dynamicTableClass+toggleReorder"></a>
+
 #### dynamicTableClass.toggleReorder()
 Toggle reordering of rows via drag & drop.
 Reflects the value of a private variable set by onclick events fired with filters.
@@ -332,6 +349,7 @@ Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+updateInput"></a>
+
 #### dynamicTableClass.updateInput(input)
 Updates data and sends change to server.
 
@@ -344,6 +362,7 @@ Updates data and sends change to server.
 | input.value | <code>string</code> | value that can be obtained |
 
 <a name="tfw.dynamicTableClass+orderChange"></a>
+
 #### dynamicTableClass.orderChange(element)
 Reflect a change in order in the table.
 
@@ -354,6 +373,7 @@ Reflect a change in order in the table.
 | element | <code>Object</code> | row that was dropped (HTML element) |
 
 <a name="tfw.dynamicTableClass+paint"></a>
+
 #### dynamicTableClass.paint([changes])
 Refresh the content of the table using data gotten by (re)loading.
 Assumes that there is only 1 order column and that data is initially sorted by that column.
@@ -372,6 +392,7 @@ Assumes that there is only 1 order column and that data is initially sorted by t
 | [changes] | <code>[Array.&lt;dataChange&gt;](#tfw.dynamicTableClass..dataChange)</code> | changes made to data (loaded by [watch](#tfw.dynamicTableClass+serverWatch)) |
 
 <a name="tfw.dynamicTableClass+prepareCalendar"></a>
+
 #### dynamicTableClass.prepareCalendar()
 Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCalendar) callback, if null.
 
@@ -381,6 +402,7 @@ Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCale
 - [ ] Use as (default) placeCalendar for all calendars
 
 <a name="tfw.dynamicTableClass+filter"></a>
+
 #### dynamicTableClass.filter(filterElement, dataCol)
 Apply filter for values of a column.
 Creates a [dialog](tfw.dialog) with filter.
@@ -397,6 +419,7 @@ Creates a [dialog](tfw.dialog) with filter.
 | dataCol | <code>number</code> | order of searched column (in data) |
 
 <a name="tfw.dynamicTableClass+sort"></a>
+
 #### dynamicTableClass.sort(dataCol, asc)
 Apply sorting by values (text without HTML) of a column.
 Text fields are sorted locale aware, with empty strings always last.
@@ -409,6 +432,7 @@ Text fields are sorted locale aware, with empty strings always last.
 | asc | <code>[sortTypes](#tfw.dynamicTableClass.sortTypes)</code> | sorting type (ascending or descending) |
 
 <a name="tfw.dynamicTableClass+setActiveFilterInColumn"></a>
+
 #### dynamicTableClass.setActiveFilterInColumn(column, on, arrowType, [arrowBase])
 Set status of filter icon in a column.
 
@@ -423,6 +447,7 @@ Set status of filter icon in a column.
 | [arrowBase] | <code>HTMLElement</code> | base to pass to [setActiveArrow](#tfw.dynamicTableClass..setActiveArrow) (defaults to column's heading) |
 
 <a name="tfw.dynamicTableClass+filterAny"></a>
+
 #### dynamicTableClass.filterAny(dataCol, value, [searchType], [dontSave])
 Apply any filter.
 
@@ -440,11 +465,13 @@ Apply any filter.
 | [dontSave] | <code>boolean</code> | <code>false</code> | dont save into preferences (for TEXT) |
 
 <a name="tfw.dynamicTableClass+resetFilters"></a>
+
 #### dynamicTableClass.resetFilters()
 Reset all applied filters.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass+toggleColumn"></a>
+
 #### dynamicTableClass.toggleColumn(dataCol, [dontSave])
 Toggle visibility of a column. Only hides cells in TBODY and THEAD.
 Requires .hideColumn{display:none}
@@ -457,9 +484,11 @@ Requires .hideColumn{display:none}
 | [dontSave] | <code>boolean</code> | <code>false</code> | don't save into preferences |
 
 <a name="tfw.dynamicTableClass+toggleColumn..hiddenColumns"></a>
+
 ##### toggleColumn~hiddenColumns : <code>Array.&lt;boolean&gt;</code>
 **Kind**: inner property of <code>[toggleColumn](#tfw.dynamicTableClass+toggleColumn)</code>  
 <a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
+
 #### dynamicTableClass.toggleColumnDialog(element)
 Toggle visibility of a column.
 Creates a [dialog](tfw.dialog) with checkboxes.
@@ -471,6 +500,7 @@ Creates a [dialog](tfw.dialog) with checkboxes.
 | element | <code>HTMLElement</code> | above which element should checkboxes be positioned |
 
 <a name="tfw.dynamicTableClass.serverActions"></a>
+
 #### dynamicTableClass.serverActions : <code>enum</code>
 Implemented server actions.
 
@@ -490,6 +520,7 @@ Implemented server actions.
 | PREF_SET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;setusersettings&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | save user's preferences |
 
 <a name="tfw.dynamicTableClass.colTypes"></a>
+
 #### dynamicTableClass.colTypes : <code>enum</code>
 Types of columns (and filters).
 
@@ -506,6 +537,7 @@ Types of columns (and filters).
 | ORDER | <code>string</code> | <code>&quot;order&quot;</code> | 
 
 <a name="tfw.dynamicTableClass.sortTypes"></a>
+
 #### dynamicTableClass.sortTypes : <code>enum</code>
 Types of sorting.
 
@@ -519,6 +551,7 @@ Types of sorting.
 | DESC | <code>number</code> | <code>-1</code> | 
 
 <a name="tfw.dynamicTableClass.arrowTypes"></a>
+
 #### dynamicTableClass.arrowTypes : <code>enum</code>
 Types of "arrows".
 
@@ -533,6 +566,7 @@ Types of "arrows".
 | DOWN | <code>string</code> | <code>&quot;down&quot;</code> | 
 
 <a name="tfw.dynamicTableClass.ROW_EDIT_WIDTH"></a>
+
 #### dynamicTableClass.ROW_EDIT_WIDTH : <code>number</code>
 Width of column with row edit icon (icon's width including padding, border, margin + cell's padding + border), in pixels
 
@@ -540,6 +574,7 @@ Width of column with row edit icon (icon's width including padding, border, marg
 **Default**: <code>25</code>  
 **Read only**: true  
 <a name="tfw.dynamicTableClass.serverAction"></a>
+
 #### dynamicTableClass.serverAction : <code>Object</code>
 **Kind**: static typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Properties**
@@ -550,6 +585,7 @@ Width of column with row edit icon (icon's width including padding, border, marg
 | method | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to use (e.g. GET, POST) |
 
 <a name="tfw.dynamicTableClass..serverCall"></a>
+
 #### dynamicTableClass~serverCall(params)
 Send a table-specific request to server.
 If table is [destroy](#tfw.dynamicTableClass+destroy)ed, pending requests are aborted.
@@ -569,6 +605,7 @@ If table is [destroy](#tfw.dynamicTableClass+destroy)ed, pending requests are ab
 | [params.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
 <a name="tfw.dynamicTableClass..serverUpdateCell"></a>
+
 #### dynamicTableClass~serverUpdateCell(params)
 **Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -580,6 +617,7 @@ If table is [destroy](#tfw.dynamicTableClass+destroy)ed, pending requests are ab
 | params.value | <code>number</code> | new value |
 
 <a name="tfw.dynamicTableClass..serverUpdateOrder"></a>
+
 #### dynamicTableClass~serverUpdateOrder(params)
 **Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -590,6 +628,7 @@ If table is [destroy](#tfw.dynamicTableClass+destroy)ed, pending requests are ab
 | params.neworder | <code>number</code> | new order number of edited row |
 
 <a name="tfw.dynamicTableClass..setActiveArrow"></a>
+
 #### dynamicTableClass~setActiveArrow(element, base)
 Set active arrow (and make other arrows of same group inactive).
 
@@ -601,6 +640,7 @@ Set active arrow (and make other arrows of same group inactive).
 | base | <code>Object</code> | where to search for arrows (HTML element) |
 
 <a name="tfw.dynamicTableClass..rowEdit"></a>
+
 #### dynamicTableClass~rowEdit : <code>function</code>
 Function that handles row editing.
 
@@ -611,6 +651,7 @@ Function that handles row editing.
 | id | <code>number</code> | ID of the row being edited or 0 if new row is being inserted |
 
 <a name="tfw.dynamicTableClass..goToSub"></a>
+
 #### dynamicTableClass~goToSub : <code>function</code>
 Function that handles moving to subordinate table.
 
@@ -622,6 +663,7 @@ Function that handles moving to subordinate table.
 | column | <code>number</code> | order number of column in which the callback was triggered |
 
 <a name="tfw.dynamicTableClass..serverCallback"></a>
+
 #### dynamicTableClass~serverCallback : <code>function</code>
 Function that handles data received from server.
 
@@ -632,6 +674,7 @@ Function that handles data received from server.
 | receivedData | <code>Object</code> | JSON decoded data received from request |
 
 <a name="tfw.dynamicTableClass..dataChange"></a>
+
 #### dynamicTableClass~dataChange : <code>Object</code>
 Object representing an update/insertion/deletion in data.
 Type of change is determined by present properties.
@@ -646,11 +689,13 @@ Type of change is determined by present properties.
 | [cols] | <code>Array.&lt;string&gt;</code> | values of inserted row - implies insertion |
 
 <a name="tfw.dynamicTableClass..filterValue"></a>
+
 #### dynamicTableClass~filterValue : <code>string</code> &#124; <code>Object</code>
 Value by which the table can be filtered.
 
 **Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.calendar"></a>
+
 ### tfw.calendar
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 
@@ -664,6 +709,7 @@ Value by which the table can be filtered.
         * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
 
 <a name="new_tfw.calendar_new"></a>
+
 #### new calendar(input)
 Class for enhancing date input fields. Requires CSS styling.
 
@@ -699,24 +745,28 @@ document.body.appendChild(
 );
 ```
 <a name="tfw.calendar.months"></a>
+
 #### calendar.months : <code>Array.&lt;String&gt;</code>
 List of months' names.
 
 **Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
 **Default**: <code>[&quot;January&quot;,&quot;February&quot;,&quot;March&quot;,&quot;April&quot;,&quot;May&quot;,&quot;June&quot;,&quot;July&quot;,&quot;August&quot;,&quot;September&quot;,&quot;October&quot;,&quot;November&quot;,&quot;December&quot;]</code>  
 <a name="tfw.calendar.daysShort"></a>
+
 #### calendar.daysShort : <code>Array.&lt;String&gt;</code>
 List of days' names' first two letters (beginning with Monday)
 
 **Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
 **Default**: <code>[&quot;Mo&quot;,&quot;Tu&quot;,&quot;We&quot;,&quot;Th&quot;,&quot;Fr&quot;,&quot;Sa&quot;,&quot;Su&quot;]</code>  
 <a name="tfw.calendar.placeCalendar"></a>
+
 #### calendar.placeCalendar : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
 Function called when a calendar widget is created.
 
 **Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
 **Default**: <code></code>  
 <a name="tfw.calendar..placeCalendar"></a>
+
 #### calendar~placeCalendar : <code>function</code>
 Callback function that puts calendar widget for an input field into page.
 Most likely create an overlay that closes calendar when user clicks somewhere else.
@@ -729,6 +779,7 @@ Most likely create an overlay that closes calendar when user clicks somewhere el
 | input | <code>Object</code> | related input field (HTML element) |
 
 <a name="tfw.strings"></a>
+
 ### tfw.strings : <code>enum</code>
 Strings that are output by tfw functions. Change them for localization.
 
@@ -746,18 +797,21 @@ Strings that are output by tfw functions. Change them for localization.
 | FILTER | <code>string</code> | <code>&quot;Filter…&quot;</code> | Placeholder when searching anywhere in a string |
 
 <a name="tfw.ajaxIncludeParams"></a>
+
 ### tfw.ajaxIncludeParams : <code>function</code>
 Generates permanent AJAX queries parameters (e.g. tokens, anti-cache)
 
 **Kind**: static property of <code>[tfw](#tfw)</code>  
 **Default**: <code>null</code>  
 <a name="tfw.ajaxOnErrorCode"></a>
+
 ### tfw.ajaxOnErrorCode : <code>function</code>
 Handles error generated by server (receives error code returned by server).
 
 **Kind**: static property of <code>[tfw](#tfw)</code>  
 **Default**: <code>null</code>  
 <a name="tfw.ajaxOnError"></a>
+
 ### tfw.ajaxOnError : <code>function</code>
 Handles HTTP errors (HTTP codes other than 200).
 
@@ -768,6 +822,7 @@ Handles HTTP errors (HTTP codes other than 200).
 - [ ] Implement
 
 <a name="tfw.insertStyle"></a>
+
 ### tfw.insertStyle(style, [tag])
 Add Javascript-generated CSS to the document.
 
@@ -779,12 +834,14 @@ Add Javascript-generated CSS to the document.
 | [tag] | <code>string</code> | identify (tag) CSS for overriding |
 
 <a name="tfw.init"></a>
+
 ### tfw.init()
 Initialization needed to run tfw functions (e.g. adds required CSS styling).
 Can be run multiple times (after adding localized strings).
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 <a name="tfw.localize"></a>
+
 ### tfw.localize(newStrings)
 Add new translations and re-[init](#tfw.init) tfw.
 
@@ -796,6 +853,7 @@ Add new translations and re-[init](#tfw.init) tfw.
 | newStrings | <code>[strings](#tfw.strings)</code> | translated strings to be used (keys same as in [strings](#tfw.strings)) |
 
 <a name="tfw.fillElemDefs"></a>
+
 ### tfw.fillElemDefs(element, params)
 Set parameters of a HTML element.
 
@@ -821,6 +879,7 @@ Set parameters of a HTML element.
 | [params.placeholder] | <code>string</code> |  | text field placeholder |
 
 <a name="tfw.select"></a>
+
 ### tfw.select(params) ⇒ <code>Object</code>
 Create a select field with specified parameters.
 
@@ -837,6 +896,7 @@ Create a select field with specified parameters.
 | params.list[].t | <code>string</code> | label |
 
 <a name="tfw.createLayerAndWrapperAtElement"></a>
+
 ### tfw.createLayerAndWrapperAtElement(element, params, [above]) ⇒ <code>Object</code>
 Create a new layer and a wrapper that starts at a given element.
 
@@ -851,6 +911,7 @@ Create a new layer and a wrapper that starts at a given element.
 | [above] | <code>boolean</code> | <code>false</code> | whether to position above element instead of below |
 
 <a name="tfw.dropDown"></a>
+
 ### tfw.dropDown(params) ⇒ <code>Object</code>
 Create a dropdown menu.
 
@@ -876,6 +937,7 @@ Create a dropdown menu.
 | [params.value] | <code>string</code> |  | default (selected) value |
 
 <a name="tfw.button"></a>
+
 ### tfw.button(params) ⇒ <code>Object</code>
 Create a button with specified parameters.
 
@@ -891,6 +953,7 @@ Create a button with specified parameters.
 | [params.action] | <code>function</code> |  | Function to fire when button is clicked (event propagation is stopped) |
 
 <a name="tfw.inputFieldLegend"></a>
+
 ### tfw.inputFieldLegend(element, params) ⇒ <code>Object</code>
 Wrap an input field with a legend and a container.
 
@@ -908,6 +971,7 @@ Wrap an input field with a legend and a container.
 | [params.postText] | <code>string</code> | text after input field |
 
 <a name="tfw.input"></a>
+
 ### tfw.input(params) ⇒ <code>Object</code>
 Create an input field with specified parameters.
 
@@ -929,6 +993,7 @@ Create an input field with specified parameters.
 | [params.step] | <code>number</code> |  | step between allowed numeric values |
 
 <a name="tfw.textArea"></a>
+
 ### tfw.textArea(params) ⇒ <code>Object</code>
 Create a text area with specified parameters.
 
@@ -946,6 +1011,7 @@ Create a text area with specified parameters.
 | [params.value] | <code>string</code> | prefilled value |
 
 <a name="tfw.checkbox"></a>
+
 ### tfw.checkbox(params) ⇒ <code>Object</code>
 Create a checkbox with specified parameters.
 
@@ -969,6 +1035,7 @@ Create a checkbox with specified parameters.
 | [params.value] | <code>string</code> | <code>0</code> | initial value (0=unchecked,1=checked) |
 
 <a name="tfw.icon"></a>
+
 ### tfw.icon(params) ⇒ <code>Object</code>
 Create an icon with specified parameters.
 
@@ -983,6 +1050,7 @@ Create an icon with specified parameters.
 | [params.index] | <code>number</code> | move background image up by this number of pixels (background-position-x) |
 
 <a name="tfw.table"></a>
+
 ### tfw.table(params) ⇒ <code>Object</code>
 Create a table with specified parameters.
 
@@ -995,6 +1063,7 @@ Create a table with specified parameters.
 | params | <code>Object</code> | table parameters (for more see [fillElemDefs](#tfw.fillElemDefs), use params.children for rows) |
 
 <a name="tfw.tr"></a>
+
 ### tfw.tr(params) ⇒ <code>Object</code>
 Create a table row with specified parameters.
 
@@ -1008,6 +1077,7 @@ Create a table row with specified parameters.
 | [params.columns] | <code>Array</code> | list of objects, that will be passed to tfw.td and added as children |
 
 <a name="tfw.td"></a>
+
 ### tfw.td(params) ⇒ <code>Object</code>
 Create a table cell with specified parameters.
 
@@ -1021,6 +1091,7 @@ Create a table cell with specified parameters.
 | [params.colspan] | <code>number</code> | number of columns that this cell will merge |
 
 <a name="tfw.slider"></a>
+
 ### tfw.slider(params) ⇒ <code>Object</code>
 Create a slider with specified parameters.
 
@@ -1042,6 +1113,7 @@ Create a slider with specified parameters.
 | [params.postText] | <code>string</code> |  | text after slider |
 
 <a name="tfw.ajaxGet"></a>
+
 ### tfw.ajaxGet(o) ⇒ <code>XMLHttpRequest</code>
 Get data from server via AJAX.
 
@@ -1064,6 +1136,7 @@ Get data from server via AJAX.
 | [o.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
 <a name="tfw.ajaxPost"></a>
+
 ### tfw.ajaxPost(o) ⇒ <code>XMLHttpRequest</code>
 Post data to server via AJAX.
 
@@ -1076,6 +1149,7 @@ Post data to server via AJAX.
 | o | <code>Object</code> | parameters object (see [ajaxGet](#tfw.ajaxGet)) |
 
 <a name="tfw.encodeFormValues"></a>
+
 ### tfw.encodeFormValues(fields) ⇒ <code>string</code>
 Encode all items as URL.
 
@@ -1087,6 +1161,7 @@ Encode all items as URL.
 | fields | <code>Object</code> | items to be encoded {key1:id1,key2:id2,...} |
 
 <a name="tfw.decodeJSON"></a>
+
 ### tfw.decodeJSON(json) ⇒ <code>Object</code>
 Decode JSON data, show error in case they are invalid.
 
@@ -1098,6 +1173,7 @@ Decode JSON data, show error in case they are invalid.
 | json | <code>string</code> | JSON encoded data |
 
 <a name="tfw.dynamicTable"></a>
+
 ### tfw.dynamicTable(params) ⇒ <code>Object</code>
 Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
 Class instance's properties are mirrored into the HTML element.
@@ -1111,6 +1187,7 @@ Class instance's properties are mirrored into the HTML element.
 | params | <code>Object</code> | table parameters (see [dynamicTableClass](#tfw.dynamicTableClass)) |
 
 <a name="tfw..ajaxGetCallback"></a>
+
 ### tfw~ajaxGetCallback : <code>function</code>
 Callback after successfull HTTP request.
 
@@ -1122,6 +1199,7 @@ Callback after successfull HTTP request.
 | httpRequest.responseText | <code>string</code> | server response |
 
 <a name="prvek"></a>
+
 ## prvek
 **Kind**: global class  
 
@@ -1136,10 +1214,12 @@ Callback after successfull HTTP request.
     * [.barvaSLegendou()](#prvek.barvaSLegendou)
 
 <a name="new_prvek_new"></a>
+
 ### new prvek()
 Function package for preparing HTML elements.
 
 <a name="prvek.seznamZatrzitek"></a>
+
 ### prvek.seznamZatrzitek()
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **Todo**
@@ -1147,24 +1227,28 @@ Function package for preparing HTML elements.
 - [ ] Move to [tfw](#tfw)
 
 <a name="prvek.tabulka"></a>
+
 ### ~~prvek.tabulka()~~
 ***Deprecated***
 
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **See**: tfw.table  
 <a name="prvek.radek"></a>
+
 ### ~~prvek.radek()~~
 ***Deprecated***
 
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **See**: tfw.tr  
 <a name="prvek.sloupec"></a>
+
 ### ~~prvek.sloupec()~~
 ***Deprecated***
 
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **See**: tfw.td  
 <a name="prvek.soubory"></a>
+
 ### prvek.soubory()
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **Todo**
@@ -1173,6 +1257,7 @@ Function package for preparing HTML elements.
 - [ ] Move to [tfw](#tfw)
 
 <a name="prvek.barva"></a>
+
 ### prvek.barva()
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **Todo**
@@ -1181,6 +1266,7 @@ Function package for preparing HTML elements.
 - [ ] Move to [tfw](#tfw)
 
 <a name="prvek.barvaSLegendou"></a>
+
 ### prvek.barvaSLegendou()
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **Todo**
@@ -1189,17 +1275,20 @@ Function package for preparing HTML elements.
 - [ ] Move to [tfw](#tfw)
 
 <a name="Dyntable"></a>
+
 ## ~~Dyntable~~
 ***Deprecated***
 
 **Kind**: global class  
 **See**: tfw.dynamicTable  
 <a name="AJAX_LOADER"></a>
+
 ## AJAX_LOADER : <code>string</code>
 HTML to show when some content is being loaded.
 
 **Kind**: global constant  
 <a name="cmp"></a>
+
 ## cmp(a, b)
 **Kind**: global function  
 
