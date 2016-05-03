@@ -1689,6 +1689,7 @@ var tfw = {
 	 * @param {boolean} [params.rowAdd=false] - whether to allow adding new rows
 	 * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
 	 * @param {boolean} [params.watchChanges=false] - whether to allow {@link tfw.dynamicTableClass#serverWatch|watching} for changes (long polling)
+	 * @param {function} [params.onload] - function to call after data is loaded for the first time
 	 * @example
 	 * function myRowEditFunction(id){
 	 * 	// ...
@@ -2446,7 +2447,7 @@ var tfw = {
 					this.serverWatch();
 				}
 				if ("onload" in params) {
-  				params.onload();
+					params.onload();
 				}
 			} else if(typeof(changes) != "undefined") {
 				console.log(changes);
