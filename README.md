@@ -23,7 +23,8 @@
 
 <dl>
 <dt><a href="#cmp">cmp(a, b)</a></dt>
-<dd></dd>
+<dd><p>Compare two numbers - for use with sorting functions.</p>
+</dd>
 </dl>
 
 <a name="desktop"></a>
@@ -38,7 +39,7 @@
 <a name="new_desktop_new"></a>
 
 ### new desktop()
-Triobo. This is a singleton (a single "instance" of a "class").
+Triobo. This is a singleton.
 
 <a name="desktop.newLayer"></a>
 
@@ -73,7 +74,7 @@ Create a new layer.
                 * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
                 * [.setPreference(key, [value])](#tfw.dynamicTableClass+setPreference)
                 * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
-                * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
+                * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>HTMLElement</code>
                 * [.reload()](#tfw.dynamicTableClass+reload)
                 * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
                 * [.destroy()](#tfw.dynamicTableClass+destroy)
@@ -124,31 +125,31 @@ Create a new layer.
         * [.init()](#tfw.init)
         * [.localize(newStrings)](#tfw.localize)
         * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
-        * [.select(params)](#tfw.select) ⇒ <code>Object</code>
-        * [.createLayerAndWrapperAtElement(element, params, [above])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>Object</code>
-        * [.dropDown(params)](#tfw.dropDown) ⇒ <code>Object</code>
-        * [.button(params)](#tfw.button) ⇒ <code>Object</code>
-        * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>Object</code>
-        * [.input(params)](#tfw.input) ⇒ <code>Object</code>
-        * [.textArea(params)](#tfw.textArea) ⇒ <code>Object</code>
-        * [.checkbox(params)](#tfw.checkbox) ⇒ <code>Object</code>
-        * [.icon(params)](#tfw.icon) ⇒ <code>Object</code>
-        * [.table(params)](#tfw.table) ⇒ <code>Object</code>
-        * [.tr(params)](#tfw.tr) ⇒ <code>Object</code>
-        * [.td(params)](#tfw.td) ⇒ <code>Object</code>
-        * [.slider(params)](#tfw.slider) ⇒ <code>Object</code>
+        * [.select(params)](#tfw.select) ⇒ <code>HTMLElement</code>
+        * [.createLayerAndWrapperAtElement(element, params, [above])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>HTMLElement</code>
+        * [.dropDown(params)](#tfw.dropDown) ⇒ <code>HTMLElement</code>
+        * [.button(params)](#tfw.button) ⇒ <code>HTMLElement</code>
+        * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>HTMLElement</code>
+        * [.input(params)](#tfw.input) ⇒ <code>HTMLElement</code>
+        * [.textArea(params)](#tfw.textArea) ⇒ <code>HTMLElement</code>
+        * [.checkbox(params)](#tfw.checkbox) ⇒ <code>HTMLElement</code>
+        * [.icon(params)](#tfw.icon) ⇒ <code>HTMLElement</code>
+        * [.table(params)](#tfw.table) ⇒ <code>HTMLElement</code>
+        * [.tr(params)](#tfw.tr) ⇒ <code>HTMLElement</code>
+        * [.td(params)](#tfw.td) ⇒ <code>HTMLElement</code>
+        * [.slider(params)](#tfw.slider) ⇒ <code>HTMLElement</code>
         * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
-        * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>Object</code>
+        * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
     * _inner_
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
 
 <a name="new_tfw_new"></a>
 
 ### new tfw()
-Triobo framework. This is a singleton (a single "instance" of a "class").
+Triobo framework. This is a singleton.
 
 <a name="tfw.dynamicTableClass"></a>
 
@@ -167,7 +168,7 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.data](#tfw.dynamicTableClass+data) : <code>Object</code>
         * [.setPreference(key, [value])](#tfw.dynamicTableClass+setPreference)
         * [.getPreference(key)](#tfw.dynamicTableClass+getPreference) ⇒ <code>Object</code>
-        * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>Object</code>
+        * [.getTable()](#tfw.dynamicTableClass+getTable) ⇒ <code>HTMLElement</code>
         * [.reload()](#tfw.dynamicTableClass+reload)
         * [.serverWatch()](#tfw.dynamicTableClass+serverWatch)
         * [.destroy()](#tfw.dynamicTableClass+destroy)
@@ -284,11 +285,11 @@ Read user's preference.
 
 <a name="tfw.dynamicTableClass+getTable"></a>
 
-#### dynamicTableClass.getTable() ⇒ <code>Object</code>
+#### dynamicTableClass.getTable() ⇒ <code>HTMLElement</code>
 Get table container (for inserting into document).
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Returns**: <code>Object</code> - Returns the table container (HTML element).  
+**Returns**: <code>HTMLElement</code> - Table container  
 <a name="tfw.dynamicTableClass+reload"></a>
 
 #### dynamicTableClass.reload()
@@ -395,7 +396,7 @@ Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| filterElement | <code>Object</code> | element to position new layer to (HTML element) |
+| filterElement | <code>HTMLElement</code> | element to position new layer to |
 | dataCol | <code>number</code> | order of searched column (in data) |
 
 <a name="tfw.dynamicTableClass+sort"></a>
@@ -612,8 +613,8 @@ Set active arrow (and make other arrows of same group inactive).
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Object</code> | arrow to make active (HTML element) |
-| base | <code>Object</code> | where to search for arrows (HTML element) |
+| element | <code>HTMLElement</code> | arrow to make active |
+| base | <code>HTMLElement</code> | where to search for arrows |
 
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 
@@ -732,8 +733,8 @@ Callback function that puts calendar widget for an input field into page.Most l
 
 | Param | Type | Description |
 | --- | --- | --- |
-| calendar | <code>Object</code> | calendar widget (HTML element) |
-| input | <code>Object</code> | related input field (HTML element) |
+| calendar | <code>HTMLElement</code> | calendar widget |
+| input | <code>HTMLElement</code> | related input field |
 
 <a name="tfw.strings"></a>
 
@@ -741,7 +742,7 @@ Callback function that puts calendar widget for an input field into page.Most l
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;}&quot;</code>  
+**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;HIDDEN_ROWS\&quot;:\&quot;Hidden rows\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -752,6 +753,7 @@ Strings that are output by tfw functions. Change them for localization.
 | FROM | <code>string</code> | <code>&quot;From:&quot;</code> | Minimum input label |
 | TO | <code>string</code> | <code>&quot;To:&quot;</code> | Maximum input label |
 | FILTER | <code>string</code> | <code>&quot;Filter…&quot;</code> | Placeholder when searching anywhere in a string |
+| HIDDEN_ROWS | <code>string</code> | <code>&quot;Hidden rows&quot;</code> | Label of hidden rows count |
 
 <a name="tfw.ajaxIncludeParams"></a>
 
@@ -811,13 +813,13 @@ Add new translations and re-[init](#tfw.init) tfw.
 <a name="tfw.fillElemDefs"></a>
 
 ### tfw.fillElemDefs(element, params)
-Set parameters of a HTML element.
+Set attributes of a HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| element | <code>Object</code> |  | HTML element |
+| element | <code>HTMLElement</code> |  | element to set attributes of |
 | params | <code>Object</code> |  | parameters object |
 | [params.id] | <code>string</code> |  | ID |
 | [params.className] | <code>string</code> |  | class |
@@ -836,11 +838,11 @@ Set parameters of a HTML element.
 
 <a name="tfw.select"></a>
 
-### tfw.select(params) ⇒ <code>Object</code>
+### tfw.select(params) ⇒ <code>HTMLElement</code>
 Create a select field with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created select field (HTML element).  
+**Returns**: <code>HTMLElement</code> - Created select field.  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Description |
@@ -853,26 +855,26 @@ Create a select field with specified parameters.
 
 <a name="tfw.createLayerAndWrapperAtElement"></a>
 
-### tfw.createLayerAndWrapperAtElement(element, params, [above]) ⇒ <code>Object</code>
+### tfw.createLayerAndWrapperAtElement(element, params, [above]) ⇒ <code>HTMLElement</code>
 Create a new layer and a wrapper that starts at a given element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created wrapper (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created wrapper  
 **See**: desktop.newLayer  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| element | <code>Object</code> |  | HTML element |
+| element | <code>HTMLElement</code> |  | element to position wrapper at |
 | params | <code>Object</code> |  | parameters for [newLayer](#desktop.newLayer) |
 | [above] | <code>boolean</code> | <code>false</code> | whether to position above element instead of below |
 
 <a name="tfw.dropDown"></a>
 
-### tfw.dropDown(params) ⇒ <code>Object</code>
+### tfw.dropDown(params) ⇒ <code>HTMLElement</code>
 Create a dropdown menu.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created dropdown menu (HTML element).  
+**Returns**: <code>HTMLElement</code> - Created dropdown menu  
 **See**: tfw.select  
 
 | Param | Type | Default | Description |
@@ -894,11 +896,11 @@ Create a dropdown menu.
 
 <a name="tfw.button"></a>
 
-### tfw.button(params) ⇒ <code>Object</code>
+### tfw.button(params) ⇒ <code>HTMLElement</code>
 Create a button with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created button (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created button  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Default | Description |
@@ -910,15 +912,15 @@ Create a button with specified parameters.
 
 <a name="tfw.inputFieldLegend"></a>
 
-### tfw.inputFieldLegend(element, params) ⇒ <code>Object</code>
+### tfw.inputFieldLegend(element, params) ⇒ <code>HTMLElement</code>
 Wrap an input field with a legend and a container.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - container with legend and input field (HTML element)  
+**Returns**: <code>HTMLElement</code> - container with legend and input field  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| element | <code>Object</code> | input field HTML element |
+| element | <code>HTMLElement</code> | input field |
 | params | <code>Object</code> | legend parameters |
 | params.legend | <code>string</code> | legend text |
 | [params.legendStyle] | <code>string</code> | legend CSS styling |
@@ -928,11 +930,11 @@ Wrap an input field with a legend and a container.
 
 <a name="tfw.input"></a>
 
-### tfw.input(params) ⇒ <code>Object</code>
+### tfw.input(params) ⇒ <code>HTMLElement</code>
 Create an input field with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created input field (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created input field  
 **See**
 
 - tfw.fillElemDefs
@@ -950,11 +952,11 @@ Create an input field with specified parameters.
 
 <a name="tfw.textArea"></a>
 
-### tfw.textArea(params) ⇒ <code>Object</code>
+### tfw.textArea(params) ⇒ <code>HTMLElement</code>
 Create a text area with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created text area (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created text area  
 **See**
 
 - tfw.fillElemDefs
@@ -968,11 +970,11 @@ Create a text area with specified parameters.
 
 <a name="tfw.checkbox"></a>
 
-### tfw.checkbox(params) ⇒ <code>Object</code>
+### tfw.checkbox(params) ⇒ <code>HTMLElement</code>
 Create a checkbox with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created checkbox (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created checkbox  
 **See**
 
 - tfw.fillElemDefs
@@ -992,11 +994,11 @@ Create a checkbox with specified parameters.
 
 <a name="tfw.icon"></a>
 
-### tfw.icon(params) ⇒ <code>Object</code>
+### tfw.icon(params) ⇒ <code>HTMLElement</code>
 Create an icon with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created icon (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created icon  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Description |
@@ -1007,11 +1009,11 @@ Create an icon with specified parameters.
 
 <a name="tfw.table"></a>
 
-### tfw.table(params) ⇒ <code>Object</code>
+### tfw.table(params) ⇒ <code>HTMLElement</code>
 Create a table with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created table (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created table  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Description |
@@ -1020,11 +1022,11 @@ Create a table with specified parameters.
 
 <a name="tfw.tr"></a>
 
-### tfw.tr(params) ⇒ <code>Object</code>
+### tfw.tr(params) ⇒ <code>HTMLElement</code>
 Create a table row with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created table row (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created table row  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Description |
@@ -1034,11 +1036,11 @@ Create a table row with specified parameters.
 
 <a name="tfw.td"></a>
 
-### tfw.td(params) ⇒ <code>Object</code>
+### tfw.td(params) ⇒ <code>HTMLElement</code>
 Create a table cell with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created table cell (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created table cell  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Description |
@@ -1048,11 +1050,11 @@ Create a table cell with specified parameters.
 
 <a name="tfw.slider"></a>
 
-### tfw.slider(params) ⇒ <code>Object</code>
+### tfw.slider(params) ⇒ <code>HTMLElement</code>
 Create a slider with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - Created slider (HTML element)  
+**Returns**: <code>HTMLElement</code> - Created slider  
 **See**: tfw.fillElemDefs  
 
 | Param | Type | Default | Description |
@@ -1130,11 +1132,11 @@ Decode JSON data, show error in case they are invalid.
 
 <a name="tfw.dynamicTable"></a>
 
-### tfw.dynamicTable(params) ⇒ <code>Object</code>
+### tfw.dynamicTable(params) ⇒ <code>HTMLElement</code>
 Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.Class instance's properties are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>Object</code> - table (HTML element)  
+**Returns**: <code>HTMLElement</code> - Table  
 **See**: tfw.dynamicTableClass  
 
 | Param | Type | Description |
@@ -1242,9 +1244,12 @@ Function package for preparing HTML elements.
 HTML to show when some content is being loaded.
 
 **Kind**: global constant  
+**Default**: <code>&quot;&lt;div class=&#x27;tfwDivContentLoader&#x27;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  
 <a name="cmp"></a>
 
 ## cmp(a, b)
+Compare two numbers - for use with sorting functions.
+
 **Kind**: global function  
 
 | Param | Type |

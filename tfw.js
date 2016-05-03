@@ -6,10 +6,12 @@
 /**
  * HTML to show when some content is being loaded.
  * @constant {string}
+ * @default
  */
 var AJAX_LOADER = "<div class='tfwDivContentLoader'><span></span></div>";
 
 /**
+ * Compare two numbers - for use with sorting functions.
  * @param {number} a
  * @param {number} b
  */ 
@@ -89,7 +91,7 @@ HTMLElement.prototype.add = function (x) {
 }
 
 /**
- * Triobo. This is a singleton (a single "instance" of a "class").
+ * Triobo. This is a singleton.
  * @class
  */
 var desktop = {
@@ -236,7 +238,7 @@ var desktop = {
 }
 
 /**
- * Triobo framework. This is a singleton (a single "instance" of a "class").
+ * Triobo framework. This is a singleton.
  * @class
  * @todo Replace {@link http://www.w3schools.com/js/js_reserved.asp|reserved words} in function names
  */
@@ -259,7 +261,8 @@ var tfw = {
 		TO: 'To:',
 		/** Placeholder when searching anywhere in a string */
 		FILTER: 'Filter…',
-    HIDDEN_ROWS: 'Hidden rows' 		
+		/** Label of hidden rows count */
+		HIDDEN_ROWS: 'Hidden rows' 		
 	},
 	/**
 	 * Add Javascript-generated CSS to the document.
@@ -303,9 +306,9 @@ var tfw = {
 		tfw.init();
 	},
     /**
-     * Set parameters of a HTML element.
+     * Set attributes of a HTML element.
      * @memberof tfw
-     * @param {Object} element - HTML element
+     * @param {HTMLElement} element - element to set attributes of
      * @param {Object} params - parameters object
      * @param {string} [params.id] - ID
      * @param {string} [params.className] - class
@@ -401,7 +404,7 @@ var tfw = {
      * @param {(string|string[]|Object[])} params.list - list of options as string "label1;label2" or "label1|value1;label2|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text)
      * @param {string} [params.list[].id] - value (defaults to numeric index of option)
      * @param {string} params.list[].t - label
-     * @return {Object} Created select field (HTML element).
+     * @return {HTMLElement} Created select field.
      */
     select : function (params) {
         var element = document.createElement("div");
@@ -481,10 +484,10 @@ var tfw = {
     },
 	/**
 	 * Create a new layer and a wrapper that starts at a given element.
-	 * @param {Object} element - HTML element
+	 * @param {HTMLElement} element - element to position wrapper at
 	 * @param {Object} params - parameters for {@link desktop.newLayer}
 	 * @param {boolean} [above=false] - whether to position above element instead of below
-	 * @return {Object} Created wrapper (HTML element)
+	 * @return {HTMLElement} Created wrapper
 	 * @see desktop.newLayer
 	 */
 	createLayerAndWrapperAtElement : function (element, params, above) {
@@ -515,7 +518,7 @@ var tfw = {
 	 * @param {function} [params.onchange] - function to call when value changes (onchange)
 	 * @param {(string[]|Object[])} params.list - list of options passed to {@link tfw.select}
 	 * @param {string} [params.value] - default (selected) value
-	 * @return {Object} Created dropdown menu (HTML element).
+	 * @return {HTMLElement} Created dropdown menu
 	 * @see tfw.select
 	 */
     dropDown : function (params) {
@@ -640,7 +643,7 @@ var tfw = {
      * @param {number} [params.step] - step between allowed numeric values
      * @param {boolean} [params.default=false] - if true, type=submit, otherwise type=button
      * @param {function} [params.action] - Function to fire when button is clicked (event propagation is stopped)
-     * @return {Object} Created button (HTML element)
+     * @return {HTMLElement} Created button
      */
     button : function (params) {
         var element = document.createElement("button");
@@ -661,14 +664,14 @@ var tfw = {
 	/**
 	 * Wrap an input field with a legend and a container.
 	 * @memberof tfw
-	 * @param {Object} element - input field HTML element
+	 * @param {HTMLElement} element - input field
 	 * @param {Object} params - legend parameters
 	 * @param {string} params.legend - legend text
 	 * @param {string} [params.legendStyle] - legend CSS styling
 	 * @param {string} [params.containerId] - legend container ID
 	 * @param {string} [params.containerStyle] - legend container CSS styling
 	 * @param {string} [params.postText] - text after input field
-	 * @return {Object} container with legend and input field (HTML element)
+	 * @return {HTMLElement} container with legend and input field
 	 */
 	inputFieldLegend : function (element, params) {
 		var x = document.createElement("p");
@@ -701,7 +704,7 @@ var tfw = {
 	 * @param {number} [params.min] - minimum allowed value
 	 * @param {number} [params.max] - maximum allowed value
 	 * @param {number} [params.step] - step between allowed numeric values
-	 * @return {Object} Created input field (HTML element)
+	 * @return {HTMLElement} Created input field
 	 */
 	input : function (params) {
 		var element = document.createElement("input");
@@ -722,7 +725,7 @@ var tfw = {
 	 * @see tfw.fillElemDefs
 	 * @see tfw.inputFieldLegend
 	 * @param {string} [params.value] - prefilled value
-	 * @return {Object} Created text area (HTML element)
+	 * @return {HTMLElement} Created text area
 	 */
 	textArea : function (params) {
 		var element = document.createElement("textarea");
@@ -741,7 +744,7 @@ var tfw = {
 	 * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
 	 * @param {string} [params.text] - checkbox label text
 	 * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
-	 * @return {Object} Created checkbox (HTML element)
+	 * @return {HTMLElement} Created checkbox
 	 * @todo Use "value" for real value, instead of using it for "checked"
 	 */
 	checkbox : function (params) {
@@ -825,7 +828,7 @@ var tfw = {
 	 * @see tfw.fillElemDefs
 	 * @param {function} [params.action] - function triggered when icon is clicked (basically onclick)
 	 * @param {number} [params.index] - move background image up by this number of pixels (background-position-x)
-	 * @return {Object} Created icon (HTML element)
+	 * @return {HTMLElement} Created icon
 	 */
 	icon : function (params) {
 		var element = document.createElement("div");
@@ -880,7 +883,7 @@ var tfw = {
 	 * @memberof tfw
 	 * @param {Object} params - table parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for rows)
 	 * @see tfw.fillElemDefs
-	 * @return {Object} Created table (HTML element)
+	 * @return {HTMLElement} Created table
 	 */
 	table : function (params) {
 		var element = document.createElement("table");
@@ -893,7 +896,7 @@ var tfw = {
 	 * @param {Object} params - table row parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for columns/cells)
 	 * @see tfw.fillElemDefs
 	 * @param {Array} [params.columns] - list of objects, that will be passed to tfw.td and added as children
-	 * @return {Object} Created table row (HTML element)
+	 * @return {HTMLElement} Created table row
 	 */
 	tr : function (params) {
 		var element = document.createElement("tr");
@@ -909,7 +912,7 @@ var tfw = {
 	 * @param {Object} params - table cell parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
 	 * @param {number} [params.colspan] - number of columns that this cell will merge
 	 * @see tfw.fillElemDefs
-	 * @return {Object} Created table cell (HTML element)
+	 * @return {HTMLElement} Created table cell
 	 */
 	td : function (params) {
 		var element = document.createElement("td");
@@ -933,7 +936,7 @@ var tfw = {
 	 * @param {string} [params.width] - width of slider (CSS, including unit)
 	 * @param {string} [params.valueStyle] - value box CSS styling
 	 * @param {string} [params.postText] - text after slider
-	 * @return {Object} Created slider (HTML element)
+	 * @return {HTMLElement} Created slider
 	 */
 	slider : function (params) {
 		var element = document.createElement("p");
@@ -1875,7 +1878,7 @@ var tfw = {
 		}
 		/**
 		 * Get table container (for inserting into document).
-		 * @returns {Object} Returns the table container (HTML element).
+		 * @returns {HTMLElement} Table container
 		 */
 		this.getTable = function () {
 			return this.tableContainer;
@@ -2120,8 +2123,8 @@ var tfw = {
 		
 		/**
 		 * Set active arrow (and make other arrows of same group inactive).
-		 * @param {Object} element - arrow to make active (HTML element)
-		 * @param {Object} base - where to search for arrows (HTML element)
+		 * @param {HTMLElement} element - arrow to make active
+		 * @param {HTMLElement} base - where to search for arrows
 		 */
 		function setActiveArrow(element, base, on){
 			if(typeof(base) != "undefined" && base != null){
@@ -2646,7 +2649,7 @@ var tfw = {
 		/**
 		 * Apply filter for values of a column.
 		 * Creates a {@link tfw.dialog|dialog} with filter.
-		 * @param {Object} filterElement - element to position new layer to (HTML element)
+		 * @param {HTMLElement} filterElement - element to position new layer to
 		 * @param {number} dataCol - order of searched column (in data)
 		 * @todo Change rangeMin/rangeMax/dateMin/dateMax classes + {@link tfw.dynamicTableClass#filterAny}
 		 */
@@ -2991,7 +2994,7 @@ var tfw = {
 	 * Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
 	 * Class instance's properties are mirrored into the HTML element.
 	 * @param {Object} params - table parameters (see {@link tfw.dynamicTableClass})
-	 * @return {Object} table (HTML element)
+	 * @return {HTMLElement} Table
 	 * @see tfw.dynamicTableClass
 	 */
 	dynamicTable : function (params) {
@@ -3274,8 +3277,8 @@ tfw.calendar.daysShort = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
  * Callback function that puts calendar widget for an input field into page.
  * Most likely create an overlay that closes calendar when user clicks somewhere else.
  * @callback tfw.calendar~placeCalendar
- * @param {Object} calendar - calendar widget (HTML element)
- * @param {Object} input - related input field (HTML element)
+ * @param {HTMLElement} calendar - calendar widget
+ * @param {HTMLElement} input - related input field
  * @default
  */
 /**
