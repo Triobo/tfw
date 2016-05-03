@@ -588,9 +588,9 @@ button:disabled:hover {
 }
 .tfwDynamicTable > tfoot button{
 	background-color: inherit;
-	padding: 0;
+	padding: 1px 0 0 0;
 	border: 0px none;
-	color: white;
+	color: inherit;
 }
 .tfwDynamicTable > tfoot > tr > td:nth-child(2){
 	text-align: center;
@@ -608,7 +608,7 @@ button:disabled:hover {
 	background-color: #222;
 }
 .tfwDynamicTable tfoot tr {
-	background-color: #666;
+	background-color: #888;/*gray*/
 	color:white;
 }
 .tfwDynamicTable tr.headlines th {
@@ -651,6 +651,12 @@ button:disabled:hover {
 }
 .tfwDynamicTable tr td .subtable {
   float:right;
+}
+.tfwDynamicTableColumnDialog {
+  padding:8px;
+  border:1px solid #000;
+  border-radius: 3px;
+  background-color: white;
 }
 
 /*********************/
@@ -762,8 +768,8 @@ button:disabled:hover {
 	border-top-color: #fc5;/*orange*/
 }
 .tfwArrow.filter.reset{
-	border-left-color: #666;
-	border-right-color: #666;
+	border-left-color: #888;/*gray*/;
+	border-right-color: #888;/*gray*/;
 	border-top-color: #fc5;/*orange*/
 	background-color: #fc5;/*orange*/
 	padding-top: 1px;

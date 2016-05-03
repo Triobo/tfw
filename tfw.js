@@ -2956,7 +2956,7 @@ var tfw = {
 		this.toggleColumnDialog = function (element) {
 			var dynamicTable = this,
 				hiddenColumns = this.getPreference("hiddenColumns"),
-				c = document.createElement("div");
+				c = tfw.div({className:"tfwDynamicTableColumnDialog"});
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!this.data.cols[j].hidden) {
 					var checkbox = tfw.checkbox({
