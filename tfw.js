@@ -23,6 +23,9 @@ function $(id) {
     var x = document.getElementById(id);
     return x;
 }
+HTMLElement.prototype.nodeOrder = function () {
+	return Array.prototype.indexOf.call(this.parentNode.children, this);
+}
 HTMLElement.prototype.hasClass = function (c) {
     return (this.className.split(' ').indexOf(c) != -1);
 }
@@ -2008,7 +2011,7 @@ var tfw = {
 				rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']("draggable");
 				rows[i].draggable = rowReorderEnabled;
 				rows[i].ondragstart = rowReorderEnabled ? function (event) {
-					event.dataTransfer.setData("text", event.target.id);
+					event.dataTransfer.setData("text", event.target.nodeOrder());
 				}
 				 : null;
 				rows[i].ondragover = rowReorderEnabled ? function (event) {
@@ -2019,9 +2022,10 @@ var tfw = {
 				 : null;
 				rows[i].ondrop = rowReorderEnabled ? function (event) {
 					event.preventDefault();
-					var data = event.dataTransfer.getData("text");
-					var element = document.getElementById(data);
-					event.target.closest("tbody").insertBefore(element, event.target.closest("tr"));
+					var rowOrder = parseInt(event.dataTransfer.getData("text"));
+					var tbody = dynamicTable.tableContainer.querySelector("tbody");
+					var element = tbody.rows[rowOrder];
+					tbody.insertBefore(element, event.target.closest("tr"));
 					dynamicTable.orderChange(element);
 				}
 				 : null;
@@ -2121,7 +2125,7 @@ var tfw = {
 		 */
 		this.orderChange = function (element) {
 			var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML) - 1;
-			var droppedRowOrder = Array.prototype.indexOf.call(element.parentNode.children, element);
+			var droppedRowOrder = element.nodeOrder();
 			
 			element.getElementsByTagName("td")[orderColumn].innerHTML = droppedRowOrder + 1;
 			
