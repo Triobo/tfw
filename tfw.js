@@ -258,7 +258,8 @@ var tfw = {
 		/** Maximum input label */
 		TO: 'To:',
 		/** Placeholder when searching anywhere in a string */
-		FILTER: 'Filter…'
+		FILTER: 'Filter…',
+    HIDDEN_ROWS: 'Hidden rows' 		
 	},
 	/**
 	 * Add Javascript-generated CSS to the document.
@@ -2360,17 +2361,21 @@ var tfw = {
 					})
 				]} : {}),
 				tfw.td({children:[
-					tfw.span({
-						className: "hiddenRowsCount"
-					}),
-					tfw.button({
-						className: "resetTableFilter",
-						style:"display:none;",
-						onclick: function(){
-							dynamicTable.resetFilters.call(dynamicTable);
-						},
-						innerHTML: "<span class='tfwArrow filter reset'></span>"
-					})
+  				tfw.div({
+    				id:this.tableHTMLId+"-hiddenRowsInfo",
+    				children:[
+    					tfw.span({
+    						id:this.tableHTMLId+"-hiddenRowsCount"
+    					}),
+    					tfw.button({
+    						className: "resetTableFilter",
+    						onclick: function(){
+    							dynamicTable.resetFilters.call(dynamicTable);
+    						},
+    						innerHTML: "<span class='tfwArrow filter reset'></span>"
+    					})
+    				]
+    		  })
 				]}),
 				tfw.td({children:[
 					tfw.button({
@@ -2378,13 +2383,7 @@ var tfw = {
 							dynamicTable.toggleColumnDialog.call(dynamicTable, this)
 						},
 						innerHTML: "<span class='fa fa-cog'></span>"
-					})/*,
-					tfw.button({
-						onclick: function(){
-							dynamicTable.resetFilters.call(dynamicTable);
-						},
-						innerHTML: "<span class='tfwArrow filter reset'></span>"
-					})*/
+					})
 				]}),
 			]}));
 			updateRowCounts.call(dynamicTable);
@@ -2400,10 +2399,8 @@ var tfw = {
 		function updateRowCounts(){
   		var vis=this.getVisibleRowsCount();
   		var tot=this.getTotalRowsCount();
-			this.tableContainer.querySelector(".hiddenRowsCount").style.display = (vis==tot)?"none":"inline-block";
-			this.tableContainer.querySelector(".hiddenRowsCount").innerHTML = "Hidden rows: "+(tot-vis);
-			this.tableContainer.querySelector(".resetTableFilter").style.display = (vis==tot)?"none":"inline-block";
-			
+			$(this.tableHTMLId+"-hiddenRowsInfo").style.display = (vis==tot)?"none":"inline-block";
+			$(this.tableHTMLId+"-hiddenRowsCount").innerHTML = tfw.strings.HIDDEN_ROWS+": "+(tot-vis);			
 		}
 		
 		/** @private */
