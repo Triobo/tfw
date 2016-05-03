@@ -79,8 +79,8 @@ Create a new layer.
                 * [.destroy()](#tfw.dynamicTableClass+destroy)
                 * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
                 * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+                * [.orderChange(referenceRow)](#tfw.dynamicTableClass+orderChange)
                 * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
-                * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
                 * [.paint([changes])](#tfw.dynamicTableClass+paint)
                 * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
                 * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
@@ -173,8 +173,8 @@ Triobo framework. This is a singleton (a single "instance" of a "class").
         * [.destroy()](#tfw.dynamicTableClass+destroy)
         * [.reorderEnabled()](#tfw.dynamicTableClass+reorderEnabled) ⇒ <code>boolean</code>
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
+        * [.orderChange(referenceRow)](#tfw.dynamicTableClass+orderChange)
         * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
-        * [.orderChange(element)](#tfw.dynamicTableClass+orderChange)
         * [.paint([changes])](#tfw.dynamicTableClass+paint)
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
@@ -331,6 +331,17 @@ Test if no filters are applied and table is sorted by column of type 'order'.
 Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+<a name="tfw.dynamicTableClass+orderChange"></a>
+
+#### dynamicTableClass.orderChange(referenceRow)
+Reflect a change in order in the table.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| referenceRow | <code>HTMLElement</code> | before which row should be the moved row placed (if null, insert at the end) |
+
 <a name="tfw.dynamicTableClass+updateInput"></a>
 
 #### dynamicTableClass.updateInput(input)
@@ -344,17 +355,6 @@ Updates data and sends change to server.
 | input | <code>HTMLElement</code> | input field in a cell of dynamic table |
 | input.value | <code>string</code> | value that can be obtained |
 
-<a name="tfw.dynamicTableClass+orderChange"></a>
-
-#### dynamicTableClass.orderChange(element)
-Reflect a change in order in the table.
-
-**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>Object</code> | row that was dropped (HTML element) |
-
 <a name="tfw.dynamicTableClass+paint"></a>
 
 #### dynamicTableClass.paint([changes])
@@ -363,7 +363,6 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
-- [ ] Change drag&dropping so that it is clear where the dragged row will end
 - [ ] Add temporary class hasBeenChanged to edited cells.
 - [ ] Change checkbox value so that it's not sent back to server
 - [ ] Handle update of cell that is currently being edited

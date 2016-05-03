@@ -1789,6 +1789,11 @@ var tfw = {
 		 */
 		var goToSub = ("goToSub" in params) ? params.goToSub : null;
 		/**
+		 * @private
+		 * @var {number}
+		 */
+		var orderDataCol = null;
+		/**
 		 * User preferences.
 		 * @private
 		 * @var {Object}
@@ -1982,23 +1987,18 @@ var tfw = {
 		 */
 		this.reorderEnabled = function () {
 			var sorting = this.getPreference("sorting");
-			var sortedByOrder = sorting != null && ("dataCol" in sorting) && sorting.dataCol == orderColumn && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC;
+			var sortedByOrder = sorting != null && ("dataCol" in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC;
 			return sortedByOrder && this.getVisibleRowsCount() == this.getTotalRowsCount();
 		}
-
-		/**
-		 * @private
-		 * @var {number}
-		 */
-		var orderColumn = null;
 
 		/**
 		 * Toggle reordering of rows via drag & drop.
 		 * Reflects the value of a private variable set by onclick events fired with filters.
 		 * Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
-		 * @listens ondragstart
-		 * @listens ondragover
-		 * @listens ondrop
+		 * @listens dragstart
+		 * @listens dragover
+		 * @listens dragend
+		 * @listens drop
 		 */
 		this.toggleReorder = function () {
 			var dynamicTable = this;
@@ -2007,29 +2007,65 @@ var tfw = {
 			if (rowReorderEnabled) {
 				window.getSelection().removeAllRanges();
 			}
+			
 			var rows = tbody.getElementsByTagName("tr");
 			for (var i = 0; i < rows.length; i++) {
 				rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']("draggable");
 				rows[i].draggable = rowReorderEnabled;
 				rows[i].ondragstart = rowReorderEnabled ? function (event) {
+					this.addClass('dragged');
 					event.dataTransfer.setData("text", event.target.nodeOrder());
 				}
 				 : null;
 				rows[i].ondragover = rowReorderEnabled ? function (event) {
 					event.preventDefault();
-					var allowed = (event.target.parentNode.isEqualNode(tbody));
-					event.dataTransfer.dropEffect = allowed ? 'move' : 'cancel';
+					event.dataTransfer.dropEffect = 'move';
+					
+					var dragged = dynamicTable.tableContainer.querySelector("tbody tr.dragged");
+					if(!dragged.isSameNode(this)){
+						dynamicTable.orderChange.call(dynamicTable, (dragged.nodeOrder() < this.nodeOrder()) ? this.nextSibling : this);
+					}
+					
+					return false;
 				}
 				 : null;
 				rows[i].ondrop = rowReorderEnabled ? function (event) {
 					event.preventDefault();
 					var rowOrder = parseInt(event.dataTransfer.getData("text"));
-					var tbody = dynamicTable.tableContainer.querySelector("tbody");
-					var element = tbody.rows[rowOrder];
-					tbody.insertBefore(element, event.target.closest("tr"));
-					dynamicTable.orderChange(element);
+					serverUpdateOrder({
+						id : this.dataset.rowid,
+						neworder : this.nodeOrder() + 1
+					});
 				}
 				 : null;
+				rows[i].ondragend = rowReorderEnabled ? function () {
+					this.removeClass('dragged');
+				} : null;
+			}
+		}
+		
+		/**
+		 * Reflect a change in order in the table.
+		 * @param {?HTMLElement} referenceRow - before which row should be the moved row placed (if null, insert at the end)
+		 */
+		this.orderChange = function (referenceRow) {
+			var draggedRow = this.tableContainer.querySelector("tbody tr.dragged");
+			if(draggedRow.isSameNode(referenceRow)){
+				return;
+			}
+			
+			var tbody = this.tableContainer.querySelector("tbody");
+			var orderColumn = this.data.cols[orderDataCol].columnOrder;
+			var originalRowOrder = draggedRow.nodeOrder();
+			var droppedRowOrder = (referenceRow != null) ? ( referenceRow.nodeOrder() - ((referenceRow.nodeOrder() < originalRowOrder) ? 0 : 1) ) : (tbody.rows.length-1);
+			
+			tbody.insertBefore(draggedRow, referenceRow);
+			
+			draggedRow.cells[orderColumn].innerHTML = droppedRowOrder + 1;
+			if(originalRowOrder < droppedRowOrder){ //drag down
+				tbody.rows[originalRowOrder].cells[orderColumn].innerHTML--;
+			} else { //drag up
+				tbody.rows[originalRowOrder].cells[orderColumn].innerHTML = parseInt(tbody.rows[originalRowOrder].cells[orderColumn].innerHTML)+1;
 			}
 		}
 		
@@ -2121,28 +2157,6 @@ var tfw = {
 		}
 		
 		/**
-		 * Reflect a change in order in the table.
-		 * @param {Object} element - row that was dropped (HTML element)
-		 */
-		this.orderChange = function (element) {
-			var originalRowOrder = parseInt(element.getElementsByTagName("td")[orderColumn].innerHTML) - 1;
-			var droppedRowOrder = element.nodeOrder();
-			
-			element.getElementsByTagName("td")[orderColumn].innerHTML = droppedRowOrder + 1;
-			
-			var rows = this.tableContainer.querySelector("tbody").rows;
-			var p = (originalRowOrder < droppedRowOrder); //true <=> dragged down
-			for(var i = (p ? originalRowOrder : (droppedRowOrder+1)) ; (p ? (i < droppedRowOrder) : (i <= originalRowOrder)) ; i++){
-				var cell = rows[i].cells[orderColumn];
-				cell.innerHTML = parseInt(cell.innerHTML) + (p ? -1 : 1);
-			}
-			serverUpdateOrder({
-				id : element.dataset.rowid,
-				neworder : droppedRowOrder + 1
-			});
-		}
-		
-		/**
 		 * @private
 		 * @param {Object} cell - the cell from which to move (TD)
 		 * @param {number} column - order number of column in which the cell is in
@@ -2169,8 +2183,8 @@ var tfw = {
 		
 		/**
 		 * @private
-		 * @listens onclick
-		 * @listens onkeyup
+		 * @listens click
+		 * @listens keyup
 		 */
 		function createAndFillTable(){
 			//add CSS styling for filters
@@ -2203,7 +2217,7 @@ var tfw = {
 			for (var j = 0; j < this.data.cols.length; j++) {
 				if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
 					this.data.cols[j].sort = true;
-					orderColumn = j;
+					orderDataCol = j;
 					o.addEventListener("click", dynamicTable.toggleReorder.bind(dynamicTable));
 				}
 			}
@@ -2442,7 +2456,6 @@ var tfw = {
 		 * Refresh the content of the table using data gotten by (re)loading.
 		 * Assumes that there is only 1 order column and that data is initially sorted by that column.
 		 * @param {tfw.dynamicTableClass~dataChange[]} [changes] - changes made to data (loaded by {@link tfw.dynamicTableClass#serverWatch|watch})
-		 * @todo Change drag&dropping so that it is clear where the dragged row will end
 		 * @todo Add temporary class hasBeenChanged to edited cells.
 		 * @todo Change checkbox value so that it's not sent back to server
 		 * @todo Handle update of cell that is currently being edited

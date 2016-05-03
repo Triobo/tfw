@@ -623,17 +623,29 @@ button:disabled:hover {
 	float:right;
 }
 
+/* Prevent the text contents of draggable elements from being selectable. */
+tr[draggable] :first-child {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}
 .tfwDynamicTable tr.draggable{
 	cursor: -webkit-grab;
 	cursor: -moz-grab;
 	cursor: grab;
 }
-
 .tfwDynamicTable tr.draggable:active{
 	cursor: -webkit-grabbing;
 	cursor: -moz-grabbing;
 	cursor: grabbing;
 }
+.tfwDynamicTable tr.dragged{
+	opacity: 0.4;
+}
+
 .tfwDynamicTable tr td input, .tfwDynamicTable tr td input:focus {
   height: 20px;
   border: none;
