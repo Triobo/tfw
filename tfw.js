@@ -2445,6 +2445,9 @@ var tfw = {
 				if(watchChanges){
 					this.serverWatch();
 				}
+				if ("onload" in params) {
+  				params.onload();
+				}
 			} else if(typeof(changes) != "undefined") {
 				console.log(changes);
 				for(var i=0;i<changes.length;i++){
