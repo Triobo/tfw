@@ -1734,6 +1734,7 @@ var tfw = {
 		var bodyHeight = ("bodyHeight" in params) ? params.bodyHeight : null;
 		/**
 		 * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
+		 * Any other attributes provided by server are preserved (e.g. data.meta).
 		 * @var {Object}
 		 * @default null
 		 * @public

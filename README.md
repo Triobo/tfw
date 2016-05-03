@@ -236,7 +236,7 @@ DIV containing the table.
 <a name="tfw.dynamicTableClass+data"></a>
 
 #### dynamicTableClass.data : <code>Object</code>
-Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be called to fill this.
+Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be called to fill this.Any other attributes provided by server are preserved (e.g. data.meta).
 
 **Kind**: instance property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Default**: <code>null</code>  
