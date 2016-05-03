@@ -557,6 +557,7 @@ button:disabled:hover {
 	border: 0;
 	overflow: auto;
 	max-width: 100%;
+	background-color: white;
 }
 .tfwDynamicTable .rowEditCell{
 	width: 25px;
@@ -583,10 +584,13 @@ button:disabled:hover {
 }
 .tfwDynamicTable > tfoot > tr > td{
 	width: 33.3%;
-	height: 33px;
+	border: 0px none;
 }
 .tfwDynamicTable > tfoot button{
-	background-color: #ddd;
+	background-color: inherit;
+	padding: 0;
+	border: 0px none;
+	color: white;
 }
 .tfwDynamicTable > tfoot > tr > td:nth-child(2){
 	text-align: center;
@@ -600,8 +604,12 @@ button:disabled:hover {
 .tfwDynamicTable tr > :last-child{
 	border-right-width: 1px;
 }
-.tfwDynamicTable thead tr, .tfwDynamicTable thead th{
+.tfwDynamicTable thead tr, .tfwDynamicTable thead th {
 	background-color: #222;
+}
+.tfwDynamicTable tfoot tr {
+	background-color: #666;
+	color:white;
 }
 .tfwDynamicTable tr.headlines th {
   color: white;
@@ -754,10 +762,10 @@ button:disabled:hover {
 	border-top-color: #fc5;/*orange*/
 }
 .tfwArrow.filter.reset{
-	border-left-color: #ddd;
-	border-right-color: #ddd;
-	border-top-color: #000;
-	background-color: #000;
+	border-left-color: #666;
+	border-right-color: #666;
+	border-top-color: #fc5;/*orange*/
+	background-color: #fc5;/*orange*/
 	padding-top: 1px;
 	margin: 0;
 }

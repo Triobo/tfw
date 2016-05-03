@@ -2355,11 +2355,15 @@ var tfw = {
 				]} : {}),
 				tfw.td({children:[
 					tfw.span({
-						className: "visibleRowsCount"
+						className: "hiddenRowsCount"
 					}),
-					document.createTextNode("/"),
-					tfw.span({
-						className: "totalRowsCount"
+					tfw.button({
+						className: "resetTableFilter",
+						style:"display:none;",
+						onclick: function(){
+							dynamicTable.resetFilters.call(dynamicTable);
+						},
+						innerHTML: "<span class='tfwArrow filter reset'></span>"
 					})
 				]}),
 				tfw.td({children:[
@@ -2368,13 +2372,13 @@ var tfw = {
 							dynamicTable.toggleColumnDialog.call(dynamicTable, this)
 						},
 						innerHTML: "<span class='fa fa-cog'></span>"
-					}),
+					})/*,
 					tfw.button({
 						onclick: function(){
 							dynamicTable.resetFilters.call(dynamicTable);
 						},
 						innerHTML: "<span class='tfwArrow filter reset'></span>"
-					})
+					})*/
 				]}),
 			]}));
 			updateRowCounts.call(dynamicTable);
@@ -2388,8 +2392,12 @@ var tfw = {
 		
 		/** @private */
 		function updateRowCounts(){
-			this.tableContainer.querySelector(".visibleRowsCount").innerHTML = this.getVisibleRowsCount();
-			this.tableContainer.querySelector(".totalRowsCount").innerHTML = this.getTotalRowsCount();
+  		var vis=this.getVisibleRowsCount();
+  		var tot=this.getTotalRowsCount();
+			this.tableContainer.querySelector(".hiddenRowsCount").style.display = (vis==tot)?"none":"inline-block";
+			this.tableContainer.querySelector(".hiddenRowsCount").innerHTML = "Hidden rows: "+(tot-vis);
+			this.tableContainer.querySelector(".resetTableFilter").style.display = (vis==tot)?"none":"inline-block";
+			
 		}
 		
 		/** @private */
@@ -2485,6 +2493,7 @@ var tfw = {
 						
 					}
 				}
+				this.serverWatch();
 			} else{
 				console.error("Dynamic table reloading not implemented yet.");
 			}
