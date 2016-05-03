@@ -1967,8 +1967,7 @@ var tfw = {
 			for(var i=0;i<pendingHttpRequests.length;i++){
 				pendingHttpRequests[i].abort();
 			}
-			
-			document.getElementById("tfwDynamicTableStyling-"+tableHTMLId).remove();
+			document.getElementById("tfwInsertStyle-tfwDynamicTableStyling-"+this.tableHTMLId).remove();
 		}
 
 		/**
@@ -2166,13 +2165,13 @@ var tfw = {
 		 * @listens onclick
 		 * @listens onkeyup
 		 */
-		function createAndFillTable(tableHTMLId){
+		function createAndFillTable(){
 			//add CSS styling for filters
 			var tableCSS = "";
 			for(var dataCol=0;dataCol<this.data.cols.length;dataCol++){
-				tableCSS += "#"+tableHTMLId+" .filter"+dataCol+"Invalid{display:none}\n";
+				tableCSS += "#"+this.tableHTMLId+" .filter"+dataCol+"Invalid{display:none}\n";
 			}
-			tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-"+tableHTMLId);
+			tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-"+this.tableHTMLId);
 			
 			var o,
 			thead,
@@ -2183,7 +2182,7 @@ var tfw = {
 			dynamicTable = this;
 			this.tableContainer.innerHTML = "";
 			this.tableContainer.add(o = tfw.table({
-				id : tableHTMLId,
+				id : this.tableHTMLId,
 				className : 'tfwDynamicTable'
 			}));
 			
@@ -2438,10 +2437,10 @@ var tfw = {
 		 * @todo Handle update of cell that is currently being edited
 		 */
 		this.paint = function (changes) {
-			var tableHTMLId = 'dynamicTable-'+tableId;
+			this.tableHTMLId = 'dynamicTable-'+tableId;
 			
-			if(document.getElementById(tableHTMLId) == null){
-				createAndFillTable.call(this, tableHTMLId);
+			if(document.getElementById(this.tableHTMLId) == null){
+				createAndFillTable.call(this);
 				
 				if(watchChanges){
 					this.serverWatch();
