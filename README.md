@@ -138,10 +138,14 @@ Create a new layer.
         * [.tr(params)](#tfw.tr) ⇒ <code>HTMLElement</code>
         * [.td(params)](#tfw.td) ⇒ <code>HTMLElement</code>
         * [.slider(params)](#tfw.slider) ⇒ <code>HTMLElement</code>
+        * [.filebox()](#tfw.filebox)
+        * [.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)
         * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
+        * [.noveZalozky()](#tfw.noveZalozky)
+        * [.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
     * _inner_
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
@@ -225,7 +229,7 @@ Class for creating dynamic tables.
 
 **Example**  
 ```js
-function myRowEditFunction(id){	// ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   baseURL: "data.php",   urlParams: "token=Nd5qPxH&timestamp=1234567890",   rowEdit: myRowEditFunction,   bodyHeight: "300px"  } ));
+function myRowEditFunction(id){    // ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: 'table1',   baseURL: 'data.php',   urlParams: 'token=Nd5qPxH&timestamp=1234567890',   rowEdit: myRowEditFunction,   bodyHeight: '300px'  } ));
 ```
 <a name="tfw.dynamicTableClass+tableContainer"></a>
 
@@ -697,11 +701,11 @@ Class for enhancing date input fields. Requires CSS styling.
 
 **Example**  
 ```js
-tfw.calendar.placeCalendar = function(cal, input){ input.parentNode.insertBefore(cal, input);}var input = tfw.input({value:"2016-03-07"});document.body.appendChild(input);tfw.calendar(input);
+tfw.calendar.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}var input = tfw.input({value:'2016-03-07'});document.body.appendChild(input);tfw.calendar(input);
 ```
 **Example**  
 ```js
-tfw.calendar.placeCalendar = function(cal, input){ input.parentNode.insertBefore(cal, input);}document.body.appendChild( tfw.calendar(  tfw.input({   value: "2016-03-07"  }) ));
+tfw.calendar.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}document.body.appendChild( tfw.calendar(  tfw.input({   value: '2016-03-07'  }) ));
 ```
 <a name="tfw.calendar.months"></a>
 
@@ -1070,6 +1074,22 @@ Create a slider with specified parameters.
 | [params.valueStyle] | <code>string</code> |  | value box CSS styling |
 | [params.postText] | <code>string</code> |  | text after slider |
 
+<a name="tfw.filebox"></a>
+
+### tfw.filebox()
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Remove dependencies on Triobo
+
+<a name="tfw.dialogPrepareAndDownload"></a>
+
+### tfw.dialogPrepareAndDownload()
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Remove dependencies on Triobo
+
 <a name="tfw.ajaxGet"></a>
 
 ### tfw.ajaxGet(o) ⇒ <code>XMLHttpRequest</code>
@@ -1129,6 +1149,22 @@ Decode JSON data, show error in case they are invalid.
 | Param | Type | Description |
 | --- | --- | --- |
 | json | <code>string</code> | JSON encoded data |
+
+<a name="tfw.noveZalozky"></a>
+
+### tfw.noveZalozky()
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Remove dependencies on Triobo
+
+<a name="tfw.zvolSvislouZalozku"></a>
+
+### tfw.zvolSvislouZalozku()
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Remove dependencies on Triobo
 
 <a name="tfw.dynamicTable"></a>
 
@@ -1244,7 +1280,7 @@ Function package for preparing HTML elements.
 HTML to show when some content is being loaded.
 
 **Kind**: global constant  
-**Default**: <code>&quot;&lt;div class=&#x27;tfwDivContentLoader&#x27;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  
+**Default**: <code>&quot;&lt;div class=\&quot;tfwDivContentLoader\&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  
 <a name="cmp"></a>
 
 ## cmp(a, b)
