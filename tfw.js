@@ -1895,13 +1895,13 @@ var tfw = {
                 } : null;
                 rows[i].ondrop = rowReorderEnabled ? function(event) {
                     event.preventDefault();
+                } : null;
+                rows[i].ondragend = rowReorderEnabled ? function(event) {
+                    this.removeClass('dragged');                    
                     serverUpdateOrder({
                         id: this.dataset.rowid,
                         neworder: this.nodeOrder() + 1
                     });
-                } : null;
-                rows[i].ondragend = rowReorderEnabled ? function() {
-                    this.removeClass('dragged');
                 } : null;
             }
         }
