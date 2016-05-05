@@ -1565,6 +1565,12 @@ var tfw = {
         })
     },
     /**
+     * Callback that creates content to insert into a custom column.
+     * @callback tfw.dynamicTableClass~columnRenderer
+     * @param {string} columnValue - value that was loaded as data from server
+     * @return {HTMLElement[]} - Return array of elements to be inserted into table cell
+     */
+    /**
      * Class for creating dynamic tables.
      * @class
      * @todo View preferences (width, order of columns)
@@ -1578,6 +1584,7 @@ var tfw = {
      * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
      * @param {boolean} [params.watchChanges=false] - whether to allow {@link tfw.dynamicTableClass#serverWatch|watching} for changes (long polling)
      * @param {function} [params.onload] - function to call after data is loaded for the first time
+     * @param {tfw.dynamicTableClass~columnRenderer[]} [params.columnRenderers] - functions to create custom columns' content
      * @example
      * function myRowEditFunction(id){
      *     // ...
@@ -1672,6 +1679,10 @@ var tfw = {
          * @private
          */
         var goToSub = ('goToSub' in params) ? params.goToSub : null;
+        /**
+         * @private
+         */
+        var columnRenderers = ('columnRenderers' in params) ? params.columnRenderers : [];
         /**
          * @private
          * @var {number}
@@ -2143,7 +2154,7 @@ var tfw = {
                 var updateInputCallback = function () {
                     dynamicTable.updateInput.call(dynamicTable, this);
                 };
-                var val, shift, calendarInput;
+                var val, shift, calendarInput, type;
                 for (j = 0; j < this.data.cols.length; j++) {
                     if (!('h' in this.data.cols[j])) {
                         var params = {};
@@ -2156,10 +2167,13 @@ var tfw = {
                             b.onclick = goToSub.bind(null, dynamicTable.data.rows[i].id, j);
                         }
                         val = this.data.rows[i].cols[j];
-                        if ('type' in this.data.cols[j]) {
+                        if(typeof(columnRenderers[j]) == 'function') {
+                            params.children.push.apply(params.children, columnRenderers[j](val));
+                        } else {
+                            type = ('type' in this.data.cols[j]) ? this.data.cols[j].type : null;
                             var id = 'tfwDynamicTable-' + i + '-' + columnOrder;
                             var setKeys = null;
-                            switch (this.data.cols[j].type) {
+                            switch (type) {
                                 case tfw.dynamicTableClass.colTypes.CHECKBOX:
                                     params.children.push(tfw.checkbox({
                                         id: id,

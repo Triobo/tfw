@@ -104,6 +104,7 @@ Create a new layer.
                 * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
                 * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
                 * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
+                * [~columnRenderer](#tfw.dynamicTableClass..columnRenderer) ⇒ <code>Array.&lt;HTMLElement&gt;</code>
                 * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
                 * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
                 * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -203,6 +204,7 @@ Triobo framework. This is a singleton.
         * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
         * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
         * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
+        * [~columnRenderer](#tfw.dynamicTableClass..columnRenderer) ⇒ <code>Array.&lt;HTMLElement&gt;</code>
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -227,6 +229,7 @@ Class for creating dynamic tables.
 | [params.bodyHeight] | <code>string</code> |  | (CSS) height of table body including unit (to make header and footer always visible) |
 | [params.watchChanges] | <code>boolean</code> | <code>false</code> | whether to allow [watching](#tfw.dynamicTableClass+serverWatch) for changes (long polling) |
 | [params.onload] | <code>function</code> |  | function to call after data is loaded for the first time |
+| [params.columnRenderers] | <code>[Array.&lt;columnRenderer&gt;](#tfw.dynamicTableClass..columnRenderer)</code> |  | functions to create custom columns' content |
 
 **Example**  
 ```js
@@ -620,6 +623,18 @@ Set active arrow (and make other arrows of same group inactive).
 | --- | --- | --- |
 | element | <code>HTMLElement</code> | arrow to make active |
 | base | <code>HTMLElement</code> | where to search for arrows |
+
+<a name="tfw.dynamicTableClass..columnRenderer"></a>
+
+#### dynamicTableClass~columnRenderer ⇒ <code>Array.&lt;HTMLElement&gt;</code>
+Callback that creates content to insert into a custom column.
+
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Returns**: <code>Array.&lt;HTMLElement&gt;</code> - - Return array of elements to be inserted into table cell  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| columnValue | <code>string</code> | value that was loaded as data from server |
 
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 
