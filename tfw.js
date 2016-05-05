@@ -1896,7 +1896,7 @@ var tfw = {
                 rows[i].ondrop = rowReorderEnabled ? function(event) {
                     event.preventDefault();
                 } : null;
-                rows[i].ondragend = rowReorderEnabled ? function(event) {
+                rows[i].ondragend = rowReorderEnabled ? function() {
                     this.removeClass('dragged');                    
                     serverUpdateOrder({
                         id: this.dataset.rowid,
@@ -3169,6 +3169,8 @@ tfw.calendar.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
  */
 tfw.calendar.placeCalendar = null;
 window.addEventListener('load', tfw.init);
+
+/* eslint-disable */
 
 /**
  * Function package for preparing HTML elements.
