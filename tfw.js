@@ -2615,13 +2615,13 @@ var tfw = {
                         placeholder: tfw.strings.FILTER,
                         value: value,
                         onchange: function () {
-                            dynamicTable.filterAny(this.dataset.dataCol, this.value, this.dataset.searchType);
+                            dynamicTable.filterAny(this.dataset.dataCol, this.value.trim(), this.dataset.searchType);
                         }
                     });
                     searchInput.dataset.searchType = this.data.cols[dataCol].search;
                     searchInput.dataset.dataCol = dataCol;
                     searchInput.onkeyup = function () {
-                        dynamicTable.filterAny(this.dataset.dataCol, this.value, this.dataset.searchType, true);
+                        dynamicTable.filterAny(this.dataset.dataCol, this.value.trim(), this.dataset.searchType, true);
                     }
                     c.add(searchInput);
                     searchInput.addEventListener('click', function(event) {
