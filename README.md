@@ -116,6 +116,7 @@ Create a new layer.
                 * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
                 * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
             * _inner_
+                * [~completeDate(date)](#tfw.calendar..completeDate) ⇒ <code>string</code>
                 * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
         * [.strings](#tfw.strings) : <code>enum</code>
         * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
@@ -686,12 +687,13 @@ Value by which the table can be filtered.
         * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
         * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
     * _inner_
+        * [~completeDate(date)](#tfw.calendar..completeDate) ⇒ <code>string</code>
         * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
 
 <a name="new_tfw.calendar_new"></a>
 
 #### new calendar(input)
-Class for enhancing date input fields. Requires CSS styling.
+Class for enhancing date input fields. Requires CSS styling.If you want to preserve autocompletion, don't attach any onchange event listeners before using tfw.calendar() on the input field.
 
 **Returns**: <code>HTMLElement</code> - Returns input wrapper (for inserting into DOM in case input was not inserted yet)  
 
@@ -728,6 +730,18 @@ Function called when a calendar widget is created.
 
 **Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
 **Default**: <code></code>  
+<a name="tfw.calendar..completeDate"></a>
+
+#### calendar~completeDate(date) ⇒ <code>string</code>
+Adjust date.
+
+**Kind**: inner method of <code>[calendar](#tfw.calendar)</code>  
+**Returns**: <code>string</code> - Date in format yyyy-mm-dd  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| date | <code>string</code> | inserted date (yyyy/yyyy-mm/yyyy-mm-dd) |
+
 <a name="tfw.calendar..placeCalendar"></a>
 
 #### calendar~placeCalendar : <code>function</code>

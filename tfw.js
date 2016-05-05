@@ -344,7 +344,7 @@ var tfw = {
             element.speconchange = params.onchange;
         }
         if ('onchange' in params || 'evaluate' in params) {
-            element.onchange = function () {
+            element.addEventListener('change', function () {
                 if (this.speconchange) {
                     this.speconchange();
                 }
@@ -359,7 +359,7 @@ var tfw = {
                     }
                     this.value = a;
                 }
-            };
+            });
         }
     },
     div: function (n) {
@@ -2143,7 +2143,7 @@ var tfw = {
                 var updateInputCallback = function () {
                     dynamicTable.updateInput.call(dynamicTable, this);
                 };
-                var val, shift;
+                var val, shift, calendarInput;
                 for (j = 0; j < this.data.cols.length; j++) {
                     if (!('h' in this.data.cols[j])) {
                         var params = {};
@@ -2177,12 +2177,12 @@ var tfw = {
                                     break;
                                 case tfw.dynamicTableClass.colTypes.DATE:
                                     this.prepareCalendar();
-                                    params.children.push(tfw.calendar(tfw.input({
+                                    params.children.push(tfw.calendar(calendarInput=tfw.input({
                                         type: 'text',
                                         id: id,
-                                        value: val.match(/\d{4,}-\d{2}-\d{2}/)[0],
-                                        onchange: updateInputCallback
+                                        value: val.match(/\d{4,}-\d{2}-\d{2}/)[0]
                                     })));
+                                    calendarInput.addEventListener('change', updateInputCallback);
                                     break;
                                 case tfw.dynamicTableClass.colTypes.TEXT:
                                     params.children.push(setKeys = tfw.input({
@@ -2573,34 +2573,36 @@ var tfw = {
                 case tfw.dynamicTableClass.colTypes.DATE:
                     minV = defaultFilterValues[dataCol].min;
                     maxV = defaultFilterValues[dataCol].max;
+                    
                     f1 = tfw.input({
                         type: 'text',
                         className: 'dateMin',
-                        onchange: function () {
-                            dynamicTable.filterAny(this.dataset.dataCol, {
-                                min: this.value,
-                                max: this.closest('div').querySelector('.dateMax').value
-                            });
-                        },
                         value: (value) ? value.min : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
                         legend: tfw.strings.FROM
                     });
+                    tfw.calendar(f1.querySelector('input'));
+                    f1.querySelector('input').addEventListener('change', function () {
+                        dynamicTable.filterAny(this.dataset.dataCol, {
+                            min: this.value,
+                            max: this.closest('div').querySelector('.dateMax').value
+                        });
+                    });
+                    
                     f2 = tfw.input({
                         type: 'text',
                         className: 'dateMax',
-                        onchange: function () {
-                            dynamicTable.filterAny(this.dataset.dataCol, {
-                                min: this.closest('div').querySelector('.dateMin').value,
-                                max: this.value
-                            });
-                        },
                         value: (value) ? value.max : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
                         legend: tfw.strings.TO
                     });
-                    c.add(f1);
-                    c.add(f2);
-                    tfw.calendar(f1.querySelector('input'));
                     tfw.calendar(f2.querySelector('input'));
+                    f2.querySelector('input').addEventListener('change', function () {
+                        dynamicTable.filterAny(this.dataset.dataCol, {
+                            min: this.closest('div').querySelector('.dateMin').value,
+                            max: this.value
+                        });
+                    });
+                    
+                    f1.querySelector('input').size = f2.querySelector('input').size = 10;
                     f1.querySelector('.dateMin').dataset.dataCol = f2.querySelector('.dateMax').dataset.dataCol = dataCol;
                     f1.addEventListener('click', function(event) {
                         event.stopPropagation();
@@ -2608,6 +2610,8 @@ var tfw = {
                     f2.addEventListener('click', function(event) {
                         event.stopPropagation();
                     });
+                    c.add(f1);
+                    c.add(f2);
                     break;
                 case tfw.dynamicTableClass.colTypes.TEXT:
                     var searchInput = tfw.input({
@@ -2869,6 +2873,7 @@ var tfw = {
     },
     /**
      * Class for enhancing date input fields. Requires CSS styling.
+     * If you want to preserve autocompletion, don't attach any onchange event listeners before using tfw.calendar() on the input field.
      * @class
      * @example
      * tfw.calendar.placeCalendar = function (cal, input){
@@ -2909,6 +2914,21 @@ var tfw = {
         input.addClass('calendarInput');
         input._calendar = this;
         input.setAttribute('pattern', '[0-9]{4,}-[0-9]{2}-[0-9]{2}');
+        /**
+         * Adjust date.
+         * @param {string} date - inserted date (yyyy/yyyy-mm/yyyy-mm-dd)
+         * @return {string} Date in format yyyy-mm-dd
+         */
+        function completeDate(date){
+            if(date.match(/^\d{4}$/)){ //yyyy
+                return date+'-01-01';
+            } else if(date.match(/^\d{4}-\d{2}$/)){ //yyyy-mm
+                return date+'-01';
+            } else {
+                return date;
+            }
+        }
+        input.addEventListener('change', function(){console.log(this.value);this.value=completeDate(this.value);}, true);
         var calendarContainer = document.createElement('div');
         calendarContainer.addClass('calendarWidget');
         var selectedYear;
