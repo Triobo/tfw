@@ -2487,7 +2487,7 @@ var tfw = {
         }
         /**
          * Apply filter for values of a column.
-         * Creates a {@link tfw.dialog|dialog} with filter.
+         * Creates a {@link tfw.dialog|dialog} with filter (and moves focus to input field).
          * @param {HTMLElement} filterElement - element to position new layer to
          * @param {number} dataCol - order of searched column (in data)
          * @todo Change rangeMin/rangeMax/dateMin/dateMax classes + {@link tfw.dynamicTableClass#filterAny}
@@ -2507,7 +2507,8 @@ var tfw = {
                 minV,
                 maxV,
                 f1,
-                f2;
+                f2,
+                inputToFocus = null;
             switch (type) {
                 case tfw.dynamicTableClass.colTypes.CHECKBOX:
                     var filter = tfw.select({
@@ -2560,6 +2561,7 @@ var tfw = {
                         value: (value) ? value.max : maxV,
                         legend: tfw.strings.TO
                     });
+                    inputToFocus = f1.querySelector('.rangeMin');
                     f1.querySelector('.rangeMin').dataset.dataCol = f2.querySelector('.rangeMax').dataset.dataCol = dataCol;
                     c.add(f1);
                     c.add(f2);
@@ -2580,7 +2582,7 @@ var tfw = {
                         value: (value) ? value.min : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
                         legend: tfw.strings.FROM
                     });
-                    tfw.calendar(f1.querySelector('input'));
+                    tfw.calendar(inputToFocus = f1.querySelector('input'));
                     f1.querySelector('input').addEventListener('change', function () {
                         dynamicTable.filterAny(this.dataset.dataCol, {
                             min: this.value,
@@ -2614,7 +2616,7 @@ var tfw = {
                     c.add(f2);
                     break;
                 case tfw.dynamicTableClass.colTypes.TEXT:
-                    var searchInput = tfw.input({
+                    var searchInput = inputToFocus = tfw.input({
                         type: 'text',
                         placeholder: tfw.strings.FILTER,
                         value: value,
@@ -2641,6 +2643,9 @@ var tfw = {
                 modal: 'auto'
             }, true);
             wrapper.add(c);
+            if(inputToFocus !== null){
+                inputToFocus.focus();
+            }
         }
         /**
          * Apply sorting by values (text without HTML) of a column.

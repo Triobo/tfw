@@ -391,7 +391,7 @@ Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCale
 <a name="tfw.dynamicTableClass+filter"></a>
 
 #### dynamicTableClass.filter(filterElement, dataCol)
-Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter.
+Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter (and moves focus to input field).
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
