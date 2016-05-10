@@ -2088,11 +2088,50 @@ var tfw = {
             thead.add(r = tfw.tr({
                 className: 'headlines'
             }));
+            
+            //resize event for CSS3 resize property
+            window._cssResizedElement = null;
+            var resizeMove = function(){
+                if(window._cssResizedElement != null && window._cssResizedElement._resizeOrigWidth != window._cssResizedElement.style.width){
+                    window._cssResizedElement.dispatchEvent(new CustomEvent('cssresize'));
+                }
+            };
+            var resizeOff = function(){
+                if(window._cssResizedElement != null && window._cssResizedElement._resizeOrigWidth != window._cssResizedElement.style.width){
+                    window._cssResizedElement.dispatchEvent(new CustomEvent('cssresized'));
+                }
+                window._cssResizedElement = null;
+            };
+            thead.addEventListener('mousedown', function(event){
+                window._cssResizedElement = event.target;
+                event.target._resizeOrigWidth = event.target.style.width;
+            });
+            document.addEventListener('mousemove', resizeMove);
+            document.addEventListener('mouseup', resizeOff);
+            
+            /**
+             * @private
+             * @param {number} dataCol - if -1, means rowEdit column
+             */
+            var onResizeCallback = function(dataCol, newWidth){
+                var columnOrder = (dataCol == -1) ? 0 : this.data.cols[dataCol].columnOrder;
+                var oldWidth = (dataCol == -1) ? tfw.dynamicTableClass.ROW_EDIT_WIDTH : this.data.cols[dataCol].width;
+                if(newWidth != oldWidth){
+                    var cells = this.tableContainer.querySelectorAll('tr > :nth-child('+(parseInt(columnOrder)+1)+')');
+                    for(var i=0;i<cells.length;i++){
+                        cells[i].style.width = newWidth+'px';
+                    }
+                    this.data.cols[dataCol].width = newWidth;
+                    setTableWidth.call(this);
+                }
+            };
+            
             columnOrder = 0;
             if (rowEdit) {
                 var th = document.createElement('th');
                 th.innerHTML = '&nbsp;';
                 th.className = 'rowEditCell';
+                th.addEventListener('cssresize', function(){onResizeCallback.call(dynamicTable, -1, parseInt(this.style.width));});
                 r.add(th);
                 columnOrder++;
             }
@@ -2133,6 +2172,8 @@ var tfw = {
                         this.data.cols[j].width = parseInt(this.data.cols[j].width);
                     }
                     c.style.width = this.data.cols[j].width + 'px';
+                    c.dataset.dataCol = j;
+                    c.addEventListener('cssresize', function(){onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));});
                     r.add(c);
                     this.data.cols[j].columnOrder = columnOrder;
                     columnOrder++;

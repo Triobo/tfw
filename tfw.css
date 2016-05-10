@@ -787,3 +787,8 @@ tr[draggable] :first-child {
 	padding-top: 1px;
 	margin: 0;
 }
+/**************/
+.tfwDynamicTable thead th{
+    resize: horizontal;
+    overflow: hidden;
+}
