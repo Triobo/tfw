@@ -2046,6 +2046,20 @@ var tfw = {
         }
         /**
          * @private
+         */
+        function setTableWidth(){
+            var width = this.data.cols.reduce(function(previous, current) {
+                return parseInt(current.width) + previous
+            }, 0);
+            if (rowEdit) {
+                width += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
+            }
+            width += 10; //scrollbar
+            
+            this.tableContainer.querySelector('table').style.width = width + 'px';
+        }
+        /**
+         * @private
          * @listens click
          * @listens keyup
          */
@@ -2062,14 +2076,7 @@ var tfw = {
                 id: this.tableHTMLId,
                 className: 'tfwDynamicTable'
             }));
-            var tableWidth = this.data.cols.reduce(function(previous, current) {
-                return parseInt(current.width) + previous
-            }, 0);
-            if (rowEdit) {
-                tableWidth += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
-            }
-            tableWidth += 10; //scrollbar
-            o.style.width = tableWidth + 'px';
+            setTableWidth.call(this);
             for (j = 0; j < this.data.cols.length; j++) {
                 if (!this.data.cols[j].hidden && this.data.cols[j].type == 'order') {
                     this.data.cols[j].sort = true;
