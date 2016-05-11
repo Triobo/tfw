@@ -394,6 +394,7 @@ var tfw = {
         if (!('value' in params)) {
             params.value = '0';
         }
+        if ("onchange" in params) element.onchange=params.onchange;
         this.fillElemDefs(element, params);
         element.clickOnItem = function (e) {
             e.stopPropagation();
@@ -2437,7 +2438,7 @@ var tfw = {
                                 var cell = this.tableContainer.querySelector('tbody').rows[rowOrder].cells[column];
                                 switch (this.data.cols[dataCol].type) {
                                     case tfw.dynamicTableClass.colTypes.CHECKBOX:
-                                        cell.querySelector('.tfwCheckbox').value = newValue;
+                                        cell.querySelector('.tfwCheckbox').value = parseInt(newValue);
                                         break;
                                     case tfw.dynamicTableClass.colTypes.NUMBER:
                                     case tfw.dynamicTableClass.colTypes.DATE:
@@ -2453,7 +2454,6 @@ var tfw = {
                     } else { //deletion
                     }
                 }
-                this.serverWatch();
             } else {
                 console.error('Dynamic table reloading not implemented yet.');
             }
