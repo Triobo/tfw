@@ -1614,7 +1614,8 @@ var tfw = {
          * @readonly
          */
         this.tableContainer = tfw.div({
-            innerHTML: AJAX_LOADER
+            innerHTML: AJAX_LOADER,
+            className: 'tfwDynamicTableContainer'
         });
         var baseURL = params.baseURL;
         /**

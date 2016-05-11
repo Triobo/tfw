@@ -546,6 +546,10 @@ button:disabled:hover {
 }
 
 /* reset */
+.tfwDynamicTableContainer{
+    max-width: 100%;
+    overflow-x: auto;
+}
 .tfwDynamicTable, .tfwDynamicTable thead, .tfwDynamicTable tbody, .tfwDynamicTable tfoot, .tfwDynamicTable tr, .tfwDynamicTable th, .tfwDynamicTable td{
 	display: block;
 	margin: 0;
@@ -556,7 +560,6 @@ button:disabled:hover {
 .tfwDynamicTable{
 	border: 0;
 	overflow: auto;
-	max-width: 100%;
 	background-color: white;
 }
 .tfwDynamicTable .rowEditCell{
