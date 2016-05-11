@@ -1801,7 +1801,6 @@ var tfw = {
         /**
          * Watch for updates from the server.
          * @see tfw.dynamicTableClass#paint
-         * @todo Call again after finishing
          */
         this.serverWatch = function () {
             var dynamicTable = this;
@@ -1811,7 +1810,7 @@ var tfw = {
                     if (changes.length > 0) {
                         dynamicTable.paint(changes);
                     }
-                    //dynamicTable.serverWatch();
+                    dynamicTable.serverWatch();
                 }
             });
         }

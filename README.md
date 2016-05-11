@@ -316,10 +316,6 @@ Watch for updates from the server.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **See**: tfw.dynamicTableClass#paint  
-**Todo**
-
-- [ ] Call again after finishing
-
 <a name="tfw.dynamicTableClass+destroy"></a>
 
 #### dynamicTableClass.destroy()
