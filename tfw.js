@@ -2130,6 +2130,11 @@ var tfw = {
             };
             document.body.addEventListener('mousemove', resizerMouseMove);
             document.body.addEventListener('mouseup', resizerMouseEnd);
+            document.addEventListener('mouseout', function(event){
+                if(!event.relatedTarget || event.relatedTarget.nodeName == 'HTML'){
+                    resizerMouseEnd(event);
+                }
+            });
             
             /**
              * @private
