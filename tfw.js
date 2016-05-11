@@ -2089,35 +2089,57 @@ var tfw = {
                 className: 'headlines'
             }));
             
-            //resize event for CSS3 resize property
-            window._cssResizedElement = null;
-            var resizeMove = function(){
-                if(window._cssResizedElement != null && window._cssResizedElement._resizeOrigWidth != window._cssResizedElement.style.width){
-                    window._cssResizedElement.dispatchEvent(new CustomEvent('cssresize'));
+            var RESIZING_MIN_WIDTH = 40;
+            var resizerMouseDown = function(event){
+                var t = window._resizedElement = event.target.closest('th');
+                t.dispatchEvent(new CustomEvent('resizestart'));
+                document.body.addClass('resizing');
+                t._resizePositionX = event.clientX;
+                event.stopPropagation();
+                event.preventDefault();
+            };
+            var resizerMouseMove = function(event){
+                if(typeof(window._resizedElement) != 'undefined'){
+                    var t = window._resizedElement;
+                    var diff = event.clientX - t._resizePositionX;
+                    if(diff != 0){
+                        t.dispatchEvent(new CustomEvent('resizing', {detail: {move: diff}}));
+                        
+                        /** @todo apply min/max width */
+                        var width = parseInt(t.style.width) + diff;
+                        if(width < RESIZING_MIN_WIDTH){
+                            width = RESIZING_MIN_WIDTH;
+                        }
+                        t.style.width = width + 'px';
+                        
+                        t._resizePositionX = event.clientX;
+                    }
+                }
+                event.stopPropagation();
+                event.preventDefault();
+            };
+            var resizerMouseEnd = function(event){
+                if(typeof(window._resizedElement) != 'undefined'){
+                    var t = window._resizedElement;
+                    t.dispatchEvent(new CustomEvent('resizestop'));
+                    document.body.removeClass('resizing');
+                    delete window._resizedElement;
+                    event.stopPropagation();
+                    event.preventDefault();
                 }
             };
-            var resizeOff = function(){
-                if(window._cssResizedElement != null && window._cssResizedElement._resizeOrigWidth != window._cssResizedElement.style.width){
-                    window._cssResizedElement.dispatchEvent(new CustomEvent('cssresized'));
-                }
-                window._cssResizedElement = null;
-            };
-            thead.addEventListener('mousedown', function(event){
-                window._cssResizedElement = event.target;
-                event.target._resizeOrigWidth = event.target.style.width;
-            });
-            document.addEventListener('mousemove', resizeMove);
-            document.addEventListener('mouseup', resizeOff);
+            document.body.addEventListener('mousemove', resizerMouseMove);
+            document.body.addEventListener('mouseup', resizerMouseEnd);
             
             /**
              * @private
-             * @param {number} dataCol - if -1, means rowEdit column
+             * @param {number} dataCol
              */
             var onResizeCallback = function(dataCol, newWidth){
-                var columnOrder = (dataCol == -1) ? 0 : this.data.cols[dataCol].columnOrder;
-                var oldWidth = (dataCol == -1) ? tfw.dynamicTableClass.ROW_EDIT_WIDTH : this.data.cols[dataCol].width;
+                var columnOrder = this.data.cols[dataCol].columnOrder;
+                var oldWidth = this.data.cols[dataCol].width;
                 if(newWidth != oldWidth){
-                    var cells = this.tableContainer.querySelectorAll('tr > :nth-child('+(parseInt(columnOrder)+1)+')');
+                    var cells = this.tableContainer.querySelectorAll('tbody tr > :nth-child('+(parseInt(columnOrder)+1)+')');
                     for(var i=0;i<cells.length;i++){
                         cells[i].style.width = newWidth+'px';
                     }
@@ -2125,20 +2147,29 @@ var tfw = {
                     setTableWidth.call(this);
                 }
             };
+            var resizingCallback = function(){
+                onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));
+            };
             
             columnOrder = 0;
             if (rowEdit) {
                 var th = document.createElement('th');
                 th.innerHTML = '&nbsp;';
                 th.className = 'rowEditCell';
-                th.addEventListener('cssresize', function(){onResizeCallback.call(dynamicTable, -1, parseInt(this.style.width));});
                 r.add(th);
                 columnOrder++;
             }
+            var resizer;
             for (j = 0; j < this.data.cols.length; j++) {
                 if (!('h' in this.data.cols[j])) {
                     c = document.createElement('th');
-                    c.innerHTML = '<span>' + this.data.cols[j].name + '</span>';
+                    c.add(tfw.span({className:'colHeading', innerHTML: this.data.cols[j].name}));
+                    if(true) { /** @todo Supply condition */
+                        c.className = 'resizable';
+                        c.add(resizer = tfw.span({className: 'resizer'}));
+                        resizer.addEventListener('mousedown', resizerMouseDown);
+                        c.addEventListener('resizing', resizingCallback);
+                    }
                     if ('sort' in this.data.cols[j] && this.data.cols[j].sort) {
                         var b1, b2;
                         c.add(b1 = tfw.div({
@@ -2166,6 +2197,7 @@ var tfw = {
                             dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
                         }
                     }
+                    
                     if (!('width' in this.data.cols[j])) {
                         this.data.cols[j].width = 200;
                     } else {
@@ -2173,7 +2205,6 @@ var tfw = {
                     }
                     c.style.width = this.data.cols[j].width + 'px';
                     c.dataset.dataCol = j;
-                    c.addEventListener('cssresize', function(){onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));});
                     r.add(c);
                     this.data.cols[j].columnOrder = columnOrder;
                     columnOrder++;

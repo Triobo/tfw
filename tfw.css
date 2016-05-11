@@ -573,9 +573,11 @@ button:disabled:hover {
 .tfwDynamicTable tbody tr:hover {
   background-color: #eee;
 }
+.tfwDynamicTable tr, .tfwDynamicTable tr > *{
+    height: 25px;
+}
 .tfwDynamicTable tr > *{
 	float: left;
-	height: 25px;
 	padding: 2px;
 	border: 0 solid #eee;
 	border-left-width: 1px;
@@ -616,7 +618,7 @@ button:disabled:hover {
   border-color: #222;
   padding: 3px 6px 0px;
 }
-.tfwDynamicTable tr.headlines th span{
+.tfwDynamicTable tr.headlines th .colHeading{
 	float:left;
 }
 .tfwDynamicTable tr.headlines th button{
@@ -789,6 +791,21 @@ tr[draggable] :first-child {
 }
 /**************/
 .tfwDynamicTable thead th{
-    resize: horizontal;
-    overflow: hidden;
+    /*resize: horizontal;*/
+    overflow: visible;
+}
+.tfwDynamicTable thead tr > .resizable{
+    padding-right: 0;
+}
+.tfwDynamicTable thead .resizer{
+    margin-left: 9px; /* replace 6px right padding + 3px of right shift */
+    display: inline-block;
+    width: 6px;
+    position: relative;
+    right: -3px;
+    height: 100%;
+    float: right;
+}
+.tfwDynamicTable thead .resizer, body.resizing{
+    cursor: col-resize;
 }
