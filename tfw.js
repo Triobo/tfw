@@ -2058,10 +2058,116 @@ var tfw = {
         }
         /**
          * @private
+         * @param {number} rowOrder - order of row in data
+         * @return {HTMLElement} table row
+         */
+        this.createRow = function(rowOrder){
+            var r = tfw.tr({
+                id: 'rowID-' + this.data.rows[rowOrder].id
+            });
+            r.setAttribute('data-rowid', this.data.rows[rowOrder].id);
+            var columnOrder = 0,
+                b,
+                dynamicTable = this;
+            if (rowEdit) {
+                r.add(tfw.td({
+                    className: 'rowEditCell',
+                    children: [b = tfw.span({
+                        className: 'rowEditIcon clickable fa invert fa-info'
+                    })]
+                }));
+                b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
+                columnOrder++;
+            }
+            var updateInputCallback = function () {
+                dynamicTable.updateInput.call(dynamicTable, this);
+            };
+            var val, shift, calendarInput, type, c;
+            for (var j = 0; j < this.data.cols.length; j++) {
+                if (!('h' in this.data.cols[j])) {
+                    var params = {};
+                    params.children = [];
+                    if ('subtable' in this.data.cols[j] && this.data.cols[j].subtable) {
+                        params.className = 'withSubtable';
+                        params.children.push(b = tfw.div({
+                            className: 'subtable clickable fa invert fa-caret-down'
+                        }));
+                        b.onclick = goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j);
+                    }
+                    val = this.data.rows[rowOrder].cols[j];
+                    if(typeof(columnRenderers[j]) == 'function') {
+                        params.children.push.apply(params.children, columnRenderers[j](val));
+                    } else {
+                        type = ('type' in this.data.cols[j]) ? this.data.cols[j].type : null;
+                        var id = 'tfwDynamicTable-' + rowOrder + '-' + columnOrder;
+                        var setKeys = null;
+                        switch (type) {
+                            case tfw.dynamicTableClass.colTypes.CHECKBOX:
+                                params.children.push(tfw.checkbox({
+                                    id: id,
+                                    value: (val ? 1 : 0),
+                                    onchange: updateInputCallback
+                                }));
+                                break;
+                            case tfw.dynamicTableClass.colTypes.NUMBER:
+                                params.children.push(setKeys = tfw.input({
+                                    type: 'number',
+                                    id: id,
+                                    value: val,
+                                    onchange: updateInputCallback
+                                }));
+                                break;
+                            case tfw.dynamicTableClass.colTypes.DATE:
+                                this.prepareCalendar();
+                                params.children.push(tfw.calendar(calendarInput=tfw.input({
+                                    type: 'text',
+                                    id: id,
+                                    value: val.match(/\d{4,}-\d{2}-\d{2}/)[0]
+                                })));
+                                calendarInput.addEventListener('change', updateInputCallback);
+                                break;
+                            case tfw.dynamicTableClass.colTypes.TEXT:
+                                params.children.push(setKeys = tfw.input({
+                                    type: 'text',
+                                    id: id,
+                                    value: val,
+                                    onchange: updateInputCallback
+                                }));
+                                break;
+                            default:
+                                params.innerHTML = val;
+                        }
+                        if (setKeys != null) {
+                            setKeys.dataset.columnOrder = columnOrder;
+                            setKeys.addEventListener('keyup', function(event) {
+                                switch (event.keyCode) {
+                                    case 38: //up
+                                        shift = -1;
+                                        break;
+                                    case 40: //down
+                                        shift = 1;
+                                        break;
+                                    default:
+                                        return;
+                                }
+                                moveFocusToCell(this.closest('td'), this.dataset.columnOrder, shift);
+                            });
+                        }
+                    }
+                    r.add(c = tfw.td(params));
+                    c.dataset.dataCol = j;
+                    c.style.width = this.data.cols[j].width + 'px';
+                    columnOrder++;
+                }
+            }
+            return r;
+        }
+        /**
+         * @private
          * @listens click
          * @listens keyup
          */
-        function createAndFillTable() {
+        this.createAndFillTable = function() {
             //add CSS styling for filters
             var tableCSS = '';
             for (var dataCol = 0; dataCol < this.data.cols.length; dataCol++) {
@@ -2224,102 +2330,7 @@ var tfw = {
                 tbody.style.maxHeight = bodyHeight;
             }
             for (var i = 0; i < this.data.rows.length; i++) {
-                tbody.add(r = tfw.tr({
-                    id: 'rowID-' + this.data.rows[i].id
-                }));
-                r.setAttribute('data-rowid', this.data.rows[i].id);
-                columnOrder = 0;
-                if (rowEdit) {
-                    r.add(tfw.td({
-                        className: 'rowEditCell',
-                        children: [b = tfw.span({
-                            className: 'rowEditIcon clickable fa invert fa-info'
-                        })]
-                    }));
-                    b.onclick = rowEdit.bind(null, dynamicTable.data.rows[i].id);
-                    columnOrder++;
-                }
-                var updateInputCallback = function () {
-                    dynamicTable.updateInput.call(dynamicTable, this);
-                };
-                var val, shift, calendarInput, type;
-                for (j = 0; j < this.data.cols.length; j++) {
-                    if (!('h' in this.data.cols[j])) {
-                        var params = {};
-                        params.children = [];
-                        if ('subtable' in this.data.cols[j] && this.data.cols[j].subtable) {
-                            params.className = 'withSubtable';
-                            params.children.push(b = tfw.div({
-                                className: 'subtable clickable fa invert fa-caret-down'
-                            }));
-                            b.onclick = goToSub.bind(null, dynamicTable.data.rows[i].id, j);
-                        }
-                        val = this.data.rows[i].cols[j];
-                        if(typeof(columnRenderers[j]) == 'function') {
-                            params.children.push.apply(params.children, columnRenderers[j](val));
-                        } else {
-                            type = ('type' in this.data.cols[j]) ? this.data.cols[j].type : null;
-                            var id = 'tfwDynamicTable-' + i + '-' + columnOrder;
-                            var setKeys = null;
-                            switch (type) {
-                                case tfw.dynamicTableClass.colTypes.CHECKBOX:
-                                    params.children.push(tfw.checkbox({
-                                        id: id,
-                                        value: (val ? 1 : 0),
-                                        onchange: updateInputCallback
-                                    }));
-                                    break;
-                                case tfw.dynamicTableClass.colTypes.NUMBER:
-                                    params.children.push(setKeys = tfw.input({
-                                        type: 'number',
-                                        id: id,
-                                        value: val,
-                                        onchange: updateInputCallback
-                                    }));
-                                    break;
-                                case tfw.dynamicTableClass.colTypes.DATE:
-                                    this.prepareCalendar();
-                                    params.children.push(tfw.calendar(calendarInput=tfw.input({
-                                        type: 'text',
-                                        id: id,
-                                        value: val.match(/\d{4,}-\d{2}-\d{2}/)[0]
-                                    })));
-                                    calendarInput.addEventListener('change', updateInputCallback);
-                                    break;
-                                case tfw.dynamicTableClass.colTypes.TEXT:
-                                    params.children.push(setKeys = tfw.input({
-                                        type: 'text',
-                                        id: id,
-                                        value: val,
-                                        onchange: updateInputCallback
-                                    }));
-                                    break;
-                                default:
-                                    params.innerHTML = val;
-                            }
-                            if (setKeys != null) {
-                                setKeys.dataset.columnOrder = columnOrder;
-                                setKeys.addEventListener('keyup', function(event) {
-                                    switch (event.keyCode) {
-                                        case 38: //up
-                                            shift = -1;
-                                            break;
-                                        case 40: //down
-                                            shift = 1;
-                                            break;
-                                        default:
-                                            return;
-                                    }
-                                    moveFocusToCell(this.closest('td'), this.dataset.columnOrder, shift);
-                                });
-                            }
-                        }
-                        r.add(c = tfw.td(params));
-                        c.dataset.dataCol = j;
-                        c.style.width = this.data.cols[j].width + 'px';
-                        columnOrder++;
-                    }
-                }
+                tbody.add(this.createRow(i));
             }
             var tfoot;
             o.add(tfoot = document.createElement('tfoot'));
@@ -2417,7 +2428,7 @@ var tfw = {
             var i, dataCol;
             this.tableHTMLId = 'dynamicTable-' + tableId;
             if (document.getElementById(this.tableHTMLId) == null) {
-                createAndFillTable.call(this);
+                this.createAndFillTable();
                 if (watchChanges) {
                     this.serverWatch();
                 }
