@@ -2090,6 +2090,8 @@ var tfw = {
                 className: 'headlines'
             }));
             
+            /** @todo Make movement detection more precise, so that mouse and resized element are synced */
+            /** @todo Save into preferences */
             var RESIZING_MIN_WIDTH = 40;
             var resizerMouseDown = function(event){
                 var t = window._resizedElement = event.target.closest('th');
