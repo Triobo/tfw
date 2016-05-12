@@ -2425,7 +2425,9 @@ var tfw = {
          * @todo Handle update of cell that is currently being edited
          */
         this.paint = function (changes) {
-            var i, dataCol;
+            var i,
+                dataCol,
+                sorting = this.getPreference('sorting');
             this.tableHTMLId = 'dynamicTable-' + tableId;
             if (document.getElementById(this.tableHTMLId) == null) {
                 this.createAndFillTable();
@@ -2436,20 +2438,21 @@ var tfw = {
                     params.onload();
                 }
             } else if (typeof(changes) != 'undefined') {
-                var sorting = this.getPreference('sorting');
+                var tbody = this.tableContainer.querySelector('tbody'),
+                    rowOrder;
                 for (i = 0; i < changes.length; i++) {
                     var rowID = changes[i].id;
                     if ('col' in changes[i]) { //update
                         dataCol = changes[i].col;
                         var column = this.data.cols[dataCol].columnOrder;
                         var newValue = changes[i].value;
-                        var rowOrder = this.getDataRowById(rowID);
+                        rowOrder = this.getDataRowById(rowID);
                         if (rowOrder == null) {
                             console.error('Row that is not present in the table was updated.');
                         } else {
                             if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
                                 this.data.rows[rowOrder].cols[dataCol] = newValue;
-                                var cell = this.tableContainer.querySelector('tbody').rows[rowOrder].cells[column];
+                                var cell = tbody.rows[rowOrder].cells[column];
                                 switch (this.data.cols[dataCol].type) {
                                     case tfw.dynamicTableClass.colTypes.CHECKBOX:
                                         cell.querySelector('.tfwCheckbox').value = parseInt(newValue);
@@ -2465,6 +2468,17 @@ var tfw = {
                             }
                         }
                     } else if ('cols' in changes[i]) { //insertion
+                        var comparator = this.getCmp(sorting !== null ? sorting.dataCol : null).bind(null, sorting.asc);
+                        rowOrder = this.data.rows.push({id: rowID, cols: changes[i].cols}) - 1;
+                        var newRow = this.createRow(rowOrder);
+                        var greaterRow = null;
+                        for(i = 0; i < this.data.rows.length - 1; i++) { //don't iterate over new row
+                            if(comparator(this.data.rows[rowOrder], this.data.rows[i]) < 0){
+                                greaterRow = tbody.rows[i];
+                                break;
+                            }
+                        }
+                        tbody.insertBefore(newRow, greaterRow);
                     } else { //deletion
                     }
                 }
