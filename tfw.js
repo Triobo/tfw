@@ -3262,6 +3262,15 @@ tfw.dynamicTableClass.serverActions = {
     }
 };
 /**
+ * Types of column sorting.
+ * @readonly
+ * @enum {number}
+ */
+tfw.dynamicTableClass.colCmpTypes = {
+    NUMERIC: 0,
+    TEXT: 1
+};
+/**
  * Types of columns (and filters).
  * @readonly
  * @enum {string}
@@ -3280,15 +3289,6 @@ tfw.dynamicTableClass.colTypes = {
         'checkbox': tfw.dynamicTableClass.colCmpTypes.NUMERIC,
         'order': tfw.dynamicTableClass.colCmpTypes.NUMERIC
     }
-};
-/**
- * Types of column sorting.
- * @readonly
- * @enum {number}
- */
-tfw.dynamicTableClass.colCmpTypes = {
-    NUMERIC: 0,
-    TEXT: 1
 };
 /**
  * Types of sorting.

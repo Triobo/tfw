@@ -86,8 +86,8 @@ Create a new layer.
                 * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
             * _static_
                 * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
-                * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
                 * [.colCmpTypes](#tfw.dynamicTableClass.colCmpTypes) : <code>enum</code>
+                * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
                 * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
                 * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
                 * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
@@ -189,8 +189,8 @@ Triobo framework. This is a singleton.
         * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
     * _static_
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
-        * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
         * [.colCmpTypes](#tfw.dynamicTableClass.colCmpTypes) : <code>enum</code>
+        * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
         * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
         * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
         * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
@@ -490,6 +490,20 @@ Implemented server actions.
 | PREF_GET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;getusersettings&quot;}</code> | load user's preferences |
 | PREF_SET | <code>[serverAction](#tfw.dynamicTableClass.serverAction)</code> | <code>{&quot;name&quot;:&quot;setusersettings&quot;,&quot;method&quot;:&quot;POST&quot;}</code> | save user's preferences |
 
+<a name="tfw.dynamicTableClass.colCmpTypes"></a>
+
+#### dynamicTableClass.colCmpTypes : <code>enum</code>
+Types of column sorting.
+
+**Kind**: static enum property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| NUMERIC | <code>number</code> | <code>0</code> | 
+| TEXT | <code>number</code> | <code>1</code> | 
+
 <a name="tfw.dynamicTableClass.colTypes"></a>
 
 #### dynamicTableClass.colTypes : <code>enum</code>
@@ -508,20 +522,6 @@ Types of columns (and filters).
 | DATE | <code>string</code> | <code>&quot;date&quot;</code> | 
 | ORDER | <code>string</code> | <code>&quot;order&quot;</code> | 
 | cmpType | <code>string</code> | <code>&quot;{\&quot;undefined\&quot;:\&quot;\&quot;}&quot;</code> | 
-
-<a name="tfw.dynamicTableClass.colCmpTypes"></a>
-
-#### dynamicTableClass.colCmpTypes : <code>enum</code>
-Types of column sorting.
-
-**Kind**: static enum property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Read only**: true  
-**Properties**
-
-| Name | Type | Default |
-| --- | --- | --- |
-| NUMERIC | <code>number</code> | <code>0</code> | 
-| TEXT | <code>number</code> | <code>1</code> | 
 
 <a name="tfw.dynamicTableClass.sortTypes"></a>
 
