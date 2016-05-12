@@ -240,6 +240,11 @@ button:disabled:hover {
   margin-right:16px;
 }
 
+.tfwDialog ul {
+  padding-left:24px;  
+  list-style-type: square;
+}
+
 .info, .tfwDialog .info, .roleta .info {
   font-size:11px;
 }
@@ -356,7 +361,7 @@ button:disabled:hover {
   display:inline-block;
   border-radius:3px;
   border:1px solid #bbb; 
-  margin:0px 4px 1px;
+  margin:0px 2px 1px;
   padding:1px 4px 0px;
   background-color: #fff;
   color:#000;
@@ -373,6 +378,10 @@ button:disabled:hover {
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
 	border-top: 8px solid #bbb;
+}
+
+.tfwDropDown.disabled {
+  color:#bbb;  
 }
 
 /* checkbox */
