@@ -2797,7 +2797,7 @@ var tfw = {
             var a = row1.cols[dataCol],
                 b = row2.cols[dataCol];
             return (a === '' && b === '') ? (cmpRowsIds(asc, row1, row2))
-                : ((a === '') ? 1 : ((b === '') ? -1 : ((a.localeCompare(b) * asc) || cmp(asc, row1, row2))));
+                : ((a === '') ? 1 : ((b === '') ? -1 : ((a.localeCompare(b) * asc) || cmpRowsIds(asc, row1, row2))));
         }
         
         /**
