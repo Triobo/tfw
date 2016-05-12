@@ -187,14 +187,14 @@ button:disabled:hover {
   display:inline-block;
 }
 
-.tfwDialog .nazev {
+.tfwDialog .subtitle, .tfwDialog .nazev {
   border-top:1px solid #8cc;/*azure*/
   margin-top:8px;
   font-weight:bold;
   color: #8cc;/*azure*/
 }
 
-.tfwDialog .nadpis {
+.tfwDialog .title, .tfwDialog .nadpis {
   border-bottom:1px solid #8cc;/*azure*/
   margin-top:8px;
   font-size:120%;
@@ -237,6 +237,12 @@ button:disabled:hover {
 .tfwDialog p>.tfwCheckbox {
   display:inline-block;
 }
+
+.tfwDialog ul {
+  padding-left:24px;  
+  list-style-type: square;
+}
+
 
 /* container */
 .tfwContainer {
@@ -295,11 +301,12 @@ button:disabled:hover {
   display:inline-block;
   border-radius:3px;
   border:1px solid #bbb; 
-  margin:0px 4px 1px;
+  margin:0px 2px 1px;
   padding:1px 4px 0px;
   background-color: #fff;
   color:#000;
   cursor:pointer;
+  box-sizing: border-box;    
 }
 
 .tfwDropDown:after {
@@ -312,7 +319,9 @@ button:disabled:hover {
 	border-right: 5px solid transparent;
 	border-top: 8px solid #bbb;
 }
-
+.tfwDropDown.disabled {
+  color:#bbb;  
+}
 /* checkbox */
 .tfwCheckbox {
   padding:2px;

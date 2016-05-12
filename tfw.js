@@ -337,6 +337,7 @@ var tfw={
       l.style.display="inline-block";
       l.innerHTML=n.legend;
       if (n.legendWidth) l.style.width=n.legendWidth;
+      if (n.legendStyle) l.style.cssText=n.legendStyle;
       if (n.containerId)    y.id=n.containerId;
       if (n.containerStyle) y.style.cssText=n.containerStyle;
       y.add(l);
@@ -351,29 +352,31 @@ var tfw={
     if (n.onchange)   x.onchange=n.onchange;
     x.onmousedown=neVychoziAkce;
     x.onclick=function(){
-      var b;
-      desktop.newLayer({autoclose:true,modal:"auto"});
-      var rect = x.getBoundingClientRect();
-      var vyska=n.list.length*x.itemHeight;
-      if (n.maxHeight) if (vyska>n.maxHeight) vyska=n.maxHeight;
-      if (vyska>210) vyska=210;
-      desktop.layers[desktop.activeLayer].add(c=tfw.div({style:"overflow:hidden;position:absolute;left:"+rect.left+"px;top:"+(rect.top+rect.height)+"px"}));
-      c.add(b=tfw.select({
-        id:"drop"+n.id,
-        list:n.list,
-        value:x.value,
-        style:"width:"+(rect.width-2+x.itemWidth)+"px;position:relative;top:-1px;height:"+vyska+"px;",
-        onchange:function(){
-          for (i=0;i<this.childNodes.length;i++) if (this.childNodes[i].value==this.value) {
-            x.innerHTML=this.childNodes[i].innerHTML;
-            x.value=this.childNodes[i].value;
+      if (!this.zakazano) {
+        var b;
+        desktop.newLayer({autoclose:true,modal:"auto"});
+        var rect = x.getBoundingClientRect();
+        var vyska=n.list.length*x.itemHeight;
+        if (n.maxHeight) if (vyska>n.maxHeight) vyska=n.maxHeight;
+        if (vyska>210) vyska=210;
+        desktop.layers[desktop.activeLayer].add(c=tfw.div({style:"overflow:hidden;position:absolute;left:"+rect.left+"px;top:"+(rect.top+rect.height)+"px"}));
+        c.add(b=tfw.select({
+          id:"drop"+n.id,
+          list:n.list,
+          value:x.value,
+          style:"width:"+(rect.width-2+x.itemWidth)+"px;position:relative;top:-1px;height:"+vyska+"px;",
+          onchange:function(){
+            for (i=0;i<this.childNodes.length;i++) if (this.childNodes[i].value==this.value) {
+              x.innerHTML=this.childNodes[i].innerHTML;
+              x.value=this.childNodes[i].value;
+            }
+            if (x.onchange) x.onchange();
           }
-          if (x.onchange) x.onchange();
-        }
-      }));
-      b.style.webkitTransform="translateY(-"+vyska+"px)";
-      window.setTimeout('$(\"'+"drop"+n.id+'\").style.webkitTransform=\"\";',10);
-     };
+        }));
+        b.style.webkitTransform="translateY(-"+vyska+"px)";
+        window.setTimeout('$(\"'+"drop"+n.id+'\").style.webkitTransform=\"\";',10);
+      }
+    };
     if (("value" in n) && n.list) for (var i=0;i<n.list.length;i++) 
       if (typeof n.list[i]==='object') {
         if (n.list[i].id==n.value) x.innerHTML=n.list[i].t;
@@ -389,8 +392,17 @@ var tfw={
         if (i==a) x.innerHTML=n.list[i];
       }
     }
-    
-    
+ 		Object.defineProperty(x, "disabled", {
+  		set:function(val){
+  			if (val) this.addClass("disabled");
+  				  else this.removeClass("disabled");
+  			this.zakazano=val;
+		  },
+		  get:function() {return this.zakazano;},
+		  enumerable:true,
+		  configurable:true
+		});
+  	if (n.disabled) x.disabled=1;
     y.add(x);
     return y;
   },
