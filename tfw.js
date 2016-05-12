@@ -2169,40 +2169,44 @@ var tfw = {
             for (j = 0; j < this.data.cols.length; j++) {
                 if (!('h' in this.data.cols[j])) {
                     c = document.createElement('th');
-                    c.add(tfw.span({className:'colHeading', innerHTML: this.data.cols[j].name}));
-                    if(true) { /** @todo Supply condition */
-                        c.className = 'resizable';
-                        c.add(resizer = tfw.span({className: 'resizer'}));
-                        resizer.addEventListener('mousedown', resizerMouseDown);
-                        c.addEventListener('resizing', resizingCallback);
-                    }
-                    if ('sort' in this.data.cols[j] && this.data.cols[j].sort) {
-                        var b1, b2;
-                        c.add(b1 = tfw.div({
-                            className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.DOWN,
-                            style: 'float:right;'
-                        }));
-                        b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
-                        c.add(b2 = tfw.div({
-                            className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.UP,
-                            style: 'float:right;position:relative;left:2px;'
-                        }));
-                        b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
-                        b1.dataset.dataCol = b2.dataset.dataCol = j;
-                        b1.onclick = b2.onclick = function () {
-                            dynamicTable.sort.call(dynamicTable, this.dataset.dataCol, this.dataset.sortOrder);
-                        };
-                    }
+                    c.add(d=tfw.span({className:'colHeadingControl'}));
+                    var deltaWidth=0;
                     if ('filter' in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
-                        c.add(b = tfw.div({
-                            className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.FILTER,
-                            style: 'float:right;'
+                        d.add(b = tfw.div({
+                            className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.FILTER
                         }));
                         b.dataset.dataCol = j;
                         b.onclick = function () {
                             dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
                         }
+                        deltaWidth+=16;
                     }
+                    if ('sort' in this.data.cols[j] && this.data.cols[j].sort) {
+                        var b1, b2;
+                        d.add(b2 = tfw.div({
+                            className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.UP,
+                            style: 'position:relative;left:2px;'                            
+                        }));
+                        b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
+                        d.add(b1 = tfw.div({
+                            className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.DOWN
+                        }));
+                        b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
+                        b1.dataset.dataCol = b2.dataset.dataCol = j;
+                        b1.onclick = b2.onclick = function () {
+                            dynamicTable.sort.call(dynamicTable, this.dataset.dataCol, this.dataset.sortOrder);
+                        };
+                        deltaWidth+=24;
+                    }
+                    if(true) { /** @todo Supply condition */
+                        c.className = 'resizable';
+                        d.add(resizer = tfw.span({className: 'resizer'}));
+                        resizer.addEventListener('mousedown', resizerMouseDown);
+                        c.addEventListener('resizing', resizingCallback);
+                        deltaWidth+=8;
+                    }
+
+                    c.add(tfw.span({className:'colHeading', innerHTML: this.data.cols[j].name, style:"width: calc(100% - "+deltaWidth+"px);"}));
                     
                     if (!('width' in this.data.cols[j])) {
                         this.data.cols[j].width = 200;
