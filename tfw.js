@@ -123,7 +123,7 @@ var desktop = {
         desktop.width = desktop.div.clientWidth;
         desktop.height = desktop.div.clientHeight;
         desktop.resizingFunctions = [];
-        isWorking: 0;
+        desktop.isWorking = 0;
         if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
     },
     closeTopLayer: function () {
@@ -394,7 +394,7 @@ var tfw = {
         if (!('value' in params)) {
             params.value = '0';
         }
-        if ("onchange" in params) element.onchange=params.onchange;
+        if ('onchange' in params) element.onchange=params.onchange;
         this.fillElemDefs(element, params);
         element.clickOnItem = function (e) {
             e.stopPropagation();
@@ -2167,7 +2167,7 @@ var tfw = {
                 r.add(th);
                 columnOrder++;
             }
-            var resizer;
+            var resizer, d;
             for (j = 0; j < this.data.cols.length; j++) {
                 if (!('h' in this.data.cols[j])) {
                     c = document.createElement('th');
@@ -2208,7 +2208,7 @@ var tfw = {
                         deltaWidth+=8;
                     }
 
-                    c.add(tfw.span({className:'colHeading', innerHTML: this.data.cols[j].name, style:"width: calc(100% - "+deltaWidth+"px);"}));
+                    c.add(tfw.span({className:'colHeading', innerHTML: this.data.cols[j].name, style:'width: calc(100% - '+deltaWidth+'px);'}));
                     
                     if (!('width' in this.data.cols[j])) {
                         this.data.cols[j].width = 200;
@@ -2428,7 +2428,6 @@ var tfw = {
                     params.onload();
                 }
             } else if (typeof(changes) != 'undefined') {
-                console.log(changes);
                 for (i = 0; i < changes.length; i++) {
                     if ('col' in changes[i]) { //update
                         var rowID = changes[i].id;
