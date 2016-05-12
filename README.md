@@ -19,14 +19,6 @@
 </dd>
 </dl>
 
-## Functions
-
-<dl>
-<dt><a href="#cmp">cmp(a, b)</a></dt>
-<dd><p>Compare two numbers - for use with sorting functions.</p>
-</dd>
-</dl>
-
 <a name="desktop"></a>
 
 ## desktop
@@ -95,6 +87,7 @@ Create a new layer.
             * _static_
                 * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
                 * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
+                * [.colCmpTypes](#tfw.dynamicTableClass.colCmpTypes) : <code>enum</code>
                 * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
                 * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
                 * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
@@ -105,6 +98,8 @@ Create a new layer.
                 * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
                 * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
                 * [~columnRenderer](#tfw.dynamicTableClass..columnRenderer) ⇒ <code>Array.&lt;HTMLElement&gt;</code>
+                * [~dataCol](#tfw.dynamicTableClass..dataCol) : <code>Object</code>
+                * [~dataRow](#tfw.dynamicTableClass..dataRow) : <code>Object</code>
                 * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
                 * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
                 * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -195,6 +190,7 @@ Triobo framework. This is a singleton.
     * _static_
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
         * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
+        * [.colCmpTypes](#tfw.dynamicTableClass.colCmpTypes) : <code>enum</code>
         * [.sortTypes](#tfw.dynamicTableClass.sortTypes) : <code>enum</code>
         * [.arrowTypes](#tfw.dynamicTableClass.arrowTypes) : <code>enum</code>
         * [.ROW_EDIT_WIDTH](#tfw.dynamicTableClass.ROW_EDIT_WIDTH) : <code>number</code>
@@ -205,6 +201,8 @@ Triobo framework. This is a singleton.
         * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
         * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
         * [~columnRenderer](#tfw.dynamicTableClass..columnRenderer) ⇒ <code>Array.&lt;HTMLElement&gt;</code>
+        * [~dataCol](#tfw.dynamicTableClass..dataCol) : <code>Object</code>
+        * [~dataRow](#tfw.dynamicTableClass..dataRow) : <code>Object</code>
         * [~rowEdit](#tfw.dynamicTableClass..rowEdit) : <code>function</code>
         * [~goToSub](#tfw.dynamicTableClass..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
@@ -253,19 +251,10 @@ Data obtained from server. [reload()](#tfw.dynamicTableClass+reload) has to be c
 **Read only**: true  
 **Properties**
 
-| Name | Type | Default | Description |
-| --- | --- | --- | --- |
-| cols | <code>Array.&lt;Object&gt;</code> |  | list of columns |
-| cols[].name | <code>string</code> |  | name (HTML) |
-| cols[].width | <code>number</code> | <code>200</code> | width (in pixels) |
-| cols[].hidden | <code>boolean</code> | <code>false</code> | hidden |
-| cols[].type | <code>[colTypes](#tfw.dynamicTableClass.colTypes)</code> | <code></code> | type of field (string) |
-| cols[].sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
-| cols[].filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
-| cols[].subtable | <code>boolean</code> | <code>false</code> | whether this column should contain a link to subtable (handled by goToSub) |
-| rows | <code>Array.&lt;Object&gt;</code> |  | list of rows |
-| rows[].id | <code>number</code> |  | row ID |
-| rows[].cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
+| Name | Type | Description |
+| --- | --- | --- |
+| cols | <code>[Array.&lt;dataCol&gt;](#tfw.dynamicTableClass..dataCol)</code> | list of columns |
+| rows | <code>[Array.&lt;dataRow&gt;](#tfw.dynamicTableClass..dataRow)</code> | list of rows |
 
 <a name="tfw.dynamicTableClass+setPreference"></a>
 
@@ -412,7 +401,7 @@ Apply sorting by values (text without HTML) of a column.Text fields are sorted 
 
 | Param | Type | Description |
 | --- | --- | --- |
-| dataCol | <code>number</code> | order of column (in data) |
+| dataCol | <code>number</code> | order of column (in data), if null sorts by IDs |
 | asc | <code>[sortTypes](#tfw.dynamicTableClass.sortTypes)</code> | sorting type (ascending or descending) |
 
 <a name="tfw.dynamicTableClass+setActiveFilterInColumn"></a>
@@ -512,11 +501,27 @@ Types of columns (and filters).
 
 | Name | Type | Default |
 | --- | --- | --- |
+| cmpType | <code>[Array.&lt;colCmpTypes&gt;](#tfw.dynamicTableClass.colCmpTypes)</code> |  | 
 | TEXT | <code>string</code> | <code>&quot;text&quot;</code> | 
 | NUMBER | <code>string</code> | <code>&quot;number&quot;</code> | 
 | CHECKBOX | <code>string</code> | <code>&quot;checkbox&quot;</code> | 
 | DATE | <code>string</code> | <code>&quot;date&quot;</code> | 
 | ORDER | <code>string</code> | <code>&quot;order&quot;</code> | 
+| cmpType | <code>string</code> | <code>&quot;{\&quot;undefined\&quot;:\&quot;\&quot;}&quot;</code> | 
+
+<a name="tfw.dynamicTableClass.colCmpTypes"></a>
+
+#### dynamicTableClass.colCmpTypes : <code>enum</code>
+Types of column sorting.
+
+**Kind**: static enum property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Read only**: true  
+**Properties**
+
+| Name | Type | Default |
+| --- | --- | --- |
+| NUMERIC | <code>number</code> | <code>0</code> | 
+| TEXT | <code>number</code> | <code>1</code> | 
 
 <a name="tfw.dynamicTableClass.sortTypes"></a>
 
@@ -631,6 +636,37 @@ Callback that creates content to insert into a custom column.
 | Param | Type | Description |
 | --- | --- | --- |
 | columnValue | <code>string</code> | value that was loaded as data from server |
+
+<a name="tfw.dynamicTableClass..dataCol"></a>
+
+#### dynamicTableClass~dataCol : <code>Object</code>
+Object representing a column in data.
+
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Properties**
+
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| name | <code>string</code> |  | name (HTML) |
+| width | <code>number</code> | <code>200</code> | width (in pixels) |
+| hidden | <code>boolean</code> | <code>false</code> | hidden |
+| type | <code>[colTypes](#tfw.dynamicTableClass.colTypes)</code> | <code></code> | type of field (string) |
+| sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
+| filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
+| subtable | <code>boolean</code> | <code>false</code> | whether this column should contain a link to subtable (handled by goToSub) |
+
+<a name="tfw.dynamicTableClass..dataRow"></a>
+
+#### dynamicTableClass~dataRow : <code>Object</code>
+Object representing a row in data.
+
+**Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| id | <code>number</code> | row ID |
+| cols | <code>Array.&lt;string&gt;</code> | contents for each column (HTML) |
 
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 
@@ -1306,15 +1342,3 @@ HTML to show when some content is being loaded.
 
 **Kind**: global constant  
 **Default**: <code>&quot;&lt;div class=\&quot;tfwDivContentLoader\&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  
-<a name="cmp"></a>
-
-## cmp(a, b)
-Compare two numbers - for use with sorting functions.
-
-**Kind**: global function  
-
-| Param | Type |
-| --- | --- |
-| a | <code>number</code> | 
-| b | <code>number</code> | 
-

@@ -11,17 +11,6 @@
  */
 var AJAX_LOADER = '<div class="tfwDivContentLoader"><span></span></div>';
 
-/**
- * Compare two numbers - for use with sorting functions.
- * @param {number} a
- * @param {number} b
- */
-function cmp(a, b) {
-    a = parseInt(a);
-    b = parseInt(b);
-    return a < b ? -1 : a > b;
-}
-
 function $(id) {
     var x = document.getElementById(id);
     return x;
@@ -1630,23 +1619,31 @@ var tfw = {
          */
         var bodyHeight = ('bodyHeight' in params) ? params.bodyHeight : null;
         /**
+         * Object representing a column in data.
+         * @typedef {Object} tfw.dynamicTableClass~dataCol
+         * @property {string} name - name (HTML)
+         * @property {number} [width=200] - width (in pixels)
+         * @property {boolean} [hidden=false] - hidden
+         * @property {?tfw.dynamicTableClass.colTypes} [type=null] - type of field (string)
+         * @property {boolean} [sort=false] - whether to allow sorting by this column's values
+         * @property {(boolean|number)} [filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
+         * @property {boolean} [subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
+         */
+        /**
+         * Object representing a row in data.
+         * @typedef {Object} tfw.dynamicTableClass~dataRow
+         * @property {number} id - row ID
+         * @property {string[]} cols - contents for each column (HTML)
+         */
+        /**
          * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
          * Any other attributes provided by server are preserved (e.g. data.meta).
          * @var {Object}
          * @default null
          * @public
          * @readonly
-         * @property {Object[]} cols - list of columns
-         * @property {string} cols[].name - name (HTML)
-         * @property {number} [cols[].width=200] - width (in pixels)
-         * @property {boolean} [cols[].hidden=false] - hidden
-         * @property {?tfw.dynamicTableClass.colTypes} [cols[].type=null] - type of field (string)
-         * @property {boolean} [cols[].sort=false] - whether to allow sorting by this column's values
-         * @property {(boolean|number)} [cols[].filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
-         * @property {boolean} [cols[].subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
-         * @property {Object[]} rows - list of rows
-         * @property {number} rows[].id - row ID
-         * @property {string[]} rows[].cols - contents for each column (HTML)
+         * @property {tfw.dynamicTableClass~dataCol[]} cols - list of columns
+         * @property {tfw.dynamicTableClass~dataRow[]} rows - list of rows
          */
         this.data = null;
         /**
@@ -2428,9 +2425,10 @@ var tfw = {
                     params.onload();
                 }
             } else if (typeof(changes) != 'undefined') {
+                var sorting = this.getPreference('sorting');
                 for (i = 0; i < changes.length; i++) {
+                    var rowID = changes[i].id;
                     if ('col' in changes[i]) { //update
-                        var rowID = changes[i].id;
                         dataCol = changes[i].col;
                         var column = this.data.cols[dataCol].columnOrder;
                         var newValue = changes[i].value;
@@ -2509,7 +2507,6 @@ var tfw = {
                 }
             }
             //apply sorting
-            var sorting = this.getPreference('sorting');
             if (sorting != null) {
                 this.sort(sorting.dataCol, sorting.asc, true);
             }
@@ -2751,39 +2748,91 @@ var tfw = {
             }
         }
         /**
+         * @private
+         * Compare two numbers - for use with sorting functions.
+         * @param {number} a - number to be compared
+         * @param {number} b - number to compare to
+         * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
+         */
+        function cmp(a, b) {
+            a = parseInt(a);
+            b = parseInt(b);
+            return a < b ? -1 : a > b;
+        }
+        /**
+         * @private
+         * Compare two table rows by their IDs - for use with sorting functions.
+         * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
+         * @param {tfw.dynamicTableClass~dataRow} row1 - row to be compared
+         * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
+         * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
+         */
+        function cmpRowsIds(asc, row1, row2){
+            return cmp(row1.id, row2.id) * asc;
+        }
+        /**
+         * @private
+         * Compare two table rows by numeric value of a column - for use with sorting functions.
+         * @param {number} dataCol - order of column (in data)
+         * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
+         * @param {tfw.dynamicTableClass~dataRow} row1 - row to be compared
+         * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
+         * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
+         */
+        function cmpNumericRows(dataCol, asc, row1, row2){
+            var a = row1.cols[dataCol],
+                b = row2.cols[dataCol];
+            return (a != b) ? (cmp(a, b) * asc) : cmpRowsIds(asc, row1, row2);
+        }
+        /**
+         * @private
+         * Compare two table rows alphabetically by value of a column - for use with sorting functions.
+         * @param {number} dataCol - order of column (in data)
+         * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
+         * @param {tfw.dynamicTableClass~dataRow} row1 - row to be compared
+         * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
+         * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
+         */
+        function cmpTextRows(dataCol, asc, row1, row2) {
+            var a = row1.cols[dataCol],
+                b = row2.cols[dataCol];
+            return (a === '' && b === '') ? (cmpRowsIds(asc, row1, row2))
+                : ((a === '') ? 1 : ((b === '') ? -1 : ((a.localeCompare(b) * asc) || cmp(asc, row1, row2))));
+        }
+        
+        /**
+         * @private
+         * @return {function} row comparator
+         */
+        this.getCmp = function(dataCol){
+            return (dataCol === null) ? cmpRowsIds : (
+                (tfw.dynamicTableClass.colTypes.cmpType[this.data.cols[dataCol].type] == tfw.dynamicTableClass.colCmpTypes.NUMERIC)
+                    ? cmpNumericRows : cmpTextRows
+            ).bind(null, dataCol);
+        }
+        
+        /**
          * Apply sorting by values (text without HTML) of a column.
          * Text fields are sorted locale aware, with empty strings always last.
-         * @param {number} dataCol - order of column (in data)
+         * @param {?number} dataCol - order of column (in data), if null sorts by IDs
          * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
          */
         this.sort = function (dataCol, asc, dontSave) {
-            if (typeof(dontSave) == 'undefined' || !dontSave) {
-                this.setPreference('sorting', {
-                    dataCol: dataCol,
-                    asc: asc
-                });
+            var tbody = this.tableContainer.querySelector('tbody');
+            if(dataCol !== null){
+                if (typeof(dontSave) == 'undefined' || !dontSave) {
+                    this.setPreference('sorting', {
+                        dataCol: dataCol,
+                        asc: asc
+                    });
+                }
+                
+                var column = this.data.cols[dataCol].columnOrder;
+                this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? 'UP' : 'DOWN'], this.tableContainer);
             }
-            var column = this.data.cols[dataCol].columnOrder;
-            this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? 'UP' : 'DOWN'], this.tableContainer);
-            var tbody = this.tableContainer.querySelector('tbody'),
-                type = this.data.cols[dataCol].type,
-                i;
-            if ([tfw.dynamicTableClass.colTypes.NUMBER, tfw.dynamicTableClass.colTypes.ORDER, tfw.dynamicTableClass.colTypes.CHECKBOX].indexOf(type) !=
-                -1) {
-                this.data.rows.sort(function(row1, row2) {
-                    var a = row1.cols[dataCol],
-                        b = row2.cols[dataCol];
-                    return ((a != b) ? cmp(a, b) : cmp(row1.id, row2.id)) * asc;
-                });
-            } else {
-                this.data.rows.sort(function(row1, row2) {
-                    var a = row1.cols[dataCol],
-                        b = row2.cols[dataCol];
-                    return (a === '' && b === '') ? (cmp(row1.id, row2.id) * asc) : ((a === '') ? 1 : ((b === '') ? -1 : ((a.localeCompare(
-                        b) || cmp(row1.id, row2.id)) * asc)));
-                });
-            }
-            for (i = 0; i < this.data.rows.length; i++) {
+            
+            this.data.rows.sort(this.getCmp(dataCol).bind(null, asc));
+            for (var i = 0; i < this.data.rows.length; i++) {
                 tbody.appendChild(tbody.rows.namedItem('rowID-' + this.data.rows[i].id));
             }
         };
@@ -3216,13 +3265,30 @@ tfw.dynamicTableClass.serverActions = {
  * Types of columns (and filters).
  * @readonly
  * @enum {string}
+ * @property {tfw.dynamicTableClass.colCmpTypes[]} cmpType
  */
 tfw.dynamicTableClass.colTypes = {
     TEXT: 'text',
     NUMBER: 'number',
     CHECKBOX: 'checkbox',
     DATE: 'date',
-    ORDER: 'order'
+    ORDER: 'order',
+    cmpType: {
+        'text': tfw.dynamicTableClass.colCmpTypes.TEXT,
+        'date': tfw.dynamicTableClass.colCmpTypes.TEXT,
+        'number': tfw.dynamicTableClass.colCmpTypes.NUMERIC,
+        'checkbox': tfw.dynamicTableClass.colCmpTypes.NUMERIC,
+        'order': tfw.dynamicTableClass.colCmpTypes.NUMERIC
+    }
+};
+/**
+ * Types of column sorting.
+ * @readonly
+ * @enum {number}
+ */
+tfw.dynamicTableClass.colCmpTypes = {
+    NUMERIC: 0,
+    TEXT: 1
 };
 /**
  * Types of sorting.
