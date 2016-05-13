@@ -2058,13 +2058,18 @@ var tfw = {
             }
             row.children[column].querySelector('input').focus();
         }
+        /** @private **/
+        this.isColumnVisible = function(dataCol){
+            return (!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden !== false) && !(this.tableContainer.querySelector('tbody').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
+        }
         /**
          * @private
          */
-        function setTableWidth(){
-            var width = this.data.cols.reduce(function(previous, current) {
-                return parseInt(current.width) + previous
-            }, 0);
+        this.setTableWidth = function(){
+            var dynamicTable = this,
+                width = this.data.cols.reduce(function(previous, current, dataCol) {
+                    return (dynamicTable.isColumnVisible(dataCol) ? parseInt(current.width) : 0) + previous
+                }, 0);
             if (rowEdit) {
                 width += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
             }
@@ -2196,7 +2201,6 @@ var tfw = {
                 id: this.tableHTMLId,
                 className: 'tfwDynamicTable'
             }));
-            setTableWidth.call(this);
             for (j = 0; j < this.data.cols.length; j++) {
                 if (!this.data.cols[j].hidden && this.data.cols[j].type == 'order') {
                     this.data.cols[j].sort = true;
@@ -2271,7 +2275,7 @@ var tfw = {
                         cells[i].style.width = newWidth+'px';
                     }
                     this.data.cols[dataCol].width = newWidth;
-                    setTableWidth.call(this);
+                    this.setTableWidth();
                 }
             };
             var resizingCallback = function(){
@@ -2389,6 +2393,7 @@ var tfw = {
                 ]
             }));
             updateRowCounts.call(dynamicTable);
+            this.setTableWidth();
         }
         /**
          * @private
@@ -3014,8 +3019,7 @@ var tfw = {
                     visible = cell.hasClass('hideColumn');
                     cell.toggleClass('hideColumn');
                 });
-            var table = this.tableContainer.querySelector('.tfwDynamicTable');
-            table.style.width = (parseInt(table.style.width) + (visible ? 1 : -1) * this.data.cols[dataCol].width) + 'px';
+            this.setTableWidth();
             if (typeof(dontSave) == 'undefined' || !dontSave) {
                 /** @var {boolean[]} */
                 var hiddenColumns = this.getPreference('hiddenColumns') || [];
