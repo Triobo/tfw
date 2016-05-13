@@ -2094,7 +2094,7 @@ var tfw = {
                 r.add(tfw.td({
                     className: 'rowEditCell',
                     children: [b = tfw.span({
-                        className: 'rowEditIcon clickable fa invert fa-info'
+                        className: 'rowEditIcon clickable icon fa fa-info'
                     })]
                 }));
                 b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
@@ -2111,7 +2111,7 @@ var tfw = {
                     if ('subtable' in this.data.cols[j] && this.data.cols[j].subtable) {
                         params.className = 'withSubtable';
                         params.children.push(b = tfw.div({
-                            className: 'subtable clickable fa invert fa-caret-down'
+                            className: 'subtable clickable icon fa fa-caret-down'
                         }));
                         b.onclick = goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j);
                     }
@@ -3117,7 +3117,7 @@ var tfw = {
         }
         calendarWrapper.appendChild(input);
         calendarWrapper.appendChild(calendarIcon);
-        calendarIcon.className = 'tfwCalendarIcon fa invert clickable fa-calendar';
+        calendarIcon.className = 'tfwCalendarIcon clicable icon fa fa-calendar';
         calendarIcon._calendarInput = input;
         input.addClass('calendarInput');
         input._calendar = this;

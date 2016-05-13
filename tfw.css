@@ -7,24 +7,22 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
+}
+.fa.icon{
   padding: 2px;
 	margin: 1px;
   width: 18px;
   height: 18px;
   border-radius: 3px;
   text-align: center;
-}
-.fa.invert{
 	color: white;
 	background-color: #8cc;/*azure*/
 }
-.fa.invert:hover{
+.fa.icon:hover{
 	color:black;
 	background-color: #fc5;/*orange*/  
 }
-.tfwDynamicTable td .rowEditIcon, .tfwDynamicTable td .subtable, .tfwDynamicTable .tfwCalendarIcon{
-	margin: 1px;
-}
+
 .tfwCalendarIcon{
 	margin-left: 2px;	
 }
@@ -61,6 +59,10 @@
 .fa-share:before {
   content: "\f064";
 }
+.fa-lock:before {
+  content: "\f023";
+}
+
 
 
 html,body {height:100%;}
