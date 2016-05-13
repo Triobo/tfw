@@ -450,19 +450,25 @@ var tfw = {
      * @param {HTMLElement} element - element to position wrapper at
      * @param {Object} params - parameters for {@link desktop.newLayer}
      * @param {boolean} [above=false] - whether to position above element instead of below
+     * @param {boolean} [right=false] - whether to align with right edge of element instead of left
      * @return {HTMLElement} Created wrapper
      * @see desktop.newLayer
      */
-    createLayerAndWrapperAtElement: function (element, params, above) {
+    createLayerAndWrapperAtElement: function (element, params, above, right) {
         if (typeof(above) == 'undefined') {
             above = false;
         }
+        if (typeof(right) == 'undefined') {
+            right = false;
+        }
         desktop.newLayer(params);
-        var rect = element.getBoundingClientRect();
-        var wrapper;
+        var rect = element.getBoundingClientRect(),
+            wrapper,
+            leftOrRight = right ? 'right' : 'left',
+            leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
         desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
-            style: 'overflow:hidden;position:absolute;left:' + rect.left + 'px;' + (above ? 'bottom' : 'top') + ':' + (above ? (window.innerHeight -
-                rect.top) : rect.bottom) + 'px'
+            style: 'overflow:hidden;position:absolute;'+leftOrRight+':' + leftOrRightPx + 'px;'
+                + (above ? 'bottom' : 'top') + ':' + (above ? (window.innerHeight - rect.top) : rect.bottom) + 'px'
         }));
         return wrapper;
     },
@@ -3094,7 +3100,7 @@ var tfw = {
                 autoclose: true,
                 modal: 'auto',
                 overlay: true
-            }, true);
+            }, true, true);
             wrapper.add(c);
         }
     },

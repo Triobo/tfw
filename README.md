@@ -124,7 +124,7 @@ Create a new layer.
         * [.localize(newStrings)](#tfw.localize)
         * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
         * [.select(params)](#tfw.select) ⇒ <code>HTMLElement</code>
-        * [.createLayerAndWrapperAtElement(element, params, [above])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>HTMLElement</code>
+        * [.createLayerAndWrapperAtElement(element, params, [above], [right])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>HTMLElement</code>
         * [.dropDown(params)](#tfw.dropDown) ⇒ <code>HTMLElement</code>
         * [.button(params)](#tfw.button) ⇒ <code>HTMLElement</code>
         * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>HTMLElement</code>
@@ -935,7 +935,7 @@ Create a select field with specified parameters.
 
 <a name="tfw.createLayerAndWrapperAtElement"></a>
 
-### tfw.createLayerAndWrapperAtElement(element, params, [above]) ⇒ <code>HTMLElement</code>
+### tfw.createLayerAndWrapperAtElement(element, params, [above], [right]) ⇒ <code>HTMLElement</code>
 Create a new layer and a wrapper that starts at a given element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
@@ -947,6 +947,7 @@ Create a new layer and a wrapper that starts at a given element.
 | element | <code>HTMLElement</code> |  | element to position wrapper at |
 | params | <code>Object</code> |  | parameters for [newLayer](#desktop.newLayer) |
 | [above] | <code>boolean</code> | <code>false</code> | whether to position above element instead of below |
+| [right] | <code>boolean</code> | <code>false</code> | whether to align with right edge of element instead of left |
 
 <a name="tfw.dropDown"></a>
 
