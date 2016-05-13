@@ -535,40 +535,55 @@ var tfw = {
             e.preventDefault();
         };
         x.onclick = function () {
-            var vyska = params.list.length * x.itemHeight;
-            if (params.maxHeight) {
-                if (vyska > params.maxHeight) {
-                    vyska = params.maxHeight;
-                }
+            if (!x._disabled) {
+              var vyska = params.list.length * x.itemHeight;
+              if (params.maxHeight) {
+                  if (vyska > params.maxHeight) {
+                      vyska = params.maxHeight;
+                  }
+              }
+              if (vyska > 210) {
+                  vyska = 210;
+              }
+              var rect = x.getBoundingClientRect();
+              var c = tfw.createLayerAndWrapperAtElement(x, {
+                  autoclose: true,
+                  modal: 'auto'
+              });
+              var b = tfw.select({
+                  id: 'drop' + params.id,
+                  list: params.list,
+                  value: x.value,
+                  style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
+                  onchange: function () {
+                      for (i = 0; i < this.childNodes.length; i++)
+                          if (this.childNodes[i].value == this.value) {
+                              x.innerHTML = this.childNodes[i].innerHTML;
+                              x.value = this.childNodes[i].value;
+                          }
+                      if (x.onchange) {
+                          x.onchange();
+                      }
+                  }
+              });
+              c.add(b);
+              b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
+              window.setTimeout('$(\"drop' + params.id + '\").style.webkitTransform=\"\";', 10);
             }
-            if (vyska > 210) {
-                vyska = 210;
-            }
-            var rect = x.getBoundingClientRect();
-            var c = tfw.createLayerAndWrapperAtElement(x, {
-                autoclose: true,
-                modal: 'auto'
-            });
-            var b = tfw.select({
-                id: 'drop' + params.id,
-                list: params.list,
-                value: x.value,
-                style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
-                onchange: function () {
-                    for (i = 0; i < this.childNodes.length; i++)
-                        if (this.childNodes[i].value == this.value) {
-                            x.innerHTML = this.childNodes[i].innerHTML;
-                            x.value = this.childNodes[i].value;
-                        }
-                    if (x.onchange) {
-                        x.onchange();
-                    }
-                }
-            });
-            c.add(b);
-            b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
-            window.setTimeout('$(\"drop' + params.id + '\").style.webkitTransform=\"\";', 10);
         };
+        Object.defineProperty(x, 'disabled', {
+            set: function (val) {
+                if (val) this.addClass('disabled');
+                else this.removeClass('disabled');
+                this._disabled = val;
+            },
+            get: function () {
+                return this._disabled;
+            },
+            enumerable: true,
+            configurable: true
+        });
+
         if (('value' in params) && params.list) {
             for (var i = 0; i < params.list.length; i++) {
                 if (typeof params.list[i] === 'object') {
@@ -580,6 +595,9 @@ var tfw = {
         }
         if ('value' in params) {
             x.value = params.value;
+        }
+        if ("disabled" in params) {
+          x.disabled=params.disabled; 
         }
         x.setValue = function (a) {
             x.value = a;
