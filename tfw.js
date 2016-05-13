@@ -1226,7 +1226,7 @@ var tfw = {
      * @param {number} [o.autohide=0] - whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately)
      * @param {string} [o.method="GET"] - HTTP method to be used (GET or POST)
      * @param {string} [o.parameters=null] - parameters to be send with the request (e.g. POST)
-     * @return {XMLHttpRequest} - Returns XMLHttpRequest object
+     * @return {XMLHttpRequest} Returns XMLHttpRequest object
      * @see tfw.ajaxIncludeParams
      * @see tfw.ajaxOnErrorCode
      * @see tfw.ajaxOnError
@@ -1290,7 +1290,7 @@ var tfw = {
      * Post data to server via AJAX.
      * @memberof tfw
      * @param {Object} o - parameters object (see {@link tfw.ajaxGet})
-     * @return {XMLHttpRequest} - Returns XMLHttpRequest object
+     * @return {XMLHttpRequest} Returns XMLHttpRequest object
      * @see tfw.ajaxGet
      */
     ajaxPost: function (o) {
@@ -1574,7 +1574,7 @@ var tfw = {
      * Callback that creates content to insert into a custom column.
      * @callback tfw.dynamicTableClass~columnRenderer
      * @param {string} columnValue - value that was loaded as data from server
-     * @return {HTMLElement[]} - Return array of elements to be inserted into table cell
+     * @return {HTMLElement[]} Return array of elements to be inserted into table cell
      */
     /**
      * Class for creating dynamic tables.

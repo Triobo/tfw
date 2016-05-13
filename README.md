@@ -631,7 +631,7 @@ Set active arrow (and make other arrows of same group inactive).
 Callback that creates content to insert into a custom column.
 
 **Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Returns**: <code>Array.&lt;HTMLElement&gt;</code> - - Return array of elements to be inserted into table cell  
+**Returns**: <code>Array.&lt;HTMLElement&gt;</code> - Return array of elements to be inserted into table cell  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1157,7 +1157,7 @@ Create a slider with specified parameters.
 Get data from server via AJAX.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>XMLHttpRequest</code> - - Returns XMLHttpRequest object  
+**Returns**: <code>XMLHttpRequest</code> - Returns XMLHttpRequest object  
 **See**
 
 - tfw.ajaxIncludeParams
@@ -1180,7 +1180,7 @@ Get data from server via AJAX.
 Post data to server via AJAX.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>XMLHttpRequest</code> - - Returns XMLHttpRequest object  
+**Returns**: <code>XMLHttpRequest</code> - Returns XMLHttpRequest object  
 **See**: tfw.ajaxGet  
 
 | Param | Type | Description |
