@@ -2499,6 +2499,9 @@ var tfw = {
                         }
                         tbody.insertBefore(newRow, greaterRow);
                     } else { //deletion
+                        rowOrder = this.getDataRowById(rowID);
+                        this.data.rows.splice(rowOrder, 1);
+                        tbody.rows[rowOrder].remove();
                     }
                 }
             } else {
