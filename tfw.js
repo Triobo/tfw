@@ -1580,6 +1580,7 @@ var tfw = {
      * Class for creating dynamic tables.
      * @class
      * @todo View preferences (order of columns)
+     * @todo Custom filter renderers and custom filter functions (returning true/false if row passes/fails filter)
      * @param {Object} params - table parameters
      * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
      * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
@@ -3436,7 +3437,7 @@ window.addEventListener('load', tfw.init);
  */
 var prvek = {
     /**
-     * @todo Move to {@link tfw}
+     * @todo Move to {@link tfw} as tfw.multiCheckbox
      */
     seznamZatrzitek: function (co) {
         var z;

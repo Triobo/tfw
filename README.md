@@ -161,6 +161,7 @@ Triobo framework. This is a singleton.
 **Todo**
 
 - [ ] View preferences (order of columns)
+- [ ] Custom filter renderers and custom filter functions (returning true/false if row passes/fails filter)
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -1292,7 +1293,7 @@ Function package for preparing HTML elements.
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **Todo**
 
-- [ ] Move to [tfw](#tfw)
+- [ ] Move to [tfw](#tfw) as tfw.multiCheckbox
 
 <a name="prvek.tabulka"></a>
 
