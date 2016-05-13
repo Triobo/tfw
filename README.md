@@ -74,6 +74,7 @@ Create a new layer.
                 * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
                 * [.orderChange(referenceRow)](#tfw.dynamicTableClass+orderChange)
                 * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
+                * [.setColumnWidth(dataCol, width)](#tfw.dynamicTableClass+setColumnWidth)
                 * [.paint([changes])](#tfw.dynamicTableClass+paint)
                 * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
                 * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
@@ -159,7 +160,7 @@ Triobo framework. This is a singleton.
 **See**: AJAX_LOADER  
 **Todo**
 
-- [ ] View preferences (width, order of columns)
+- [ ] View preferences (order of columns)
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -177,6 +178,7 @@ Triobo framework. This is a singleton.
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(referenceRow)](#tfw.dynamicTableClass+orderChange)
         * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
+        * [.setColumnWidth(dataCol, width)](#tfw.dynamicTableClass+setColumnWidth)
         * [.paint([changes])](#tfw.dynamicTableClass+paint)
         * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
@@ -348,6 +350,18 @@ Updates data and sends change to server.
 | --- | --- | --- |
 | input | <code>HTMLElement</code> | input field in a cell of dynamic table |
 | input.value | <code>string</code> | value that can be obtained |
+
+<a name="tfw.dynamicTableClass+setColumnWidth"></a>
+
+#### dynamicTableClass.setColumnWidth(dataCol, width)
+Set width of a column.
+
+**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| dataCol | <code>number</code> | order of column (in data) |
+| width | <code>number</code> | width of column in pixels |
 
 <a name="tfw.dynamicTableClass+paint"></a>
 

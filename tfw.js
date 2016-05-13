@@ -1579,7 +1579,7 @@ var tfw = {
     /**
      * Class for creating dynamic tables.
      * @class
-     * @todo View preferences (width, order of columns)
+     * @todo View preferences (order of columns)
      * @param {Object} params - table parameters
      * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
      * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
@@ -2077,6 +2077,28 @@ var tfw = {
             
             this.tableContainer.querySelector('table').style.width = width + 'px';
         }
+        /** @private */
+        this.setColumnCellsWidths = function(dataCol, newWidth){
+            var columnOrder = this.data.cols[dataCol].columnOrder,
+                cells = this.tableContainer.querySelectorAll('thead tr > :nth-child('+(parseInt(columnOrder)+1)+'), tbody tr > :nth-child('+(parseInt(columnOrder)+1)+')');
+            for(var i=0;i<cells.length;i++){
+                cells[i].style.width = newWidth+'px';
+            }
+            this.data.cols[dataCol].width = newWidth;
+            this.setTableWidth();
+        }
+        /**
+         * Set width of a column.
+         * @param {number} dataCol - order of column (in data)
+         * @param {number} width - width of column in pixels
+         */
+        this.setColumnWidth = function (dataCol, width, dontSave) {
+            if (typeof(dontSave) == 'undefined' || !dontSave) {
+                this.setWidthsPreference(width, dataCol, !dontSave);
+            }
+            
+            this.setColumnCellsWidths(dataCol, width);
+        };
         /**
          * @private
          * @param {number} rowOrder - order of row in data
@@ -2214,7 +2236,6 @@ var tfw = {
             }));
             
             /** @todo Make movement detection more precise, so that mouse and resized element are synced */
-            /** @todo Save into preferences */
             var RESIZING_MIN_WIDTH = 40;
             var resizerMouseDown = function(event){
                 var t = window._resizedElement = event.target.closest('th');
@@ -2267,19 +2288,9 @@ var tfw = {
              * @param {number} dataCol
              */
             var onResizeCallback = function(dataCol, newWidth){
-                var columnOrder = this.data.cols[dataCol].columnOrder;
-                var oldWidth = this.data.cols[dataCol].width;
-                if(newWidth != oldWidth){
-                    var cells = this.tableContainer.querySelectorAll('tbody tr > :nth-child('+(parseInt(columnOrder)+1)+')');
-                    for(var i=0;i<cells.length;i++){
-                        cells[i].style.width = newWidth+'px';
-                    }
-                    this.data.cols[dataCol].width = newWidth;
-                    this.setTableWidth();
+                if(newWidth != this.data.cols[dataCol].width){
+                    this.setColumnCellsWidths(dataCol, newWidth);
                 }
-            };
-            var resizingCallback = function(){
-                onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));
             };
             
             columnOrder = 0;
@@ -2327,7 +2338,12 @@ var tfw = {
                         c.className = 'resizable';
                         d.add(resizer = tfw.span({className: 'resizer'}));
                         resizer.addEventListener('mousedown', resizerMouseDown);
-                        c.addEventListener('resizing', resizingCallback);
+                        c.addEventListener('resizing', function(){
+                            onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));
+                        });
+                        c.addEventListener('resizestop', function(){
+                            dynamicTable.setColumnWidth(this.dataset.dataCol, parseInt(this.style.width));
+                        });
                         deltaWidth+=8;
                     }
 
@@ -2562,6 +2578,7 @@ var tfw = {
             if (sorting != null) {
                 this.sort(sorting.dataCol, sorting.asc, true);
             }
+            this.toggleReorder();
             //hide columns
             var hiddenColumns = this.getPreference('hiddenColumns');
             if (hiddenColumns != null) {
@@ -2571,7 +2588,13 @@ var tfw = {
                     }
                 }
             }
-            this.toggleReorder();
+            //apply column widths
+            var widths = this.getPreference('widths');
+            if (widths != null) {
+                for (dataCol in widths) {
+                    this.setColumnWidth(dataCol, widths[dataCol], true);
+                }
+            }
         };
         /**
          * Prepare calendar class for use. Sets the {@link tfw.calendar.placeCalendar} callback, if null.
@@ -2612,15 +2635,31 @@ var tfw = {
                 this.setPreference('filterValues', filterValues);
             }
         }
+        /** @private */
+        this.setWidthsPreference = function (width, dataCol, save) {
+            var widths = this.getPreference('widths');
+            if (widths == null) {
+                widths = {};
+            }
+            if (this.data.cols[dataCol].width == width) {
+                delete widths[dataCol];
+            } else {
+                widths[dataCol] = width;
+            }
+            if (typeof(save) == 'undefined' || save) {
+                this.setPreference('widths', widths);
+            }
+        }
         /**
          * @private
-         * @param {number} dataCol - order of filtered column (in data)
-         * @return {tfw.dynamicTableClass~filterValue} filter value
+         * @param {string} preference - preference name
+         * @param {number} dataCol - order of column (in data)
+         * @return {tfw.dynamicTableClass~filterValue|Object} preference value
          */
-        this.getFilterPreference = function (dataCol) {
-            var filterValues = this.getPreference('filterValues');
-            if (filterValues != null && dataCol in filterValues) {
-                return filterValues[dataCol];
+        this.getColumnPreference = function (preference, dataCol) {
+            var values = this.getPreference(preference);
+            if (values != null && dataCol in values) {
+                return values[dataCol];
             } else {
                 return null;
             }
@@ -2655,7 +2694,7 @@ var tfw = {
             }
             var c = document.createElement('div');
             var type = this.data.cols[dataCol].type,
-                value = this.getFilterPreference(dataCol),
+                value = this.getColumnPreference('filterValues', dataCol),
                 minV,
                 maxV,
                 f1,
@@ -2994,7 +3033,7 @@ var tfw = {
             var last = null;
             for (var i = 0; i < this.data.cols.length; i++) {
                 if ('filter' in this.data.cols) {
-                    var value = this.getFilterPreference(i);
+                    var value = this.getColumnPreference('filterValues', i);
                     if (value != null && !this.isFilterValueDefault(value, i)) {
                         this.filterAny(i, defaultFilterValues[i], null, true);
                         last = i;
