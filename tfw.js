@@ -753,7 +753,7 @@ var tfw = {
             e.preventDefault();
         }, false);
         if (params.disabled) x.disabled = 1;
-        return x;
+        return (params.legend) ? (this.inputFieldLegend(x, params)) : x;
     },
     /**
      * Create an icon with specified parameters.
