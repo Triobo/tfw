@@ -2228,7 +2228,6 @@ var tfw = {
                 if (!this.data.cols[j].hidden && this.data.cols[j].type == 'order') {
                     this.data.cols[j].sort = true;
                     orderDataCol = j;
-                    o.addEventListener('click', dynamicTable.toggleReorder.bind(dynamicTable));
                 }
             }
             o.add(thead = document.createElement('thead'));
@@ -2262,7 +2261,7 @@ var tfw = {
                     }
                 }
             };
-            var resizerMouseEnd = function(event){
+            var resizerMouseEnd = function(){
                 if(typeof(window._resizedElement) != 'undefined'){
                     var t = window._resizedElement;
                     t.dispatchEvent(new CustomEvent('resizestop'));
@@ -2572,8 +2571,9 @@ var tfw = {
             //apply sorting
             if (sorting != null) {
                 this.sort(sorting.dataCol, sorting.asc, true);
+            } else {
+                this.toggleReorder();
             }
-            this.toggleReorder();
             //hide columns
             var hiddenColumns = this.getPreference('hiddenColumns');
             if (hiddenColumns != null) {
@@ -2904,6 +2904,7 @@ var tfw = {
          * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
          */
         this.sort = function (dataCol, asc, dontSave) {
+            this.toggleReorder();
             var tbody = this.tableContainer.querySelector('tbody');
             if(dataCol !== null){
                 if (typeof(dontSave) == 'undefined' || !dontSave) {
