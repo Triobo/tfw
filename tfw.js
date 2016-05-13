@@ -2453,7 +2453,11 @@ var tfw = {
                             if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
                                 this.data.rows[rowOrder].cols[dataCol] = newValue;
                                 var cell = tbody.rows[rowOrder].cells[column];
-                                switch (this.data.cols[dataCol].type) {
+                                if(typeof(columnRenderers[dataCol]) == 'function') {
+                                  cell.innerHTML="";
+                                  var newo=columnRenderers[dataCol](newValue);
+                                  for (newi in newo) cell.add(newo[newi]);
+                                } else switch (this.data.cols[dataCol].type) {
                                     case tfw.dynamicTableClass.colTypes.CHECKBOX:
                                         cell.querySelector('.tfwCheckbox').value = parseInt(newValue);
                                         break;
