@@ -2242,8 +2242,6 @@ var tfw = {
                 t.dispatchEvent(new CustomEvent('resizestart'));
                 document.body.addClass('resizing');
                 t._resizePositionX = event.clientX;
-                event.stopPropagation();
-                event.preventDefault();
             };
             var resizerMouseMove = function(event){
                 if(typeof(window._resizedElement) != 'undefined'){
@@ -2262,8 +2260,6 @@ var tfw = {
                         t._resizePositionX = event.clientX;
                     }
                 }
-                event.stopPropagation();
-                event.preventDefault();
             };
             var resizerMouseEnd = function(event){
                 if(typeof(window._resizedElement) != 'undefined'){
@@ -2271,8 +2267,6 @@ var tfw = {
                     t.dispatchEvent(new CustomEvent('resizestop'));
                     document.body.removeClass('resizing');
                     delete window._resizedElement;
-                    event.stopPropagation();
-                    event.preventDefault();
                 }
             };
             document.body.addEventListener('mousemove', resizerMouseMove);
