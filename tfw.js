@@ -2128,7 +2128,7 @@ var tfw = {
             };
             var val, shift, calendarInput, type, c;
             for (var j = 0; j < this.data.cols.length; j++) {
-                if (!('h' in this.data.cols[j])) {
+                if (!('hidden' in this.data.cols[j])) {
                     var params = {};
                     params.children = [];
                     if ('subtable' in this.data.cols[j] && this.data.cols[j].subtable) {
@@ -2297,7 +2297,7 @@ var tfw = {
             }
             var resizer, d;
             for (j = 0; j < this.data.cols.length; j++) {
-                if (!('h' in this.data.cols[j])) {
+                if (!('hidden' in this.data.cols[j])) {
                     c = document.createElement('th');
                     c.add(d=tfw.span({className:'colHeadingControl'}));
                     var deltaWidth=0;
