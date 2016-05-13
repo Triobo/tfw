@@ -7,7 +7,8 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
-  padding: 1px;
+  padding: 2px;
+	margin: 1px;
   width: 18px;
   height: 18px;
   border-radius: 3px;
@@ -56,6 +57,9 @@
 }
 .fa-caret-right:before {
   content: "\f0da";
+}
+.fa-share:before {
+  content: "\f064";
 }
 
 
