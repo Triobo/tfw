@@ -536,39 +536,37 @@ var tfw = {
         };
         x.onclick = function () {
             if (!x._disabled) {
-              var vyska = params.list.length * x.itemHeight;
-              if (params.maxHeight) {
-                  if (vyska > params.maxHeight) {
-                      vyska = params.maxHeight;
-                  }
-              }
-              if (vyska > 210) {
-                  vyska = 210;
-              }
-              var rect = x.getBoundingClientRect();
-              var c = tfw.createLayerAndWrapperAtElement(x, {
-                  autoclose: true,
-                  modal: 'auto'
-              });
-              var b = tfw.select({
-                  id: 'drop' + params.id,
-                  list: params.list,
-                  value: x.value,
-                  style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
-                  onchange: function () {
-                      for (i = 0; i < this.childNodes.length; i++)
-                          if (this.childNodes[i].value == this.value) {
-                              x.innerHTML = this.childNodes[i].innerHTML;
-                              x.value = this.childNodes[i].value;
-                          }
-                      if (x.onchange) {
-                          x.onchange();
-                      }
-                  }
-              });
-              c.add(b);
-              b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
-              window.setTimeout('$(\"drop' + params.id + '\").style.webkitTransform=\"\";', 10);
+                var vyska = params.list.length * x.itemHeight;
+                if (params.maxHeight && vyska > params.maxHeight) {
+                    vyska = params.maxHeight;
+                }
+                if (vyska > 210) {
+                    vyska = 210;
+                }
+                var rect = x.getBoundingClientRect();
+                var c = tfw.createLayerAndWrapperAtElement(x, {
+                    autoclose: true,
+                    modal: 'auto'
+                });
+                var b = tfw.select({
+                    id: 'drop' + params.id,
+                    list: params.list,
+                    value: x.value,
+                    style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
+                    onchange: function () {
+                        for (i = 0; i < this.childNodes.length; i++)
+                            if (this.childNodes[i].value == this.value) {
+                                x.innerHTML = this.childNodes[i].innerHTML;
+                                x.value = this.childNodes[i].value;
+                            }
+                        if (x.onchange) {
+                            x.onchange();
+                        }
+                    }
+                });
+                c.add(b);
+                b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
+                window.setTimeout('$(\"drop' + params.id + '\").style.webkitTransform=\"\";', 10);
             }
         };
         Object.defineProperty(x, 'disabled', {
@@ -596,8 +594,8 @@ var tfw = {
         if ('value' in params) {
             x.value = params.value;
         }
-        if ("disabled" in params) {
-          x.disabled=params.disabled; 
+        if ('disabled' in params) {
+            x.disabled = params.disabled;
         }
         x.setValue = function (a) {
             x.value = a;
@@ -675,7 +673,7 @@ var tfw = {
      * @param {number} [params.min] - minimum allowed value
      * @param {number} [params.max] - maximum allowed value
      * @param {number} [params.step] - step between allowed numeric values
-     * @return {HTMLElement} Created input field
+     * @return {HTMLElement} Created input field, optionally wrapped with label
      */
     input: function (params) {
         var element = document.createElement('input');
@@ -695,7 +693,7 @@ var tfw = {
      * @see tfw.fillElemDefs
      * @see tfw.inputFieldLegend
      * @param {string} [params.value] - prefilled value
-     * @return {HTMLElement} Created text area
+     * @return {HTMLElement} Created text area, optionally wrapped with label
      */
     textArea: function (params) {
         var element = document.createElement('textarea');
@@ -714,7 +712,7 @@ var tfw = {
      * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
      * @param {string} [params.text] - checkbox label text
      * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
-     * @return {HTMLElement} Created checkbox
+     * @return {HTMLElement} Created checkbox, optionally wrapped with label
      * @todo Use "value" for real value, instead of using it for "checked"
      */
     checkbox: function (params) {
@@ -2467,15 +2465,14 @@ var tfw = {
                         rowOrder = this.getDataRowById(rowID);
                         if (rowOrder == null) {
                             console.error('Row that is not present in the table was updated.');
-                        } else {
-                            if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
-                                this.data.rows[rowOrder].cols[dataCol] = newValue;
-                                var cell = tbody.rows[rowOrder].cells[column];
-                                if(typeof(columnRenderers[dataCol]) == 'function') {
-                                  cell.innerHTML="";
-                                  var newo=columnRenderers[dataCol](newValue);
-                                  for (newi in newo) cell.add(newo[newi]);
-                                } else switch (this.data.cols[dataCol].type) {
+                        } else if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
+                            this.data.rows[rowOrder].cols[dataCol] = newValue;
+                            var cell = tbody.rows[rowOrder].cells[column];
+                            if(typeof(columnRenderers[dataCol]) == 'function') {
+                                cell.innerHTML = '';
+                                columnRenderers[dataCol](newValue).map(function(node){cell.add(node);});
+                            } else {
+                                switch (this.data.cols[dataCol].type) {
                                     case tfw.dynamicTableClass.colTypes.CHECKBOX:
                                         cell.querySelector('.tfwCheckbox').value = parseInt(newValue);
                                         break;

@@ -999,7 +999,7 @@ Wrap an input field with a legend and a container.
 Create an input field with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Created input field  
+**Returns**: <code>HTMLElement</code> - Created input field, optionally wrapped with label  
 **See**
 
 - tfw.fillElemDefs
@@ -1021,7 +1021,7 @@ Create an input field with specified parameters.
 Create a text area with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Created text area  
+**Returns**: <code>HTMLElement</code> - Created text area, optionally wrapped with label  
 **See**
 
 - tfw.fillElemDefs
@@ -1039,7 +1039,7 @@ Create a text area with specified parameters.
 Create a checkbox with specified parameters.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Created checkbox  
+**Returns**: <code>HTMLElement</code> - Created checkbox, optionally wrapped with label  
 **See**
 
 - tfw.fillElemDefs
