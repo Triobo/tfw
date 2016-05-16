@@ -2118,11 +2118,11 @@ var tfw = {
          * @return {HTMLElement} table row
          */
         this.createRow = function(rowOrder){
-            var readonly = ('readonly' in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
+            var readonlyRow = ('readonly' in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
                 r = tfw.tr({
                     id: 'rowID-' + this.data.rows[rowOrder].id
                 });
-            if(readonly){
+            if(readonlyRow){
                 r.addClass('readonly');
             }
             r.setAttribute('data-rowid', this.data.rows[rowOrder].id);
@@ -2136,7 +2136,7 @@ var tfw = {
                         className: 'rowEditIcon clickable icon fa fa-info'
                     })]
                 }));
-                if(!readonly){
+                if(!readonlyRow){
                     b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
                 } else {
                     b.addClass('disabled');
@@ -2146,7 +2146,7 @@ var tfw = {
             var updateInputCallback = function () {
                 dynamicTable.updateInput.call(dynamicTable, this);
             };
-            var val, shift, type, c;
+            var val, shift, type, c, readonlyCol;
             for (var j = 0; j < this.data.cols.length; j++) {
                 if (!('hidden' in this.data.cols[j])) {
                     var params = {};
@@ -2159,6 +2159,7 @@ var tfw = {
                         b.onclick = goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j);
                     }
                     val = this.data.rows[rowOrder].cols[j];
+                    readonlyCol = ('readonly' in this.data.cols[j]) && this.data.cols[j] === true;
                     if(typeof(columnRenderers[j]) == 'function') {
                         params.children.push.apply(params.children, columnRenderers[j](val));
                     } else {
@@ -2171,7 +2172,7 @@ var tfw = {
                                     id: id,
                                     value: (val ? 1 : 0),
                                     onchange: updateInputCallback,
-                                    disabled: readonly
+                                    disabled: readonlyRow || readonlyCol
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.NUMBER:
@@ -2180,7 +2181,7 @@ var tfw = {
                                     id: id,
                                     value: val,
                                     onchange: updateInputCallback,
-                                    readOnly: readonly
+                                    readOnly: readonlyRow || readonlyCol
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.DATE:
@@ -2188,7 +2189,7 @@ var tfw = {
                                     id: id,
                                     value: val.match(/\d{4,}-\d{2}-\d{2}/)[0],
                                     onchange: updateInputCallback,
-                                    readOnly: readonly
+                                    readOnly: readonlyRow || readonlyCol
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.TEXT:
@@ -2197,7 +2198,7 @@ var tfw = {
                                     id: id,
                                     value: val,
                                     onchange: updateInputCallback,
-                                    readOnly: readonly
+                                    readOnly: readonlyRow || readonlyCol
                                 }));
                                 break;
                             default:
