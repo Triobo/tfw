@@ -293,6 +293,7 @@ var tfw = {
      * @param {string} [params.title] - title (shows on hover)
      * @param {Object[]} [params.children] - descendant element(s)
      * @param {boolean} [params.disabled=false] - disabled input field
+     * @param {boolean} [params.readOnly=false] - read only input field
      * @param {number} [params.maxLength] - maximum input length
      * @param {boolean} [params.evaluate=false] - evaluate (eval) field value after change (onchange), set to 1 or true
      * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
@@ -304,7 +305,7 @@ var tfw = {
         if ('text' in params) {
             params.innerHTML = params.text;
         }
-        var attributesToCopy = ['id', 'innerHTML', 'disabled', 'maxLength', 'evaluate', 'onclick', 'value', 'placeholder'];
+        var attributesToCopy = ['id', 'innerHTML', 'disabled', 'readOnly', 'maxLength', 'evaluate', 'onclick', 'value', 'placeholder'];
         var i;
         for (i = 0; i < attributesToCopy.length; i++) {
             var attribute = attributesToCopy[i];
@@ -718,6 +719,7 @@ var tfw = {
      * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
      * @param {string} [params.text] - checkbox label text
      * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
+     * @param {boolean} [params.disabled=false] - whether checkbox should be disabled
      * @return {HTMLElement} Created checkbox, optionally wrapped with label
      * @todo Use "value" for real value, instead of using it for "checked"
      */
@@ -1652,12 +1654,14 @@ var tfw = {
          * @property {(boolean|number)} [filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
          * @property {boolean} [subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
          * @property {boolean} [noresize=false] - whether this column should NOT be resizable (default is resizable)
+         * @property {boolean} [readonly=false] - whether inputs in this column should be disabled
          */
         /**
          * Object representing a row in data.
          * @typedef {Object} tfw.dynamicTableClass~dataRow
          * @property {number} id - row ID
          * @property {string[]} cols - contents for each column (HTML)
+         * @property {boolean} [readonly=false] - whether inputs in this row should be disabled
          */
         /**
          * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
@@ -2114,9 +2118,13 @@ var tfw = {
          * @return {HTMLElement} table row
          */
         this.createRow = function(rowOrder){
-            var r = tfw.tr({
-                id: 'rowID-' + this.data.rows[rowOrder].id
-            });
+            var readonly = ('readonly' in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
+                r = tfw.tr({
+                    id: 'rowID-' + this.data.rows[rowOrder].id
+                });
+            if(readonly){
+                r.addClass('readonly');
+            }
             r.setAttribute('data-rowid', this.data.rows[rowOrder].id);
             var columnOrder = 0,
                 b,
@@ -2128,7 +2136,11 @@ var tfw = {
                         className: 'rowEditIcon clickable icon fa fa-info'
                     })]
                 }));
-                b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
+                if(!readonly){
+                    b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
+                } else {
+                    b.addClass('disabled');
+                }
                 columnOrder++;
             }
             var updateInputCallback = function () {
@@ -2158,7 +2170,8 @@ var tfw = {
                                 params.children.push(tfw.checkbox({
                                     id: id,
                                     value: (val ? 1 : 0),
-                                    onchange: updateInputCallback
+                                    onchange: updateInputCallback,
+                                    disabled: readonly
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.NUMBER:
@@ -2166,14 +2179,16 @@ var tfw = {
                                     type: 'number',
                                     id: id,
                                     value: val,
-                                    onchange: updateInputCallback
+                                    onchange: updateInputCallback,
+                                    readOnly: readonly
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.DATE:
                                 params.children.push(tfw.calendar({
                                     id: id,
                                     value: val.match(/\d{4,}-\d{2}-\d{2}/)[0],
-                                    onchange: updateInputCallback
+                                    onchange: updateInputCallback,
+                                    readOnly: readonly
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.TEXT:
@@ -2181,7 +2196,8 @@ var tfw = {
                                     type: 'text',
                                     id: id,
                                     value: val,
-                                    onchange: updateInputCallback
+                                    onchange: updateInputCallback,
+                                    readOnly: readonly
                                 }));
                                 break;
                             default:
@@ -3132,6 +3148,7 @@ var tfw = {
     /**
      * Class for enhancing date input fields. Requires CSS styling.
      * If style.width is set on input, resulting input including calendar icon will have that width.
+     * If input is readonly or disabled, calendar will be too.
      * @class
      * @example
      * var input = tfw.input({value:'2016-03-07',style:'width:200px'});
@@ -3200,12 +3217,15 @@ var tfw = {
             selectedMonth = parseInt(month);
             selectedDay = parseInt(day);
         }
-        if (tfw.calendarExtend.placeCalendar != null) {
-            calendarIcon.addEventListener('click', function() {
-                tfw.calendarExtend.placeCalendar(calendarContainer, input);
-            });
-        } else {
-            console.error('Calendar widget was not added to the document - no callback was set.');
+        var readonly = input.readOnly || input.disabled;
+        if(!readonly){
+            if (tfw.calendarExtend.placeCalendar != null) {
+                calendarIcon.addEventListener('click', function() {
+                    tfw.calendarExtend.placeCalendar(calendarContainer, input);
+                });
+            } else {
+                console.error('Calendar widget was not added to the document - no callback was set.');
+            }
         }
 
         function paint() {

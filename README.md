@@ -658,6 +658,7 @@ Object representing a column in data.
 | filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
 | subtable | <code>boolean</code> | <code>false</code> | whether this column should contain a link to subtable (handled by goToSub) |
 | noresize | <code>boolean</code> | <code>false</code> | whether this column should NOT be resizable (default is resizable) |
+| readonly | <code>boolean</code> | <code>false</code> | whether inputs in this column should be disabled |
 
 <a name="tfw.dynamicTableClass..dataRow"></a>
 
@@ -667,10 +668,11 @@ Object representing a row in data.
 **Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Properties**
 
-| Name | Type | Description |
-| --- | --- | --- |
-| id | <code>number</code> | row ID |
-| cols | <code>Array.&lt;string&gt;</code> | contents for each column (HTML) |
+| Name | Type | Default | Description |
+| --- | --- | --- | --- |
+| id | <code>number</code> |  | row ID |
+| cols | <code>Array.&lt;string&gt;</code> |  | contents for each column (HTML) |
+| readonly | <code>boolean</code> | <code>false</code> | whether inputs in this row should be disabled |
 
 <a name="tfw.dynamicTableClass..rowEdit"></a>
 
@@ -745,7 +747,7 @@ Value by which the table can be filtered.
 <a name="new_tfw.calendarExtend_new"></a>
 
 #### new calendarExtend(input)
-Class for enhancing date input fields. Requires CSS styling.If style.width is set on input, resulting input including calendar icon will have that width.
+Class for enhancing date input fields. Requires CSS styling.If style.width is set on input, resulting input including calendar icon will have that width.If input is readonly or disabled, calendar will be too.
 
 **Returns**: <code>HTMLElement</code> - Returns input wrapper (for inserting into DOM in case input was not inserted yet)  
 
@@ -898,6 +900,7 @@ Set attributes of a HTML element.
 | [params.title] | <code>string</code> |  | title (shows on hover) |
 | [params.children] | <code>Array.&lt;Object&gt;</code> |  | descendant element(s) |
 | [params.disabled] | <code>boolean</code> | <code>false</code> | disabled input field |
+| [params.readOnly] | <code>boolean</code> | <code>false</code> | read only input field |
 | [params.maxLength] | <code>number</code> |  | maximum input length |
 | [params.evaluate] | <code>boolean</code> | <code>false</code> | evaluate (eval) field value after change (onchange), set to 1 or true |
 | [params.onchange] | <code>function</code> |  | function to call when field changes value (onchange fires) |
@@ -1061,6 +1064,7 @@ Create a checkbox with specified parameters.
 | [params.onchange] | <code>function</code> |  | function to call when field changes value (onchange fires) |
 | [params.text] | <code>string</code> |  | checkbox label text |
 | [params.value] | <code>string</code> | <code>0</code> | initial value (0=unchecked,1=checked) |
+| [params.disabled] | <code>boolean</code> | <code>false</code> | whether checkbox should be disabled |
 
 <a name="tfw.icon"></a>
 
