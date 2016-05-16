@@ -105,15 +105,15 @@ Create a new layer.
                 * [~serverCallback](#tfw.dynamicTableClass..serverCallback) : <code>function</code>
                 * [~dataChange](#tfw.dynamicTableClass..dataChange) : <code>Object</code>
                 * [~filterValue](#tfw.dynamicTableClass..filterValue) : <code>string</code> &#124; <code>Object</code>
-        * [.calendar](#tfw.calendar)
-            * [new calendar(input)](#new_tfw.calendar_new)
+        * [.calendarExtend](#tfw.calendarExtend)
+            * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
             * _static_
-                * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
-                * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
-                * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+                * [.months](#tfw.calendarExtend.months) : <code>Array.&lt;String&gt;</code>
+                * [.daysShort](#tfw.calendarExtend.daysShort) : <code>Array.&lt;String&gt;</code>
+                * [.placeCalendar](#tfw.calendarExtend.placeCalendar) : <code>[placeCalendar](#tfw.calendarExtend..placeCalendar)</code>
             * _inner_
-                * [~completeDate(date)](#tfw.calendar..completeDate) ⇒ <code>string</code>
-                * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
+                * [~completeDate(date)](#tfw.calendarExtend..completeDate) ⇒ <code>string</code>
+                * [~placeCalendar](#tfw.calendarExtend..placeCalendar) : <code>function</code>
         * [.strings](#tfw.strings) : <code>enum</code>
         * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
         * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
@@ -144,6 +144,7 @@ Create a new layer.
         * [.noveZalozky()](#tfw.noveZalozky)
         * [.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
+        * [.calendar()](#tfw.calendar) ⇒ <code>HTMLElement</code>
     * _inner_
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
 
@@ -725,25 +726,25 @@ Object representing an update/insertion/deletion in data.Type of change is dete
 Value by which the table can be filtered.
 
 **Kind**: inner typedef of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-<a name="tfw.calendar"></a>
+<a name="tfw.calendarExtend"></a>
 
-### tfw.calendar
+### tfw.calendarExtend
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 
-* [.calendar](#tfw.calendar)
-    * [new calendar(input)](#new_tfw.calendar_new)
+* [.calendarExtend](#tfw.calendarExtend)
+    * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
     * _static_
-        * [.months](#tfw.calendar.months) : <code>Array.&lt;String&gt;</code>
-        * [.daysShort](#tfw.calendar.daysShort) : <code>Array.&lt;String&gt;</code>
-        * [.placeCalendar](#tfw.calendar.placeCalendar) : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+        * [.months](#tfw.calendarExtend.months) : <code>Array.&lt;String&gt;</code>
+        * [.daysShort](#tfw.calendarExtend.daysShort) : <code>Array.&lt;String&gt;</code>
+        * [.placeCalendar](#tfw.calendarExtend.placeCalendar) : <code>[placeCalendar](#tfw.calendarExtend..placeCalendar)</code>
     * _inner_
-        * [~completeDate(date)](#tfw.calendar..completeDate) ⇒ <code>string</code>
-        * [~placeCalendar](#tfw.calendar..placeCalendar) : <code>function</code>
+        * [~completeDate(date)](#tfw.calendarExtend..completeDate) ⇒ <code>string</code>
+        * [~placeCalendar](#tfw.calendarExtend..placeCalendar) : <code>function</code>
 
-<a name="new_tfw.calendar_new"></a>
+<a name="new_tfw.calendarExtend_new"></a>
 
-#### new calendar(input)
-Class for enhancing date input fields. Requires CSS styling.If you want to preserve autocompletion, don't attach any onchange event listeners before using tfw.calendar() on the input field.
+#### new calendarExtend(input)
+Class for enhancing date input fields. Requires CSS styling.
 
 **Returns**: <code>HTMLElement</code> - Returns input wrapper (for inserting into DOM in case input was not inserted yet)  
 
@@ -753,50 +754,50 @@ Class for enhancing date input fields. Requires CSS styling.If you want to pres
 
 **Example**  
 ```js
-var input = tfw.input({value:'2016-03-07'});document.body.appendChild(input);tfw.calendar(input);
+var input = tfw.input({value:'2016-03-07'});document.body.appendChild(input);tfw.calendarExtend(input);
 ```
 **Example**  
 ```js
-tfw.calendar.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}document.body.appendChild( tfw.calendar(  tfw.input({   value: '2016-03-07'  }) ));
+tfw.calendarExtend.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}document.body.add(tfw.calendarExtend(tfw.input({value: '2016-03-07'})));
 ```
-<a name="tfw.calendar.months"></a>
+<a name="tfw.calendarExtend.months"></a>
 
-#### calendar.months : <code>Array.&lt;String&gt;</code>
+#### calendarExtend.months : <code>Array.&lt;String&gt;</code>
 List of months' names.
 
-**Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
+**Kind**: static property of <code>[calendarExtend](#tfw.calendarExtend)</code>  
 **Default**: <code>[&quot;January&quot;,&quot;February&quot;,&quot;March&quot;,&quot;April&quot;,&quot;May&quot;,&quot;June&quot;,&quot;July&quot;,&quot;August&quot;,&quot;September&quot;,&quot;October&quot;,&quot;November&quot;,&quot;December&quot;]</code>  
-<a name="tfw.calendar.daysShort"></a>
+<a name="tfw.calendarExtend.daysShort"></a>
 
-#### calendar.daysShort : <code>Array.&lt;String&gt;</code>
+#### calendarExtend.daysShort : <code>Array.&lt;String&gt;</code>
 List of days' names' first two letters (beginning with Monday)
 
-**Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
+**Kind**: static property of <code>[calendarExtend](#tfw.calendarExtend)</code>  
 **Default**: <code>[&quot;Mo&quot;,&quot;Tu&quot;,&quot;We&quot;,&quot;Th&quot;,&quot;Fr&quot;,&quot;Sa&quot;,&quot;Su&quot;]</code>  
-<a name="tfw.calendar.placeCalendar"></a>
+<a name="tfw.calendarExtend.placeCalendar"></a>
 
-#### calendar.placeCalendar : <code>[placeCalendar](#tfw.calendar..placeCalendar)</code>
+#### calendarExtend.placeCalendar : <code>[placeCalendar](#tfw.calendarExtend..placeCalendar)</code>
 Function called when a calendar widget is created.
 
-**Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
-<a name="tfw.calendar..completeDate"></a>
+**Kind**: static property of <code>[calendarExtend](#tfw.calendarExtend)</code>  
+<a name="tfw.calendarExtend..completeDate"></a>
 
-#### calendar~completeDate(date) ⇒ <code>string</code>
+#### calendarExtend~completeDate(date) ⇒ <code>string</code>
 Adjust date.
 
-**Kind**: inner method of <code>[calendar](#tfw.calendar)</code>  
+**Kind**: inner method of <code>[calendarExtend](#tfw.calendarExtend)</code>  
 **Returns**: <code>string</code> - Date in format yyyy-mm-dd  
 
 | Param | Type | Description |
 | --- | --- | --- |
 | date | <code>string</code> | inserted date (yyyy/yyyy-mm/yyyy-mm-dd) |
 
-<a name="tfw.calendar..placeCalendar"></a>
+<a name="tfw.calendarExtend..placeCalendar"></a>
 
-#### calendar~placeCalendar : <code>function</code>
+#### calendarExtend~placeCalendar : <code>function</code>
 Callback function that puts calendar widget for an input field into page.Most likely create an overlay that closes calendar when user clicks somewhere else.
 
-**Kind**: inner typedef of <code>[calendar](#tfw.calendar)</code>  
+**Kind**: inner typedef of <code>[calendarExtend](#tfw.calendarExtend)</code>  
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -1242,6 +1243,18 @@ Wrapper that creates a dynamic table and returns it's HTML node for inserting in
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | table parameters (see [dynamicTableClass](#tfw.dynamicTableClass)) |
+
+<a name="tfw.calendar"></a>
+
+### tfw.calendar() ⇒ <code>HTMLElement</code>
+Create a calendar input field.For parameters, see [input](#tfw.input).
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - Returns input (+ optionally legend) wrapper  
+**See**
+
+- tfw.input
+- tfw.calendarExtend
 
 <a name="tfw..ajaxGetCallback"></a>
 

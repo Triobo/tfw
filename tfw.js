@@ -2134,7 +2134,7 @@ var tfw = {
             var updateInputCallback = function () {
                 dynamicTable.updateInput.call(dynamicTable, this);
             };
-            var val, shift, calendarInput, type, c;
+            var val, shift, type, c;
             for (var j = 0; j < this.data.cols.length; j++) {
                 if (!('hidden' in this.data.cols[j])) {
                     var params = {};
@@ -2170,12 +2170,11 @@ var tfw = {
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.DATE:
-                                params.children.push(tfw.calendar(calendarInput=tfw.input({
-                                    type: 'text',
+                                params.children.push(tfw.calendar({
                                     id: id,
-                                    value: val.match(/\d{4,}-\d{2}-\d{2}/)[0]
-                                })));
-                                calendarInput.addEventListener('change', updateInputCallback);
+                                    value: val.match(/\d{4,}-\d{2}-\d{2}/)[0],
+                                    onchange: updateInputCallback
+                                }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.TEXT:
                                 params.children.push(setKeys = tfw.input({
@@ -2760,7 +2759,7 @@ var tfw = {
                         value: (value) ? value.min : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
                         legend: tfw.strings.FROM
                     });
-                    tfw.calendar(inputToFocus = f1.querySelector('input'));
+                    tfw.calendarExtend(inputToFocus = f1.querySelector('input'));
                     f1.querySelector('input').addEventListener('change', function () {
                         dynamicTable.filterAny(this.dataset.dataCol, {
                             min: this.value,
@@ -2774,7 +2773,7 @@ var tfw = {
                         value: (value) ? value.max : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
                         legend: tfw.strings.TO
                     });
-                    tfw.calendar(f2.querySelector('input'));
+                    tfw.calendarExtend(f2.querySelector('input'));
                     f2.querySelector('input').addEventListener('change', function () {
                         dynamicTable.filterAny(this.dataset.dataCol, {
                             min: this.closest('div').querySelector('.dateMin').value,
@@ -3107,30 +3106,40 @@ var tfw = {
         return ret;
     },
     /**
+     * Create a calendar input field.
+     * For parameters, see {@link tfw.input}.
+     * @see tfw.input
+     * @see tfw.calendarExtend
+     * @return {HTMLElement} Returns input (+ optionally legend) wrapper
+     */
+    calendar: function(params){
+        var inputAndMaybeLegend = tfw.input(params);
+        if(inputAndMaybeLegend.tagName.toUpperCase() == 'INPUT'){
+            inputAndMaybeLegend = tfw.calendarExtend(inputAndMaybeLegend);
+        } else {
+            var input = inputAndMaybeLegend.querySelector('input');
+            inputAndMaybeLegend.replaceChild(tfw.calendarExtend(input), input);
+        }
+        return inputAndMaybeLegend;
+    },
+    /**
      * Class for enhancing date input fields. Requires CSS styling.
-     * If you want to preserve autocompletion, don't attach any onchange event listeners before using tfw.calendar() on the input field.
      * @class
      * @example
      * var input = tfw.input({value:'2016-03-07'});
      * document.body.appendChild(input);
      *
-     * tfw.calendar(input);
+     * tfw.calendarExtend(input);
      * @example
-     * tfw.calendar.placeCalendar = function (cal, input){
+     * tfw.calendarExtend.placeCalendar = function (cal, input){
      *  input.parentNode.insertBefore(cal, input);
      * }
      *
-     * document.body.appendChild(
-     *  tfw.calendar(
-     *   tfw.input({
-     *    value: '2016-03-07'
-     *   })
-     *  )
-     * );
+     * document.body.add(tfw.calendarExtend(tfw.input({value: '2016-03-07'})));
      * @param {HTMLElement} input - input field to turn into calendar field
      * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
      */
-    calendar: function (input) {
+    calendarExtend: function (input) {
         var calendarInput = input,
             calendarWrapper = document.createElement('span'),
             calendarIcon = document.createElement('span');
@@ -3178,9 +3187,9 @@ var tfw = {
             selectedMonth = parseInt(month);
             selectedDay = parseInt(day);
         }
-        if (tfw.calendar.placeCalendar != null) {
+        if (tfw.calendarExtend.placeCalendar != null) {
             calendarIcon.addEventListener('click', function() {
-                tfw.calendar.placeCalendar(calendarContainer, input);
+                tfw.calendarExtend.placeCalendar(calendarContainer, input);
             });
         } else {
             console.error('Calendar widget was not added to the document - no callback was set.');
@@ -3195,7 +3204,7 @@ var tfw = {
             calendarContainer.innerHTML = '';
             var header = document.createElement('div');
             header.setAttribute('class', 'head');
-            header.innerHTML = tfw.calendar.months[selectedMonth - 1] + ' ' + selectedYear;
+            header.innerHTML = tfw.calendarExtend.months[selectedMonth - 1] + ' ' + selectedYear;
             calendarContainer.add(header);
             var backButton = document.createElement('div');
             backButton.addClass('calendarBackButton');
@@ -3212,7 +3221,7 @@ var tfw = {
             dayNames.setAttribute('class', 'dayNames');
             for (i = 0; i < 7; i++) {
                 day = document.createElement('span');
-                day.innerHTML = tfw.calendar.daysShort[i];
+                day.innerHTML = tfw.calendarExtend.daysShort[i];
                 if (i % 7 == 6) {
                     day.setAttribute('class', 'sunday');
                 }
@@ -3393,27 +3402,27 @@ tfw.dynamicTableClass.ROW_EDIT_WIDTH = 25;
  * @var {String[]}
  * @default
  */
-tfw.calendar.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+tfw.calendarExtend.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 /**
  * List of days' names' first two letters (beginning with Monday)
  * @var {String[]}
  * @default
  */
-tfw.calendar.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 /**
  * Callback function that puts calendar widget for an input field into page.
  * Most likely create an overlay that closes calendar when user clicks somewhere else.
- * @callback tfw.calendar~placeCalendar
+ * @callback tfw.calendarExtend~placeCalendar
  * @param {HTMLElement} calendar - calendar widget
  * @param {HTMLElement} input - related input field
  * @default
  */
 /**
  * Function called when a calendar widget is created.
- * @var {tfw.calendar~placeCalendar}
+ * @var {tfw.calendarExtend~placeCalendar}
  * @default
  */
-tfw.calendar.placeCalendar = function (cal, input) {
+tfw.calendarExtend.placeCalendar = function (cal, input) {
     var wrapper = tfw.createLayerAndWrapperAtElement(input, {
         autoclose: true,
         modal: 'auto'

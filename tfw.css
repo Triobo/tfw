@@ -686,7 +686,7 @@ tr[draggable] :first-child {
 .tfwDynamicTable td input[type='text'], .tfwDynamicTable td input[type='number']{
 	width: 100%;
 }
-.tfwDynamicTable td.withSubtable input[type='text'], .tfwDynamicTable td.withSubtable input[type='number'], .tfwDynamicTable td input.calendarInput[type='text']{
+.tfwDynamicTable td.withSubtable input[type='text'], .tfwDynamicTable td.withSubtable input[type='number'], .tfwDynamicTable td input.calendarInput{
 	width: calc(100% - 24px); /* icon width */
 }
 .tfwDynamicTable tr td .subtable {
@@ -700,6 +700,12 @@ tr[draggable] :first-child {
 }
 
 /*********************/
+
+.tfwCalendarWrapper{
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+}
 
 .calendarWidget {
   width:188px;
