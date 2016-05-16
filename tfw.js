@@ -1651,6 +1651,7 @@ var tfw = {
          * @property {boolean} [sort=false] - whether to allow sorting by this column's values
          * @property {(boolean|number)} [filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
          * @property {boolean} [subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
+         * @property {boolean} [noresize=false] - whether this column should NOT be resizable (default is resizable)
          */
         /**
          * Object representing a row in data.
@@ -2333,7 +2334,7 @@ var tfw = {
                         };
                         deltaWidth+=24;
                     }
-                    if(true) { /** @todo Supply condition */
+                    if(!('noresize' in this.data.cols[j]) || this.data.cols[j].noresize === false) {
                         c.className = 'resizable';
                         d.add(resizer = tfw.span({className: 'resizer'}));
                         resizer.addEventListener('mousedown', resizerMouseDown);

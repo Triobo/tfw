@@ -658,6 +658,7 @@ Object representing a column in data.
 | sort | <code>boolean</code> | <code>false</code> | whether to allow sorting by this column's values |
 | filter | <code>boolean</code> &#124; <code>number</code> | <code>false</code> | whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere) |
 | subtable | <code>boolean</code> | <code>false</code> | whether this column should contain a link to subtable (handled by goToSub) |
+| noresize | <code>boolean</code> | <code>false</code> | whether this column should NOT be resizable (default is resizable) |
 
 <a name="tfw.dynamicTableClass..dataRow"></a>
 
