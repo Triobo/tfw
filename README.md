@@ -371,7 +371,6 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
 
-- [ ] Add temporary class hasBeenChanged to edited cells.
 - [ ] Change checkbox value so that it's not sent back to server
 - [ ] Handle update of cell that is currently being edited
 

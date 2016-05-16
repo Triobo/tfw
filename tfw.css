@@ -699,6 +699,10 @@ tr[draggable] :first-child {
   background-color: white;
 }
 
+.tfwDynamicTable tr > .hasBeenChanged{
+    background-color: #8cc;
+}
+
 /*********************/
 
 .tfwCalendarWrapper{

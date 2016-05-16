@@ -2241,7 +2241,6 @@ var tfw = {
                 className: 'headlines'
             }));
             
-            /** @todo Make movement detection more precise, so that mouse and resized element are synced */
             var RESIZING_MIN_WIDTH = 40;
             var resizerMouseDown = function(event){
                 var t = window._resizedElement = event.target.closest('th');
@@ -2457,7 +2456,6 @@ var tfw = {
          * Refresh the content of the table using data gotten by (re)loading.
          * Assumes that there is only 1 order column and that data is initially sorted by that column.
          * @param {tfw.dynamicTableClass~dataChange[]} [changes] - changes made to data (loaded by {@link tfw.dynamicTableClass#serverWatch|watch})
-         * @todo Add temporary class hasBeenChanged to edited cells.
          * @todo Change checkbox value so that it's not sent back to server
          * @todo Handle update of cell that is currently being edited
          */
@@ -2489,6 +2487,8 @@ var tfw = {
                         } else if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
                             this.data.rows[rowOrder].cols[dataCol] = newValue;
                             var cell = tbody.rows[rowOrder].cells[column];
+                            cell.addClass('hasBeenChanged');
+                            setTimeout(function(){cell.removeClass('hasBeenChanged');}, 3000);
                             if(typeof(columnRenderers[dataCol]) == 'function') {
                                 cell.innerHTML = '';
                                 columnRenderers[dataCol](newValue).map(function(node){cell.add(node);});
