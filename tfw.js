@@ -2523,6 +2523,12 @@ var tfw = {
                         rowOrder = this.getDataRowById(rowID);
                         this.data.rows.splice(rowOrder, 1);
                         tbody.rows[rowOrder].remove();
+                        if(orderDataCol !== null && this.reorderEnabled()){
+                            for(i = rowOrder;i<this.data.rows.length;i++){
+                                this.data.rows[i].cols[orderDataCol] -= 1;
+                                tbody.rows[i].cells[this.data.cols[orderDataCol].columnOrder].innerHTML -= 1;
+                            }
+                        }
                     }
                 }
             } else {
