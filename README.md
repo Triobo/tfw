@@ -730,6 +730,7 @@ Value by which the table can be filtered.
 
 ### tfw.calendarExtend
 **Kind**: static class of <code>[tfw](#tfw)</code>  
+**See**: tfw.calendar  
 
 * [.calendarExtend](#tfw.calendarExtend)
     * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
@@ -744,7 +745,7 @@ Value by which the table can be filtered.
 <a name="new_tfw.calendarExtend_new"></a>
 
 #### new calendarExtend(input)
-Class for enhancing date input fields. Requires CSS styling.
+Class for enhancing date input fields. Requires CSS styling.If style.width is set on input, resulting input including calendar icon will have that width.
 
 **Returns**: <code>HTMLElement</code> - Returns input wrapper (for inserting into DOM in case input was not inserted yet)  
 
@@ -754,7 +755,7 @@ Class for enhancing date input fields. Requires CSS styling.
 
 **Example**  
 ```js
-var input = tfw.input({value:'2016-03-07'});document.body.appendChild(input);tfw.calendarExtend(input);
+var input = tfw.input({value:'2016-03-07',style:'width:200px'});document.body.appendChild(input);tfw.calendarExtend(input);
 ```
 **Example**  
 ```js

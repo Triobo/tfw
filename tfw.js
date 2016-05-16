@@ -3124,15 +3124,16 @@ var tfw = {
             inputAndMaybeLegend = tfw.calendarExtend(inputAndMaybeLegend);
         } else {
             var input = inputAndMaybeLegend.querySelector('input');
-            inputAndMaybeLegend.replaceChild(tfw.calendarExtend(input), input);
+            tfw.calendarExtend(input);
         }
         return inputAndMaybeLegend;
     },
     /**
      * Class for enhancing date input fields. Requires CSS styling.
+     * If style.width is set on input, resulting input including calendar icon will have that width.
      * @class
      * @example
-     * var input = tfw.input({value:'2016-03-07'});
+     * var input = tfw.input({value:'2016-03-07',style:'width:200px'});
      * document.body.appendChild(input);
      *
      * tfw.calendarExtend(input);
@@ -3144,6 +3145,7 @@ var tfw = {
      * document.body.add(tfw.calendarExtend(tfw.input({value: '2016-03-07'})));
      * @param {HTMLElement} input - input field to turn into calendar field
      * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
+     * @see tfw.calendar
      */
     calendarExtend: function (input) {
         var calendarInput = input,
@@ -3152,6 +3154,10 @@ var tfw = {
         calendarWrapper.className = 'tfwCalendarWrapper';
         if (input.parentNode) {
             input.parentNode.insertBefore(calendarWrapper, input);
+        }
+        if(input.style.width){
+            calendarWrapper.style.width = input.style.width;
+            input.style.width = '';
         }
         calendarWrapper.appendChild(input);
         calendarWrapper.appendChild(calendarIcon);
