@@ -3159,7 +3159,7 @@ var tfw = {
                 return date;
             }
         }
-        input.addEventListener('change', function(){console.log(this.value);this.value=completeDate(this.value);}, true);
+        input.addEventListener('change', function(){this.value=completeDate(this.value);}, true);
         var calendarContainer = document.createElement('div');
         calendarContainer.addClass('calendarWidget');
         var selectedYear;
@@ -3279,9 +3279,7 @@ var tfw = {
                 current.toggleClass('current');
             }
             this.addClass('current');
-            if (calendarInput.onchange) {
-                calendarInput.onchange();
-            }
+            calendarInput.dispatchEvent(new Event('change'));
         }
         return calendarWrapper;
     }
