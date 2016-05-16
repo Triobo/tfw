@@ -808,8 +808,8 @@ tr[draggable] :first-child {
 	border-top-color: #fc5;/*orange*/
 }
 .tfwArrow.filter.reset{
-	border-left-color: #888;/*gray*/;
-	border-right-color: #888;/*gray*/;
+	border-left-color: #888;/*gray*/
+	border-right-color: #888;/*gray*/
 	border-top-color: #fc5;/*orange*/
 	background-color: #fc5;/*orange*/
 	padding-top: 1px;
