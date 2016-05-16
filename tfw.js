@@ -2067,9 +2067,9 @@ var tfw = {
         }
         /** @private **/
         this.isColumnVisible = function(dataCol){
-          var ish=(!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden !== false);
-          if (!ish) ish=!(this.tableContainer.querySelector('tbody').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
-          return (ish);
+            var ish=(!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden !== false);
+            if (!ish) ish=!(this.tableContainer.querySelector('tbody').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
+            return (ish);
         }
         /**
          * @private
