@@ -76,7 +76,6 @@ Create a new layer.
                 * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
                 * [.setColumnWidth(dataCol, width)](#tfw.dynamicTableClass+setColumnWidth)
                 * [.paint([changes])](#tfw.dynamicTableClass+paint)
-                * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
                 * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
                 * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
                 * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
@@ -181,7 +180,6 @@ Triobo framework. This is a singleton.
         * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
         * [.setColumnWidth(dataCol, width)](#tfw.dynamicTableClass+setColumnWidth)
         * [.paint([changes])](#tfw.dynamicTableClass+paint)
-        * [.prepareCalendar()](#tfw.dynamicTableClass+prepareCalendar)
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
         * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
         * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
@@ -380,16 +378,6 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 | Param | Type | Description |
 | --- | --- | --- |
 | [changes] | <code>[Array.&lt;dataChange&gt;](#tfw.dynamicTableClass..dataChange)</code> | changes made to data (loaded by [watch](#tfw.dynamicTableClass+serverWatch)) |
-
-<a name="tfw.dynamicTableClass+prepareCalendar"></a>
-
-#### dynamicTableClass.prepareCalendar()
-Prepare calendar class for use. Sets the [placeCalendar](#tfw.calendar.placeCalendar) callback, if null.
-
-**Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-**Todo**
-
-- [ ] Use as (default) placeCalendar for all calendars
 
 <a name="tfw.dynamicTableClass+filter"></a>
 
@@ -765,7 +753,7 @@ Class for enhancing date input fields. Requires CSS styling.If you want to pres
 
 **Example**  
 ```js
-tfw.calendar.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}var input = tfw.input({value:'2016-03-07'});document.body.appendChild(input);tfw.calendar(input);
+var input = tfw.input({value:'2016-03-07'});document.body.appendChild(input);tfw.calendar(input);
 ```
 **Example**  
 ```js
@@ -791,7 +779,6 @@ List of days' names' first two letters (beginning with Monday)
 Function called when a calendar widget is created.
 
 **Kind**: static property of <code>[calendar](#tfw.calendar)</code>  
-**Default**: <code></code>  
 <a name="tfw.calendar..completeDate"></a>
 
 #### calendar~completeDate(date) ⇒ <code>string</code>

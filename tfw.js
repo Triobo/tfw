@@ -2170,7 +2170,6 @@ var tfw = {
                                 }));
                                 break;
                             case tfw.dynamicTableClass.colTypes.DATE:
-                                this.prepareCalendar();
                                 params.children.push(tfw.calendar(calendarInput=tfw.input({
                                     type: 'text',
                                     id: id,
@@ -2599,21 +2598,6 @@ var tfw = {
                 }
             }
         };
-        /**
-         * Prepare calendar class for use. Sets the {@link tfw.calendar.placeCalendar} callback, if null.
-         * @todo Use as (default) placeCalendar for all calendars
-         */
-        this.prepareCalendar = function () {
-            if (tfw.calendar.placeCalendar == null) {
-                tfw.calendar.placeCalendar = function (cal, input) {
-                    var wrapper = tfw.createLayerAndWrapperAtElement(input, {
-                        autoclose: true,
-                        modal: 'auto'
-                    });
-                    wrapper.add(cal);
-                };
-            }
-        }
         /**
          * Value by which the table can be filtered.
          * @typedef {(string|{min:(string|number),max:(string|number)})} tfw.dynamicTableClass~filterValue
@@ -3127,10 +3111,6 @@ var tfw = {
      * If you want to preserve autocompletion, don't attach any onchange event listeners before using tfw.calendar() on the input field.
      * @class
      * @example
-     * tfw.calendar.placeCalendar = function (cal, input){
-     *  input.parentNode.insertBefore(cal, input);
-     * }
-     *
      * var input = tfw.input({value:'2016-03-07'});
      * document.body.appendChild(input);
      *
@@ -3435,7 +3415,13 @@ tfw.calendar.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
  * @var {tfw.calendar~placeCalendar}
  * @default
  */
-tfw.calendar.placeCalendar = null;
+tfw.calendar.placeCalendar = function (cal, input) {
+    var wrapper = tfw.createLayerAndWrapperAtElement(input, {
+        autoclose: true,
+        modal: 'auto'
+    });
+    wrapper.add(cal);
+};
 window.addEventListener('load', tfw.init);
 
 /* eslint-disable */
