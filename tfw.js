@@ -1888,8 +1888,7 @@ var tfw = {
          */
         this.reorderEnabled = function () {
             var sorting = this.getPreference('sorting');
-            var sortedByOrder = sorting != null && ('dataCol' in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass
-                .sortTypes.ASC;
+            var sortedByOrder = (sorting != null && ('dataCol' in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC);
             return sortedByOrder && this.getVisibleRowsCount() == this.getTotalRowsCount();
         }
         /**
@@ -2901,7 +2900,6 @@ var tfw = {
          * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
          */
         this.sort = function (dataCol, asc, dontSave) {
-            this.toggleReorder();
             var tbody = this.tableContainer.querySelector('tbody');
             if(dataCol !== null){
                 if (typeof(dontSave) == 'undefined' || !dontSave) {
@@ -2919,6 +2917,8 @@ var tfw = {
             for (var i = 0; i < this.data.rows.length; i++) {
                 tbody.appendChild(tbody.rows.namedItem('rowID-' + this.data.rows[i].id));
             }
+            
+            this.toggleReorder();
         };
         /**
          * Set status of filter icon in a column.
