@@ -22,6 +22,14 @@
 	color:black;
 	background-color: #fc5;/*orange*/  
 }
+.fa.icon.disabled{
+  background-color: #ddd;
+  cursor: not-allowed;
+}
+.fa.icon.disabled:hover{
+	color: white;
+  background-color: #ddd;
+}
 
 .tfwCalendarIcon{
 	margin-left: 2px;	
