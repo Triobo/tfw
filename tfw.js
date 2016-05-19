@@ -2505,7 +2505,7 @@ var tfw = {
                             this.data.rows[rowOrder].cols[dataCol] = newValue;
                             var cell = tbody.rows[rowOrder].cells[column];
                             cell.addClass('hasBeenChanged');
-                            setTimeout(function(){cell.removeClass('hasBeenChanged');}, 3000);
+                            setTimeout(function(cell){cell.removeClass('hasBeenChanged');}, 3000, cell);
                             if(typeof(columnRenderers[dataCol]) == 'function') {
                                 cell.innerHTML = '';
                                 columnRenderers[dataCol](newValue).map(function(node){cell.add(node);});
