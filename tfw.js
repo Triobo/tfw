@@ -2079,9 +2079,9 @@ var tfw = {
         }
         /** @private **/
         this.isColumnVisible = function(dataCol){
-            var ish=(!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden !== false);
-            if (!ish) ish=!(this.tableContainer.querySelector('tbody').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
-            return (ish);
+            return (!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
+                &&
+                !(this.tableContainer.querySelector('tbody').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
         }
         /**
          * @private
@@ -2359,7 +2359,7 @@ var tfw = {
                         deltaWidth+=24;
                     }
                     if(!('noresize' in this.data.cols[j]) || this.data.cols[j].noresize === false) {
-                        c.className = 'resizable';
+                        c.addClass('resizable');
                         d.add(resizer = tfw.span({className: 'resizer'}));
                         resizer.addEventListener('mousedown', resizerMouseDown);
                         c.addEventListener('resizing', function(){
@@ -2497,6 +2497,22 @@ var tfw = {
                 if ('onload' in params) {
                     params.onload();
                 }
+                //hide columns
+                var hiddenColumns = this.getPreference('hiddenColumns');
+                if (hiddenColumns != null) {
+                    for (dataCol in hiddenColumns) {
+                        if (hiddenColumns[dataCol] === true && this.isColumnVisible(dataCol)) {
+                            this.toggleColumn(dataCol, true);
+                        }
+                    }
+                }
+                //apply column widths
+                var widths = this.getPreference('widths');
+                if (widths != null) {
+                    for (dataCol in widths) {
+                        this.setColumnWidth(dataCol, widths[dataCol], true);
+                    }
+                }
             } else if (typeof(changes) != 'undefined') {
                 var tbody = this.tableContainer.querySelector('tbody'),
                     rowOrder;
@@ -2610,22 +2626,6 @@ var tfw = {
                 this.sort(sorting.dataCol, sorting.asc, true);
             } else {
                 this.toggleReorder();
-            }
-            //hide columns
-            var hiddenColumns = this.getPreference('hiddenColumns');
-            if (hiddenColumns != null) {
-                for (dataCol in hiddenColumns) {
-                    if (hiddenColumns[dataCol] === true) {
-                        this.toggleColumn(dataCol, true);
-                    }
-                }
-            }
-            //apply column widths
-            var widths = this.getPreference('widths');
-            if (widths != null) {
-                for (dataCol in widths) {
-                    this.setColumnWidth(dataCol, widths[dataCol], true);
-                }
             }
         };
         /**
