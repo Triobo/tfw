@@ -3227,7 +3227,7 @@ var tfw = {
             } else {
                 console.error('Calendar widget was not added to the document - no callback was set.');
             }
-        }
+        } else calendarIcon.addClass("disabled");
 
         function paint() {
             var d = new Date(selectedYear, selectedMonth - 1, 1),

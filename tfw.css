@@ -147,7 +147,7 @@ button:disabled {
 button:disabled:hover {
   color:#999;
   background-color: #ccc;/*silver-light*/
-  cursor:default;
+  cursor:not-allowed;
 }
 
 /* TFW elements */
@@ -447,7 +447,7 @@ button:disabled:hover {
 }
 .tfwIcon.disabled:hover {
   background-color: #ddd;/*silver*/
-  cursor:default;
+  cursor:not-allowed;
 }
 .tfwIcon.selected {
   background-color: #fc5;/*orange*/
@@ -708,7 +708,8 @@ tr[draggable] :first-child {
 }
 
 .tfwDynamicTable tr > .hasBeenChanged{
-    background-color: #8cc;
+  box-shadow:inset 0px 0px 2px 1px #fc5;/*orange*/
+  color: #fc5;/*orange*/
 }
 
 /*********************/
