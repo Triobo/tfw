@@ -1820,6 +1820,7 @@ var tfw = {
                 action: tfw.dynamicTableClass.serverActions.LOAD,
                 callback: function (receivedData) {
                     dynamicTable.data = receivedData;
+                    
                     ifEverythingReadyCallPaint.call(dynamicTable);
                 }
             });
@@ -1956,11 +1957,18 @@ var tfw = {
             var droppedRowOrder = (referenceRow != null) ? (referenceRow.nodeOrder() - ((referenceRow.nodeOrder() < originalRowOrder) ? 0 : 1)) : (
                 tbody.rows.length - 1);
             tbody.insertBefore(draggedRow, referenceRow);
-            draggedRow.cells[orderColumn].innerHTML = droppedRowOrder + 1;
+            
+            this.data.rows[originalRowOrder].cols[orderDataCol] = draggedRow.cells[orderColumn].innerHTML = droppedRowOrder + 1;
+            
+            var movedDataRow = this.data.rows.splice(originalRowOrder, 1)[0];
+            this.data.rows.splice(droppedRowOrder, 0, movedDataRow);
+            
             if (originalRowOrder < droppedRowOrder) { //drag down
                 tbody.rows[originalRowOrder].cells[orderColumn].innerHTML--;
+                this.data.rows[originalRowOrder].cols[orderDataCol]--;
             } else { //drag up
                 tbody.rows[originalRowOrder].cells[orderColumn].innerHTML = parseInt(tbody.rows[originalRowOrder].cells[orderColumn].innerHTML) + 1;
+                this.data.rows[originalRowOrder].cols[orderDataCol] = parseInt(this.data.rows[originalRowOrder].cols[orderDataCol]) + 1;
             }
         }
         /**
@@ -3227,7 +3235,9 @@ var tfw = {
             } else {
                 console.error('Calendar widget was not added to the document - no callback was set.');
             }
-        } else calendarIcon.addClass("disabled");
+        } else {
+            calendarIcon.addClass('disabled');
+        }
 
         function paint() {
             var d = new Date(selectedYear, selectedMonth - 1, 1),
