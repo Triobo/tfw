@@ -94,7 +94,7 @@ input {
   color:#000;
   font-family:inherit; 
 }
-input[disabled] {
+input[disabled], input[readonly] {
   color: #bbb;
 }
 input[type="range"] {
@@ -659,15 +659,6 @@ button:disabled:hover {
 	float:right;
 }
 
-/* Prevent the text contents of draggable elements from being selectable. */
-tr[draggable] :first-child {
-  -moz-user-select: none;
-  -khtml-user-select: none;
-  -webkit-user-select: none;
-  user-select: none;
-  -khtml-user-drag: element;
-  -webkit-user-drag: element;
-}
 .tfwDynamicTable tr.draggable{
 	cursor: -webkit-grab;
 	cursor: -moz-grab;
