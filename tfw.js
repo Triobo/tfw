@@ -410,6 +410,7 @@ var tfw = {
             }
             element.value = m.join(',');
             if (element.onchange) element.onchange();
+            element.addClass("hasBeenChanged");
         }
         if (!element.value) element.value = 0;
         var m = element.value.toString().split(',');
@@ -575,6 +576,7 @@ var tfw = {
                         if (x.onchange) {
                             x.onchange();
                         }
+                        x.addClass("hasBeenChanged");
                     }
                 });
                 c.add(b);
@@ -690,6 +692,10 @@ var tfw = {
      */
     input: function (params) {
         var element = document.createElement('input');
+        element.addEventListener('change', function (){
+          this.addClass("hasBeenChanged");
+        });
+        
         this.fillElemDefs(element, params);
         var attributesToCopy = ['type', 'min', 'max', 'step'];
         for (var i = 0; i < attributesToCopy.length; i++) {
@@ -710,6 +716,10 @@ var tfw = {
      */
     textArea: function (params) {
         var element = document.createElement('textarea');
+        element.addEventListener('change', function (){
+          this.addClass("hasBeenChanged");
+        });
+        
         this.fillElemDefs(element, params);
         if (params.value) {
             element.innerHTML = params.value;
@@ -758,6 +768,7 @@ var tfw = {
                 }
                 this._value = val;
                 if (this.onchange) this.onchange();
+                this.addClass("hasBeenChanged");
             },
             get: function () {
                 return this._value;
@@ -1173,6 +1184,13 @@ var tfw = {
         }
         if (co.id) dlg.id = co.id;
         if (co.vychozi) $(co.vychozi).focus();
+        dlg.hasBeenChanged=function(){
+          return this.getElementsByClassName("hasBeenChanged").length?1:0;
+        }
+        dlg.resetChanges=function(){
+          var list = this.getElementsByClassName("hasBeenChanged");
+          for (var i = 0; i < list.length; i++) list[i].removeClass("hasBeenChanged");
+        }
         window.setTimeout('$(\"tfwDialog' + desktop.activeLayer + '\").style.webkitTransform=\"\";$(\"tfwDialog' + desktop.activeLayer +
             '\").style.opacity=1;', 10);
         return dlg;
@@ -2530,7 +2548,7 @@ var tfw = {
                         var newValue = changes[i].value;
                         rowOrder = this.getDataRowById(rowID);
                         if (rowOrder == null) {
-                            console.error('Row that is not present in the table was updated.');
+                            console.error('Row that is not present in the table was updated. (id=' + rowID + ')');
                         } else if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
                             this.data.rows[rowOrder].cols[dataCol] = newValue;
                             var cell = tbody.rows[rowOrder].cells[column];
