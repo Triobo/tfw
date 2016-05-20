@@ -237,7 +237,13 @@ var tfw = {
         /** Placeholder when searching anywhere in a string */
         FILTER: 'Filter…',
         /** Label of hidden rows count */
-        HIDDEN_ROWS: 'Hidden rows'
+        HIDDEN_ROWS: 'Hidden rows',
+        /** progress during file upload */        
+        UPLOADING:'Uploading … %1',
+        /** when composing list, last OR word (f.e. jpg, png or gif) */        
+        OR:'or',
+        /** Error, when not allowed file extension is used  */
+        EXTNOTALLOWED:'Only %1 files are allowed.'
     },
     /**
      * Add Javascript-generated CSS to the document.
@@ -1043,7 +1049,7 @@ var tfw = {
         });
         x.prekresli = function (prc) {
             if (x.uploading) {
-                x.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tPRELOZ('Uploading ') + prc + ' %' + '</p>';
+                x.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tfw.strings.UPLOADING.replace("%1",(prc + ' %')) + '</p>';
             } else if (x.value) {
                 x.removeClass('empty');
                 if (x.filename.match(/\.(gif|jpg|jpeg|png)$/i)) {
@@ -1086,9 +1092,9 @@ var tfw = {
                 var lims = x.limitExtensions.split('|');
                 var lastl = lims.pop();
                 var lim;
-                if (lims.length) lim = '<b>' + lims.join('</b>, <b>') + '</b>' + tPRELOZ(' or ') + '<b>' + lastl + '</b>';
+                if (lims.length) lim = '<b>' + lims.join('</b>, <b>') + '</b> ' + tfw.strings.OR + ' <b>' + lastl + '</b>';
                 else lim = '<b>' + lastl + '</b>';
-                chyba('#300-' + tPRELOZ('Only ' + lim + ' files are allowed.'));
+                chyba('#300-' + tfw.strings.EXTNOTALLOWED.replace("%1",lim));
             }
         };
         x.remove = function () {}
