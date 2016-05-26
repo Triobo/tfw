@@ -11,14 +11,6 @@
 <dd></dd>
 </dl>
 
-## Constants
-
-<dl>
-<dt><a href="#AJAX_LOADER">AJAX_LOADER</a> : <code>string</code></dt>
-<dd><p>HTML to show when some content is being loaded.</p>
-</dd>
-</dl>
-
 <a name="desktop"></a>
 
 ## desktop
@@ -108,8 +100,8 @@ Create a new layer.
         * [.calendarExtend](#tfw.calendarExtend)
             * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
             * _static_
-                * [.months](#tfw.calendarExtend.months) : <code>Array.&lt;String&gt;</code>
-                * [.daysShort](#tfw.calendarExtend.daysShort) : <code>Array.&lt;String&gt;</code>
+                * [.months](#tfw.calendarExtend.months) : <code>Array.&lt;string&gt;</code>
+                * [.daysShort](#tfw.calendarExtend.daysShort) : <code>Array.&lt;string&gt;</code>
                 * [.placeCalendar](#tfw.calendarExtend.placeCalendar) : <code>[placeCalendar](#tfw.calendarExtend..placeCalendar)</code>
             * _inner_
                 * [~completeDate(date)](#tfw.calendarExtend..completeDate) ⇒ <code>string</code>
@@ -118,6 +110,7 @@ Create a new layer.
         * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
         * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
         * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
+        * [.AJAX_LOADER](#tfw.AJAX_LOADER) : <code>string</code>
         * [.insertStyle(style, [tag])](#tfw.insertStyle)
         * [.init()](#tfw.init)
         * [.localize(newStrings)](#tfw.localize)
@@ -135,8 +128,9 @@ Create a new layer.
         * [.tr(params)](#tfw.tr) ⇒ <code>HTMLElement</code>
         * [.td(params)](#tfw.td) ⇒ <code>HTMLElement</code>
         * [.slider(params)](#tfw.slider) ⇒ <code>HTMLElement</code>
-        * [.filebox()](#tfw.filebox)
-        * [.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)
+        * [.image(params)](#tfw.image) ⇒ <code>HTMLElement</code>
+        * [.filebox(params)](#tfw.filebox) ⇒ <code>HTMLElement</code>
+        * [.dialogPrepareAndDownload(params)](#tfw.dialogPrepareAndDownload)
         * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
@@ -737,8 +731,8 @@ Value by which the table can be filtered.
 * [.calendarExtend](#tfw.calendarExtend)
     * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
     * _static_
-        * [.months](#tfw.calendarExtend.months) : <code>Array.&lt;String&gt;</code>
-        * [.daysShort](#tfw.calendarExtend.daysShort) : <code>Array.&lt;String&gt;</code>
+        * [.months](#tfw.calendarExtend.months) : <code>Array.&lt;string&gt;</code>
+        * [.daysShort](#tfw.calendarExtend.daysShort) : <code>Array.&lt;string&gt;</code>
         * [.placeCalendar](#tfw.calendarExtend.placeCalendar) : <code>[placeCalendar](#tfw.calendarExtend..placeCalendar)</code>
     * _inner_
         * [~completeDate(date)](#tfw.calendarExtend..completeDate) ⇒ <code>string</code>
@@ -765,14 +759,14 @@ tfw.calendarExtend.placeCalendar = function (cal, input){ input.parentNode.inse
 ```
 <a name="tfw.calendarExtend.months"></a>
 
-#### calendarExtend.months : <code>Array.&lt;String&gt;</code>
+#### calendarExtend.months : <code>Array.&lt;string&gt;</code>
 List of months' names.
 
 **Kind**: static property of <code>[calendarExtend](#tfw.calendarExtend)</code>  
 **Default**: <code>[&quot;January&quot;,&quot;February&quot;,&quot;March&quot;,&quot;April&quot;,&quot;May&quot;,&quot;June&quot;,&quot;July&quot;,&quot;August&quot;,&quot;September&quot;,&quot;October&quot;,&quot;November&quot;,&quot;December&quot;]</code>  
 <a name="tfw.calendarExtend.daysShort"></a>
 
-#### calendarExtend.daysShort : <code>Array.&lt;String&gt;</code>
+#### calendarExtend.daysShort : <code>Array.&lt;string&gt;</code>
 List of days' names' first two letters (beginning with Monday)
 
 **Kind**: static property of <code>[calendarExtend](#tfw.calendarExtend)</code>  
@@ -854,6 +848,13 @@ Handles HTTP errors (HTTP codes other than 200).
 
 - [ ] Implement
 
+<a name="tfw.AJAX_LOADER"></a>
+
+### tfw.AJAX_LOADER : <code>string</code>
+HTML to show when some content is being loaded.
+
+**Kind**: static constant of <code>[tfw](#tfw)</code>  
+**Default**: <code>&quot;&lt;div class=\&quot;tfwDivContentLoader\&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  
 <a name="tfw.insertStyle"></a>
 
 ### tfw.insertStyle(style, [tag])
@@ -1147,21 +1148,66 @@ Create a slider with specified parameters.
 | [params.valueStyle] | <code>string</code> |  | value box CSS styling |
 | [params.postText] | <code>string</code> |  | text after slider |
 
+<a name="tfw.image"></a>
+
+### tfw.image(params) ⇒ <code>HTMLElement</code>
+Create an image with specified parameters.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - Created image  
+**See**: tfw.fillElemDefs  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | image parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.src] | <code>string</code> | URL of image |
+| [params.title] | <code>title</code> | image title (displays on hover) |
+
 <a name="tfw.filebox"></a>
 
-### tfw.filebox()
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Todo**
+### tfw.filebox(params) ⇒ <code>HTMLElement</code>
+Create control for uploading files (images).
 
-- [ ] Remove dependencies on Triobo
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - Created file box, optionally wrapped with label  
+**See**
+
+- tfw.fillElemDefs
+- tfw.inputFieldLegend
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | file box parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
+| [params.id] | <code>string</code> | <code>&quot;\&quot;filebox\&quot;&quot;</code> | ID of box |
+| [params.className] | <code>string</code> | <code>&quot;\&quot;tfwFilebox\&quot;&quot;</code> | class(es) of box (tfwFilebox is always appended) |
+| [params.value] | <code>number</code> | <code>0</code> |  |
+| [params.text] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | text to be placed inside inner div (ignored for [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.filename] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | name of file (image) |
+| [params.path] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | path to file (image), with trailing slash |
+| [params.imgStyle] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | CSS styling for image |
+| [params.onloaded] | <code>function</code> | <code></code> | callback fired when upload finishes |
+| [params.onstart] | <code>function</code> | <code></code> | callback fired when upload starts |
+| [params.limitExtensions] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | allowed extensions, without dot (e.g. "png|jpeg|jpg|gif") |
+| [params.style] | <code>string</code> |  | CSS styling of outter and inner DIV |
 
 <a name="tfw.dialogPrepareAndDownload"></a>
 
-### tfw.dialogPrepareAndDownload()
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Todo**
+### tfw.dialogPrepareAndDownload(params)
+Show dialog while preparing something for download in background, when ready show download link.
 
-- [ ] Remove dependencies on Triobo
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.ajaxGet  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | parameters |
+| params.title | <code>string</code> | dialog title |
+| params.waiting | <code>string</code> | HTML to show while waiting |
+| params.ajaxFile | <code>string</code> | url for [ajaxGet](#tfw.ajaxGet) |
+| params.ajaxParam | <code>string</code> | url-encoded parameters separated by & for [ajaxGet](#tfw.ajaxGet) |
+| params.text | <code>string</code> | text to show when ready, with "%1" getting replaced with download link |
+| params.item | <code>string</code> | download link inner HTML |
 
 <a name="tfw.ajaxGet"></a>
 
@@ -1359,10 +1405,3 @@ Function package for preparing HTML elements.
 
 **Kind**: global class  
 **See**: tfw.dynamicTable  
-<a name="AJAX_LOADER"></a>
-
-## AJAX_LOADER : <code>string</code>
-HTML to show when some content is being loaded.
-
-**Kind**: global constant  
-**Default**: <code>&quot;&lt;div class=\&quot;tfwDivContentLoader\&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  

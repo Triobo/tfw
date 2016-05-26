@@ -4,14 +4,13 @@
  * @author melanger
  */
 
-/**
- * HTML to show when some content is being loaded.
- * @constant {string}
- * @default
- */
-var AJAX_LOADER = '<div class="tfwDivContentLoader"><span></span></div>';
+/** @todo Remove */
+Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
+  console.error('DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.');
+  return tfw.AJAX_LOADER;
+}});
 
-function $(id) {
+function $(id) {// eslint-disable-line no-implicit-globals
   var x = document.getElementById(id);
   return x;
 }
@@ -53,9 +52,11 @@ HTMLElement.prototype.toggleClass = function (c) {
 }
 HTMLElement.prototype.myOrder = function () {
   var x = 0;
-  if (this.parentNode)
-    for (var i = 0; i < this.parentNode.childNodes.length; i++)
+  if (this.parentNode) {
+    for (var i = 0; i < this.parentNode.childNodes.length; i++) {
       if (this == this.parentNode.childNodes[i]) x = i;
+    }
+  }
   return x;
 }
 HTMLElement.prototype.amIFirst = function () {
@@ -76,7 +77,7 @@ HTMLElement.prototype.add = function (x) {
  * Triobo. This is a singleton.
  * @class
  */
-var desktop = {
+var desktop = {// eslint-disable-line no-implicit-globals
   div: null,
   layers: [],
   activeLayer: 0,
@@ -217,7 +218,13 @@ var desktop = {
  * @class
  * @todo Replace {@link http://www.w3schools.com/js/js_reserved.asp|reserved words} in function names
  */
-var tfw = {
+var tfw = {//eslint-disable-line no-implicit-globals
+  /**
+   * HTML to show when some content is being loaded.
+   * @constant {string}
+   * @default
+   */
+  AJAX_LOADER: '<div class="tfwDivContentLoader"><span></span></div>',
   /**
    * Strings that are output by tfw functions. Change them for localization.
    * @enum {string}
@@ -413,11 +420,12 @@ var tfw = {
       element.addClass('hasBeenChanged');
     }
     if (!element.value) element.value = 0;
-    var m = element.value.toString().split(',');
+    var m = element.value.toString().split(','),
+        i;
     if (typeof params.list === 'string') {
       var szn = params.list.split(';');
       params.list = [];
-      for (var i = 0; i < szn.length; i++) {
+      for (i = 0; i < szn.length; i++) {
         var prt = szn[i].split('|');
         if (prt.length == 1) prt[1] = i;
         params.list.push({
@@ -428,13 +436,15 @@ var tfw = {
     }
     for (i = 0; i < params.list.length; i++) {
       var p = params.list[i];
-      if (typeof p === 'string') p = {
-        id: i,
-        t: p
-      };
+      if (typeof p === 'string') {
+        p = {
+          id: i,
+          t: p
+        };
+      }
       if (!('id' in p)) p.id = i;
       var l = document.createElement('div');
-      l.value = '' + p.id;
+      l.value = String(p.id);
       if ('n' in p) l.innerHTML = p.n;
       else l.innerHTML = p.t;
       if (m.indexOf(l.value) > -1) l.className = 'selected';
@@ -449,7 +459,7 @@ var tfw = {
           element.childNodes[i].removeClass('selected');
         }
       }
-      element.value = '' + a;
+      element.value = String(a);
     }
     return element;
   },
@@ -471,9 +481,9 @@ var tfw = {
     }
     desktop.newLayer(params);
     var rect = element.getBoundingClientRect(),
-      wrapper,
-      leftOrRight = right ? 'right' : 'left',
-      leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
+        wrapper,
+        leftOrRight = right ? 'right' : 'left',
+        leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
     desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
       style: 'overflow:hidden;position:absolute;'+leftOrRight+':' + leftOrRightPx + 'px;'
         + (above ? 'bottom' : 'top') + ':' + (above ? (window.innerHeight - rect.top) : rect.bottom) + 'px'
@@ -568,11 +578,12 @@ var tfw = {
           value: x.value,
           style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
           onchange: function () {
-            for (i = 0; i < this.childNodes.length; i++)
+            for (var i = 0; i < this.childNodes.length; i++) {
               if (this.childNodes[i].value == this.value) {
                 x.innerHTML = this.childNodes[i].innerHTML;
                 x.value = this.childNodes[i].value;
               }
+            }
             if (x.onchange) {
               x.onchange();
             }
@@ -581,7 +592,7 @@ var tfw = {
         });
         c.add(b);
         b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
-        window.setTimeout('$(\"drop' + params.id + '\").style.webkitTransform=\"\";', 10);
+        window.setTimeout(function(){$('drop' + params.id).style.webkitTransform='';}, 10);
       }
     };
     Object.defineProperty(x, 'disabled', {
@@ -614,7 +625,7 @@ var tfw = {
     }
     x.setValue = function (a) {
       x.value = a;
-      for (i = 0; i < params.list.length; i++) {
+      for (var i = 0; i < params.list.length; i++) {
         if (typeof params.list[i] === 'object') {
           if (params.list[i].id == a) x.innerHTML = params.list[i].t;
         } else {
@@ -638,7 +649,7 @@ var tfw = {
   button: function (params) {
     var element = document.createElement('button');
     this.fillElemDefs(element, params);
-    element.type = ((params.default) ? 'submit' : 'button');
+    element.type = ((params['default']) ? 'submit' : 'button');
     if (params.action) {
       element.action = params.action;
       element.onclick = function (e) {
@@ -672,9 +683,11 @@ var tfw = {
     if (params.containerStyle) x.style.cssText = params.containerStyle;
     x.add(l);
     x.add(element);
-    if (params.postText) x.add(tfw.span({
-      innerHTML: params.postText
-    }));
+    if (params.postText) {
+      x.add(tfw.span({
+        innerHTML: params.postText
+      }));
+    }
     return x;
   },
   /**
@@ -868,8 +881,11 @@ var tfw = {
   tr: function (params) {
     var element = document.createElement('tr');
     this.fillElemDefs(element, params);
-    if ('columns' in params)
-      for (var i = 0; i < params.columns.length; i++) element.add(tfw.td(params.columns[i]));
+    if ('columns' in params) {
+      for (var i = 0; i < params.columns.length; i++) {
+        element.add(tfw.td(params.columns[i]));
+      }
+    }
     return element;
   },
   /**
@@ -991,46 +1007,65 @@ var tfw = {
     }
     return element;
   },
-  image: function (n) {
-    var x = document.createElement('img');
-    this.fillElemDefs(x, n);
-    if (n.src) x.src = n.src;
-    if (n.title) x.title = n.title;
-    return x;
+  /**
+   * Create an image with specified parameters.
+   * @memberof tfw
+   * @param {Object} params - image parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {string} [params.src] - URL of image
+   * @param {title} [params.title] - image title (displays on hover)
+   * @see tfw.fillElemDefs
+   * @return {HTMLElement} Created image
+   */
+  image: function (params) {
+    var element = document.createElement('img');
+    this.fillElemDefs(element, params);
+    if (params.src) element.src = params.src;
+    if (params.title) element.title = params.title;
+    return element;
   },
-  /** @todo Remove dependencies on Triobo */
-  filebox: function (n) {
-    /* eslint-disable no-undef */
-    var x = document.createElement('div');
-    if (n.id) x.id = n.id;
-    else x.id = 'filebox';
-    if (n.className) n.className = 'tfwFilebox ' + n.className;
-    else n.className = 'tfwFilebox';
-    x.className = n.className;
-    if (n.style) x.style.cssText = n.style;
-    if (n.text) x.text = n.text;
-    else x.text = '';
-    if (n.value) x.value = n.value;
-    else x.value = 0;
-    if (n.filename) x.filename = n.filename;
-    else x.filename = '';
-    if (n.path) x.path = n.path;
-    else x.path = '';
-    if (n.imgStyle) x.imgStyle = 'style="' + n.imgStyle + '" ';
-    else x.imgStyle = '';
-    if (n.onloaded) x.onloaded = n.onloaded;
-    else x.onloaded = null;
-    if (n.onstart) x.onstart = n.onstart;
-    else x.onstart = null;
-    if (n.limitExtensions) x.limitExtensions = n.limitExtensions;
-    else x.limitExtensions = '';
-    x.uploading = 0;
+  /**
+   * Create control for uploading files (images).
+   * @memberof tfw
+   * @param {Object} params - file box parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @param {string} [params.id="filebox"] - ID of box
+   * @param {string} [params.className="tfwFilebox"] - class(es) of box (tfwFilebox is always appended)
+   * @param {number} [params.value=0]
+   * @param {string} [params.text=""] - text to be placed inside inner div (ignored for {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {string} [params.filename=""] - name of file (image)
+   * @param {string} [params.path=""] - path to file (image), with trailing slash
+   * @param {string} [params.imgStyle=""] - CSS styling for image
+   * @param {function} [params.onloaded=null] - callback fired when upload finishes
+   * @param {function} [params.onstart=null] - callback fired when upload starts
+   * @param {string} [params.limitExtensions=""] - allowed extensions, without dot (e.g. "png|jpeg|jpg|gif")
+   * @param {string} [params.style] - CSS styling of outter and inner DIV
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
+   * @return {HTMLElement} Created file box, optionally wrapped with label
+   */
+  filebox: function (params) {
+    var element = document.createElement('div');
+    if(!('id' in params)) params.id = 'filebox';
+    params.className = (('className' in params) ? (params.className+' ') : '') + 'tfwFilebox';
+    if(!('value' in params)) params.value = 0;
+    var innerDivStyle = ('style' in params) ? params.style : '';
+    element.text = ('text' in params) ? params.text : '';
+    delete params.text;
+    this.fillElemDefs(element, params);
+    
+    element.filename = ('filename' in params) ? params.filename : '';
+    element.path = ('path' in params) ? params.path : '';
+    element.imgStyle = ('imgStyle' in params) ? ('style="' + params.imgStyle + '" ') : '';
+    element.onloaded = ('onloaded' in params) ? params.onloaded : null;
+    element.onstart = ('onstart' in params) ? params.onstart : null;
+    element.limitExtensions = ('limitExtensions' in params) ? params.limitExtensions : '';
+    
+    element.uploading = 0;
     var b = tfw.div({});
-    x.add(b);
+    element.add(b);
     b.className = 'content';
-    if (n.style) b.style.cssText = n.style;
+    if (innerDivStyle) b.style.cssText = innerDivStyle;
     b.addEventListener('click', function() {
-      x.childNodes[1].click();
+      element.lastChild.dispatchEvent(new MouseEvent('click', {'view': window,'bubbles': true,'cancelable': false}));
     });
     b.addEventListener('dragenter', function(e) {
       this.style.outline = 'red 2px solid';
@@ -1050,57 +1085,57 @@ var tfw = {
       e.stopPropagation();
       e.preventDefault();
       this.style.outline = '';
-      x.upload(e.dataTransfer.files);
+      element.upload(e.dataTransfer.files);
     }, false);
-    x.add(b = document.createElement('input'));
+    element.add(b = document.createElement('input'));
     b.type = 'file';
     b.style.display = 'none';
     b.addEventListener('change', function(e) {
-      x.upload(e.target.files);
+      element.upload(e.target.files);
     });
-    x.prekresli = function (prc) {
-      if (x.uploading) {
-        x.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tfw.strings.UPLOADING.replace('%1',(prc + ' %')) + '</p>';
-      } else if (x.value) {
-        x.removeClass('empty');
-        if (x.filename.match(/\.(gif|jpg|jpeg|png)$/i)) {
-          x.childNodes[0].innerHTML = '<img id="fileboximg' + x.id + '" class="verticalCenter" ' + x.imgStyle + ' src="/zdroje/' + x.path +
-            x.filename + '?' + x.value + '">';
+    element.prekresli = function (prc) {
+      if (element.uploading) {
+        element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tfw.strings.UPLOADING.replace('%1',(prc + ' %')) + '</p>';
+      } else if (element.value) {
+        element.removeClass('empty');
+        if (element.filename.match(/\.(gif|jpg|jpeg|png)$/i)) {
+          element.childNodes[0].innerHTML = '<img id="fileboximg' + element.id + '" class="verticalCenter" ' + element.imgStyle + ' src="/zdroje/' + element.path +
+            element.filename + '?' + element.value + '">';
         } else {
-          x.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + x.filename + '</p>';
+          element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + element.filename + '</p>';
         }
       } else {
-        x.addClass('empty');
-        x.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:40px;">' + x.text + '</p>';
+        element.addClass('empty');
+        element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:40px;">' + element.text + '</p>';
       }
     }
-    x.upload = function (u) {
-      x.prekresli(0);
+    element.upload = function (u) {
+      element.prekresli(0);
       var jmeno = u[0].name;
       var canbe = 1;
-      if (x.limitExtensions) {
-        var re = new RegExp('\.(' + x.limitExtensions + ')$', 'i');
+      if (element.limitExtensions) {
+        var re = new RegExp('\\.(' + element.limitExtensions + ')$', 'i');
         if (!jmeno.match(re)) canbe = 0;
       }
       if (canbe) {
-        x.uploading = u[0].size;
-        if (x.onstart) x.onstart();
-        x.hr = new XMLHttpRequest();
-        var fUp = x.hr.upload;
+        element.uploading = u[0].size;
+        if (element.onstart) element.onstart();
+        element.hr = new XMLHttpRequest();
+        var fUp = element.hr.upload;
         fUp.addEventListener('progress', function(e) {
-          x.prekresli(Math.round(e.loaded / x.uploading * 100));
+          element.prekresli(Math.round(e.loaded / element.uploading * 100));
         });
         fUp.addEventListener('load', function() {
-          x.uploading = 0;
-          x.value = Math.floor(Math.random() * 1000000) + 1;
-          if (x.onloaded) x.onloaded();
-          window.setTimeout('$("' + x.id + '").prekresli();', 500);
+          element.uploading = 0;
+          element.value = Math.floor(Math.random() * 1000000) + 1;
+          if (element.onloaded) element.onloaded();
+          window.setTimeout(function(){$(element.id).prekresli();}, 500);
         });
-        x.hr.open('POST', 'uploadFile.php?token=' + token);
-        x.hr.setRequestHeader('X_FILENAME', x.path + x.filename);
-        x.hr.send(u[0]);
+        element.hr.open('POST', 'uploadFile.php?token=' + token);
+        element.hr.setRequestHeader('X_FILENAME', element.path + element.filename);
+        element.hr.send(u[0]);
       } else {
-        var lims = x.limitExtensions.split('|');
+        var lims = element.limitExtensions.split('|');
         var lastl = lims.pop();
         var lim;
         if (lims.length) lim = '<b>' + lims.join('</b>, <b>') + '</b> ' + tfw.strings.OR + ' <b>' + lastl + '</b>';
@@ -1108,10 +1143,9 @@ var tfw = {
         chyba('#300-' + tfw.strings.EXTNOTALLOWED.replace('%1',lim));
       }
     };
-    x.remove = function () {}
-    x.prekresli();
-    return (n.legend) ? (this.inputFieldLegend(x, n)) : x;
-    /* eslint-enable no-undef */
+    element.remove = function () {}
+    element.prekresli();
+    return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   dialog: function (co) {
     var b;
@@ -1121,8 +1155,8 @@ var tfw = {
     });
     var vnit, dlg;
     var sirka = 300,
-      vyska = 200,
-      nazev = '';
+        vyska = 200,
+        nazev = '';
     if (co.width) sirka = co.width;
     if (co.height) vyska = co.height;
     if (co.title) nazev = co.title;
@@ -1177,8 +1211,7 @@ var tfw = {
       for (i = 0; i < co.buttons.length; i++){
         if (co.buttons[i].text) {
           dlg.buttons.add(b = tfw.button(co.buttons[i]));
-          if (!co.vychozi)
-            if (b.type == 'submit') b.focus();
+          if (!co.vychozi && b.type == 'submit') b.focus();
         }
       }
     }
@@ -1191,25 +1224,37 @@ var tfw = {
       var list = this.getElementsByClassName('hasBeenChanged');
       for (var i = 0; i < list.length; i++) list[i].removeClass('hasBeenChanged');
     }
-    window.setTimeout('$(\"tfwDialog' + desktop.activeLayer + '\").style.webkitTransform=\"\";$(\"tfwDialog' + desktop.activeLayer +
-      '\").style.opacity=1;', 10);
+    window.setTimeout(function(){
+      $('tfwDialog' + desktop.activeLayer).style.webkitTransform='';
+      $('tfwDialog' + desktop.activeLayer).style.opacity=1;
+    }, 10);
     return dlg;
   },
-  /** @todo Remove dependencies on Triobo */
-  dialogPrepareAndDownload: function (co) {
-    /* eslint-disable no-undef */
-    var dlgPaD = tfw.dialog({ // eslint-disable-line no-unused-vars
+  /**
+   * Show dialog while preparing something for download in background, when ready show download link.
+   * @memberof tfw
+   * @param {Object} params - parameters
+   * @param {string} params.title - dialog title
+   * @param {string} params.waiting - HTML to show while waiting
+   * @param {string} params.ajaxFile - url for {@link tfw.ajaxGet}
+   * @param {string} params.ajaxParam - url-encoded parameters separated by & for {@link tfw.ajaxGet}
+   * @param {string} params.text - text to show when ready, with "%1" getting replaced with download link
+   * @param {string} params.item - download link inner HTML
+   * @see tfw.ajaxGet
+   */
+  dialogPrepareAndDownload: function (params) {
+    tfw.dialog({
       width: 360,
       height: 140,
-      title: co.title,
+      title: params.title,
       children: [
         tfw.div({
           id: 'dlgPaD',
           children: [
             tfw.par({
-              innerHTML: co.waiting
+              innerHTML: params.waiting
             }), tfw.par({
-              innerHTML: AJAX_LOADER
+              innerHTML: tfw.AJAX_LOADER
             })
           ]
         })
@@ -1219,10 +1264,13 @@ var tfw = {
         action: desktop.closeTopLayer
       }]
     });
-    ajaxGet(co.ajaxFile, co.ajaxParam, function(hr) {
-      $('dlgPaD').innerHTML = co.text.replace('%1', '<a href="' + hr.responseText + '" download>' + co.item + '</a>');
-    }, 0);
-    /* eslint-enable no-undef */
+    tfw.ajaxGet({
+      url: params.ajaxFile + '?' + params.ajaxParam,
+      onload: function(hr) {
+        $('dlgPaD').innerHTML = params.text.replace('%1', '<a href="' + hr.responseText + '" download>' + params.item + '</a>');
+      },
+      autohide: 0
+    });
   },
   /**
    * Generates permanent AJAX queries parameters (e.g. tokens, anti-cache)
@@ -1275,14 +1323,11 @@ var tfw = {
       if (httpRequest.readyState === 4) {
         desktop.done();
         if (httpRequest.status === 200) {
-          var pe = 0;
-          if (tfw.ajaxOnErrorCode) {
-            var rt = httpRequest.responseText;
-            if (rt.substr(0, 1) == '#') pe = 1;
-          }
-          if (pe) {
+          var rt;
+          if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == '#'){
             tfw.ajaxOnErrorCode(rt);
-          } else {
+          }
+          else {
             o.onload(httpRequest);
           }
         } else if (tfw.ajaxOnError) {
@@ -1299,6 +1344,7 @@ var tfw = {
         case 'POST':
           o.parameters += '&' + tfw.ajaxIncludeParams();
           break;
+        // intentionally omitted default
       }
     }
     console.info('Desktop ajax ' + o.method + ' ' + ur);
@@ -1311,6 +1357,7 @@ var tfw = {
         httpRequest.setRequestHeader('Cache-Control', 'no-cache');
         httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         break;
+      // intentionally omitted default
     }
     httpRequest.send(o.parameters);
     if (o.autohide) {
@@ -1337,10 +1384,11 @@ var tfw = {
    */
   encodeFormValues: function (fields) {
     var x = [];
-    for (var key in fields)
+    for (var key in fields) {
       if (fields.hasOwnProperty(key)) {
         x.push(key + '=' + encodeURIComponent($(fields[key]).value));
       }
+    }
     return x.join('&');
   },
   /**
@@ -1384,7 +1432,7 @@ var tfw = {
     } while (o = o.offsetParent); // eslint-disable-line no-cond-assign
     return [totalOffsetX, totalOffsetY];
   },
-  /* bude postupně také odstraněno (nahrazeno novými metodami) */
+  /* @deprecated */
   novyElement: function (typ, id, c, obsah, styl) {
     //console.error('DEPRECATED novyElement '+id);  -- tohoto je ještě strašně moc………
     var x = document.createElement(typ);
@@ -1396,7 +1444,6 @@ var tfw = {
   },
   /** @todo Remove dependencies on Triobo */
   noveZalozky: function (id, w, h, zalozky, init) {
-    /* eslint-disable no-undef */
     var l;
     var x = document.createElement('div');
     x.id = id;
@@ -1442,7 +1489,6 @@ var tfw = {
       x.add(o);
     }
     return x;
-    /* eslint-enable no-undef */
   },
   noveSvisleZalozky: function (id, wl, w, h, zalozky, init) {
     var l;
@@ -1528,7 +1574,6 @@ var tfw = {
   },
   /** @todo Remove dependencies on Triobo */
   zvolSvislouZalozku: function (jmeno, novy) {
-    /* eslint-disable no-undef */
     var stary = cislo($(jmeno).value);
     if (novy != stary) {
       if (stary >= 0) {
@@ -1539,7 +1584,6 @@ var tfw = {
       $(jmeno + '-ousko-' + novy).className += ' aktivni';
       $(jmeno).value = novy;
     }
-    /* eslint-enable no-undef */
   },
   novyCudl: function (id, c, pozice, stisk, popis) {
     var x = document.createElement('div');
@@ -1653,7 +1697,7 @@ var tfw = {
      * @readonly
      */
     this.tableContainer = tfw.div({
-      innerHTML: AJAX_LOADER,
+      innerHTML: tfw.AJAX_LOADER,
       className: 'tfwDynamicTableContainer'
     });
     var baseURL = params.baseURL;
@@ -1814,7 +1858,7 @@ var tfw = {
     }
     /**
      * Get table container (for inserting into document).
-     * @returns {HTMLElement} Table container
+     * @return {HTMLElement} Table container
      */
     this.getTable = function () {
       return this.tableContainer;
@@ -3472,13 +3516,13 @@ tfw.dynamicTableClass.arrowTypes = {
 tfw.dynamicTableClass.ROW_EDIT_WIDTH = 25;
 /**
  * List of months' names.
- * @var {String[]}
+ * @var {string[]}
  * @default
  */
 tfw.calendarExtend.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 /**
  * List of days' names' first two letters (beginning with Monday)
- * @var {String[]}
+ * @var {string[]}
  * @default
  */
 tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
@@ -3503,8 +3547,6 @@ tfw.calendarExtend.placeCalendar = function (cal, input) {
   wrapper.add(cal);
 };
 window.addEventListener('load', tfw.init);
-
-/* eslint-disable */
 
 /**
  * Function package for preparing HTML elements.

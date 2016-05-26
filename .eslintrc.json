@@ -1,17 +1,163 @@
 {
+    "parserOptions": {
+        "impliedStrict": true
+    },
     "env": {
         "browser": true
     },
     "extends": "eslint:recommended",
     "rules": {
         "indent": [
-            "error", 2, {"SwitchCase": 1}
+            "error", 2, {
+                "SwitchCase": 1,
+                "VariableDeclarator": {
+                    "var": 2,
+                    "let": 2,
+                    "const": 3
+                }
+            }
         ],
         "quotes": [
             "error", "single"
         ],
 		"no-console": [
-			0
-		]
+			"warn", {"allow": ["error", "info"]}
+		],
+        "valid-jsdoc": [
+            "warn", {
+                "requireReturn": false,
+                "prefer": {
+                    "return": "return"
+                },
+                "preferType": {
+                    "String": "string",
+                    "Number": "number",
+                    "object": "Object"
+                }
+            }
+        ],
+        "block-scoped-var": [
+            "error"
+        ],
+        "consistent-return": [
+            "warn"
+        ],
+        "curly": [
+            "error",
+            "multi-line"
+        ],
+        "default-case": [
+            "warn",
+            {"commentPattern": "^intentionally\\somitted\\sdefault"}
+        ],
+        "dot-location": [
+            "error",
+            "property"
+        ],
+        "dot-notation": [
+            "error", {"allowKeywords": false}
+        ],
+        "no-alert": [
+            "error"
+        ],
+        "no-caller": [
+            "error"
+        ],
+        "no-else-return": [
+            "warn"
+        ],
+        "no-eval": [
+            "warn"
+        ],
+        "no-extend-native": [
+            "warn"
+        ],
+        "no-extra-bind": [
+            "error"
+        ],
+        "no-extra-label": [
+            "error"
+        ],
+        "no-floating-decimal": [
+            "warn"
+        ],
+        "no-implicit-coercion": [
+            "warn"
+        ],
+        "no-implicit-globals": [
+            "warn"
+        ],
+        "no-implied-eval": [
+            "error"
+        ],
+        "no-invalid-this": [
+            "warn"
+        ],
+        "no-iterator": [
+            "error"
+        ],
+        "no-lone-blocks": [
+            "error"
+        ],
+        "no-loop-func": [
+            "error"
+        ],
+        "no-multi-spaces": [
+            "warn"
+        ],
+        "no-multi-str": [
+            "warn"
+        ],
+        "no-native-reassign": [
+            "error"
+        ],
+        "no-new": [
+            "error"
+        ],
+        "no-new-func": [
+            "error"
+        ],
+        "no-new-wrappers": [
+            "error"
+        ],
+        "no-octal-escape": [
+            "warn"
+        ],
+        "no-proto": [
+            "error"
+        ],
+        "no-return-assign": [
+            "warn"
+        ],
+        "no-script-url": [
+            "error"
+        ],
+        "no-self-compare": [
+            "error"
+        ],
+        "no-sequences": [
+            "warn"
+        ],
+        "no-throw-literal": [
+            "error"
+        ],
+        "no-unmodified-loop-condition": [
+            "warn"
+        ],
+        "no-unused-expressions": [
+            "warn"
+        ],
+        "no-useless-call": [
+            "warn"
+        ],
+        "no-useless-concat": [
+            "warn"
+        ],
+        "no-useless-escape": [
+            "error"
+        ],
+        "no-void": [
+            "error"
+        ]
     }
 }
