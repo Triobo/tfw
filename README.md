@@ -523,13 +523,12 @@ Types of columns (and filters).
 
 | Name | Type | Default |
 | --- | --- | --- |
-| cmpType | <code>[Array.&lt;colCmpTypes&gt;](#tfw.dynamicTableClass.colCmpTypes)</code> |  | 
 | TEXT | <code>string</code> | <code>&quot;text&quot;</code> | 
 | NUMBER | <code>string</code> | <code>&quot;number&quot;</code> | 
 | CHECKBOX | <code>string</code> | <code>&quot;checkbox&quot;</code> | 
 | DATE | <code>string</code> | <code>&quot;date&quot;</code> | 
 | ORDER | <code>string</code> | <code>&quot;order&quot;</code> | 
-| cmpType | <code>Object</code> | <code>{&quot;text&quot;:&quot;&quot;,&quot;date&quot;:&quot;&quot;,&quot;number&quot;:&quot;&quot;,&quot;checkbox&quot;:&quot;&quot;,&quot;order&quot;:&quot;&quot;}</code> | 
+| cmpType | <code>[Array.&lt;colCmpTypes&gt;](#tfw.dynamicTableClass.colCmpTypes)</code> | <code>{&quot;text&quot;:&quot;&quot;,&quot;date&quot;:&quot;&quot;,&quot;number&quot;:&quot;&quot;,&quot;checkbox&quot;:&quot;&quot;,&quot;order&quot;:&quot;&quot;}</code> | 
 
 <a name="tfw.dynamicTableClass.sortTypes"></a>
 

@@ -3502,7 +3502,6 @@ tfw.dynamicTableClass.colCmpTypes = {
  * Types of columns (and filters).
  * @readonly
  * @enum {string}
- * @property {tfw.dynamicTableClass.colCmpTypes[]} cmpType
  */
 tfw.dynamicTableClass.colTypes = {
   TEXT: 'text',
@@ -3510,7 +3509,7 @@ tfw.dynamicTableClass.colTypes = {
   CHECKBOX: 'checkbox',
   DATE: 'date',
   ORDER: 'order',
-  /** @type {Object} */
+  /** @type {tfw.dynamicTableClass.colCmpTypes[]} */
   cmpType: {
     text: tfw.dynamicTableClass.colCmpTypes.TEXT,
     date: tfw.dynamicTableClass.colCmpTypes.TEXT,
