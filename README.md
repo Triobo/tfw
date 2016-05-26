@@ -1,9 +1,9 @@
 ## Classes
 
 <dl>
-<dt><a href="#desktop">desktop</a></dt>
-<dd></dd>
 <dt><a href="#tfw">tfw</a></dt>
+<dd></dd>
+<dt><a href="#desktop">desktop</a></dt>
 <dd></dd>
 <dt><a href="#prvek">prvek</a></dt>
 <dd></dd>
@@ -18,34 +18,6 @@
 <dd><p>Get HTML element by ID.</p>
 </dd>
 </dl>
-
-<a name="desktop"></a>
-
-## desktop
-**Kind**: global class  
-
-* [desktop](#desktop)
-    * [new desktop()](#new_desktop_new)
-    * [.newLayer(params)](#desktop.newLayer)
-
-<a name="new_desktop_new"></a>
-
-### new desktop()
-Triobo. This is a singleton.
-
-<a name="desktop.newLayer"></a>
-
-### desktop.newLayer(params)
-Create a new layer.
-
-**Kind**: static method of <code>[desktop](#desktop)</code>  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| params | <code>Object</code> |  | layer parameters |
-| [params.modal] | <code>boolean</code> &#124; <code>string</code> |  | whether to add class modal (if set to "auto", copies from currently active layer) |
-| [params.autoclose] | <code>boolean</code> | <code>false</code> | whether to close layer by clicking it |
-| [param.overlay] | <code>boolean</code> | <code>false</code> | whether to add overlay to this layer |
 
 <a name="tfw"></a>
 
@@ -85,6 +57,7 @@ Create a new layer.
                     * [~hiddenColumns](#tfw.dynamicTableClass+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
                 * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
             * _static_
+                * [.placePositionedDialog](#tfw.dynamicTableClass.placePositionedDialog) : <code>function</code>
                 * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
                 * [.colCmpTypes](#tfw.dynamicTableClass.colCmpTypes) : <code>enum</code>
                 * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
@@ -118,14 +91,16 @@ Create a new layer.
         * [.ajaxIncludeParams](#tfw.ajaxIncludeParams) : <code>function</code>
         * [.ajaxOnErrorCode](#tfw.ajaxOnErrorCode) : <code>function</code>
         * [.ajaxOnError](#tfw.ajaxOnError) : <code>function</code>
+        * [.ajaxOnDone](#tfw.ajaxOnDone) : <code>function</code>
+        * [.ajaxOnAutoHide](#tfw.ajaxOnAutoHide) : <code>function</code>
         * [.AJAX_LOADER](#tfw.AJAX_LOADER) : <code>string</code>
+        * [.addAll(parentNode, childNodes)](#tfw.addAll)
         * [.insertStyle(style, [tag])](#tfw.insertStyle)
         * [.init()](#tfw.init)
         * [.localize(newStrings)](#tfw.localize)
         * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
         * [.select(params)](#tfw.select) ⇒ <code>HTMLElement</code>
-        * [.createLayerAndWrapperAtElement(element, params, [above], [right])](#tfw.createLayerAndWrapperAtElement) ⇒ <code>HTMLElement</code>
-        * [.dropDown(params)](#tfw.dropDown) ⇒ <code>HTMLElement</code>
+        * ~~[.dropDown()](#tfw.dropDown)~~
         * [.button(params)](#tfw.button) ⇒ <code>HTMLElement</code>
         * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>HTMLElement</code>
         * [.input(params)](#tfw.input) ⇒ <code>HTMLElement</code>
@@ -138,16 +113,17 @@ Create a new layer.
         * [.slider(params)](#tfw.slider) ⇒ <code>HTMLElement</code>
         * [.image(params)](#tfw.image) ⇒ <code>HTMLElement</code>
         * [.filebox(params)](#tfw.filebox) ⇒ <code>HTMLElement</code>
-        * [.dialogPrepareAndDownload(params)](#tfw.dialogPrepareAndDownload)
+        * ~~[.dialog()](#tfw.dialog)~~
+        * ~~[.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)~~
         * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
         * ~~[.novyElement()](#tfw.novyElement)~~
         * [.noveZalozky()](#tfw.noveZalozky)
-        * [.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
+        * [.dialogPrepareAndDownload(params)](#tfw.dialogPrepareAndDownload)
     * _inner_
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
 
@@ -193,6 +169,7 @@ Triobo framework. This is a singleton.
             * [~hiddenColumns](#tfw.dynamicTableClass+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
         * [.toggleColumnDialog(element)](#tfw.dynamicTableClass+toggleColumnDialog)
     * _static_
+        * [.placePositionedDialog](#tfw.dynamicTableClass.placePositionedDialog) : <code>function</code>
         * [.serverActions](#tfw.dynamicTableClass.serverActions) : <code>enum</code>
         * [.colCmpTypes](#tfw.dynamicTableClass.colCmpTypes) : <code>enum</code>
         * [.colTypes](#tfw.dynamicTableClass.colTypes) : <code>enum</code>
@@ -386,7 +363,7 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 <a name="tfw.dynamicTableClass+filter"></a>
 
 #### dynamicTableClass.filter(filterElement, dataCol)
-Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter (and moves focus to input field).
+Apply filter for values of a column.Creates a [dialog](#tfw.dialog) with filter (and moves focus to input field).
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Todo**
@@ -470,7 +447,7 @@ Toggle visibility of a column. Only hides cells in TBODY and THEAD.Requires .hi
 <a name="tfw.dynamicTableClass+toggleColumnDialog"></a>
 
 #### dynamicTableClass.toggleColumnDialog(element)
-Toggle visibility of a column.Creates a [dialog](tfw.dialog) with checkboxes.
+Toggle visibility of a column.Creates a [dialog](#tfw.dialog) with checkboxes.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
@@ -478,6 +455,12 @@ Toggle visibility of a column.Creates a [dialog](tfw.dialog) with checkboxes.
 | --- | --- | --- |
 | element | <code>HTMLElement</code> | above which element should checkboxes be positioned |
 
+<a name="tfw.dynamicTableClass.placePositionedDialog"></a>
+
+#### dynamicTableClass.placePositionedDialog : <code>function</code>
+Callback for showing controls.
+
+**Kind**: static property of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 <a name="tfw.dynamicTableClass.serverActions"></a>
 
 #### dynamicTableClass.serverActions : <code>enum</code>
@@ -818,7 +801,6 @@ Callback function that puts calendar widget for an input field into page.Most l
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;HIDDEN_ROWS\&quot;:\&quot;Hidden rows\&quot;,\&quot;UPLOADING\&quot;:\&quot;Uploading … %1\&quot;,\&quot;OR\&quot;:\&quot;or\&quot;,\&quot;EXTNOTALLOWED\&quot;:\&quot;Only %1 files are allowed.\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -859,6 +841,20 @@ Handles HTTP errors (HTTP codes other than 200).
 
 - [ ] Implement
 
+<a name="tfw.ajaxOnDone"></a>
+
+### tfw.ajaxOnDone : <code>function</code>
+Fired after any finished AJAX request.
+
+**Kind**: static property of <code>[tfw](#tfw)</code>  
+**Default**: <code>null</code>  
+<a name="tfw.ajaxOnAutoHide"></a>
+
+### tfw.ajaxOnAutoHide : <code>function</code>
+Fired when autohide is not 0.
+
+**Kind**: static property of <code>[tfw](#tfw)</code>  
+**Default**: <code>null</code>  
 <a name="tfw.AJAX_LOADER"></a>
 
 ### tfw.AJAX_LOADER : <code>string</code>
@@ -866,6 +862,18 @@ HTML to show when some content is being loaded.
 
 **Kind**: static constant of <code>[tfw](#tfw)</code>  
 **Default**: <code>&quot;&lt;div class=\&quot;tfwDivContentLoader\&quot;&gt;&lt;span&gt;&lt;/span&gt;&lt;/div&gt;&quot;</code>  
+<a name="tfw.addAll"></a>
+
+### tfw.addAll(parentNode, childNodes)
+Add multiple HTML elements.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| parentNode | <code>HTMLElement</code> | node to append to |
+| childNodes | <code>Array.&lt;HTMLElement&gt;</code> | nodes to append |
+
 <a name="tfw.insertStyle"></a>
 
 ### tfw.insertStyle(style, [tag])
@@ -940,48 +948,14 @@ Create a select field with specified parameters.
 | [params.list[].id] | <code>string</code> | value (defaults to numeric index of option) |
 | params.list[].t | <code>string</code> | label |
 
-<a name="tfw.createLayerAndWrapperAtElement"></a>
-
-### tfw.createLayerAndWrapperAtElement(element, params, [above], [right]) ⇒ <code>HTMLElement</code>
-Create a new layer and a wrapper that starts at a given element.
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Created wrapper  
-**See**: desktop.newLayer  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| element | <code>HTMLElement</code> |  | element to position wrapper at |
-| params | <code>Object</code> |  | parameters for [newLayer](#desktop.newLayer) |
-| [above] | <code>boolean</code> | <code>false</code> | whether to position above element instead of below |
-| [right] | <code>boolean</code> | <code>false</code> | whether to align with right edge of element instead of left |
-
 <a name="tfw.dropDown"></a>
 
-### tfw.dropDown(params) ⇒ <code>HTMLElement</code>
-Create a dropdown menu.
+### ~~tfw.dropDown()~~
+***Deprecated***
+
+Use [dropDown](#desktop.dropDown) instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Created dropdown menu  
-**See**: tfw.select  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| params | <code>Object</code> |  | dropdown parameters |
-| [params.legend] | <code>string</code> |  | label |
-| [params.legendWidth] | <code>string</code> |  | label CSS width (including unit) |
-| [params.legendStyle] | <code>string</code> |  | label CSS styling |
-| [params.containerId] | <code>string</code> |  | ID of containing paragraph |
-| [params.containerStyle] | <code>string</code> |  | CSS styling of containing paragraph |
-| [params.id] | <code>string</code> |  | dropdown ID |
-| [params.className] | <code>string</code> |  | dropdown classes (separated by spaces) |
-| [params.style] | <code>string</code> |  | dropdown CSS styling |
-| [params.itemWidth] | <code>number</code> | <code>0</code> | width of an item |
-| [params.itemHeight] | <code>number</code> | <code>20</code> | height of an item |
-| [params.onchange] | <code>function</code> |  | function to call when value changes (onchange) |
-| params.list | <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> |  | list of options passed to [select](#tfw.select) |
-| [params.value] | <code>string</code> |  | default (selected) value |
-
 <a name="tfw.button"></a>
 
 ### tfw.button(params) ⇒ <code>HTMLElement</code>
@@ -1202,24 +1176,22 @@ Create control for uploading files (images).
 | [params.limitExtensions] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | allowed extensions, without dot (e.g. "png|jpeg|jpg|gif") |
 | [params.style] | <code>string</code> |  | CSS styling of outter and inner DIV |
 
-<a name="tfw.dialogPrepareAndDownload"></a>
+<a name="tfw.dialog"></a>
 
-### tfw.dialogPrepareAndDownload(params)
-Show dialog while preparing something for download in background, when ready show download link.
+### ~~tfw.dialog()~~
+***Deprecated***
+
+Use [desktop.dialog](desktop.dialog) instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.ajaxGet  
+<a name="tfw.dialogPrepareAndDownload"></a>
 
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>Object</code> | parameters |
-| params.title | <code>string</code> | dialog title |
-| params.waiting | <code>string</code> | HTML to show while waiting |
-| params.ajaxFile | <code>string</code> | url for [ajaxGet](#tfw.ajaxGet) |
-| params.ajaxParam | <code>string</code> | url-encoded parameters separated by & for [ajaxGet](#tfw.ajaxGet) |
-| params.text | <code>string</code> | text to show when ready, with "%1" getting replaced with download link |
-| params.item | <code>string</code> | download link inner HTML |
+### ~~tfw.dialogPrepareAndDownload()~~
+***Deprecated***
 
+Use [desktop.dialogPrepareAndDownload](desktop.dialogPrepareAndDownload) instead.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
 <a name="tfw.ajaxGet"></a>
 
 ### tfw.ajaxGet(o) ⇒ <code>XMLHttpRequest</code>
@@ -1239,7 +1211,7 @@ Get data from server via AJAX.
 | o | <code>Object</code> |  | parameters object |
 | o.url | <code>string</code> |  | URL of server script with data |
 | o.onload | <code>[ajaxGetCallback](#tfw..ajaxGetCallback)</code> |  | function to call when request has successfully completed |
-| [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately) |
+| [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (0 = off, 2 = pass 1 to [ajaxOnAutoHide](#tfw.ajaxOnAutoHide), otherwise pass 0) |
 | [o.method] | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to be used (GET or POST) |
 | [o.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
@@ -1294,14 +1266,6 @@ Decode JSON data, show error in case they are invalid.
 
 - [ ] Remove dependencies on Triobo
 
-<a name="tfw.zvolSvislouZalozku"></a>
-
-### tfw.zvolSvislouZalozku()
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Todo**
-
-- [ ] Remove dependencies on Triobo
-
 <a name="tfw.dynamicTable"></a>
 
 ### tfw.dynamicTable(params) ⇒ <code>HTMLElement</code>
@@ -1332,6 +1296,24 @@ Create a calendar input field.
 | --- | --- | --- |
 | params | <code>Object</code> | see [input](#tfw.input) |
 
+<a name="tfw.dialogPrepareAndDownload"></a>
+
+### tfw.dialogPrepareAndDownload(params)
+Show dialog while preparing something for download in background, when ready show download link.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.ajaxGet  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | parameters |
+| params.title | <code>string</code> | dialog title |
+| params.waiting | <code>string</code> | HTML to show while waiting |
+| params.ajaxFile | <code>string</code> | url for [ajaxGet](#tfw.ajaxGet) |
+| params.ajaxParam | <code>string</code> | url-encoded parameters separated by & for [ajaxGet](#tfw.ajaxGet) |
+| params.text | <code>string</code> | text to show when ready, with "%1" getting replaced with download link |
+| params.item | <code>string</code> | download link inner HTML |
+
 <a name="tfw..ajaxGetCallback"></a>
 
 ### tfw~ajaxGetCallback : <code>function</code>
@@ -1343,6 +1325,78 @@ Callback after successfull HTTP request.
 | --- | --- | --- |
 | httpRequest | <code>XMLHttpRequest</code> | associated XMLHttpRequest object |
 | httpRequest.responseText | <code>string</code> | server response |
+
+<a name="desktop"></a>
+
+## desktop
+**Kind**: global class  
+
+* [desktop](#desktop)
+    * [new desktop()](#new_desktop_new)
+    * [.newLayer(params)](#desktop.newLayer)
+    * [.createLayerAndWrapperAtElement(element, params, [above], [right])](#desktop.createLayerAndWrapperAtElement) ⇒ <code>HTMLElement</code>
+    * [.dropDown(params)](#desktop.dropDown) ⇒ <code>HTMLElement</code>
+
+<a name="new_desktop_new"></a>
+
+### new desktop()
+Triobo. This is a singleton.
+
+<a name="desktop.newLayer"></a>
+
+### desktop.newLayer(params)
+Create a new layer.
+
+**Kind**: static method of <code>[desktop](#desktop)</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | layer parameters |
+| [params.modal] | <code>boolean</code> &#124; <code>string</code> |  | whether to add class modal (if set to "auto", copies from currently active layer) |
+| [params.autoclose] | <code>boolean</code> | <code>false</code> | whether to close layer by clicking it |
+| [param.overlay] | <code>boolean</code> | <code>false</code> | whether to add overlay to this layer |
+
+<a name="desktop.createLayerAndWrapperAtElement"></a>
+
+### desktop.createLayerAndWrapperAtElement(element, params, [above], [right]) ⇒ <code>HTMLElement</code>
+Create a new layer and a wrapper that starts at a given element.
+
+**Kind**: static method of <code>[desktop](#desktop)</code>  
+**Returns**: <code>HTMLElement</code> - Created wrapper  
+**See**: desktop.newLayer  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| element | <code>HTMLElement</code> |  | element to position wrapper at |
+| params | <code>Object</code> |  | parameters for [newLayer](#desktop.newLayer) |
+| [above] | <code>boolean</code> | <code>false</code> | whether to position above element instead of below |
+| [right] | <code>boolean</code> | <code>false</code> | whether to align with right edge of element instead of left |
+
+<a name="desktop.dropDown"></a>
+
+### desktop.dropDown(params) ⇒ <code>HTMLElement</code>
+Create a dropdown menu.
+
+**Kind**: static method of <code>[desktop](#desktop)</code>  
+**Returns**: <code>HTMLElement</code> - Created dropdown menu  
+**See**: tfw.select  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | dropdown parameters |
+| [params.legend] | <code>string</code> |  | label |
+| [params.legendWidth] | <code>string</code> |  | label CSS width (including unit) |
+| [params.legendStyle] | <code>string</code> |  | label CSS styling |
+| [params.containerId] | <code>string</code> |  | ID of containing paragraph |
+| [params.containerStyle] | <code>string</code> |  | CSS styling of containing paragraph |
+| [params.id] | <code>string</code> |  | dropdown ID |
+| [params.className] | <code>string</code> |  | dropdown classes (separated by spaces) |
+| [params.style] | <code>string</code> |  | dropdown CSS styling |
+| [params.itemWidth] | <code>number</code> | <code>0</code> | width of an item |
+| [params.itemHeight] | <code>number</code> | <code>20</code> | height of an item |
+| [params.onchange] | <code>function</code> |  | function to call when value changes (onchange) |
+| params.list | <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> |  | list of options passed to [select](#tfw.select) |
+| [params.value] | <code>string</code> |  | default (selected) value |
 
 <a name="prvek"></a>
 

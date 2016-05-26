@@ -8,7 +8,7 @@
     "extends": "eslint:recommended",
     "rules": {
 		"no-console": [
-			"warn", {"allow": ["error", "info"]}
+			"warn", {"allow": ["error", "warn", "info"]}
 		],
         "valid-jsdoc": [
             "warn", {
@@ -174,7 +174,7 @@
             "never"
         ],
         "brace-style": [
-            "error"
+            "error", "1tbs", {"allowSingleLine": true}
         ],
         "camelcase": [
             "error"
@@ -214,7 +214,7 @@
             {"code": 160, "ignoreComments": true}
         ],
         "max-params": [
-            "warn"
+            "warn", {"max": 4}
         ],
         "new-cap": [
             "error"

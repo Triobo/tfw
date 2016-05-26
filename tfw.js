@@ -75,151 +75,21 @@ HTMLElement.prototype.add = function(x){
 };
 
 /**
- * Triobo. This is a singleton.
- * @class
- */
-var desktop = {//eslint-disable-line no-implicit-globals
-  div: null,
-  layers: [],
-  activeLayer: 0,
-  width: 0,
-  height: 0,
-  resizingFunctions: [],
-  isWorking: 0,
-  mainLoaderTimer: null,
-  URLbase: '',
-  URLparams: [],
-  go: null,
-  dialogMoveData: {},
-  init: function(id){
-    desktop.div = $(id);
-    desktop.clean();
-    window.addEventListener('resize', function(){
-      desktop.width = desktop.div.clientWidth;
-      desktop.height = desktop.div.clientHeight;
-      for (var i = 0; i < desktop.resizingFunctions.length; i++) desktop.resizingFunctions[i]();
-    }, false);
-    var myURLparts = document.URL.split('?');
-    desktop.URLbase = myURLparts[0];
-    if (myURLparts.length > 1) desktop.URLparams = myURLparts[1].substr(2).split('/');
-  },
-  clean: function(){
-    desktop.layers = [];
-    desktop.activeLayer = 0;
-    desktop.div.innerHTML = '';
-    desktop.div.add(desktop.layers[0] = tfw.div({
-      id: 'tfwLayer0',
-      className: 'tfwLayer'
-    }));
-    desktop.width = desktop.div.clientWidth;
-    desktop.height = desktop.div.clientHeight;
-    desktop.resizingFunctions = [];
-    desktop.isWorking = 0;
-    if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
-  },
-  closeTopLayer: function(){
-    if (desktop.activeLayer) {
-      desktop.layers[desktop.activeLayer].innerHTML = '';
-      desktop.div.removeChild(desktop.layers[desktop.activeLayer]);
-      desktop.activeLayer--;
-    }
-  },
-  /**
-   * Create a new layer.
-   * @param {Object} params - layer parameters
-   * @param {(boolean|string)} [params.modal] - whether to add class modal (if set to "auto", copies from currently active layer)
-   * @param {boolean} [params.autoclose=false] - whether to close layer by clicking it
-   * @param {boolean} [param.overlay=false] - whether to add overlay to this layer
-   * @listens click
-   * @listens mousemove
-   * @listens mouseup
-   */
-  newLayer: function(params){
-    if (params.modal) {
-      if (params.modal == 'auto') {
-        params.modal = desktop.layers[desktop.activeLayer].hasClass('modal') ? 1 : 0;
-      }
-    }
-    desktop.activeLayer++;
-    desktop.div.add(desktop.layers[desktop.activeLayer] = tfw.div({
-      id: 'tfwLayer' + desktop.activeLayer,
-      className: 'tfwLayer' + (params.modal ? ' modal' : '')
-    }));
-    if (params.autoclose) {
-      desktop.layers[desktop.activeLayer].addEventListener('click', desktop.closeTopLayer);
-    }
-    if (params.overlay) {
-      desktop.layers[desktop.activeLayer].add(tfw.div({
-        id: 'tfwLayerOverlay' + desktop.activeLayer,
-        className: 'tfwLayerOverlay'
-      }));
-    }
-    desktop.layers[desktop.activeLayer].addEventListener('mousemove', desktop.dialogMoveGo, false);
-    desktop.layers[desktop.activeLayer].addEventListener('mouseup', desktop.dialogMoveEnd, false);
-  },
-  working: function(now){
-    if (!desktop.isWorking) {
-      desktop.newLayer({});
-      if (now) desktop.hide();
-      else desktop.mainLoaderTimer = setTimeout('desktop.hide();', 500);
-      desktop.isWorking = true;
-    }
-  },
-  hide: function(){
-    desktop.layers[desktop.activeLayer].add(tfw.div({
-      id: 'tfwLayerOverlay' + desktop.activeLayer,
-      className: 'tfwLayerOverlay',
-      style: 'cursor:progress;'
-    }));
-    desktop.layers[desktop.activeLayer].add(tfw.div({
-      id: 'tfwLoader',
-      style: 'left:' + Math.round(desktop.width / 2 - 16) + 'px;top:' + Math.round(desktop.height / 2 - 16) + 'px'
-    }));
-  },
-  done: function(){
-    if (desktop.isWorking) {
-      if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
-      desktop.closeTopLayer();
-      desktop.isWorking = false;
-    }
-  },
-  dialogMoveStart: function(e){
-    desktop.dialogMoveData = {
-      x: e.clientX,
-      y: e.clientY,
-      who: e.target
-    };
-    while (desktop.dialogMoveData.who.className != 'tfwDialogContainer') desktop.dialogMoveData.who = desktop.dialogMoveData.who.parentNode;
-    e.stopPropagation();
-    e.preventDefault();
-  },
-  dialogMoveGo: function(e){
-    if ('who' in desktop.dialogMoveData) {
-      var px = e.clientX - desktop.dialogMoveData.x;
-      var py = e.clientY - desktop.dialogMoveData.y;
-      desktop.dialogMoveData.x = e.clientX;
-      desktop.dialogMoveData.y = e.clientY;
-      desktop.dialogMoveData.who.style.left = parseInt(desktop.dialogMoveData.who.style.left) + px + 'px';
-      desktop.dialogMoveData.who.style.top = parseInt(desktop.dialogMoveData.who.style.top) + py + 'px';
-      e.stopPropagation();
-      e.preventDefault();
-    }
-  },
-  dialogMoveEnd: function(e){
-    if ('who' in desktop.dialogMoveData) {
-      e.stopPropagation();
-      e.preventDefault();
-      desktop.dialogMoveData = {};
-    }
-  }
-};
-
-/**
  * Triobo framework. This is a singleton.
  * @class
  * @todo Replace {@link http://www.w3schools.com/js/js_reserved.asp|reserved words} in function names
  */
 var tfw = {//eslint-disable-line no-implicit-globals
+  /**
+   * Add multiple HTML elements.
+   * @param {HTMLElement} parentNode - node to append to
+   * @param {HTMLElement[]} childNodes - nodes to append
+   */
+  addAll: function(parentNode, childNodes){
+    for (var i=0; i<childNodes.length; i++) {
+      parentNode.appendChild(childNodes[i]);
+    }
+  },
   /**
    * HTML to show when some content is being loaded.
    * @constant {string}
@@ -229,7 +99,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Strings that are output by tfw functions. Change them for localization.
    * @enum {string}
-   * @default
    */
   strings: {
     /** Label for checkbox with false value. */
@@ -464,177 +333,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     return element;
   },
+  /* eslint-disable */
   /**
-   * Create a new layer and a wrapper that starts at a given element.
-   * @param {HTMLElement} element - element to position wrapper at
-   * @param {Object} params - parameters for {@link desktop.newLayer}
-   * @param {boolean} [above=false] - whether to position above element instead of below
-   * @param {boolean} [right=false] - whether to align with right edge of element instead of left
-   * @return {HTMLElement} Created wrapper
-   * @see desktop.newLayer
-   */
-  createLayerAndWrapperAtElement: function(element, params, above, right){
-    if (typeof above == 'undefined') {
-      above = false;
-    }
-    if (typeof right == 'undefined') {
-      right = false;
-    }
-    desktop.newLayer(params);
-    var rect = element.getBoundingClientRect(),
-        wrapper,
-        leftOrRight = right ? 'right' : 'left',
-        leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
-    desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
-      style: 'overflow:hidden;position:absolute;'+leftOrRight+':' + leftOrRightPx + 'px;'
-        + (above ? 'bottom' : 'top') + ':' + (above ? (window.innerHeight - rect.top) : rect.bottom) + 'px'
-    }));
-    return wrapper;
-  },
-  /**
-   * Create a dropdown menu.
-   * @param {Object} params - dropdown parameters
-   * @param {string} [params.legend] - label
-   * @param {string} [params.legendWidth] - label CSS width (including unit)
-   * @param {string} [params.legendStyle] - label CSS styling
-   * @param {string} [params.containerId] - ID of containing paragraph
-   * @param {string} [params.containerStyle] - CSS styling of containing paragraph
-   * @param {string} [params.id] - dropdown ID
-   * @param {string} [params.className] - dropdown classes (separated by spaces)
-   * @param {string} [params.style] - dropdown CSS styling
-   * @param {number} [params.itemWidth=0] - width of an item
-   * @param {number} [params.itemHeight=20] - height of an item
-   * @param {function} [params.onchange] - function to call when value changes (onchange)
-   * @param {(string[]|Object[])} params.list - list of options passed to {@link tfw.select}
-   * @param {string} [params.value] - default (selected) value
-   * @return {HTMLElement} Created dropdown menu
-   * @see tfw.select
+   * Use {@link desktop.dropDown} instead.
+   * @memberof tfw
+   * @deprecated
    */
   dropDown: function(params){
-    var y = document.createElement('p');
-    y.className = 'tfwContainer';
-    if (params.legend) {
-      var l = document.createElement('span');
-      l.style.display = 'inline-block';
-      l.innerHTML = params.legend;
-      if (params.legendWidth) {
-        l.style.width = params.legendWidth;
-      }
-      if (params.legendStyle) {
-        l.style.cssText = params.legendStyle;
-      }
-      if (params.containerId) {
-        y.id = params.containerId;
-      }
-      if (params.containerStyle) {
-        y.style.cssText = params.containerStyle;
-      }
-      y.add(l);
-    }
-    var x = tfw.div({});
-    if (params.id) {
-      x.id = params.id;
-    }
-    if (params.className) {
-      x.className = 'tfwDropDown ' + params.className;
-    } else {
-      x.className = 'tfwDropDown';
-    }
-    if (params.style) {
-      x.style.cssText = params.style;
-    }
-    if (params.itemWidth) {
-      x.itemWidth = params.itemWidth;
-    } else {
-      x.itemWidth = 0;
-    }
-    if (params.itemHeight) {
-      x.itemHeight = params.itemHeight;
-    } else {
-      x.itemHeight = 20;
-    }
-    if (params.onchange) {
-      x.onchange = params.onchange;
-    }
-    x.onmousedown = function(e){
-      e.preventDefault();
-    };
-    x.onclick = function(){
-      if (!x._disabled) {
-        var vyska = params.list.length * x.itemHeight;
-        if (params.maxHeight && vyska > params.maxHeight) {
-          vyska = params.maxHeight;
-        }
-        if (vyska > 210) {
-          vyska = 210;
-        }
-        var rect = x.getBoundingClientRect();
-        var c = tfw.createLayerAndWrapperAtElement(x, {
-          autoclose: true,
-          modal: 'auto'
-        });
-        var b = tfw.select({
-          id: 'drop' + params.id,
-          list: params.list,
-          value: x.value,
-          style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
-          onchange: function(){
-            for (var i = 0; i < this.childNodes.length; i++) {
-              if (this.childNodes[i].value == this.value) {
-                x.innerHTML = this.childNodes[i].innerHTML;
-                x.value = this.childNodes[i].value;
-              }
-            }
-            if (x.onchange) {
-              x.onchange();
-            }
-            x.addClass('hasBeenChanged');
-          }
-        });
-        c.add(b);
-        b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
-        window.setTimeout(function(){
-          $('drop' + params.id).style.webkitTransform='';
-        }, 10);
-      }
-    };
-    Object.defineProperty(x, 'disabled', {
-      set: function(val){
-        if (val) this.addClass('disabled');
-        else this.removeClass('disabled');
-        this._disabled = val;
-      },
-      get: function(){
-        return this._disabled;
-      },
-      enumerable: true,
-      configurable: true
-    });
-
-    if (('value' in params) && params.list) {
-      for (var i = 0; i < params.list.length; i++) {
-        if (typeof params.list[i] === 'object') {
-          if (params.list[i].id == params.value) x.innerHTML = params.list[i].t;
-        } else if (i == params.value) x.innerHTML = params.list[i];
-      }
-    }
-    if ('value' in params) {
-      x.value = params.value;
-    }
-    if ('disabled' in params) {
-      x.disabled = params.disabled;
-    }
-    x.setValue = function(a){
-      x.value = a;
-      for (var i = 0; i < params.list.length; i++) {
-        if (typeof params.list[i] === 'object') {
-          if (params.list[i].id == a) x.innerHTML = params.list[i].t;
-        } else if (i == a) x.innerHTML = params.list[i];
-      }
-    };
-    y.add(x);
-    return y;
+    console.warn('DEPRECATED use of tfw.dropDown, use desktop.dropDown instead.');
+    return desktop.dropDown(params);
   },
+  /* eslint-enable */
   /**
    * Create a button with specified parameters.
    * @memberof tfw
@@ -1148,132 +857,26 @@ var tfw = {//eslint-disable-line no-implicit-globals
     element.prekresli();
     return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
+  /* eslint-disable */
+  /**
+   * Use {@link desktop.dialog} instead.
+   * @memberof tfw
+   * @deprecated
+   */
   dialog: function(co){
-    var b;
-    desktop.newLayer({
-      overlay: true,
-      modal: true
-    });
-    var vnit,
-        dlg,
-        sirka = 300,
-        vyska = 200,
-        nazev = '';
-    if (co.width) sirka = co.width;
-    if (co.height) vyska = co.height;
-    if (co.title) nazev = co.title;
-    var obal = tfw.div({
-      className: 'tfwDialogContainer' + (nazev ? '' : ' noTitle'),
-      style: 'left:' + Math.round((desktop.width - sirka) / 2) + 'px;top:' + Math.round((desktop.height - vyska) / 2) + 'px;width:'
-        + sirka + 'px;height:' + vyska + 'px;'
-    });
-    obal.style.webkitTransform = 'translateY(-32px)';
-    obal.style.opacity = 0;
-    obal.id = 'tfwDialog' + desktop.activeLayer;
-    desktop.layers[desktop.activeLayer].add(obal);
-    if (nazev) {
-      var h = tfw.par({
-        innerHTML: nazev,
-        className: 'tfwDialogTitle'
-      });
-      obal.add(h);
-      h.addEventListener('mousedown', desktop.dialogMoveStart, false);
-    }
-    var f = document.createElement('form');
-    f.onsubmit = function(e){
-      e.stopPropagation();
-      e.preventDefault();
-    };
-    obal.add(f);
-    f.add(vnit = tfw.div({
-      className: 'tfwDialog',
-      style: 'height:' + (vyska - (nazev ? 60 : 32)) + 'px'
-    }));
-    desktop.layers[desktop.activeLayer].addEventListener('keydown', function(e){
-      if (e.which == 27) desktop.closeTopLayer();
-    }, true);
-    /**/
-    vnit.add(dlg = tfw.div({
-      style: 'height:' + (vyska - (nazev ? 60 : 32) - 27) + 'px'
-    }));
-    dlg.addEventListener('mousedown', function(e){
-      e.stopPropagation();
-    }, false);
-    if (co.obsah) dlg.innerHTML = co.obsah;
-    var i;
-    if (co.children) {
-      for (i = 0; i < co.children.length; i++) {
-        dlg.add(co.children[i]);
-      }
-    }
-    vnit.add(dlg.buttons = tfw.div({
-      className: 'buttonsBar'
-    }));
-    if (co.buttons) {
-      for (i = 0; i < co.buttons.length; i++) {
-        if (co.buttons[i].text) {
-          dlg.buttons.add(b = tfw.button(co.buttons[i]));
-          if (!co.vychozi && b.type == 'submit') b.focus();
-        }
-      }
-    }
-    if (co.id) dlg.id = co.id;
-    if (co.vychozi) $(co.vychozi).focus();
-    dlg.hasBeenChanged=function(){
-      return this.getElementsByClassName('hasBeenChanged').length?1:0;
-    };
-    dlg.resetChanges=function(){
-      var list = this.getElementsByClassName('hasBeenChanged');
-      for (var i = 0; i < list.length; i++) list[i].removeClass('hasBeenChanged');
-    };
-    window.setTimeout(function(){
-      $('tfwDialog' + desktop.activeLayer).style.webkitTransform='';
-      $('tfwDialog' + desktop.activeLayer).style.opacity=1;
-    }, 10);
-    return dlg;
+    console.warn('DEPRECATED use of tfw.dialog, use desktop.dialog instead.');
+    return desktop.dialog(co);
   },
   /**
-   * Show dialog while preparing something for download in background, when ready show download link.
+   * Use {@link desktop.dialogPrepareAndDownload} instead.
    * @memberof tfw
-   * @param {Object} params - parameters
-   * @param {string} params.title - dialog title
-   * @param {string} params.waiting - HTML to show while waiting
-   * @param {string} params.ajaxFile - url for {@link tfw.ajaxGet}
-   * @param {string} params.ajaxParam - url-encoded parameters separated by & for {@link tfw.ajaxGet}
-   * @param {string} params.text - text to show when ready, with "%1" getting replaced with download link
-   * @param {string} params.item - download link inner HTML
-   * @see tfw.ajaxGet
+   * @deprecated
    */
   dialogPrepareAndDownload: function(params){
-    tfw.dialog({
-      width: 360,
-      height: 140,
-      title: params.title,
-      children: [
-        tfw.div({
-          id: 'dlgPaD',
-          children: [
-            tfw.par({
-              innerHTML: params.waiting
-            }), tfw.par({
-              innerHTML: tfw.AJAX_LOADER
-            })
-          ]
-        })
-      ],
-      buttons: [{
-        text: t(1),
-        action: desktop.closeTopLayer
-      }]
-    });
-    tfw.ajaxGet({
-      url: params.ajaxFile + '?' + params.ajaxParam,
-      onload: function(hr){
-        $('dlgPaD').innerHTML = params.text.replace('%1', '<a href="' + hr.responseText + '" download>' + params.item + '</a>');
-      },
-      autohide: 0
-    });
+    console.warn('DEPRECATED use of tfw.dialogPrepareAndDownload, use desktop.dialogPrepareAndDownload instead.');
+    return desktop.dialogPrepareAndDownload(params);
   },
+  /* eslint-enable */
   /**
    * Generates permanent AJAX queries parameters (e.g. tokens, anti-cache)
    * @var {function}
@@ -1294,6 +897,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   ajaxOnError: null,
   /**
+   * Fired after any finished AJAX request.
+   * @var {function}
+   * @default null
+   */
+  ajaxOnDone: null,
+  /**
+   * Fired when autohide is not 0.
+   * @var {function}
+   * @default null
+   */
+  ajaxOnAutoHide: null,
+  /**
    * Callback after successfull HTTP request.
    * @callback tfw~ajaxGetCallback
    * @param {XMLHttpRequest} httpRequest - associated XMLHttpRequest object
@@ -1305,7 +920,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} o - parameters object
    * @param {string} o.url - URL of server script with data
    * @param {tfw~ajaxGetCallback} o.onload - function to call when request has successfully completed
-   * @param {number} [o.autohide=0] - whether to show overlay after finishing (1 = yes after 500ms, 2 = yes immediately)
+   * @param {number} [o.autohide=0] - whether to show overlay after finishing (0 = off, 2 = pass 1 to {@link tfw.ajaxOnAutoHide|ajaxOnAutoHide}, otherwise pass 0)
    * @param {string} [o.method="GET"] - HTTP method to be used (GET or POST)
    * @param {string} [o.parameters=null] - parameters to be send with the request (e.g. POST)
    * @return {XMLHttpRequest} Returns XMLHttpRequest object
@@ -1323,7 +938,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function(){
       if (httpRequest.readyState === 4) {
-        desktop.done();
+        if (tfw.ajaxOnDone != null) tfw.ajaxOnDone();
         if (httpRequest.status === 200) {
           var rt;
           if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == '#') {
@@ -1361,8 +976,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       //intentionally omitted default
     }
     httpRequest.send(o.parameters);
-    if (o.autohide) {
-      desktop.working((o.autohide == 2) ? 1 : 0);
+    if (o.autohide && tfw.ajaxOnAutoHide != null) {
+      tfw.ajaxOnAutoHide((o.autohide == 2) ? 1 : 0);
     }
     return httpRequest;
   },
@@ -1433,6 +1048,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     } while (o = o.offsetParent); //eslint-disable-line no-cond-assign
     return [totalOffsetX, totalOffsetY];
   },
+  /* eslint-disable */
   /** @deprecated */
   novyElement: function(typ, id, c, obsah, styl){
     //console.error('DEPRECATED novyElement '+id);  -- tohoto je ještě strašně moc………
@@ -1575,7 +1191,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }, 20, id, poziceY);
     return x;
   },
-  /** @todo Remove dependencies on Triobo */
   zvolSvislouZalozku: function(jmeno, novy){
     var stary = cislo($(jmeno).value);
     if (novy != stary) {
@@ -1614,7 +1229,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return x;
   },
   zatrzitko: function(id, text, init, styl){
-    console.error('DEPRECATED tfw.zatrzitko');
+    console.warn('DEPRECATED tfw.zatrzitko');
     return tfw.checkbox({
       id: id,
       text: text,
@@ -1649,6 +1264,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       value: i
     });
   },
+  /* eslint-enable */
   /**
    * Callback that creates content to insert into a custom column.
    * @callback tfw.dynamicTableClass~columnRenderer
@@ -2004,7 +1620,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           event.dataTransfer.dropEffect = 'move';
           var dragged = dynamicTable.tableContainer.querySelector('tbody tr.dragged');
           if (!dragged.isSameNode(this)) {
-            dynamicTable.orderChange.call(dynamicTable, (dragged.nodeOrder() < this.nodeOrder()) ? this.nextSibling : this);
+            dynamicTable.orderChange((dragged.nodeOrder() < this.nodeOrder()) ? this.nextSibling : this);
           }
           return false;
         } : null;
@@ -2229,7 +1845,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         columnOrder++;
       }
       var updateInputCallback = function(){
-        dynamicTable.updateInput.call(dynamicTable, this);
+        dynamicTable.updateInput(this);
       };
       var val,
           shift,
@@ -2319,17 +1935,28 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       return r;
     };
-    /** @private */
+    /**
+     * Get visible rows count (from HTML table).
+     * @private
+     * @return {number}
+     */
     this.getVisibleRowsCount = function(){
       return [].slice.call(this.tableContainer.querySelectorAll('tbody tr')).reduce(function(previous, current){
         return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
       }, 0);
     };
-    /** @private */
+    /**
+     * Get total rows count (from HTML table).
+     * @private
+     * @return {number}
+     */
     this.getTotalRowsCount = function(){
       return this.tableContainer.querySelectorAll('tbody tr').length;
     };
-    /** @private */
+    /**
+     * Recompute rows counts and update text in table footer.
+     * @private
+     */
     function updateRowCounts(){
       var vis = this.getVisibleRowsCount();
       var tot = this.getTotalRowsCount();
@@ -2446,7 +2073,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }));
             b.dataset.dataCol = j;
             b.onclick = function(){
-              dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
+              dynamicTable.filter(this, this.dataset.dataCol);
             };
             deltaWidth+=16;
           }
@@ -2464,7 +2091,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
             b1.dataset.dataCol = b2.dataset.dataCol = j;
             b1.onclick = b2.onclick = function(){
-              dynamicTable.sort.call(dynamicTable, this.dataset.dataCol, this.dataset.sortOrder);
+              dynamicTable.sort(this.dataset.dataCol, this.dataset.sortOrder);
             };
             deltaWidth+=24;
           }
@@ -2523,7 +2150,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                   }), tfw.button({
                     className: 'resetTableFilter',
                     onclick: function(){
-                      dynamicTable.resetFilters.call(dynamicTable);
+                      dynamicTable.resetFilters();
                     },
                     innerHTML: '<span class="tfwArrow filter reset"></span>'
                   })
@@ -2534,7 +2161,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             children: [
               tfw.button({
                 onclick: function(){
-                  dynamicTable.toggleColumnDialog.call(dynamicTable, this);
+                  dynamicTable.toggleColumnDialog(this);
                 },
                 innerHTML: '<span class="fa fa-cog"></span>'
               })
@@ -2550,7 +2177,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @var {Object}
      */
     var defaultFilterValues = null;
-    /** @private */
+    /**
+     * Get row order in data from row's ID.
+     * @private
+     * @param {number} rowID - ID of row
+     * @return {number} row's order in data
+     */
     this.getDataRowById = function(rowID){
       var rowOrder = null;
       for (var j = 0; j < this.data.rows.length; j++) {
@@ -2606,7 +2238,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
             this.setColumnWidth(dataCol, widths[dataCol], true);
           }
         }
-      } else if (typeof changes != 'undefined') {
+      } else if (typeof changes == 'undefined') {
+        console.error('Dynamic table reloading not implemented yet.');
+      } else {
         var tbody = this.tableContainer.querySelector('tbody'),
             rowOrder;
         for (i = 0; i < changes.length; i++) {
@@ -2627,7 +2261,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               }, 3000, cell);
               if (typeof columnRenderers[dataCol] == 'function') {
                 cell.innerHTML = '';
-                columnRenderers[dataCol](newValue).map(function(node){cell.add(node);});
+                tfw.addAll(cell, columnRenderers[dataCol](newValue));
               } else {
                 switch (this.data.cols[dataCol].type) {
                   case tfw.dynamicTableClass.colTypes.CHECKBOX:
@@ -2671,8 +2305,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }
           }
         }
-      } else {
-        console.error('Dynamic table reloading not implemented yet.');
       }
       //calculate filter default values
       defaultFilterValues = {};
@@ -2690,7 +2322,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               defaultValue = '';
               break;
             case tfw.dynamicTableClass.colTypes.DATE:
-              columnValues = this.data.rows.map(function(row){return row.cols[i];}).sort();
+              columnValues = this.data.rows.map(function(row){return row.cols[i];}).sort();//eslint-disable-line no-loop-func
               minV = columnValues[0];
               maxV = columnValues.pop();
               defaultValue = {
@@ -2699,7 +2331,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               };
               break;
             case tfw.dynamicTableClass.colTypes.NUMBER:
-              columnValues = this.data.rows.map(function(row){return row.cols[i];});
+              columnValues = this.data.rows.map(function(row){return row.cols[i];});//eslint-disable-line no-loop-func
               minV = Math.min.apply(null, columnValues);
               maxV = Math.max.apply(null, columnValues);
               defaultValue = {
@@ -2753,7 +2385,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
         this.setPreference('filterValues', filterValues);
       }
     };
-    /** @private */
+    /**
+     * Save column's width into preferences.
+     * @private
+     * @param {number} width
+     * @param {number} dataCol - order of column (in data)
+     * @param {boolean} [save=true] - whether to save into preferences
+     */
     this.setWidthsPreference = function(width, dataCol, save){
       var widths = this.getPreference('widths');
       if (widths == null) {
@@ -2783,9 +2421,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     };
     /**
+     * Test whether a value if filter's default.
      * @private
      * @param {tfw.dynamicTableClass~filterValue} value - filter value
      * @param {number} dataCol - order of filtered column (in data)
+     * @return {boolean}
      */
     this.isFilterValueDefault = function(value, dataCol){
       if (typeof value == 'object' && ('min' in value || 'max' in value)) {
@@ -2794,6 +2434,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       return value === defaultFilterValues[dataCol];
     };
+    /** @private */
+    this.filterContainer = null;
     /**
      * Apply filter for values of a column.
      * Creates a {@link tfw.dialog|dialog} with filter (and moves focus to input field).
@@ -2947,11 +2589,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
           console.error('Tried to apply filter on type that is not supported: "' + type + '"');
           return;
       }
-      var wrapper = tfw.createLayerAndWrapperAtElement(filterElement.closest('th'), {
-        autoclose: true,
-        modal: 'auto'
-      }, true);
-      wrapper.add(c);
+      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error('tfw.dynamicTableClass.placePositionedDialog has not been set.');
+      else tfw.dynamicTableClass.placePositionedDialog(filterElement.closest('th'), c);
+      this.filterContainer = c;
       if (inputToFocus !== null) {
         inputToFocus.focus();
       }
@@ -3010,7 +2650,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
 
     /**
+     * Get comparator function for certain column.
      * @private
+     * @param {number} dataCol - order of column (in data)
      * @return {function} row comparator
      */
     this.getCmp = function(dataCol){
@@ -3115,7 +2757,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 break;
               //intentionally omitted default
             }
-            desktop.div.querySelector('.tfwContainer .' + prefix + 'M' + p.substring(1)).value = value[p];
+            this.filterContainer.querySelector('.tfwContainer .' + prefix + 'M' + p.substring(1)).value = value[p];
           }
         }
       }
@@ -3216,12 +2858,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           c.add(checkbox);
         }
       }
-      var wrapper = tfw.createLayerAndWrapperAtElement(element, {
-        autoclose: true,
-        modal: 'auto',
-        overlay: true
-      }, true, true);
-      wrapper.add(c);
+      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error('tfw.dynamicTableClass.placePositionedDialog has not been set.');
+      else tfw.dynamicTableClass.placePositionedDialog(element, c, true);
     };
   },
   /**
@@ -3342,6 +2980,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       });
     }
 
+    /**
+     * @private
+     * (Re)paint the calendar.
+     */
     function paint(){
       var d = new Date(selectedYear, selectedMonth - 1, 1),
           i,
@@ -3356,12 +2998,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var backButton = document.createElement('div');
       backButton.addClass('calendarBackButton');
       backButton.innerHTML = '&nbsp;';
-      backButton.addEventListener('mousedown', backward, true);
+      backButton.addEventListener('mousedown', function backward(event){
+        event.stopPropagation();
+        event.preventDefault();
+        setSelectedDate(selectedYear - (selectedMonth == 1 ? 1 : 0), selectedMonth == 1 ? 12 : selectedMonth - 1, 0);
+        paint();
+      }, true);
       header.add(backButton);
       var forwardButton = document.createElement('div');
       forwardButton.addClass('calendarForwardButton');
       forwardButton.innerHTML = '&nbsp;';
-      forwardButton.addEventListener('mousedown', forward, true);
+      forwardButton.addEventListener('mousedown', function forward(event){
+        event.stopPropagation();
+        event.preventDefault();
+        setSelectedDate(selectedYear + (selectedMonth == 12 ? 1 : 0), selectedMonth == 12 ? 1 : selectedMonth + 1, 0);
+        paint();
+      }, true);
       header.add(forwardButton);
       var day;
       var dayNames = document.createElement('p');
@@ -3390,7 +3042,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
           + (i < 10 ? '0' + i : i));
         day.setAttribute('class', 'day' + (sp % 7 == 6 ? ' sunday' : '') + (i == selectedDay ? ' current' : ''));
         day.innerHTML = i;
-        day.addEventListener('mousedown', clicked, true);
+        day.addEventListener('mousedown', function clicked(){
+          input.value = this.id.substr(4);
+          var current = calendarContainer.querySelector('.current');
+          if (current) {
+            current.toggleClass('current');
+          }
+          this.addClass('current');
+          calendarInput.dispatchEvent(new Event('change'));
+        }, true);
         week.add(day);
         sp++;
         if ((sp == 7) && (i < pdm)) {
@@ -3413,33 +3073,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
       paint();
     });
-
-    function backward(event){
-      event.stopPropagation();
-      event.preventDefault();
-      setSelectedDate(selectedYear - (selectedMonth == 1 ? 1 : 0), selectedMonth == 1 ? 12 : selectedMonth - 1, 0);
-      paint();
-    }
-
-    function forward(event){
-      event.stopPropagation();
-      event.preventDefault();
-      setSelectedDate(selectedYear + (selectedMonth == 12 ? 1 : 0), selectedMonth == 12 ? 1 : selectedMonth + 1, 0);
-      paint();
-    }
-
-    function clicked(){
-      input.value = this.id.substr(4);
-      var current = calendarContainer.querySelector('.current');
-      if (current) {
-        current.toggleClass('current');
-      }
-      this.addClass('current');
-      calendarInput.dispatchEvent(new Event('change'));
-    }
     return calendarWrapper;
   }
 };
+/**
+ * Callback for showing controls.
+ * @var {function}
+ */
+tfw.dynamicTableClass.placePositionedDialog = null;
 /**
  * @typedef {Object} tfw.dynamicTableClass.serverAction
  * @property {string} name - action name sent to server
@@ -3567,23 +3208,471 @@ tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 /**
  * Function called when a calendar widget is created.
  * @var {tfw.calendarExtend~placeCalendar}
- * @default
  */
+tfw.calendarExtend.placeCalendar = null;
+window.addEventListener('load', tfw.init);
+
+/** @todo Remove */
+Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
+  console.warn('DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.');
+  return tfw.AJAX_LOADER;
+}});
+
+/**
+ * Triobo. This is a singleton.
+ * @class
+ */
+var desktop = {//eslint-disable-line no-implicit-globals
+  div: null,
+  layers: [],
+  activeLayer: 0,
+  width: 0,
+  height: 0,
+  resizingFunctions: [],
+  isWorking: 0,
+  mainLoaderTimer: null,
+  URLbase: '',
+  URLparams: [],
+  go: null,
+  dialogMoveData: {},
+  init: function(id){
+    desktop.div = $(id);
+    desktop.clean();
+    window.addEventListener('resize', function(){
+      desktop.width = desktop.div.clientWidth;
+      desktop.height = desktop.div.clientHeight;
+      for (var i = 0; i < desktop.resizingFunctions.length; i++) desktop.resizingFunctions[i]();
+    }, false);
+    var myURLparts = document.URL.split('?');
+    desktop.URLbase = myURLparts[0];
+    if (myURLparts.length > 1) desktop.URLparams = myURLparts[1].substr(2).split('/');
+  },
+  clean: function(){
+    desktop.layers = [];
+    desktop.activeLayer = 0;
+    desktop.div.innerHTML = '';
+    desktop.div.add(desktop.layers[0] = tfw.div({
+      id: 'tfwLayer0',
+      className: 'tfwLayer'
+    }));
+    desktop.width = desktop.div.clientWidth;
+    desktop.height = desktop.div.clientHeight;
+    desktop.resizingFunctions = [];
+    desktop.isWorking = 0;
+    if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
+  },
+  closeTopLayer: function(){
+    if (desktop.activeLayer) {
+      desktop.layers[desktop.activeLayer].innerHTML = '';
+      desktop.div.removeChild(desktop.layers[desktop.activeLayer]);
+      desktop.activeLayer--;
+    }
+  },
+  /**
+   * Create a new layer.
+   * @param {Object} params - layer parameters
+   * @param {(boolean|string)} [params.modal] - whether to add class modal (if set to "auto", copies from currently active layer)
+   * @param {boolean} [params.autoclose=false] - whether to close layer by clicking it
+   * @param {boolean} [param.overlay=false] - whether to add overlay to this layer
+   * @listens click
+   * @listens mousemove
+   * @listens mouseup
+   */
+  newLayer: function(params){
+    if (params.modal) {
+      if (params.modal == 'auto') {
+        params.modal = desktop.layers[desktop.activeLayer].hasClass('modal') ? 1 : 0;
+      }
+    }
+    desktop.activeLayer++;
+    desktop.div.add(desktop.layers[desktop.activeLayer] = tfw.div({
+      id: 'tfwLayer' + desktop.activeLayer,
+      className: 'tfwLayer' + (params.modal ? ' modal' : '')
+    }));
+    if (params.autoclose) {
+      desktop.layers[desktop.activeLayer].addEventListener('click', desktop.closeTopLayer);
+    }
+    if (params.overlay) {
+      desktop.layers[desktop.activeLayer].add(tfw.div({
+        id: 'tfwLayerOverlay' + desktop.activeLayer,
+        className: 'tfwLayerOverlay'
+      }));
+    }
+    desktop.layers[desktop.activeLayer].addEventListener('mousemove', desktop.dialogMoveGo, false);
+    desktop.layers[desktop.activeLayer].addEventListener('mouseup', desktop.dialogMoveEnd, false);
+  },
+  /**
+   * Create a new layer and a wrapper that starts at a given element.
+   * @param {HTMLElement} element - element to position wrapper at
+   * @param {Object} params - parameters for {@link desktop.newLayer}
+   * @param {boolean} [above=false] - whether to position above element instead of below
+   * @param {boolean} [right=false] - whether to align with right edge of element instead of left
+   * @return {HTMLElement} Created wrapper
+   * @see desktop.newLayer
+   */
+  createLayerAndWrapperAtElement: function(element, params, above, right){
+    if (typeof above == 'undefined') {
+      above = false;
+    }
+    if (typeof right == 'undefined') {
+      right = false;
+    }
+    desktop.newLayer(params);
+    var rect = element.getBoundingClientRect(),
+        wrapper,
+        leftOrRight = right ? 'right' : 'left',
+        leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
+    desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
+      style: 'overflow:hidden;position:absolute;'+leftOrRight+':' + leftOrRightPx + 'px;'
+        + (above ? 'bottom' : 'top') + ':' + (above ? (window.innerHeight - rect.top) : rect.bottom) + 'px'
+    }));
+    return wrapper;
+  },
+  working: function(now){
+    if (!desktop.isWorking) {
+      desktop.newLayer({});
+      if (now) desktop.hide();
+      else desktop.mainLoaderTimer = setTimeout(function(){desktop.hide();}, 500);
+      desktop.isWorking = true;
+    }
+  },
+  hide: function(){
+    desktop.layers[desktop.activeLayer].add(tfw.div({
+      id: 'tfwLayerOverlay' + desktop.activeLayer,
+      className: 'tfwLayerOverlay',
+      style: 'cursor:progress;'
+    }));
+    desktop.layers[desktop.activeLayer].add(tfw.div({
+      id: 'tfwLoader',
+      style: 'left:' + Math.round(desktop.width / 2 - 16) + 'px;top:' + Math.round(desktop.height / 2 - 16) + 'px'
+    }));
+  },
+  done: function(){
+    if (desktop.isWorking) {
+      if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
+      desktop.closeTopLayer();
+      desktop.isWorking = false;
+    }
+  },
+  dialogMoveStart: function(e){
+    desktop.dialogMoveData = {
+      x: e.clientX,
+      y: e.clientY,
+      who: e.target
+    };
+    while (desktop.dialogMoveData.who.className != 'tfwDialogContainer') desktop.dialogMoveData.who = desktop.dialogMoveData.who.parentNode;
+    e.stopPropagation();
+    e.preventDefault();
+  },
+  dialogMoveGo: function(e){
+    if ('who' in desktop.dialogMoveData) {
+      var px = e.clientX - desktop.dialogMoveData.x;
+      var py = e.clientY - desktop.dialogMoveData.y;
+      desktop.dialogMoveData.x = e.clientX;
+      desktop.dialogMoveData.y = e.clientY;
+      desktop.dialogMoveData.who.style.left = parseInt(desktop.dialogMoveData.who.style.left) + px + 'px';
+      desktop.dialogMoveData.who.style.top = parseInt(desktop.dialogMoveData.who.style.top) + py + 'px';
+      e.stopPropagation();
+      e.preventDefault();
+    }
+  },
+  dialogMoveEnd: function(e){
+    if ('who' in desktop.dialogMoveData) {
+      e.stopPropagation();
+      e.preventDefault();
+      desktop.dialogMoveData = {};
+    }
+  },
+  /**
+   * Create a dropdown menu.
+   * @param {Object} params - dropdown parameters
+   * @param {string} [params.legend] - label
+   * @param {string} [params.legendWidth] - label CSS width (including unit)
+   * @param {string} [params.legendStyle] - label CSS styling
+   * @param {string} [params.containerId] - ID of containing paragraph
+   * @param {string} [params.containerStyle] - CSS styling of containing paragraph
+   * @param {string} [params.id] - dropdown ID
+   * @param {string} [params.className] - dropdown classes (separated by spaces)
+   * @param {string} [params.style] - dropdown CSS styling
+   * @param {number} [params.itemWidth=0] - width of an item
+   * @param {number} [params.itemHeight=20] - height of an item
+   * @param {function} [params.onchange] - function to call when value changes (onchange)
+   * @param {(string[]|Object[])} params.list - list of options passed to {@link tfw.select}
+   * @param {string} [params.value] - default (selected) value
+   * @return {HTMLElement} Created dropdown menu
+   * @see tfw.select
+   */
+  dropDown: function(params){
+    var y = document.createElement('p');
+    y.className = 'tfwContainer';
+    if (params.legend) {
+      var l = document.createElement('span');
+      l.style.display = 'inline-block';
+      l.innerHTML = params.legend;
+      if (params.legendWidth) {
+        l.style.width = params.legendWidth;
+      }
+      if (params.legendStyle) {
+        l.style.cssText = params.legendStyle;
+      }
+      if (params.containerId) {
+        y.id = params.containerId;
+      }
+      if (params.containerStyle) {
+        y.style.cssText = params.containerStyle;
+      }
+      y.add(l);
+    }
+    var x = tfw.div({});
+    if (params.id) {
+      x.id = params.id;
+    }
+    if (params.className) {
+      x.className = 'tfwDropDown ' + params.className;
+    } else {
+      x.className = 'tfwDropDown';
+    }
+    if (params.style) {
+      x.style.cssText = params.style;
+    }
+    if (params.itemWidth) {
+      x.itemWidth = params.itemWidth;
+    } else {
+      x.itemWidth = 0;
+    }
+    if (params.itemHeight) {
+      x.itemHeight = params.itemHeight;
+    } else {
+      x.itemHeight = 20;
+    }
+    if (params.onchange) {
+      x.onchange = params.onchange;
+    }
+    x.onmousedown = function(e){
+      e.preventDefault();
+    };
+    x.onclick = function(){
+      if (!x._disabled) {
+        var vyska = params.list.length * x.itemHeight;
+        if (params.maxHeight && vyska > params.maxHeight) {
+          vyska = params.maxHeight;
+        }
+        if (vyska > 210) {
+          vyska = 210;
+        }
+        var rect = x.getBoundingClientRect();
+        var c = desktop.createLayerAndWrapperAtElement(x, {
+          autoclose: true,
+          modal: 'auto'
+        });
+        var b = tfw.select({
+          id: 'drop' + params.id,
+          list: params.list,
+          value: x.value,
+          style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
+          onchange: function(){
+            for (var i = 0; i < this.childNodes.length; i++) {
+              if (this.childNodes[i].value == this.value) {
+                x.innerHTML = this.childNodes[i].innerHTML;
+                x.value = this.childNodes[i].value;
+              }
+            }
+            if (x.onchange) {
+              x.onchange();
+            }
+            x.addClass('hasBeenChanged');
+          }
+        });
+        c.add(b);
+        b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
+        window.setTimeout(function(){
+          $('drop' + params.id).style.webkitTransform='';
+        }, 10);
+      }
+    };
+    Object.defineProperty(x, 'disabled', {
+      set: function(val){
+        if (val) this.addClass('disabled');
+        else this.removeClass('disabled');
+        this._disabled = val;
+      },
+      get: function(){
+        return this._disabled;
+      },
+      enumerable: true,
+      configurable: true
+    });
+
+    if (('value' in params) && params.list) {
+      for (var i = 0; i < params.list.length; i++) {
+        if (typeof params.list[i] === 'object') {
+          if (params.list[i].id == params.value) x.innerHTML = params.list[i].t;
+        } else if (i == params.value) x.innerHTML = params.list[i];
+      }
+    }
+    if ('value' in params) {
+      x.value = params.value;
+    }
+    if ('disabled' in params) {
+      x.disabled = params.disabled;
+    }
+    x.setValue = function(a){
+      x.value = a;
+      for (var i = 0; i < params.list.length; i++) {
+        if (typeof params.list[i] === 'object') {
+          if (params.list[i].id == a) x.innerHTML = params.list[i].t;
+        } else if (i == a) x.innerHTML = params.list[i];
+      }
+    };
+    y.add(x);
+    return y;
+  },
+  dialog: function(co){
+    var b;
+    desktop.newLayer({
+      overlay: true,
+      modal: true
+    });
+    var vnit,
+        dlg,
+        sirka = 300,
+        vyska = 200,
+        nazev = '';
+    if (co.width) sirka = co.width;
+    if (co.height) vyska = co.height;
+    if (co.title) nazev = co.title;
+    var obal = tfw.div({
+      className: 'tfwDialogContainer' + (nazev ? '' : ' noTitle'),
+      style: 'left:' + Math.round((desktop.width - sirka) / 2) + 'px;top:' + Math.round((desktop.height - vyska) / 2) + 'px;width:'
+        + sirka + 'px;height:' + vyska + 'px;'
+    });
+    obal.style.webkitTransform = 'translateY(-32px)';
+    obal.style.opacity = 0;
+    obal.id = 'tfwDialog' + desktop.activeLayer;
+    desktop.layers[desktop.activeLayer].add(obal);
+    if (nazev) {
+      var h = tfw.par({
+        innerHTML: nazev,
+        className: 'tfwDialogTitle'
+      });
+      obal.add(h);
+      h.addEventListener('mousedown', desktop.dialogMoveStart, false);
+    }
+    var f = document.createElement('form');
+    f.onsubmit = function(e){
+      e.stopPropagation();
+      e.preventDefault();
+    };
+    obal.add(f);
+    f.add(vnit = tfw.div({
+      className: 'tfwDialog',
+      style: 'height:' + (vyska - (nazev ? 60 : 32)) + 'px'
+    }));
+    desktop.layers[desktop.activeLayer].addEventListener('keydown', function(e){
+      if (e.which == 27) desktop.closeTopLayer();
+    }, true);
+    /**/
+    vnit.add(dlg = tfw.div({
+      style: 'height:' + (vyska - (nazev ? 60 : 32) - 27) + 'px'
+    }));
+    dlg.addEventListener('mousedown', function(e){
+      e.stopPropagation();
+    }, false);
+    if (co.obsah) dlg.innerHTML = co.obsah;
+    var i;
+    if (co.children) {
+      for (i = 0; i < co.children.length; i++) {
+        dlg.add(co.children[i]);
+      }
+    }
+    vnit.add(dlg.buttons = tfw.div({
+      className: 'buttonsBar'
+    }));
+    if (co.buttons) {
+      for (i = 0; i < co.buttons.length; i++) {
+        if (co.buttons[i].text) {
+          dlg.buttons.add(b = tfw.button(co.buttons[i]));
+          if (!co.vychozi && b.type == 'submit') b.focus();
+        }
+      }
+    }
+    if (co.id) dlg.id = co.id;
+    if (co.vychozi) $(co.vychozi).focus();
+    dlg.hasBeenChanged=function(){
+      return this.getElementsByClassName('hasBeenChanged').length?1:0;
+    };
+    dlg.resetChanges=function(){
+      var list = this.getElementsByClassName('hasBeenChanged');
+      for (var i = 0; i < list.length; i++) list[i].removeClass('hasBeenChanged');
+    };
+    window.setTimeout(function(){
+      $('tfwDialog' + desktop.activeLayer).style.webkitTransform='';
+      $('tfwDialog' + desktop.activeLayer).style.opacity=1;
+    }, 10);
+    return dlg;
+  },
+  /**
+   * Show dialog while preparing something for download in background, when ready show download link.
+   * @memberof tfw
+   * @param {Object} params - parameters
+   * @param {string} params.title - dialog title
+   * @param {string} params.waiting - HTML to show while waiting
+   * @param {string} params.ajaxFile - url for {@link tfw.ajaxGet}
+   * @param {string} params.ajaxParam - url-encoded parameters separated by & for {@link tfw.ajaxGet}
+   * @param {string} params.text - text to show when ready, with "%1" getting replaced with download link
+   * @param {string} params.item - download link inner HTML
+   * @see tfw.ajaxGet
+   */
+  dialogPrepareAndDownload: function(params){
+    tfw.dialog({
+      width: 360,
+      height: 140,
+      title: params.title,
+      children: [
+        tfw.div({
+          id: 'dlgPaD',
+          children: [
+            tfw.par({
+              innerHTML: params.waiting
+            }), tfw.par({
+              innerHTML: tfw.AJAX_LOADER
+            })
+          ]
+        })
+      ],
+      buttons: [{
+        text: t(1),
+        action: desktop.closeTopLayer
+      }]
+    });
+    tfw.ajaxGet({
+      url: params.ajaxFile + '?' + params.ajaxParam,
+      onload: function(hr){
+        $('dlgPaD').innerHTML = params.text.replace('%1', '<a href="' + hr.responseText + '" download>' + params.item + '</a>');
+      },
+      autohide: 0
+    });
+  }
+};
+
+tfw.ajaxOnDone = desktop.done;
+tfw.ajaxOnAutoHide = desktop.working;
+tfw.dynamicTableClass.placePositionedDialog = function(positionAtElement, filterElement, right){
+  var wrapper = desktop.createLayerAndWrapperAtElement(positionAtElement, {
+    autoclose: true,
+    modal: 'auto'
+  }, true, typeof right == 'undefined' ? false : right);
+  wrapper.add(filterElement);
+};
 tfw.calendarExtend.placeCalendar = function(cal, input){
-  var wrapper = tfw.createLayerAndWrapperAtElement(input, {
+  var wrapper = desktop.createLayerAndWrapperAtElement(input, {
     autoclose: true,
     modal: 'auto'
   });
   wrapper.add(cal);
 };
-window.addEventListener('load', tfw.init);
 
-/** @todo Remove */
-Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
-  console.error('DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.');
-  return tfw.AJAX_LOADER;
-}});
-
+/* eslint-disable */
 /**
  * Function package for preparing HTML elements.
  * @class
@@ -3650,7 +3739,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.table
    */
   tabulka: function(co){
-    console.error('DEPRECATED prvek.tabulka(' + JSON.stringify(co) + ')');
+    console.warn('DEPRECATED prvek.tabulka(' + JSON.stringify(co) + ')');
     if (co.radky) co.rows = co.radky;
     return tfw.table(co);
   },
@@ -3659,7 +3748,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.tr
    */
   radek: function(co){
-    console.error('DEPRECATED prvek.radek(' + JSON.stringify(co) + ')');
+    console.warn('DEPRECATED prvek.radek(' + JSON.stringify(co) + ')');
     if (co.sloupce) co.columns = co.sloupce;
     return tfw.tr(co);
   },
@@ -3668,7 +3757,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.td
    */
   sloupec: function(co){
-    console.error('DEPRECATED prvek.sloupec(' + JSON.stringify(co) + ')');
+    console.warn('DEPRECATED prvek.sloupec(' + JSON.stringify(co) + ')');
     if (co.obsah) co.innerHTML = co.obsah;
     if (co.width) co.style = 'width:' + co.width + 'px;' + ((co.style) ? co.style : '');
     return tfw.td(co);
@@ -4396,6 +4485,6 @@ function Web2RGB(h){
  * @see tfw.dynamicTable
  */
 function Dyntable(x){
-  console.error('DEPRECATED Dyntable(' + JSON.stringify(x) + '), use tfw.dynamicTable()');
+  console.warn('DEPRECATED Dyntable(' + JSON.stringify(x) + '), use tfw.dynamicTable()');
   return tfw.Dyntable(x);
 }
