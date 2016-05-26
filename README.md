@@ -813,7 +813,7 @@ Callback function that puts calendar widget for an input field into page.Most l
 Strings that are output by tfw functions. Change them for localization.
 
 **Kind**: static enum property of <code>[tfw](#tfw)</code>  
-**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;HIDDEN_ROWS\&quot;:\&quot;Hidden rows\&quot;}&quot;</code>  
+**Default**: <code>&quot;{\&quot;NO\&quot;:\&quot;No\&quot;,\&quot;YES\&quot;:\&quot;Yes\&quot;,\&quot;ALL\&quot;:\&quot;All\&quot;,\&quot;FROM\&quot;:\&quot;From:\&quot;,\&quot;TO\&quot;:\&quot;To:\&quot;,\&quot;FILTER\&quot;:\&quot;Filter…\&quot;,\&quot;HIDDEN_ROWS\&quot;:\&quot;Hidden rows\&quot;,\&quot;UPLOADING\&quot;:\&quot;Uploading … %1\&quot;,\&quot;OR\&quot;:\&quot;or\&quot;,\&quot;EXTNOTALLOWED\&quot;:\&quot;Only %1 files are allowed.\&quot;}&quot;</code>  
 **Properties**
 
 | Name | Type | Default | Description |
@@ -825,6 +825,9 @@ Strings that are output by tfw functions. Change them for localization.
 | TO | <code>string</code> | <code>&quot;To:&quot;</code> | Maximum input label |
 | FILTER | <code>string</code> | <code>&quot;Filter…&quot;</code> | Placeholder when searching anywhere in a string |
 | HIDDEN_ROWS | <code>string</code> | <code>&quot;Hidden rows&quot;</code> | Label of hidden rows count |
+| UPLOADING | <code>string</code> | <code>&quot;Uploading … %1&quot;</code> | progress during file upload |
+| OR | <code>string</code> | <code>&quot;or&quot;</code> | when composing list, last OR word (f.e. jpg, png or gif) |
+| EXTNOTALLOWED | <code>string</code> | <code>&quot;Only %1 files are allowed.&quot;</code> | Error, when not allowed file extension is used |
 
 <a name="tfw.ajaxIncludeParams"></a>
 
@@ -1280,11 +1283,11 @@ Callback after successfull HTTP request.
 
 * [prvek](#prvek)
     * [new prvek()](#new_prvek_new)
+    * [.rezimVyberuBarvy](#prvek.rezimVyberuBarvy)
     * [.seznamZatrzitek()](#prvek.seznamZatrzitek)
     * ~~[.tabulka()](#prvek.tabulka)~~
     * ~~[.radek()](#prvek.radek)~~
     * ~~[.sloupec()](#prvek.sloupec)~~
-    * [.soubory()](#prvek.soubory)
     * [.barva()](#prvek.barva)
     * [.barvaSLegendou()](#prvek.barvaSLegendou)
 
@@ -1292,6 +1295,15 @@ Callback after successfull HTTP request.
 
 ### new prvek()
 Function package for preparing HTML elements.
+
+<a name="prvek.rezimVyberuBarvy"></a>
+
+### prvek.rezimVyberuBarvy
+**Kind**: static property of <code>[prvek](#prvek)</code>  
+**Todo**
+
+- [ ] Remove dependencies on Triobo
+- [ ] Move to [tfw](#tfw)
 
 <a name="prvek.seznamZatrzitek"></a>
 
@@ -1322,15 +1334,6 @@ Function package for preparing HTML elements.
 
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **See**: tfw.td  
-<a name="prvek.soubory"></a>
-
-### prvek.soubory()
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**Todo**
-
-- [ ] Remove dependencies on Triobo
-- [ ] Move to [tfw](#tfw)
-
 <a name="prvek.barva"></a>
 
 ### prvek.barva()
