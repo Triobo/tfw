@@ -11,6 +11,14 @@
 <dd></dd>
 </dl>
 
+## Functions
+
+<dl>
+<dt><a href="#$">$(id)</a> ⇒ <code>HTMLElement</code></dt>
+<dd><p>Get HTML element by ID.</p>
+</dd>
+</dl>
+
 <a name="desktop"></a>
 
 ## desktop
@@ -66,10 +74,10 @@ Create a new layer.
                 * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
                 * [.orderChange(referenceRow)](#tfw.dynamicTableClass+orderChange)
                 * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
-                * [.setColumnWidth(dataCol, width)](#tfw.dynamicTableClass+setColumnWidth)
+                * [.setColumnWidth(dataCol, width, [dontSave])](#tfw.dynamicTableClass+setColumnWidth)
                 * [.paint([changes])](#tfw.dynamicTableClass+paint)
                 * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
-                * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
+                * [.sort(dataCol, asc, [dontSave])](#tfw.dynamicTableClass+sort)
                 * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
                 * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
                 * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
@@ -86,9 +94,9 @@ Create a new layer.
                 * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
             * _inner_
                 * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
-                * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
                 * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
-                * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
+                * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+                * [~setActiveArrow(element, base, [on])](#tfw.dynamicTableClass..setActiveArrow)
                 * [~columnRenderer](#tfw.dynamicTableClass..columnRenderer) ⇒ <code>Array.&lt;HTMLElement&gt;</code>
                 * [~dataCol](#tfw.dynamicTableClass..dataCol) : <code>Object</code>
                 * [~dataRow](#tfw.dynamicTableClass..dataRow) : <code>Object</code>
@@ -135,10 +143,11 @@ Create a new layer.
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
+        * ~~[.novyElement()](#tfw.novyElement)~~
         * [.noveZalozky()](#tfw.noveZalozky)
         * [.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
-        * [.calendar()](#tfw.calendar) ⇒ <code>HTMLElement</code>
+        * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
     * _inner_
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
 
@@ -173,10 +182,10 @@ Triobo framework. This is a singleton.
         * [.toggleReorder()](#tfw.dynamicTableClass+toggleReorder)
         * [.orderChange(referenceRow)](#tfw.dynamicTableClass+orderChange)
         * [.updateInput(input)](#tfw.dynamicTableClass+updateInput)
-        * [.setColumnWidth(dataCol, width)](#tfw.dynamicTableClass+setColumnWidth)
+        * [.setColumnWidth(dataCol, width, [dontSave])](#tfw.dynamicTableClass+setColumnWidth)
         * [.paint([changes])](#tfw.dynamicTableClass+paint)
         * [.filter(filterElement, dataCol)](#tfw.dynamicTableClass+filter)
-        * [.sort(dataCol, asc)](#tfw.dynamicTableClass+sort)
+        * [.sort(dataCol, asc, [dontSave])](#tfw.dynamicTableClass+sort)
         * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.dynamicTableClass+setActiveFilterInColumn)
         * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.dynamicTableClass+filterAny)
         * [.resetFilters()](#tfw.dynamicTableClass+resetFilters)
@@ -193,9 +202,9 @@ Triobo framework. This is a singleton.
         * [.serverAction](#tfw.dynamicTableClass.serverAction) : <code>Object</code>
     * _inner_
         * [~serverCall(params)](#tfw.dynamicTableClass..serverCall)
-        * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
         * [~serverUpdateOrder(params)](#tfw.dynamicTableClass..serverUpdateOrder)
-        * [~setActiveArrow(element, base)](#tfw.dynamicTableClass..setActiveArrow)
+        * [~serverUpdateCell(params)](#tfw.dynamicTableClass..serverUpdateCell)
+        * [~setActiveArrow(element, base, [on])](#tfw.dynamicTableClass..setActiveArrow)
         * [~columnRenderer](#tfw.dynamicTableClass..columnRenderer) ⇒ <code>Array.&lt;HTMLElement&gt;</code>
         * [~dataCol](#tfw.dynamicTableClass..dataCol) : <code>Object</code>
         * [~dataRow](#tfw.dynamicTableClass..dataRow) : <code>Object</code>
@@ -262,7 +271,7 @@ Save user's preference.
 | Param | Type | Description |
 | --- | --- | --- |
 | key | <code>string</code> | preference key (name) |
-| [value] |  | preference value (any type) - if not set, preference is deleted |
+| [value] | <code>string</code> &#124; <code>number</code> &#124; <code>boolean</code> &#124; <code>Array</code> &#124; <code>Object</code> | preference value (any type) - if not set, preference is deleted |
 
 <a name="tfw.dynamicTableClass+getPreference"></a>
 
@@ -347,15 +356,16 @@ Updates data and sends change to server.
 
 <a name="tfw.dynamicTableClass+setColumnWidth"></a>
 
-#### dynamicTableClass.setColumnWidth(dataCol, width)
+#### dynamicTableClass.setColumnWidth(dataCol, width, [dontSave])
 Set width of a column.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| dataCol | <code>number</code> | order of column (in data) |
-| width | <code>number</code> | width of column in pixels |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| dataCol | <code>number</code> |  | order of column (in data) |
+| width | <code>number</code> |  | width of column in pixels |
+| [dontSave] | <code>boolean</code> | <code>false</code> | don't save into preferences |
 
 <a name="tfw.dynamicTableClass+paint"></a>
 
@@ -391,15 +401,16 @@ Apply filter for values of a column.Creates a [dialog](tfw.dialog) with filter 
 
 <a name="tfw.dynamicTableClass+sort"></a>
 
-#### dynamicTableClass.sort(dataCol, asc)
+#### dynamicTableClass.sort(dataCol, asc, [dontSave])
 Apply sorting by values (text without HTML) of a column.Text fields are sorted locale aware, with empty strings always last.
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| dataCol | <code>number</code> | order of column (in data), if null sorts by IDs |
-| asc | <code>[sortTypes](#tfw.dynamicTableClass.sortTypes)</code> | sorting type (ascending or descending) |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| dataCol | <code>number</code> |  | order of column (in data), if null sorts by IDs |
+| asc | <code>[sortTypes](#tfw.dynamicTableClass.sortTypes)</code> |  | sorting type (ascending or descending) |
+| [dontSave] | <code>boolean</code> | <code>false</code> | don't save into preferences |
 
 <a name="tfw.dynamicTableClass+setActiveFilterInColumn"></a>
 
@@ -518,7 +529,7 @@ Types of columns (and filters).
 | CHECKBOX | <code>string</code> | <code>&quot;checkbox&quot;</code> | 
 | DATE | <code>string</code> | <code>&quot;date&quot;</code> | 
 | ORDER | <code>string</code> | <code>&quot;order&quot;</code> | 
-| cmpType | <code>string</code> | <code>&quot;{\&quot;undefined\&quot;:\&quot;\&quot;}&quot;</code> | 
+| cmpType | <code>Object</code> | <code>{&quot;text&quot;:&quot;&quot;,&quot;date&quot;:&quot;&quot;,&quot;number&quot;:&quot;&quot;,&quot;checkbox&quot;:&quot;&quot;,&quot;order&quot;:&quot;&quot;}</code> | 
 
 <a name="tfw.dynamicTableClass.sortTypes"></a>
 
@@ -587,6 +598,17 @@ Send a table-specific request to server.If table is [destroy](#tfw.dynamicTable
 | [params.callback] | <code>[serverCallback](#tfw.dynamicTableClass..serverCallback)</code> |  | callback that receives data |
 | [params.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
+<a name="tfw.dynamicTableClass..serverUpdateOrder"></a>
+
+#### dynamicTableClass~serverUpdateOrder(params)
+**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | update parameters |
+| params.id | <code>number</code> | ID of edited row |
+| params.neworder | <code>number</code> | new order number of edited row |
+
 <a name="tfw.dynamicTableClass..serverUpdateCell"></a>
 
 #### dynamicTableClass~serverUpdateCell(params)
@@ -599,28 +621,18 @@ Send a table-specific request to server.If table is [destroy](#tfw.dynamicTable
 | params.col | <code>number</code> | order number of edited column |
 | params.value | <code>number</code> | new value |
 
-<a name="tfw.dynamicTableClass..serverUpdateOrder"></a>
-
-#### dynamicTableClass~serverUpdateOrder(params)
-**Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>Object</code> | update parameters |
-| params.id | <code>number</code> | ID of edited row |
-| params.neworder | <code>number</code> | new order number of edited row |
-
 <a name="tfw.dynamicTableClass..setActiveArrow"></a>
 
-#### dynamicTableClass~setActiveArrow(element, base)
+#### dynamicTableClass~setActiveArrow(element, base, [on])
 Set active arrow (and make other arrows of same group inactive).
 
 **Kind**: inner method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>HTMLElement</code> | arrow to make active |
-| base | <code>HTMLElement</code> | where to search for arrows |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| element | <code>HTMLElement</code> |  | arrow to make active |
+| base | <code>HTMLElement</code> |  | where to search for arrows |
+| [on] | <code>boolean</code> | <code>true</code> | whether to toggle active on or off |
 
 <a name="tfw.dynamicTableClass..columnRenderer"></a>
 
@@ -1269,6 +1281,12 @@ Decode JSON data, show error in case they are invalid.
 | --- | --- | --- |
 | json | <code>string</code> | JSON encoded data |
 
+<a name="tfw.novyElement"></a>
+
+### ~~tfw.novyElement()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
 <a name="tfw.noveZalozky"></a>
 
 ### tfw.noveZalozky()
@@ -1300,8 +1318,8 @@ Wrapper that creates a dynamic table and returns it's HTML node for inserting in
 
 <a name="tfw.calendar"></a>
 
-### tfw.calendar() ⇒ <code>HTMLElement</code>
-Create a calendar input field.For parameters, see [input](#tfw.input).
+### tfw.calendar(params) ⇒ <code>HTMLElement</code>
+Create a calendar input field.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - Returns input (+ optionally legend) wrapper  
@@ -1309,6 +1327,11 @@ Create a calendar input field.For parameters, see [input](#tfw.input).
 
 - tfw.input
 - tfw.calendarExtend
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | see [input](#tfw.input) |
 
 <a name="tfw..ajaxGetCallback"></a>
 
@@ -1405,3 +1428,14 @@ Function package for preparing HTML elements.
 
 **Kind**: global class  
 **See**: tfw.dynamicTable  
+<a name="$"></a>
+
+## $(id) ⇒ <code>HTMLElement</code>
+Get HTML element by ID.
+
+**Kind**: global function  
+
+| Param | Type |
+| --- | --- |
+| id | <code>string</code> | 
+

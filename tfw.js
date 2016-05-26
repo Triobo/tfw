@@ -4,24 +4,25 @@
  * @author melanger
  */
 
-/** @todo Remove */
-Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
-  console.error('DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.');
-  return tfw.AJAX_LOADER;
-}});
+/* global token:false, chyba:false, t:false, editor:false, cislo:false */
 
-function $(id) {// eslint-disable-line no-implicit-globals
+/**
+ * Get HTML element by ID.
+ * @param {string} id
+ * @return {HTMLElement}
+ */
+function $(id){//eslint-disable-line no-implicit-globals
   var x = document.getElementById(id);
   return x;
 }
 
-HTMLElement.prototype.nodeOrder = function () {
+HTMLElement.prototype.nodeOrder = function(){
   return Array.prototype.indexOf.call(this.parentNode.children, this);
-}
-HTMLElement.prototype.hasClass = function (c) {
+};
+HTMLElement.prototype.hasClass = function(c){
   return (this.className.split(' ').indexOf(c) != -1);
-}
-HTMLElement.prototype.hasAnyClass = function (c) {
+};
+HTMLElement.prototype.hasAnyClass = function(c){
   var searchedClasses = c.split(' ');
   for (var i in searchedClasses) {
     if (this.className.split(' ').indexOf(searchedClasses[i]) != -1) {
@@ -29,8 +30,8 @@ HTMLElement.prototype.hasAnyClass = function (c) {
     }
   }
   return false;
-}
-HTMLElement.prototype.addClass = function (c) {
+};
+HTMLElement.prototype.addClass = function(c){
   if (!this.hasClass(c)) {
     if (this.className) {
       var cs = this.className.split(' ');
@@ -38,19 +39,19 @@ HTMLElement.prototype.addClass = function (c) {
       this.className = cs.join(' ');
     } else this.className = c;
   }
-}
-HTMLElement.prototype.removeClass = function (c) {
+};
+HTMLElement.prototype.removeClass = function(c){
   var cs = this.className.split(' ');
   var id = cs.indexOf(c);
   if (id >= 0) cs.splice(id, 1);
   if (cs.length) this.className = cs.join(' ');
   else this.removeAttribute('class');
-}
-HTMLElement.prototype.toggleClass = function (c) {
+};
+HTMLElement.prototype.toggleClass = function(c){
   if (this.hasClass(c)) this.removeClass(c);
   else this.addClass(c);
-}
-HTMLElement.prototype.myOrder = function () {
+};
+HTMLElement.prototype.myOrder = function(){
   var x = 0;
   if (this.parentNode) {
     for (var i = 0; i < this.parentNode.childNodes.length; i++) {
@@ -58,26 +59,26 @@ HTMLElement.prototype.myOrder = function () {
     }
   }
   return x;
-}
-HTMLElement.prototype.amIFirst = function () {
+};
+HTMLElement.prototype.amIFirst = function(){
   var x = 0;
   if (!this.myOrder) x = 1;
   return x;
-}
-HTMLElement.prototype.amILast = function () {
+};
+HTMLElement.prototype.amILast = function(){
   var x = 0;
   if (this.myOrder == (this.parentNode.childNodes.length - 1)) x = 1;
   return x;
-}
-HTMLElement.prototype.add = function (x) {
+};
+HTMLElement.prototype.add = function(x){
   this.appendChild(x);
-}
+};
 
 /**
  * Triobo. This is a singleton.
  * @class
  */
-var desktop = {// eslint-disable-line no-implicit-globals
+var desktop = {//eslint-disable-line no-implicit-globals
   div: null,
   layers: [],
   activeLayer: 0,
@@ -90,10 +91,10 @@ var desktop = {// eslint-disable-line no-implicit-globals
   URLparams: [],
   go: null,
   dialogMoveData: {},
-  init: function (id) {
+  init: function(id){
     desktop.div = $(id);
     desktop.clean();
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function(){
       desktop.width = desktop.div.clientWidth;
       desktop.height = desktop.div.clientHeight;
       for (var i = 0; i < desktop.resizingFunctions.length; i++) desktop.resizingFunctions[i]();
@@ -102,7 +103,7 @@ var desktop = {// eslint-disable-line no-implicit-globals
     desktop.URLbase = myURLparts[0];
     if (myURLparts.length > 1) desktop.URLparams = myURLparts[1].substr(2).split('/');
   },
-  clean: function () {
+  clean: function(){
     desktop.layers = [];
     desktop.activeLayer = 0;
     desktop.div.innerHTML = '';
@@ -116,7 +117,7 @@ var desktop = {// eslint-disable-line no-implicit-globals
     desktop.isWorking = 0;
     if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
   },
-  closeTopLayer: function () {
+  closeTopLayer: function(){
     if (desktop.activeLayer) {
       desktop.layers[desktop.activeLayer].innerHTML = '';
       desktop.div.removeChild(desktop.layers[desktop.activeLayer]);
@@ -133,7 +134,7 @@ var desktop = {// eslint-disable-line no-implicit-globals
    * @listens mousemove
    * @listens mouseup
    */
-  newLayer: function (params) {
+  newLayer: function(params){
     if (params.modal) {
       if (params.modal == 'auto') {
         params.modal = desktop.layers[desktop.activeLayer].hasClass('modal') ? 1 : 0;
@@ -156,7 +157,7 @@ var desktop = {// eslint-disable-line no-implicit-globals
     desktop.layers[desktop.activeLayer].addEventListener('mousemove', desktop.dialogMoveGo, false);
     desktop.layers[desktop.activeLayer].addEventListener('mouseup', desktop.dialogMoveEnd, false);
   },
-  working: function (now) {
+  working: function(now){
     if (!desktop.isWorking) {
       desktop.newLayer({});
       if (now) desktop.hide();
@@ -164,7 +165,7 @@ var desktop = {// eslint-disable-line no-implicit-globals
       desktop.isWorking = true;
     }
   },
-  hide: function () {
+  hide: function(){
     desktop.layers[desktop.activeLayer].add(tfw.div({
       id: 'tfwLayerOverlay' + desktop.activeLayer,
       className: 'tfwLayerOverlay',
@@ -175,14 +176,14 @@ var desktop = {// eslint-disable-line no-implicit-globals
       style: 'left:' + Math.round(desktop.width / 2 - 16) + 'px;top:' + Math.round(desktop.height / 2 - 16) + 'px'
     }));
   },
-  done: function () {
+  done: function(){
     if (desktop.isWorking) {
       if (desktop.mainLoaderTimer) clearTimeout(desktop.mainLoaderTimer);
       desktop.closeTopLayer();
       desktop.isWorking = false;
     }
   },
-  dialogMoveStart: function (e) {
+  dialogMoveStart: function(e){
     desktop.dialogMoveData = {
       x: e.clientX,
       y: e.clientY,
@@ -192,7 +193,7 @@ var desktop = {// eslint-disable-line no-implicit-globals
     e.stopPropagation();
     e.preventDefault();
   },
-  dialogMoveGo: function (e) {
+  dialogMoveGo: function(e){
     if ('who' in desktop.dialogMoveData) {
       var px = e.clientX - desktop.dialogMoveData.x;
       var py = e.clientY - desktop.dialogMoveData.y;
@@ -204,14 +205,14 @@ var desktop = {// eslint-disable-line no-implicit-globals
       e.preventDefault();
     }
   },
-  dialogMoveEnd: function (e) {
+  dialogMoveEnd: function(e){
     if ('who' in desktop.dialogMoveData) {
       e.stopPropagation();
       e.preventDefault();
       desktop.dialogMoveData = {};
     }
   }
-}
+};
 
 /**
  * Triobo framework. This is a singleton.
@@ -245,21 +246,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
     FILTER: 'Filter…',
     /** Label of hidden rows count */
     HIDDEN_ROWS: 'Hidden rows',
-    /** progress during file upload */        
-    UPLOADING:'Uploading … %1',
-    /** when composing list, last OR word (f.e. jpg, png or gif) */        
-    OR:'or',
+    /** progress during file upload */
+    UPLOADING: 'Uploading … %1',
+    /** when composing list, last OR word (f.e. jpg, png or gif) */
+    OR: 'or',
     /** Error, when not allowed file extension is used  */
-    EXTNOTALLOWED:'Only %1 files are allowed.'
+    EXTNOTALLOWED: 'Only %1 files are allowed.'
   },
   /**
    * Add Javascript-generated CSS to the document.
    * @param {string} style - CSS to be added
    * @param {string} [tag] - identify (tag) CSS for overriding
    */
-  insertStyle: function (style, tag) {
+  insertStyle: function(style, tag){
     var id = 'tfwInsertStyle';
-    if (typeof(tag) != 'undefined') {
+    if (typeof tag != 'undefined') {
       id += '-' + tag;
     }
     if (document.getElementById(id) == null) {
@@ -267,7 +268,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       styleElement.setAttribute('id', id);
       document.getElementsByTagName('head')[0].add(styleElement);
     }
-    if (typeof(tag) == 'undefined') {
+    if (typeof tag == 'undefined') {
       document.getElementById(id).innerHTML += style;
     } else {
       document.getElementById(id).innerHTML = style;
@@ -277,9 +278,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Initialization needed to run tfw functions (e.g. adds required CSS styling).
    * Can be run multiple times (after adding localized strings).
    */
-  init: function () {
-    var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"' + tfw.strings.NO + '"}\n' +
-      '.tfwDynamicTable .tfwCheckbox.checked:after{content:"' + tfw.strings.YES + '"}';
+  init: function(){
+    var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"' + tfw.strings.NO + '"}\n'
+      + '.tfwDynamicTable .tfwCheckbox.checked:after{content:"' + tfw.strings.YES + '"}';
     tfw.insertStyle(tfwStyling, 'tfwDynamicTable-checkbox');
   },
   /**
@@ -287,7 +288,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {tfw.strings} newStrings - translated strings to be used (keys same as in {@link tfw.strings})
    * @see tfw.init
    */
-  localize: function (newStrings) {
+  localize: function(newStrings){
     for (var stringKey in newStrings) {
       tfw.strings[stringKey] = newStrings[stringKey];
     }
@@ -314,7 +315,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.value] - default field value (or button text)
    * @param {string} [params.placeholder] - text field placeholder
    */
-  fillElemDefs: function (element, params) {
+  fillElemDefs: function(element, params){
     if ('text' in params) {
       params.innerHTML = params.text;
     }
@@ -347,7 +348,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       element.speconchange = params.onchange;
     }
     if ('onchange' in params || 'evaluate' in params) {
-      element.addEventListener('change', function () {
+      element.addEventListener('change', function(){
         if (this.speconchange) {
           this.speconchange();
         }
@@ -365,17 +366,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
       });
     }
   },
-  div: function (n) {
+  div: function(n){
     var x = document.createElement('div');
     this.fillElemDefs(x, n);
     return x;
   },
-  par: function (n) {
+  par: function(n){
     var x = document.createElement('p');
     this.fillElemDefs(x, n);
     return x;
   },
-  span: function (n) {
+  span: function(n){
     var x = document.createElement('span');
     this.fillElemDefs(x, n);
     return x;
@@ -390,7 +391,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} params.list[].t - label
    * @return {HTMLElement} Created select field.
    */
-  select: function (params) {
+  select: function(params){
     var element = document.createElement('div');
     params.className = 'tfwSelect ' + (('className' in params) ? params.className : '');
     element.multiple = ('multiple' in params && params.multiple);
@@ -399,7 +400,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     if ('onchange' in params) element.onchange=params.onchange;
     this.fillElemDefs(element, params);
-    element.clickOnItem = function (e) {
+    element.clickOnItem = function(e){
       e.stopPropagation();
       e.preventDefault();
       var i;
@@ -418,7 +419,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       element.value = m.join(',');
       if (element.onchange) element.onchange();
       element.addClass('hasBeenChanged');
-    }
+    };
     if (!element.value) element.value = 0;
     var m = element.value.toString().split(','),
         i;
@@ -451,7 +452,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       l.addEventListener('mousedown', element.clickOnItem, false);
       element.add(l);
     }
-    element.setValue = function (a) {
+    element.setValue = function(a){
       for (var i = 0; i < element.childNodes.length; i++) {
         if (element.childNodes[i].value == a) {
           element.childNodes[i].addClass('selected');
@@ -460,7 +461,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       }
       element.value = String(a);
-    }
+    };
     return element;
   },
   /**
@@ -472,11 +473,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created wrapper
    * @see desktop.newLayer
    */
-  createLayerAndWrapperAtElement: function (element, params, above, right) {
-    if (typeof(above) == 'undefined') {
+  createLayerAndWrapperAtElement: function(element, params, above, right){
+    if (typeof above == 'undefined') {
       above = false;
     }
-    if (typeof(right) == 'undefined') {
+    if (typeof right == 'undefined') {
       right = false;
     }
     desktop.newLayer(params);
@@ -509,7 +510,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created dropdown menu
    * @see tfw.select
    */
-  dropDown: function (params) {
+  dropDown: function(params){
     var y = document.createElement('p');
     y.className = 'tfwContainer';
     if (params.legend) {
@@ -555,10 +556,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.onchange) {
       x.onchange = params.onchange;
     }
-    x.onmousedown = function (e) {
+    x.onmousedown = function(e){
       e.preventDefault();
     };
-    x.onclick = function () {
+    x.onclick = function(){
       if (!x._disabled) {
         var vyska = params.list.length * x.itemHeight;
         if (params.maxHeight && vyska > params.maxHeight) {
@@ -577,7 +578,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           list: params.list,
           value: x.value,
           style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
-          onchange: function () {
+          onchange: function(){
             for (var i = 0; i < this.childNodes.length; i++) {
               if (this.childNodes[i].value == this.value) {
                 x.innerHTML = this.childNodes[i].innerHTML;
@@ -592,16 +593,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
         });
         c.add(b);
         b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
-        window.setTimeout(function(){$('drop' + params.id).style.webkitTransform='';}, 10);
+        window.setTimeout(function(){
+          $('drop' + params.id).style.webkitTransform='';
+        }, 10);
       }
     };
     Object.defineProperty(x, 'disabled', {
-      set: function (val) {
+      set: function(val){
         if (val) this.addClass('disabled');
         else this.removeClass('disabled');
         this._disabled = val;
       },
-      get: function () {
+      get: function(){
         return this._disabled;
       },
       enumerable: true,
@@ -612,9 +615,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var i = 0; i < params.list.length; i++) {
         if (typeof params.list[i] === 'object') {
           if (params.list[i].id == params.value) x.innerHTML = params.list[i].t;
-        } else {
-          if (i == params.value) x.innerHTML = params.list[i];
-        }
+        } else if (i == params.value) x.innerHTML = params.list[i];
       }
     }
     if ('value' in params) {
@@ -623,16 +624,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if ('disabled' in params) {
       x.disabled = params.disabled;
     }
-    x.setValue = function (a) {
+    x.setValue = function(a){
       x.value = a;
       for (var i = 0; i < params.list.length; i++) {
         if (typeof params.list[i] === 'object') {
           if (params.list[i].id == a) x.innerHTML = params.list[i].t;
-        } else {
-          if (i == a) x.innerHTML = params.list[i];
-        }
+        } else if (i == a) x.innerHTML = params.list[i];
       }
-    }
+    };
     y.add(x);
     return y;
   },
@@ -646,18 +645,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {function} [params.action] - Function to fire when button is clicked (event propagation is stopped)
    * @return {HTMLElement} Created button
    */
-  button: function (params) {
+  button: function(params){
     var element = document.createElement('button');
     this.fillElemDefs(element, params);
     element.type = ((params['default']) ? 'submit' : 'button');
     if (params.action) {
       element.action = params.action;
-      element.onclick = function (e) {
+      element.onclick = function(e){
         e.stopPropagation();
         if (!this.disabled) {
           this.action(e);
         }
-      }
+      };
     }
     return element;
   },
@@ -673,7 +672,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.postText] - text after input field
    * @return {HTMLElement} container with legend and input field
    */
-  inputFieldLegend: function (element, params) {
+  inputFieldLegend: function(element, params){
     var x = document.createElement('p');
     var l = document.createElement('span');
     if (params.legend) l.innerHTML = params.legend;
@@ -703,12 +702,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {number} [params.step] - step between allowed numeric values
    * @return {HTMLElement} Created input field, optionally wrapped with label
    */
-  input: function (params) {
+  input: function(params){
     var element = document.createElement('input');
-    element.addEventListener('change', function (){
+    element.addEventListener('change', function(){
       this.addClass('hasBeenChanged');
     });
-    
+
     this.fillElemDefs(element, params);
     var attributesToCopy = ['type', 'min', 'max', 'step'];
     for (var i = 0; i < attributesToCopy.length; i++) {
@@ -727,12 +726,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.value] - prefilled value
    * @return {HTMLElement} Created text area, optionally wrapped with label
    */
-  textArea: function (params) {
+  textArea: function(params){
     var element = document.createElement('textarea');
-    element.addEventListener('change', function (){
+    element.addEventListener('change', function(){
       this.addClass('hasBeenChanged');
     });
-    
+
     this.fillElemDefs(element, params);
     if (params.value) {
       element.innerHTML = params.value;
@@ -752,7 +751,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created checkbox, optionally wrapped with label
    * @todo Use "value" for real value, instead of using it for "checked"
    */
-  checkbox: function (params) {
+  checkbox: function(params){
     var x = document.createElement('div');
     var labelText = (params.text) ? params.text : '';
     params.text = '';
@@ -766,42 +765,42 @@ var tfw = {//eslint-disable-line no-implicit-globals
     x.className += x._value ? ' checked' : '';
     b.className = x._value ? 'checked' : '';
     x.add(b);
-    var t = document.createElement('span');
-    t.innerHTML = labelText;
-    x.add(t);
+    var text = document.createElement('span');
+    text.innerHTML = labelText;
+    x.add(text);
     Object.defineProperty(x, 'value', {
-      set: function (val) {
-        var b = this.childNodes[0];
+      set: function(val){
+        var box = this.childNodes[0];
         if (val) {
-          b.addClass('checked');
+          box.addClass('checked');
           x.addClass('checked');
         } else {
-          b.removeClass('checked');
+          box.removeClass('checked');
           x.removeClass('checked');
         }
         this._value = val;
         if (this.onchange) this.onchange();
         this.addClass('hasBeenChanged');
       },
-      get: function () {
+      get: function(){
         return this._value;
       },
       enumerable: true,
       configurable: true
     });
     Object.defineProperty(x, 'disabled', {
-      set: function (val) {
+      set: function(val){
         if (val) this.addClass('disabled');
         else this.removeClass('disabled');
         this.zakazano = val;
       },
-      get: function () {
+      get: function(){
         return this.zakazano;
       },
       enumerable: true,
       configurable: true
     });
-    x.addEventListener('click', function(e) {
+    x.addEventListener('click', function(e){
       if (!this.zakazano) x.value = 1 - this._value;
       e.stopPropagation();
       e.preventDefault();
@@ -818,39 +817,39 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {number} [params.index] - move background image up by this number of pixels (background-position-x)
    * @return {HTMLElement} Created icon
    */
-  icon: function (params) {
+  icon: function(params){
     var element = document.createElement('div');
     params.className = 'tfwIcon' + ((params.className) ? (' ' + params.className) : '');
     this.fillElemDefs(element, params);
     if (params.action) {
       element.action = params.action;
-      element.onclick = function (e) {
+      element.onclick = function(e){
         if (!element.hasClass('disabled')) this.action(e);
-      }
+      };
     }
     var b = document.createElement('div');
     if (params.index) b.style.backgroundPositionX = (-params.index) + 'px';
     element.add(b);
     element.disabled = 0;
     Object.defineProperty(element, 'disabled', {
-      set: function (val) {
+      set: function(val){
         if (val) element.addClass('disabled');
         else element.removeClass('disabled');
       },
-      get: function () {
-        return element.hasClass('disabled')
+      get: function(){
+        return element.hasClass('disabled');
       },
       enumerable: true,
       configurable: true
     });
     if (params.disabled) element.disabled = params.disabled;
     Object.defineProperty(element, 'selected', {
-      set: function (val) {
+      set: function(val){
         if (val) element.addClass('selected');
         else element.removeClass('selected');
       },
-      get: function () {
-        return element.hasClass('selected')
+      get: function(){
+        return element.hasClass('selected');
       },
       enumerable: true,
       configurable: true
@@ -865,7 +864,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.fillElemDefs
    * @return {HTMLElement} Created table
    */
-  table: function (params) {
+  table: function(params){
     var element = document.createElement('table');
     this.fillElemDefs(element, params);
     return element;
@@ -878,7 +877,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Array} [params.columns] - list of objects, that will be passed to tfw.td and added as children
    * @return {HTMLElement} Created table row
    */
-  tr: function (params) {
+  tr: function(params){
     var element = document.createElement('tr');
     this.fillElemDefs(element, params);
     if ('columns' in params) {
@@ -896,7 +895,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.fillElemDefs
    * @return {HTMLElement} Created table cell
    */
-  td: function (params) {
+  td: function(params){
     var element = document.createElement('td');
     this.fillElemDefs(element, params);
     if ('colspan' in params) {
@@ -920,7 +919,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.postText] - text after slider
    * @return {HTMLElement} Created slider
    */
-  slider: function (params) {
+  slider: function(params){
     var element = document.createElement('p');
     element.min = 0;
     element.max = 100;
@@ -933,7 +932,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.legend) l.innerHTML = params.legend;
     if (params.legendStyle) l.style.cssText = params.legendStyle;
     var s = document.createElement('input');
-    element.add(s)
+    element.add(s);
     s.type = 'range';
     if (params.id) s.id = params.id + '-s';
     if (params.max) {
@@ -947,29 +946,29 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.step) s.step = params.step;
     if (params.width) s.style.width = params.width;
     s.value = sliderValue;
-    s.oninput = function () {
+    s.oninput = function(){
       $(params.id + '-v').value = this.value;
       if (element.onchange) element.onchange();
-    }
-    s.onkeyup = function () {
+    };
+    s.onkeyup = function(){
       $(params.id + '-v').value = this.value;
       if (element.onchange) element.onchange();
-    }
+    };
     var v = document.createElement('input');
-    element.add(v)
+    element.add(v);
     v.type = 'text';
     if (params.id) v.id = params.id + '-v';
     if (params.valueStyle) v.style.cssText = params.valueStyle;
     v.style.textAlign = 'right';
     v.value = sliderValue;
-    v.onchange = function () {
+    v.onchange = function(){
       if (!this.value.match(/^\d+$/)) this.value = 0;
       if (this.value < element.min) this.value = element.min;
       if (this.value > element.max) this.value = element.max;
       $(params.id + '-s').value = this.value;
       if (element.onchange) element.onchange();
-    }
-    v.addEventListener('keydown', function(e) {
+    };
+    v.addEventListener('keydown', function(e){
       var h = parseInt(this.value);
       if (e.which == 38) {
         this.value = h - (e.altKey ? 8 : 1);
@@ -989,11 +988,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     }, true);
     Object.defineProperty(element, 'value', {
-      set: function (a) {
+      set: function(a){
         this.childNodes[1].value = a;
         this.childNodes[2].value = a;
       },
-      get: function () {
+      get: function(){
         return this.childNodes[2].value;
       },
       enumerable: true,
@@ -1016,7 +1015,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.fillElemDefs
    * @return {HTMLElement} Created image
    */
-  image: function (params) {
+  image: function(params){
     var element = document.createElement('img');
     this.fillElemDefs(element, params);
     if (params.src) element.src = params.src;
@@ -1042,46 +1041,46 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.inputFieldLegend
    * @return {HTMLElement} Created file box, optionally wrapped with label
    */
-  filebox: function (params) {
+  filebox: function(params){
     var element = document.createElement('div');
-    if(!('id' in params)) params.id = 'filebox';
+    if (!('id' in params)) params.id = 'filebox';
     params.className = (('className' in params) ? (params.className+' ') : '') + 'tfwFilebox';
-    if(!('value' in params)) params.value = 0;
+    if (!('value' in params)) params.value = 0;
     var innerDivStyle = ('style' in params) ? params.style : '';
     element.text = ('text' in params) ? params.text : '';
     delete params.text;
     this.fillElemDefs(element, params);
-    
+
     element.filename = ('filename' in params) ? params.filename : '';
     element.path = ('path' in params) ? params.path : '';
     element.imgStyle = ('imgStyle' in params) ? ('style="' + params.imgStyle + '" ') : '';
     element.onloaded = ('onloaded' in params) ? params.onloaded : null;
     element.onstart = ('onstart' in params) ? params.onstart : null;
     element.limitExtensions = ('limitExtensions' in params) ? params.limitExtensions : '';
-    
+
     element.uploading = 0;
     var b = tfw.div({});
     element.add(b);
     b.className = 'content';
     if (innerDivStyle) b.style.cssText = innerDivStyle;
-    b.addEventListener('click', function() {
-      element.lastChild.dispatchEvent(new MouseEvent('click', {'view': window,'bubbles': true,'cancelable': false}));
+    b.addEventListener('click', function(){
+      element.lastChild.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: false}));
     });
-    b.addEventListener('dragenter', function(e) {
+    b.addEventListener('dragenter', function(e){
       this.style.outline = 'red 2px solid';
       e.stopPropagation();
       e.preventDefault();
     }, false);
-    b.addEventListener('dragleave', function(e) {
+    b.addEventListener('dragleave', function(e){
       this.style.outline = '';
       e.stopPropagation();
       e.preventDefault();
     }, false);
-    b.addEventListener('dragover', function(e) {
+    b.addEventListener('dragover', function(e){
       e.stopPropagation();
       e.preventDefault();
     }, false);
-    b.addEventListener('drop', function(e) {
+    b.addEventListener('drop', function(e){
       e.stopPropagation();
       e.preventDefault();
       this.style.outline = '';
@@ -1090,17 +1089,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
     element.add(b = document.createElement('input'));
     b.type = 'file';
     b.style.display = 'none';
-    b.addEventListener('change', function(e) {
+    b.addEventListener('change', function(e){
       element.upload(e.target.files);
     });
-    element.prekresli = function (prc) {
+    element.prekresli = function(prc){
       if (element.uploading) {
-        element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tfw.strings.UPLOADING.replace('%1',(prc + ' %')) + '</p>';
+        element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tfw.strings.UPLOADING.replace('%1', (prc + ' %')) + '</p>';
       } else if (element.value) {
         element.removeClass('empty');
         if (element.filename.match(/\.(gif|jpg|jpeg|png)$/i)) {
-          element.childNodes[0].innerHTML = '<img id="fileboximg' + element.id + '" class="verticalCenter" ' + element.imgStyle + ' src="/zdroje/' + element.path +
-            element.filename + '?' + element.value + '">';
+          element.childNodes[0].innerHTML = '<img id="fileboximg' + element.id + '" class="verticalCenter" ' + element.imgStyle + ' src="/zdroje/'
+          + element.path + element.filename + '?' + element.value + '">';
         } else {
           element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + element.filename + '</p>';
         }
@@ -1108,8 +1107,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
         element.addClass('empty');
         element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:40px;">' + element.text + '</p>';
       }
-    }
-    element.upload = function (u) {
+    };
+    element.upload = function(u){
       element.prekresli(0);
       var jmeno = u[0].name;
       var canbe = 1;
@@ -1122,14 +1121,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (element.onstart) element.onstart();
         element.hr = new XMLHttpRequest();
         var fUp = element.hr.upload;
-        fUp.addEventListener('progress', function(e) {
+        fUp.addEventListener('progress', function(e){
           element.prekresli(Math.round(e.loaded / element.uploading * 100));
         });
-        fUp.addEventListener('load', function() {
+        fUp.addEventListener('load', function(){
           element.uploading = 0;
           element.value = Math.floor(Math.random() * 1000000) + 1;
           if (element.onloaded) element.onloaded();
-          window.setTimeout(function(){$(element.id).prekresli();}, 500);
+          window.setTimeout(function(){
+            $(element.id).prekresli();
+          }, 500);
         });
         element.hr.open('POST', 'uploadFile.php?token=' + token);
         element.hr.setRequestHeader('X_FILENAME', element.path + element.filename);
@@ -1140,21 +1141,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
         var lim;
         if (lims.length) lim = '<b>' + lims.join('</b>, <b>') + '</b> ' + tfw.strings.OR + ' <b>' + lastl + '</b>';
         else lim = '<b>' + lastl + '</b>';
-        chyba('#300-' + tfw.strings.EXTNOTALLOWED.replace('%1',lim));
+        chyba('#300-' + tfw.strings.EXTNOTALLOWED.replace('%1', lim));
       }
     };
-    element.remove = function () {}
+    element.remove = function(){};
     element.prekresli();
     return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
-  dialog: function (co) {
+  dialog: function(co){
     var b;
     desktop.newLayer({
       overlay: true,
       modal: true
     });
-    var vnit, dlg;
-    var sirka = 300,
+    var vnit,
+        dlg,
+        sirka = 300,
         vyska = 200,
         nazev = '';
     if (co.width) sirka = co.width;
@@ -1162,8 +1164,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (co.title) nazev = co.title;
     var obal = tfw.div({
       className: 'tfwDialogContainer' + (nazev ? '' : ' noTitle'),
-      style: 'left:' + Math.round((desktop.width - sirka) / 2) + 'px;top:' + Math.round((desktop.height - vyska) / 2) + 'px;width:' +
-        sirka + 'px;height:' + vyska + 'px;'
+      style: 'left:' + Math.round((desktop.width - sirka) / 2) + 'px;top:' + Math.round((desktop.height - vyska) / 2) + 'px;width:'
+        + sirka + 'px;height:' + vyska + 'px;'
     });
     obal.style.webkitTransform = 'translateY(-32px)';
     obal.style.opacity = 0;
@@ -1178,7 +1180,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       h.addEventListener('mousedown', desktop.dialogMoveStart, false);
     }
     var f = document.createElement('form');
-    f.onsubmit = function (e) {
+    f.onsubmit = function(e){
       e.stopPropagation();
       e.preventDefault();
     };
@@ -1187,28 +1189,28 @@ var tfw = {//eslint-disable-line no-implicit-globals
       className: 'tfwDialog',
       style: 'height:' + (vyska - (nazev ? 60 : 32)) + 'px'
     }));
-    desktop.layers[desktop.activeLayer].addEventListener('keydown', function(e) {
+    desktop.layers[desktop.activeLayer].addEventListener('keydown', function(e){
       if (e.which == 27) desktop.closeTopLayer();
     }, true);
     /**/
     vnit.add(dlg = tfw.div({
       style: 'height:' + (vyska - (nazev ? 60 : 32) - 27) + 'px'
     }));
-    dlg.addEventListener('mousedown', function(e) {
+    dlg.addEventListener('mousedown', function(e){
       e.stopPropagation();
     }, false);
     if (co.obsah) dlg.innerHTML = co.obsah;
     var i;
-    if (co.children){
-      for (i = 0; i < co.children.length; i++){
+    if (co.children) {
+      for (i = 0; i < co.children.length; i++) {
         dlg.add(co.children[i]);
       }
     }
     vnit.add(dlg.buttons = tfw.div({
       className: 'buttonsBar'
     }));
-    if (co.buttons){
-      for (i = 0; i < co.buttons.length; i++){
+    if (co.buttons) {
+      for (i = 0; i < co.buttons.length; i++) {
         if (co.buttons[i].text) {
           dlg.buttons.add(b = tfw.button(co.buttons[i]));
           if (!co.vychozi && b.type == 'submit') b.focus();
@@ -1219,11 +1221,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (co.vychozi) $(co.vychozi).focus();
     dlg.hasBeenChanged=function(){
       return this.getElementsByClassName('hasBeenChanged').length?1:0;
-    }
+    };
     dlg.resetChanges=function(){
       var list = this.getElementsByClassName('hasBeenChanged');
       for (var i = 0; i < list.length; i++) list[i].removeClass('hasBeenChanged');
-    }
+    };
     window.setTimeout(function(){
       $('tfwDialog' + desktop.activeLayer).style.webkitTransform='';
       $('tfwDialog' + desktop.activeLayer).style.opacity=1;
@@ -1242,7 +1244,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} params.item - download link inner HTML
    * @see tfw.ajaxGet
    */
-  dialogPrepareAndDownload: function (params) {
+  dialogPrepareAndDownload: function(params){
     tfw.dialog({
       width: 360,
       height: 140,
@@ -1266,7 +1268,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     tfw.ajaxGet({
       url: params.ajaxFile + '?' + params.ajaxParam,
-      onload: function(hr) {
+      onload: function(hr){
         $('dlgPaD').innerHTML = params.text.replace('%1', '<a href="' + hr.responseText + '" download>' + params.item + '</a>');
       },
       autohide: 0
@@ -1311,7 +1313,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.ajaxOnErrorCode
    * @see tfw.ajaxOnError
    */
-  ajaxGet: function (o) {
+  ajaxGet: function(o){
     if (!('method' in o)) {
       o.method = 'GET';
     }
@@ -1319,15 +1321,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       o.parameters = null;
     }
     var httpRequest = new XMLHttpRequest();
-    httpRequest.onreadystatechange = function () {
+    httpRequest.onreadystatechange = function(){
       if (httpRequest.readyState === 4) {
         desktop.done();
         if (httpRequest.status === 200) {
           var rt;
-          if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == '#'){
+          if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == '#') {
             tfw.ajaxOnErrorCode(rt);
-          }
-          else {
+          } else {
             o.onload(httpRequest);
           }
         } else if (tfw.ajaxOnError) {
@@ -1344,7 +1345,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         case 'POST':
           o.parameters += '&' + tfw.ajaxIncludeParams();
           break;
-        // intentionally omitted default
+        //intentionally omitted default
       }
     }
     console.info('Desktop ajax ' + o.method + ' ' + ur);
@@ -1357,7 +1358,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         httpRequest.setRequestHeader('Cache-Control', 'no-cache');
         httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         break;
-      // intentionally omitted default
+      //intentionally omitted default
     }
     httpRequest.send(o.parameters);
     if (o.autohide) {
@@ -1372,7 +1373,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {XMLHttpRequest} Returns XMLHttpRequest object
    * @see tfw.ajaxGet
    */
-  ajaxPost: function (o) {
+  ajaxPost: function(o){
     o.method = 'POST';
     return tfw.ajaxGet(o);
   },
@@ -1382,7 +1383,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} fields - items to be encoded {key1:id1,key2:id2,...}
    * @return {string} String, that can be used to call server via ajax
    */
-  encodeFormValues: function (fields) {
+  encodeFormValues: function(fields){
     var x = [];
     for (var key in fields) {
       if (fields.hasOwnProperty(key)) {
@@ -1397,7 +1398,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} json - JSON encoded data
    * @return {Object} Object that was encoded in given JSON string.
    */
-  decodeJSON: function (json) {
+  decodeJSON: function(json){
     var odpoved = {};
     try {
       odpoved = JSON.parse(json);
@@ -1423,17 +1424,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     return odpoved;
   },
-  getRealCoordinates: function (o) {
+  getRealCoordinates: function(o){
     var totalOffsetX = 0;
     var totalOffsetY = 0;
     do {
       totalOffsetX += o.offsetLeft - o.scrollLeft;
       totalOffsetY += o.offsetTop - o.scrollTop;
-    } while (o = o.offsetParent); // eslint-disable-line no-cond-assign
+    } while (o = o.offsetParent); //eslint-disable-line no-cond-assign
     return [totalOffsetX, totalOffsetY];
   },
-  /* @deprecated */
-  novyElement: function (typ, id, c, obsah, styl) {
+  /** @deprecated */
+  novyElement: function(typ, id, c, obsah, styl){
     //console.error('DEPRECATED novyElement '+id);  -- tohoto je ještě strašně moc………
     var x = document.createElement(typ);
     if (id) x.setAttribute('id', id);
@@ -1443,7 +1444,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return x;
   },
   /** @todo Remove dependencies on Triobo */
-  noveZalozky: function (id, w, h, zalozky, init) {
+  noveZalozky: function(id, w, h, zalozky, init){
     var l;
     var x = document.createElement('div');
     x.id = id;
@@ -1453,13 +1454,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
     u.className = 'zalozkySeznam';
     x.add(u);
     var z = zalozky.split(';'),
-      i;
+        i;
     for (i = 0; i < z.length; i++) {
       l = document.createElement('p');
       l.id = id + '-ousko-' + i;
       l.className = 'zalozkyOusko' + ((i == init) ? ' aktivni' : '');
       l.innerHTML = z[i];
-      l.addEventListener('mousedown', function(e) {
+      l.addEventListener('mousedown', function(e){
         var t = e.target;
         var jmeno = t.parentNode.parentNode.id;
         var stary = cislo(t.parentNode.parentNode.value);
@@ -1479,10 +1480,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, false);
       u.add(l);
     }
-    /*x.add(tfw.novyElement('br'));*/
+    var o;
     for (i = 0; i < z.length; i++) {
       o = document.createElement('div');
-      o.id = id + '-obsah-' + i
+      o.id = id + '-obsah-' + i;
       o.className = 'zalozkyObsah' + ((i == init) ? '' : ' skryty');
       o.style.width = w + 'px';
       o.style.height = h + 'px';
@@ -1490,10 +1491,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     return x;
   },
-  noveSvisleZalozky: function (id, wl, w, h, zalozky, init) {
+  noveSvisleZalozky: function(id, wl, w, h, zalozky, init){
     var l;
     var poziceY = 0;
-    var idxs = new Array();
+    var idxs = [];
     var x = document.createElement('div');
     x.id = id;
     x.className = 'zalozkyObal';
@@ -1506,7 +1507,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     u.style.width = wl + 'px';
     u.style.height = h + 'px';
     x.add(u);
-    x.vyber = function (ord) {
+    x.vyber = function(ord){
       var stary = this.value;
       var novy = this.childNodes[0].childNodes[ord].value;
       if (novy != stary) {
@@ -1522,14 +1523,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
         this.vybrany = ord;
         if (this.onchange) this.onchange();
       }
-    }
-    x.appendItem = function (item) {
+    };
+    x.appendItem = function(item){
       l = document.createElement('p');
       l.id = this.id + '-ousko-' + item.id;
       l.className = 'zalozkyOusko' + (item.aktivni ? ' aktivni' : '');
       l.innerHTML = item.text;
       l.value = item.id;
-      l.addEventListener('mousedown', function(e) {
+      l.addEventListener('mousedown', function(e){
         this.parentNode.parentNode.vyber(this.myOrder());
         e.stopPropagation();
         e.preventDefault();
@@ -1540,19 +1541,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
       o.className = 'zalozkySvisleObsah' + (item.aktivni ? '' : ' skryty');
       o.style.width = this.w + 'px';
       o.style.height = this.h + 'px';
-      o.removeItem = function () {
+      o.removeItem = function(){
         if (this.onHide) this.onHide();
         var casti = this.id.split('-');
         var a = $(casti[0] + '-obsah-' + casti[2]);
         var b = $(casti[0] + '-ousko-' + casti[2]);
         a.parentNode.removeChild(a);
         b.parentNode.removeChild(b);
-      }
+      };
       x.add(o);
-    }
+    };
     var z = zalozky.split(';'),
-      sp,
-      ind;
+        sp,
+        ind;
     for (var i = 0; i < z.length; i++) {
       sp = z[i].split('|');
       if (sp.length > 1) ind = sp[1];
@@ -1569,11 +1570,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
         text: sp[0]
       });
     }
-    window.setTimeout('if ($("' + id + '")) $("' + id + '").childNodes[0].scrollTop=' + (poziceY * 20) + ';', 20);
+    window.setTimeout(function(elementId, verticalScroll){
+      if ($(elementId)) $(elementId).childNodes[0].scrollTop=verticalScroll*20;
+    }, 20, id, poziceY);
     return x;
   },
   /** @todo Remove dependencies on Triobo */
-  zvolSvislouZalozku: function (jmeno, novy) {
+  zvolSvislouZalozku: function(jmeno, novy){
     var stary = cislo($(jmeno).value);
     if (novy != stary) {
       if (stary >= 0) {
@@ -1585,7 +1588,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       $(jmeno).value = novy;
     }
   },
-  novyCudl: function (id, c, pozice, stisk, popis) {
+  novyCudl: function(id, c, pozice, stisk, popis){
     var x = document.createElement('div');
     x.className = 'cudl';
     var b = document.createElement('div');
@@ -1597,20 +1600,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
     x.add(b);
     return x;
   },
-  vstupniPole: function (id, styl, legenda, stylL, postT, postL) {
+  vstupniPole: function(id, styl, legenda, stylL, postT, postL){
     var x = document.createElement('div');
     x.className = 'vstup';
-    x.innerHTML = '<span class="legenda"' + (stylL ? (' style="' + stylL + '"') : '') + '>' + legenda + '</span><input id="' + id +
-      '" type="text" class="data"' + (styl ? (' style="' + styl + '"') : '') + '>' + (postT ? '<span ' + (postL ? (' style="' + postL + '"') : '') +
-        '>' + postT + '</span>' : '');
+    x.innerHTML = '<span class="legenda"' + (stylL ? (' style="' + stylL + '"') : '') + '>' + legenda + '</span><input id="' + id
+      + '" type="text" class="data"' + (styl ? (' style="' + styl + '"') : '') + '>' + (postT ? '<span ' + (postL ? (' style="' + postL + '"') : '')
+      + '>' + postT + '</span>' : '');
     return x;
   },
-  vstupniPoleR: function (id, styl, legenda, stylL, postT, postL) {
+  vstupniPoleR: function(id, styl, legenda, stylL, postT, postL){
     styl += ';text-align:right;';
     var x = this.vstupniPole(id, styl, legenda, stylL, postT, postL);
     return x;
   },
-  zatrzitko: function (id, text, init, styl) {
+  zatrzitko: function(id, text, init, styl){
     console.error('DEPRECATED tfw.zatrzitko');
     return tfw.checkbox({
       id: id,
@@ -1619,7 +1622,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       style: styl
     });
   },
-  tlacitko: function (id, text, funkce, styl) {
+  tlacitko: function(id, text, funkce, styl){
     var x = document.createElement('div');
     x.id = id;
     x.className = 'button';
@@ -1628,7 +1631,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (styl) x.style.cssText = styl;
     return x;
   },
-  progressBar: function (id, styl) {
+  progressBar: function(id, styl){
     var x = document.createElement('div');
     x.id = id;
     x.style.cssText = styl;
@@ -1638,13 +1641,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
     y.add(document.createElement('div'));
     return x;
   },
-  novySelect: function (id, w, h, l, i) /* nahradit!!! */ {
+  novySelect: function(id, w, h, l, i){
     return tfw.select({
       id: id,
       style: 'width:' + w + 'px;height:' + h + 'px;',
       list: l,
       value: i
-    })
+    });
   },
   /**
    * Callback that creates content to insert into a custom column.
@@ -1685,7 +1688,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * );
    * @see AJAX_LOADER
    */
-  dynamicTableClass: function (params) {
+  dynamicTableClass: function(params){
     /**
      * @private
      */
@@ -1756,7 +1759,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      */
     var addRowEnabled = ('rowAdd' in params) ? params.rowAdd : false;
-    if (addRowEnabled && typeof(rowEdit) != 'function') {
+    if (addRowEnabled && typeof rowEdit != 'function') {
       console.error('No callback was set for adding new rows.');
     }
     /**
@@ -1784,133 +1787,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     var orderDataCol = null;
     /**
-     * User preferences.
-     * @private
-     * @var {Object}
-     */
-    var preferences = null;
-    /**
-     * Load user preferences.
-     * @private
-     * @param {function} callback - callback to fire when done loading
-     * @todo Fire callback even if loading is not successfull
-     */
-    function loadPreferences(callback) {
-      serverCall({
-        action: tfw.dynamicTableClass.serverActions.PREF_GET,
-        callback: function (receivedData) {
-          if (receivedData == null) {
-            preferences = {};
-          } else {
-            preferences = receivedData;
-          }
-          callback();
-        }
-      });
-    }
-    /**
-     * Save user preferences.
-     * @private
-     */
-    function savePreferences() {
-      //FIX: convert array to object
-      var savedPreferences = {};
-      for (var prop in preferences) {
-        savedPreferences[prop] = preferences[prop];
-      }
-      serverCall({
-        action: tfw.dynamicTableClass.serverActions.PREF_SET,
-        parameters: 'data=' + JSON.stringify(savedPreferences)
-      });
-    }
-    /**
-     * Save user's preference.
-     * @param {string} key - preference key (name)
-     * @param [value] - preference value (any type) - if not set, preference is deleted
-     */
-    this.setPreference = function (key, value) {
-      if (preferences == null) {
-        console.error('Preferences were not loaded yet.');
-        return;
-      }
-      if (typeof(value) != 'undefined') {
-        preferences[key] = value;
-      } else {
-        delete preferences[key];
-      }
-      savePreferences();
-    }
-    /**
-     * Read user's preference.
-     * @param {string} key - preference key (name)
-     * @return {Object} preference value (any type)
-     */
-    this.getPreference = function (key) {
-      if (preferences == null) {
-        console.error('Preferences were not loaded yet.');
-        return;
-      }
-      if (key in preferences) {
-        return preferences[key];
-      } else {
-        return null;
-      }
-    }
-    /**
-     * Get table container (for inserting into document).
-     * @return {HTMLElement} Table container
-     */
-    this.getTable = function () {
-      return this.tableContainer;
-    };
-    /** @private */
-    var ajaxPendingCalls = 0;
-    /** @private */
-    function ifEverythingReadyCallPaint() {
-      if (--ajaxPendingCalls <= 0) {
-        this.paint();
-      }
-    }
-    /**
-     * Reload (or load) data from server.
-     * Loads preferences and data, then {@link tfw.dynamicTableClass#paint|paint}s the table.
-     * @see tfw.dynamicTableClass#paint
-     * @see tfw.dynamicTableClass~serverCall
-     */
-    this.reload = function () {
-      var dynamicTable = this;
-      if (ajaxPendingCalls > 0) {
-        console.error('Dynamic table reload called before last reload finished.');
-        return;
-      }
-      ajaxPendingCalls = 2;
-      serverCall({
-        action: tfw.dynamicTableClass.serverActions.LOAD,
-        callback: function (receivedData) {
-          dynamicTable.data = receivedData;
-          
-          ifEverythingReadyCallPaint.call(dynamicTable);
-        }
-      });
-      loadPreferences(ifEverythingReadyCallPaint.bind(this));
-    };
-    /**
-     * Watch for updates from the server.
-     * @see tfw.dynamicTableClass#paint
-     */
-    this.serverWatch = function () {
-      var dynamicTable = this;
-      serverCall({
-        action: tfw.dynamicTableClass.serverActions.WATCH,
-        callback: function (changes) {
-          if (changes.length > 0) {
-            dynamicTable.paint(changes);
-          }
-          dynamicTable.serverWatch();
-        }
-      });
-    }
-    /**
      * @private
      * @var {XMLHttpRequest[]}
      */
@@ -1930,12 +1806,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @see tfw.ajaxGet
      * @see tfw.decodeJSON
      */
-    function serverCall(params) {
+    function serverCall(params){
       pendingHttpRequests.push(tfw.ajaxGet({
         url: baseURL + '?t=' + tableId + '&a=' + params.action.name + (urlParams ? ('&' + urlParams) : ''),
         method: ('method' in params.action) ? params.action.method : 'GET',
         parameters: params.parameters,
-        onload: function (hr) {
+        onload: function(hr){
           pendingHttpRequests.splice(pendingHttpRequests.indexOf(hr), 1);
           var receivedData = tfw.decodeJSON(hr.responseText);
           if (params.callback != null) {
@@ -1945,25 +1821,159 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }));
     }
     /**
+     * User preferences.
+     * @private
+     * @var {Object}
+     */
+    var preferences = null;
+    /**
+     * Load user preferences.
+     * @private
+     * @param {function} callback - callback to fire when done loading
+     * @todo Fire callback even if loading is not successfull
+     */
+    function loadPreferences(callback){
+      serverCall({
+        action: tfw.dynamicTableClass.serverActions.PREF_GET,
+        callback: function(receivedData){
+          if (receivedData == null) {
+            preferences = {};
+          } else {
+            preferences = receivedData;
+          }
+          callback();
+        }
+      });
+    }
+    /**
+     * Save user preferences.
+     * @private
+     */
+    function savePreferences(){
+      //FIX: convert array to object
+      var savedPreferences = {};
+      for (var prop in preferences) {
+        savedPreferences[prop] = preferences[prop];
+      }
+      serverCall({
+        action: tfw.dynamicTableClass.serverActions.PREF_SET,
+        parameters: 'data=' + JSON.stringify(savedPreferences)
+      });
+    }
+    /**
+     * Save user's preference.
+     * @param {string} key - preference key (name)
+     * @param {string|number|boolean|Array|Object} [value] - preference value (any type) - if not set, preference is deleted
+     */
+    this.setPreference = function(key, value){
+      if (preferences == null) {
+        console.error('Preferences were not loaded yet.');
+        return;
+      }
+      if (typeof value == 'undefined') {
+        delete preferences[key];
+      } else {
+        preferences[key] = value;
+      }
+      savePreferences();
+    };
+    /**
+     * Read user's preference.
+     * @param {string} key - preference key (name)
+     * @return {Object} preference value (any type)
+     */
+    this.getPreference = function(key){
+      if (preferences == null) {
+        console.error('Preferences were not loaded yet.');
+        return null;
+      }
+      return (key in preferences) ? preferences[key] : null;
+    };
+    /**
+     * Get table container (for inserting into document).
+     * @return {HTMLElement} Table container
+     */
+    this.getTable = function(){
+      return this.tableContainer;
+    };
+    /** @private */
+    var ajaxPendingCalls = 0;
+    /** @private */
+    function ifEverythingReadyCallPaint(){
+      if (--ajaxPendingCalls <= 0) {
+        this.paint();
+      }
+    }
+    /**
+     * Reload (or load) data from server.
+     * Loads preferences and data, then {@link tfw.dynamicTableClass#paint|paint}s the table.
+     * @see tfw.dynamicTableClass#paint
+     * @see tfw.dynamicTableClass~serverCall
+     */
+    this.reload = function(){
+      var dynamicTable = this;
+      if (ajaxPendingCalls > 0) {
+        console.error('Dynamic table reload called before last reload finished.');
+        return;
+      }
+      ajaxPendingCalls = 2;
+      serverCall({
+        action: tfw.dynamicTableClass.serverActions.LOAD,
+        callback: function(receivedData){
+          dynamicTable.data = receivedData;
+
+          ifEverythingReadyCallPaint.call(dynamicTable);
+        }
+      });
+      loadPreferences(ifEverythingReadyCallPaint.bind(this));
+    };
+    /**
+     * Watch for updates from the server.
+     * @see tfw.dynamicTableClass#paint
+     */
+    this.serverWatch = function(){
+      var dynamicTable = this;
+      serverCall({
+        action: tfw.dynamicTableClass.serverActions.WATCH,
+        callback: function(changes){
+          if (changes.length > 0) {
+            dynamicTable.paint(changes);
+          }
+          dynamicTable.serverWatch();
+        }
+      });
+    };
+    /**
      * A "destructor" for table.
      * Aborts all pending requests created by current table.
      * Removes associated CSS.
      * @see tfw.dynamicTableClass~serverCall
      */
-    this.destroy = function () {
+    this.destroy = function(){
       for (var i = 0; i < pendingHttpRequests.length; i++) {
         pendingHttpRequests[i].abort();
       }
       document.getElementById('tfwInsertStyle-tfwDynamicTableStyling-' + this.tableHTMLId).remove();
-    }
+    };
     /**
      * Test if no filters are applied and table is sorted by column of type 'order'.
      * @return {boolean} True if reordering can be done, false otherwise.
      */
-    this.reorderEnabled = function () {
+    this.reorderEnabled = function(){
       var sorting = this.getPreference('sorting');
       var sortedByOrder = (sorting != null && ('dataCol' in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC);
       return sortedByOrder && this.getVisibleRowsCount() == this.getTotalRowsCount();
+    };
+    /**
+     * @param {Object} params - update parameters
+     * @param {number} params.id - ID of edited row
+     * @param {number} params.neworder - new order number of edited row
+     */
+    function serverUpdateOrder(params){
+      serverCall({
+        action: tfw.dynamicTableClass.serverActions.CHANGE_ORDER,
+        parameters: 'id=' + params.id + '&neworder=' + params.neworder
+      });
     }
     /**
      * Toggle reordering of rows via drag & drop.
@@ -1974,7 +1984,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @listens dragend
      * @listens drop
      */
-    this.toggleReorder = function () {
+    this.toggleReorder = function(){
       var dynamicTable = this;
       var rowReorderEnabled = this.reorderEnabled();
       var tbody = this.tableContainer.querySelector('tbody');
@@ -1985,11 +1995,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var i = 0; i < rows.length; i++) {
         rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']('draggable');
         rows[i].draggable = rowReorderEnabled;
-        rows[i].ondragstart = rowReorderEnabled ? function(event) {
+        rows[i].ondragstart = rowReorderEnabled ? function(event){
           this.addClass('dragged');
           event.dataTransfer.setData('text', event.target.nodeOrder());
         } : null;
-        rows[i].ondragover = rowReorderEnabled ? function(event) {
+        rows[i].ondragover = rowReorderEnabled ? function(event){
           event.preventDefault();
           event.dataTransfer.dropEffect = 'move';
           var dragged = dynamicTable.tableContainer.querySelector('tbody tr.dragged');
@@ -1998,23 +2008,23 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
           return false;
         } : null;
-        rows[i].ondrop = rowReorderEnabled ? function(event) {
+        rows[i].ondrop = rowReorderEnabled ? function(event){
           event.preventDefault();
         } : null;
-        rows[i].ondragend = rowReorderEnabled ? function() {
-          this.removeClass('dragged');                    
+        rows[i].ondragend = rowReorderEnabled ? function(){
+          this.removeClass('dragged');
           serverUpdateOrder({
             id: this.dataset.rowid,
             neworder: this.nodeOrder() + 1
           });
         } : null;
       }
-    }
+    };
     /**
      * Reflect a change in order in the table.
      * @param {?HTMLElement} referenceRow - before which row should be the moved row placed (if null, insert at the end)
      */
-    this.orderChange = function (referenceRow) {
+    this.orderChange = function(referenceRow){
       var draggedRow = this.tableContainer.querySelector('tbody tr.dragged');
       if (draggedRow.isSameNode(referenceRow)) {
         return;
@@ -2022,15 +2032,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var tbody = this.tableContainer.querySelector('tbody');
       var orderColumn = this.data.cols[orderDataCol].columnOrder;
       var originalRowOrder = draggedRow.nodeOrder();
-      var droppedRowOrder = (referenceRow != null) ? (referenceRow.nodeOrder() - ((referenceRow.nodeOrder() < originalRowOrder) ? 0 : 1)) : (
-        tbody.rows.length - 1);
+      var droppedRowOrder = (referenceRow == null) ? (tbody.rows.length - 1)
+        : (referenceRow.nodeOrder() - ((referenceRow.nodeOrder() < originalRowOrder) ? 0 : 1));
       tbody.insertBefore(draggedRow, referenceRow);
-      
+
       this.data.rows[originalRowOrder].cols[orderDataCol] = draggedRow.cells[orderColumn].innerHTML = droppedRowOrder + 1;
-      
+
       var movedDataRow = this.data.rows.splice(originalRowOrder, 1)[0];
       this.data.rows.splice(droppedRowOrder, 0, movedDataRow);
-      
+
       if (originalRowOrder < droppedRowOrder) { //drag down
         tbody.rows[originalRowOrder].cells[orderColumn].innerHTML--;
         this.data.rows[originalRowOrder].cols[orderDataCol]--;
@@ -2038,28 +2048,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
         tbody.rows[originalRowOrder].cells[orderColumn].innerHTML = parseInt(tbody.rows[originalRowOrder].cells[orderColumn].innerHTML) + 1;
         this.data.rows[originalRowOrder].cols[orderDataCol] = parseInt(this.data.rows[originalRowOrder].cols[orderDataCol]) + 1;
       }
-    }
+    };
     /**
      * @param {Object} params - update parameters
      * @param {number} params.id - ID of edited row
      * @param {number} params.col - order number of edited column
      * @param {number} params.value - new value
      */
-    function serverUpdateCell(params) {
+    function serverUpdateCell(params){
       serverCall({
         action: tfw.dynamicTableClass.serverActions.SAVE,
         parameters: 'id=' + params.id + '&col=' + params.col + '&value=' + encodeURIComponent(params.value)
-      });
-    }
-    /**
-     * @param {Object} params - update parameters
-     * @param {number} params.id - ID of edited row
-     * @param {number} params.neworder - new order number of edited row
-     */
-    function serverUpdateOrder(params) {
-      serverCall({
-        action: tfw.dynamicTableClass.serverActions.CHANGE_ORDER,
-        parameters: 'id=' + params.id + '&neworder=' + params.neworder
       });
     }
     /**
@@ -2068,7 +2067,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {string} input.value - value that can be obtained
      * @see tfw.dynamicTableClass~serverUpdateCell
      */
-    this.updateInput = function (input) {
+    this.updateInput = function(input){
       var rowID = input.closest('tr').dataset.rowid;
       var dataCol = input.closest('td').dataset.dataCol;
       var value = input.value;
@@ -2082,21 +2081,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
         col: dataCol,
         value: value
       });
-    }
+    };
     /**
      * Set active arrow (and make other arrows of same group inactive).
      * @param {HTMLElement} element - arrow to make active
      * @param {HTMLElement} base - where to search for arrows
+     * @param {boolean} [on=true] - whether to toggle active on or off
      */
-    function setActiveArrow(element, base, on) {
-      if (typeof(base) != 'undefined' && base != null) {
+    function setActiveArrow(element, base, on){
+      if (typeof base != 'undefined' && base != null) {
         var arrowType = null,
-          arrowGroup = null,
-          arrowGroups = [
+            arrowGroup = null,
+            arrowGroups = [
             [tfw.dynamicTableClass.arrowTypes.FILTER],
             [tfw.dynamicTableClass.arrowTypes.UP, tfw.dynamicTableClass.arrowTypes.DOWN]
-          ],
-          i;
+            ],
+            i;
         for (var j in arrowGroups) {
           var arrowTypes = arrowGroups[j];
           for (i in arrowTypes) {
@@ -2117,7 +2117,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
         }
       }
-      if (element != null && (typeof(on) == 'undefined' || on)) {
+      if (element != null && (typeof on == 'undefined' || on)) {
         element.addClass('active');
       }
     }
@@ -2127,7 +2127,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {number} column - order number of column in which the cell is in
      * @param {number} shift - how many rows to move by (positive = down, negative = up)
      */
-    function moveFocusToCell(cell, column, shift) {
+    function moveFocusToCell(cell, column, shift){
       var row = cell.parentNode;
       while (shift < 0) {
         row = row.previousSibling;
@@ -2145,47 +2145,56 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       row.children[column].querySelector('input').focus();
     }
-    /** @private **/
+    /**
+     * @private
+     * @param {number} dataCol - order of column (in data)
+     * @return {boolean}
+     */
     this.isColumnVisible = function(dataCol){
       return (!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
-        &&
-        !(this.tableContainer.querySelector('thead').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
-    }
+        && !(this.tableContainer.querySelector('thead').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
+    };
     /**
      * @private
      */
     this.setTableWidth = function(){
       var dynamicTable = this,
-        width = this.data.cols.reduce(function(previous, current, dataCol) {
-          return (dynamicTable.isColumnVisible(dataCol) ? parseInt(current.width) : 0) + previous
-        }, 0);
+          width = this.data.cols.reduce(function(previous, current, dataCol){
+            return (dynamicTable.isColumnVisible(dataCol) ? parseInt(current.width) : 0) + previous;
+          }, 0);
       if (rowEdit) {
         width += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
       }
       width += 10; //scrollbar
-      
+
       this.tableContainer.querySelector('table').style.width = width + 'px';
-    }
-    /** @private */
+    };
+    /**
+     * @private
+     * @param {number} dataCol - order of column (in data)
+     * @param {number} newWidth - width in pixels
+     */
     this.setColumnCellsWidths = function(dataCol, newWidth){
       var columnOrder = this.data.cols[dataCol].columnOrder,
-        cells = this.tableContainer.querySelectorAll('thead tr > :nth-child('+(parseInt(columnOrder)+1)+'), tbody tr > :nth-child('+(parseInt(columnOrder)+1)+')');
-      for(var i=0;i<cells.length;i++){
+          cells = this.tableContainer.querySelectorAll('thead tr > :nth-child('+(parseInt(columnOrder)+1)+'), '
+          + 'tbody tr > :nth-child('+(parseInt(columnOrder)+1)+')');
+      for (var i=0; i<cells.length; i++) {
         cells[i].style.width = newWidth+'px';
       }
       this.data.cols[dataCol].width = newWidth;
       this.setTableWidth();
-    }
+    };
     /**
      * Set width of a column.
      * @param {number} dataCol - order of column (in data)
      * @param {number} width - width of column in pixels
+     * @param {boolean} [dontSave=false] - don't save into preferences
      */
-    this.setColumnWidth = function (dataCol, width, dontSave) {
-      if (typeof(dontSave) == 'undefined' || !dontSave) {
+    this.setColumnWidth = function(dataCol, width, dontSave){
+      if (typeof dontSave == 'undefined' || !dontSave) {
         this.setWidthsPreference(width, dataCol, !dontSave);
       }
-      
+
       this.setColumnCellsWidths(dataCol, width);
     };
     /**
@@ -2195,16 +2204,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.createRow = function(rowOrder){
       var readonlyRow = ('readonly' in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
-        r = tfw.tr({
-          id: 'rowID-' + this.data.rows[rowOrder].id
-        });
-      if(readonlyRow){
+          r = tfw.tr({
+            id: 'rowID-' + this.data.rows[rowOrder].id
+          });
+      if (readonlyRow) {
         r.addClass('readonly');
       }
       r.setAttribute('data-rowid', this.data.rows[rowOrder].id);
       var columnOrder = 0,
-        b,
-        dynamicTable = this;
+          b,
+          dynamicTable = this;
       if (rowEdit) {
         r.add(tfw.td({
           className: 'rowEditCell',
@@ -2212,17 +2221,34 @@ var tfw = {//eslint-disable-line no-implicit-globals
             className: 'rowEditIcon clickable icon fa fa-info'
           })]
         }));
-        if(!readonlyRow){
-          b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
-        } else {
+        if (readonlyRow) {
           b.addClass('disabled');
+        } else {
+          b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
         }
         columnOrder++;
       }
-      var updateInputCallback = function () {
+      var updateInputCallback = function(){
         dynamicTable.updateInput.call(dynamicTable, this);
       };
-      var val, shift, type, c, readonlyCol;
+      var val,
+          shift,
+          type,
+          c,
+          readonlyCol,
+          keyCallback = function(event){
+            switch (event.keyCode) {
+              case 38: //up
+                shift = -1;
+                break;
+              case 40: //down
+                shift = 1;
+                break;
+              default:
+                return;
+            }
+            moveFocusToCell(this.closest('td'), this.dataset.columnOrder, shift);
+          };
       for (var j = 0; j < this.data.cols.length; j++) {
         if (!('hidden' in this.data.cols[j])) {
           var params = {};
@@ -2236,7 +2262,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
           val = this.data.rows[rowOrder].cols[j];
           readonlyCol = ('readonly' in this.data.cols[j]) && this.data.cols[j] === true;
-          if(typeof(columnRenderers[j]) == 'function') {
+          if (typeof columnRenderers[j] == 'function') {
             params.children.push.apply(params.children, columnRenderers[j](val));
           } else {
             type = ('type' in this.data.cols[j]) ? this.data.cols[j].type : null;
@@ -2282,19 +2308,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }
             if (setKeys != null) {
               setKeys.dataset.columnOrder = columnOrder;
-              setKeys.addEventListener('keyup', function(event) {
-                switch (event.keyCode) {
-                  case 38: //up
-                    shift = -1;
-                    break;
-                  case 40: //down
-                    shift = 1;
-                    break;
-                  default:
-                    return;
-                }
-                moveFocusToCell(this.closest('td'), this.dataset.columnOrder, shift);
-              });
+              setKeys.addEventListener('keyup', keyCallback);
             }
           }
           r.add(c = tfw.td(params));
@@ -2304,20 +2318,45 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       }
       return r;
+    };
+    /** @private */
+    this.getVisibleRowsCount = function(){
+      return [].slice.call(this.tableContainer.querySelectorAll('tbody tr')).reduce(function(previous, current){
+        return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
+      }, 0);
+    };
+    /** @private */
+    this.getTotalRowsCount = function(){
+      return this.tableContainer.querySelectorAll('tbody tr').length;
+    };
+    /** @private */
+    function updateRowCounts(){
+      var vis = this.getVisibleRowsCount();
+      var tot = this.getTotalRowsCount();
+      $(this.tableHTMLId + '-hiddenRowsInfo').style.display = (vis == tot) ? 'none' : 'inline-block';
+      $(this.tableHTMLId + '-hiddenRowsCount').innerHTML = tfw.strings.HIDDEN_ROWS + ': ' + (tot - vis);
     }
     /**
      * @private
      * @listens click
      * @listens keyup
      */
-    this.createAndFillTable = function() {
+    this.createAndFillTable = function(){
       //add CSS styling for filters
       var tableCSS = '';
       for (var dataCol = 0; dataCol < this.data.cols.length; dataCol++) {
         tableCSS += '#' + this.tableHTMLId + ' .filter' + dataCol + 'Invalid{display:none}\n';
       }
       tfw.insertStyle(tableCSS, 'tfwDynamicTableStyling-' + this.tableHTMLId);
-      var o, thead, tbody, r, c, columnOrder, dynamicTable = this, b, j;
+      var o,
+          thead,
+          tbody,
+          r,
+          c,
+          columnOrder,
+          dynamicTable = this,
+          b,
+          j;
       this.tableContainer.innerHTML = '';
       this.tableContainer.add(o = tfw.table({
         id: this.tableHTMLId,
@@ -2333,36 +2372,36 @@ var tfw = {//eslint-disable-line no-implicit-globals
       thead.add(r = tfw.tr({
         className: 'headlines'
       }));
-      
+
       var RESIZING_MIN_WIDTH = 40;
       var resizerMouseDown = function(event){
-        var t = window._resizedElement = event.target.closest('th');
-        t.dispatchEvent(new CustomEvent('resizestart'));
+        var cell = window._resizedElement = event.target.closest('th');
+        cell.dispatchEvent(new CustomEvent('resizestart'));
         document.body.addClass('resizing');
-        t._resizePositionX = event.clientX;
+        cell._resizePositionX = event.clientX;
       };
       var resizerMouseMove = function(event){
-        if(typeof(window._resizedElement) != 'undefined'){
-          var t = window._resizedElement;
-          var diff = event.clientX - t._resizePositionX;
-          if(diff != 0){
-            t.dispatchEvent(new CustomEvent('resizing', {detail: {move: diff}}));
-            
+        if (typeof window._resizedElement != 'undefined') {
+          var cell = window._resizedElement;
+          var diff = event.clientX - cell._resizePositionX;
+          if (diff != 0) {
+            cell.dispatchEvent(new CustomEvent('resizing', {detail: {move: diff}}));
+
             /** @todo apply min/max width */
-            var width = parseInt(t.style.width) + diff;
-            if(width < RESIZING_MIN_WIDTH){
+            var width = parseInt(cell.style.width) + diff;
+            if (width < RESIZING_MIN_WIDTH) {
               width = RESIZING_MIN_WIDTH;
             }
-            t.style.width = width + 'px';
-            
-            t._resizePositionX = event.clientX;
+            cell.style.width = width + 'px';
+
+            cell._resizePositionX = event.clientX;
           }
         }
       };
       var resizerMouseEnd = function(){
-        if(typeof(window._resizedElement) != 'undefined'){
-          var t = window._resizedElement;
-          t.dispatchEvent(new CustomEvent('resizestop'));
+        if (typeof window._resizedElement != 'undefined') {
+          var cell = window._resizedElement;
+          cell.dispatchEvent(new CustomEvent('resizestop'));
           document.body.removeClass('resizing');
           delete window._resizedElement;
         }
@@ -2370,21 +2409,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
       document.body.addEventListener('mousemove', resizerMouseMove);
       document.body.addEventListener('mouseup', resizerMouseEnd);
       document.addEventListener('mouseout', function(event){
-        if(!event.relatedTarget || event.relatedTarget.nodeName == 'HTML'){
+        if (!event.relatedTarget || event.relatedTarget.nodeName == 'HTML') {
           resizerMouseEnd(event);
         }
       });
-      
+
       /**
        * @private
-       * @param {number} dataCol
+       * @param {number} resizedDataCol
+       * @param {number} newWidth
        */
-      var onResizeCallback = function(dataCol, newWidth){
-        if(newWidth != this.data.cols[dataCol].width){
-          this.setColumnCellsWidths(dataCol, newWidth);
+      var onResizeCallback = function(resizedDataCol, newWidth){
+        if (newWidth != this.data.cols[resizedDataCol].width) {
+          this.setColumnCellsWidths(resizedDataCol, newWidth);
         }
       };
-      
+
       columnOrder = 0;
       if (rowEdit) {
         var th = document.createElement('th');
@@ -2393,27 +2433,29 @@ var tfw = {//eslint-disable-line no-implicit-globals
         r.add(th);
         columnOrder++;
       }
-      var resizer, d;
+      var resizer,
+          d;
       for (j = 0; j < this.data.cols.length; j++) {
         if (!('hidden' in this.data.cols[j])) {
           c = document.createElement('th');
-          c.add(d=tfw.span({className:'colHeadingControl'}));
+          c.add(d=tfw.span({className: 'colHeadingControl'}));
           var deltaWidth=0;
           if ('filter' in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
             d.add(b = tfw.div({
               className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.FILTER
             }));
             b.dataset.dataCol = j;
-            b.onclick = function () {
+            b.onclick = function(){
               dynamicTable.filter.call(dynamicTable, this, this.dataset.dataCol);
-            }
+            };
             deltaWidth+=16;
           }
           if ('sort' in this.data.cols[j] && this.data.cols[j].sort) {
-            var b1, b2;
+            var b1,
+                b2;
             d.add(b2 = tfw.div({
               className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.UP,
-              style: 'position:relative;left:2px;'                            
+              style: 'position:relative;left:2px;'
             }));
             b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
             d.add(b1 = tfw.div({
@@ -2421,12 +2463,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }));
             b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
             b1.dataset.dataCol = b2.dataset.dataCol = j;
-            b1.onclick = b2.onclick = function () {
+            b1.onclick = b2.onclick = function(){
               dynamicTable.sort.call(dynamicTable, this.dataset.dataCol, this.dataset.sortOrder);
             };
             deltaWidth+=24;
           }
-          if(!('noresize' in this.data.cols[j]) || this.data.cols[j].noresize === false) {
+          if (!('noresize' in this.data.cols[j]) || this.data.cols[j].noresize === false) {
             c.addClass('resizable');
             d.add(resizer = tfw.span({className: 'resizer'}));
             resizer.addEventListener('mousedown', resizerMouseDown);
@@ -2439,12 +2481,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
             deltaWidth+=8;
           }
 
-          c.add(tfw.span({className:'colHeading', innerHTML: this.data.cols[j].name, style:'width: calc(100% - '+deltaWidth+'px);'}));
-          
-          if (!('width' in this.data.cols[j])) {
-            this.data.cols[j].width = 200;
-          } else {
+          c.add(tfw.span({className: 'colHeading', innerHTML: this.data.cols[j].name, style: 'width: calc(100% - '+deltaWidth+'px);'}));
+
+          if ('width' in this.data.cols[j]) {
             this.data.cols[j].width = parseInt(this.data.cols[j].width);
+          } else {
+            this.data.cols[j].width = 200;
           }
           c.style.width = this.data.cols[j].width + 'px';
           c.dataset.dataCol = j;
@@ -2480,7 +2522,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                     id: this.tableHTMLId + '-hiddenRowsCount'
                   }), tfw.button({
                     className: 'resetTableFilter',
-                    onclick: function () {
+                    onclick: function(){
                       dynamicTable.resetFilters.call(dynamicTable);
                     },
                     innerHTML: '<span class="tfwArrow filter reset"></span>'
@@ -2491,8 +2533,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }), tfw.td({
             children: [
               tfw.button({
-                onclick: function () {
-                  dynamicTable.toggleColumnDialog.call(dynamicTable, this)
+                onclick: function(){
+                  dynamicTable.toggleColumnDialog.call(dynamicTable, this);
                 },
                 innerHTML: '<span class="fa fa-cog"></span>'
               })
@@ -2502,31 +2544,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }));
       updateRowCounts.call(dynamicTable);
       this.setTableWidth();
-    }
+    };
     /**
      * @private
      * @var {Object}
      */
     var defaultFilterValues = null;
     /** @private */
-    function updateRowCounts() {
-      var vis = this.getVisibleRowsCount();
-      var tot = this.getTotalRowsCount();
-      $(this.tableHTMLId + '-hiddenRowsInfo').style.display = (vis == tot) ? 'none' : 'inline-block';
-      $(this.tableHTMLId + '-hiddenRowsCount').innerHTML = tfw.strings.HIDDEN_ROWS + ': ' + (tot - vis);
-    }
-    /** @private */
-    this.getVisibleRowsCount = function () {
-      return [].slice.call(this.tableContainer.querySelectorAll('tbody tr')).reduce(function(previous, current) {
-        return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
-      }, 0);
-    }
-    /** @private */
-    this.getTotalRowsCount = function () {
-      return this.tableContainer.querySelectorAll('tbody tr').length;
-    }
-    /** @private */
-    this.getDataRowById = function (rowID) {
+    this.getDataRowById = function(rowID){
       var rowOrder = null;
       for (var j = 0; j < this.data.rows.length; j++) {
         if (this.data.rows[j].id == rowID) {
@@ -2535,7 +2560,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       }
       return rowOrder;
-    }
+    };
     /**
      * Object representing an update/insertion/deletion in data.
      * Type of change is determined by present properties.
@@ -2552,10 +2577,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @todo Change checkbox value so that it's not sent back to server
      * @todo Handle update of cell that is currently being edited
      */
-    this.paint = function (changes) {
+    this.paint = function(changes){
       var i,
-        dataCol,
-        sorting = this.getPreference('sorting');
+          dataCol,
+          sorting = this.getPreference('sorting');
       this.tableHTMLId = 'dynamicTable-' + tableId;
       if (document.getElementById(this.tableHTMLId) == null) {
         this.createAndFillTable();
@@ -2581,9 +2606,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
             this.setColumnWidth(dataCol, widths[dataCol], true);
           }
         }
-      } else if (typeof(changes) != 'undefined') {
+      } else if (typeof changes != 'undefined') {
         var tbody = this.tableContainer.querySelector('tbody'),
-          rowOrder;
+            rowOrder;
         for (i = 0; i < changes.length; i++) {
           var rowID = changes[i].id;
           if ('col' in changes[i]) { //update
@@ -2597,8 +2622,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
               this.data.rows[rowOrder].cols[dataCol] = newValue;
               var cell = tbody.rows[rowOrder].cells[column];
               cell.addClass('hasBeenChanged');
-              setTimeout(function(cell){cell.removeClass('hasBeenChanged');}, 3000, cell);
-              if(typeof(columnRenderers[dataCol]) == 'function') {
+              setTimeout(function(updatedCell){
+                updatedCell.removeClass('hasBeenChanged');
+              }, 3000, cell);
+              if (typeof columnRenderers[dataCol] == 'function') {
                 cell.innerHTML = '';
                 columnRenderers[dataCol](newValue).map(function(node){cell.add(node);});
               } else {
@@ -2617,12 +2644,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
               }
             }
           } else if ('cols' in changes[i]) { //insertion
-            var comparator = this.getCmp(sorting !== null ? sorting.dataCol : null).bind(null, sorting.asc);
+            var comparator = this.getCmp(sorting === null ? null : sorting.dataCol).bind(null, sorting.asc);
             rowOrder = this.data.rows.push({id: rowID, cols: changes[i].cols}) - 1;
             var newRow = this.createRow(rowOrder);
             var greaterRow = null;
-            for(i = 0; i < this.data.rows.length - 1; i++) { //don't iterate over new row
-              if(comparator(this.data.rows[rowOrder], this.data.rows[i]) < 0){
+            for (i = 0; i < this.data.rows.length - 1; i++) { //don't iterate over new row
+              if (comparator(this.data.rows[rowOrder], this.data.rows[i]) < 0) {
                 greaterRow = tbody.rows[i];
                 break;
               }
@@ -2631,13 +2658,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
           } else { //deletion
             rowOrder = this.getDataRowById(rowID);
             this.data.rows.splice(rowOrder, 1);
-            if(rowOrder === null){
+            if (rowOrder === null) {
               console.error('Row that is not present in the table was deleted.');
-            }
-            else {
+            } else {
               tbody.rows[rowOrder].remove();
-              if(orderDataCol !== null && this.reorderEnabled()){
-                for(i = rowOrder;i<this.data.rows.length;i++){
+              if (orderDataCol !== null && this.reorderEnabled()) {
+                for (i = rowOrder; i<this.data.rows.length; i++) {
                   this.data.rows[i].cols[orderDataCol] -= 1;
                   tbody.rows[i].cells[this.data.cols[orderDataCol].columnOrder].innerHTML -= 1;
                 }
@@ -2650,7 +2676,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       //calculate filter default values
       defaultFilterValues = {};
-      var columnValues, minV, maxV;
+      var columnValues,
+          minV,
+          maxV;
       for (i = 0; i < this.data.cols.length; i++) {
         if (this.data.cols[i].filter) {
           var defaultValue;
@@ -2663,7 +2691,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               break;
             case tfw.dynamicTableClass.colTypes.DATE:
               columnValues = this.data.rows.map(function(row){return row.cols[i];}).sort();
-              minV = columnValues[0],
+              minV = columnValues[0];
               maxV = columnValues.pop();
               defaultValue = {
                 min: minV,
@@ -2672,7 +2700,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               break;
             case tfw.dynamicTableClass.colTypes.NUMBER:
               columnValues = this.data.rows.map(function(row){return row.cols[i];});
-              minV = Math.min.apply(null, columnValues),
+              minV = Math.min.apply(null, columnValues);
               maxV = Math.max.apply(null, columnValues);
               defaultValue = {
                 min: minV,
@@ -2695,10 +2723,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       }
       //apply sorting
-      if (sorting != null) {
-        this.sort(sorting.dataCol, sorting.asc, true);
-      } else {
+      if (sorting == null) {
         this.toggleReorder();
+      } else {
+        this.sort(sorting.dataCol, sorting.asc, true);
       }
     };
     /**
@@ -2711,7 +2739,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {number} dataCol - order of filtered column (in data)
      * @param {boolean} [save=true] - whether to save immidiatelly
      */
-    this.setFilterPreferenceIfNotDefault = function (value, dataCol, save) {
+    this.setFilterPreferenceIfNotDefault = function(value, dataCol, save){
       var filterValues = this.getPreference('filterValues');
       if (filterValues == null) {
         filterValues = {};
@@ -2721,12 +2749,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
       } else {
         filterValues[dataCol] = value;
       }
-      if (typeof(save) == 'undefined' || save) {
+      if (typeof save == 'undefined' || save) {
         this.setPreference('filterValues', filterValues);
       }
-    }
+    };
     /** @private */
-    this.setWidthsPreference = function (width, dataCol, save) {
+    this.setWidthsPreference = function(width, dataCol, save){
       var widths = this.getPreference('widths');
       if (widths == null) {
         widths = {};
@@ -2736,36 +2764,36 @@ var tfw = {//eslint-disable-line no-implicit-globals
       } else {
         widths[dataCol] = width;
       }
-      if (typeof(save) == 'undefined' || save) {
+      if (typeof save == 'undefined' || save) {
         this.setPreference('widths', widths);
       }
-    }
+    };
     /**
      * @private
      * @param {string} preference - preference name
      * @param {number} dataCol - order of column (in data)
      * @return {tfw.dynamicTableClass~filterValue|Object} preference value
      */
-    this.getColumnPreference = function (preference, dataCol) {
+    this.getColumnPreference = function(preference, dataCol){
       var values = this.getPreference(preference);
       if (values != null && dataCol in values) {
         return values[dataCol];
       } else {
         return null;
       }
-    }
+    };
     /**
      * @private
      * @param {tfw.dynamicTableClass~filterValue} value - filter value
      * @param {number} dataCol - order of filtered column (in data)
      */
-    this.isFilterValueDefault = function (value, dataCol) {
-      if (typeof(value) == 'object' && ('min' in value || 'max' in value)) {
-        return (!('min' in value) || value.min === defaultFilterValues[dataCol].min) && (!('max' in value) || value.max ===
-          defaultFilterValues[dataCol].max);
+    this.isFilterValueDefault = function(value, dataCol){
+      if (typeof value == 'object' && ('min' in value || 'max' in value)) {
+        return (!('min' in value) || value.min === defaultFilterValues[dataCol].min)
+          && (!('max' in value) || value.max === defaultFilterValues[dataCol].max);
       }
       return value === defaultFilterValues[dataCol];
-    }
+    };
     /**
      * Apply filter for values of a column.
      * Creates a {@link tfw.dialog|dialog} with filter (and moves focus to input field).
@@ -2773,7 +2801,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {number} dataCol - order of searched column (in data)
      * @todo Change rangeMin/rangeMax/dateMin/dateMax classes + {@link tfw.dynamicTableClass#filterAny}
      */
-    this.filter = function (filterElement, dataCol) {
+    this.filter = function(filterElement, dataCol){
       var dynamicTable = this;
       if (this.data.cols[dataCol].hidden) {
         console.error('Tried to apply filter on a hidden column.');
@@ -2784,23 +2812,23 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       var c = document.createElement('div');
       var type = this.data.cols[dataCol].type,
-        value = this.getColumnPreference('filterValues', dataCol),
-        minV,
-        maxV,
-        f1,
-        f2,
-        inputToFocus = null;
+          value = this.getColumnPreference('filterValues', dataCol),
+          minV,
+          maxV,
+          f1,
+          f2,
+          inputToFocus = null;
       switch (type) {
         case tfw.dynamicTableClass.colTypes.CHECKBOX:
           var filter = tfw.select({
             list: [tfw.strings.ALL, tfw.strings.YES, tfw.strings.NO].join(';'),
             value: value,
-            onchange: function () {
+            onchange: function(){
               dynamicTable.filterAny(this.dataset.dataCol, this.value);
             }
           });
           filter.dataset.dataCol = dataCol;
-          filter.addEventListener('click', function(event) {
+          filter.addEventListener('click', function(event){
             event.stopPropagation();
           });
           c.add(filter);
@@ -2811,7 +2839,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           f1 = tfw.input({
             type: 'number',
             className: 'rangeMin',
-            onchange: function () {
+            onchange: function(){
               var max = this.closest('th').querySelector('.rangeMax');
               max.min = this.value;
               if (parseInt(max.value) < parseInt(max.min)) {
@@ -2828,7 +2856,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           f2 = tfw.input({
             type: 'number',
             className: 'rangeMax',
-            onchange: function () {
+            onchange: function(){
               var min = this.closest('th').querySelector('.rangeMin');
               min.max = this.value;
               if (parseInt(min.value) > parseInt(min.max)) {
@@ -2846,17 +2874,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
           f1.querySelector('.rangeMin').dataset.dataCol = f2.querySelector('.rangeMax').dataset.dataCol = dataCol;
           c.add(f1);
           c.add(f2);
-          f1.addEventListener('click', function(event) {
+          f1.addEventListener('click', function(event){
             event.stopPropagation();
           });
-          f2.addEventListener('click', function(event) {
+          f2.addEventListener('click', function(event){
             event.stopPropagation();
           });
           break;
         case tfw.dynamicTableClass.colTypes.DATE:
           minV = defaultFilterValues[dataCol].min;
           maxV = defaultFilterValues[dataCol].max;
-          
+
           f1 = tfw.input({
             type: 'text',
             className: 'dateMin',
@@ -2864,13 +2892,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
             legend: tfw.strings.FROM
           });
           tfw.calendarExtend(inputToFocus = f1.querySelector('input'));
-          f1.querySelector('input').addEventListener('change', function () {
+          f1.querySelector('input').addEventListener('change', function(){
             dynamicTable.filterAny(this.dataset.dataCol, {
               min: this.value,
               max: this.closest('div').querySelector('.dateMax').value
             });
           });
-          
+
           f2 = tfw.input({
             type: 'text',
             className: 'dateMax',
@@ -2878,19 +2906,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
             legend: tfw.strings.TO
           });
           tfw.calendarExtend(f2.querySelector('input'));
-          f2.querySelector('input').addEventListener('change', function () {
+          f2.querySelector('input').addEventListener('change', function(){
             dynamicTable.filterAny(this.dataset.dataCol, {
               min: this.closest('div').querySelector('.dateMin').value,
               max: this.value
             });
           });
-          
+
           f1.querySelector('input').size = f2.querySelector('input').size = 10;
           f1.querySelector('.dateMin').dataset.dataCol = f2.querySelector('.dateMax').dataset.dataCol = dataCol;
-          f1.addEventListener('click', function(event) {
+          f1.addEventListener('click', function(event){
             event.stopPropagation();
           });
-          f2.addEventListener('click', function(event) {
+          f2.addEventListener('click', function(event){
             event.stopPropagation();
           });
           c.add(f1);
@@ -2901,17 +2929,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
             type: 'text',
             placeholder: tfw.strings.FILTER,
             value: value,
-            onchange: function () {
+            onchange: function(){
               dynamicTable.filterAny(this.dataset.dataCol, this.value.trim(), this.dataset.searchType);
             }
           });
           searchInput.dataset.searchType = this.data.cols[dataCol].search;
           searchInput.dataset.dataCol = dataCol;
-          searchInput.onkeyup = function () {
+          searchInput.onkeyup = function(){
             dynamicTable.filterAny(this.dataset.dataCol, this.value.trim(), this.dataset.searchType, true);
-          }
+          };
           c.add(searchInput);
-          searchInput.addEventListener('click', function(event) {
+          searchInput.addEventListener('click', function(event){
             event.stopPropagation();
           });
           break;
@@ -2924,10 +2952,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
         modal: 'auto'
       }, true);
       wrapper.add(c);
-      if(inputToFocus !== null){
+      if (inputToFocus !== null) {
         inputToFocus.focus();
       }
-    }
+    };
     /**
      * @private
      * Compare two numbers - for use with sorting functions.
@@ -2935,7 +2963,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {number} b - number to compare to
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
      */
-    function cmp(a, b) {
+    function cmp(a, b){
       a = parseInt(a);
       b = parseInt(b);
       return a < b ? -1 : a > b;
@@ -2962,8 +2990,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function cmpNumericRows(dataCol, asc, row1, row2){
       var a = row1.cols[dataCol],
-        b = row2.cols[dataCol];
-      return (a != b) ? (cmp(a, b) * asc) : cmpRowsIds(asc, row1, row2);
+          b = row2.cols[dataCol];
+      return (a == b) ? cmpRowsIds(asc, row1, row2) : (cmp(a, b) * asc);
     }
     /**
      * @private
@@ -2974,13 +3002,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
      */
-    function cmpTextRows(dataCol, asc, row1, row2) {
+    function cmpTextRows(dataCol, asc, row1, row2){
       var a = row1.cols[dataCol],
-        b = row2.cols[dataCol];
+          b = row2.cols[dataCol];
       return (a === '' && b === '') ? (cmpRowsIds(asc, row1, row2))
         : ((a === '') ? 1 : ((b === '') ? -1 : ((a.localeCompare(b) * asc) || cmpRowsIds(asc, row1, row2))));
     }
-    
+
     /**
      * @private
      * @return {function} row comparator
@@ -2990,33 +3018,34 @@ var tfw = {//eslint-disable-line no-implicit-globals
         (tfw.dynamicTableClass.colTypes.cmpType[this.data.cols[dataCol].type] == tfw.dynamicTableClass.colCmpTypes.NUMERIC)
           ? cmpNumericRows : cmpTextRows
       ).bind(null, dataCol);
-    }
-    
+    };
+
     /**
      * Apply sorting by values (text without HTML) of a column.
      * Text fields are sorted locale aware, with empty strings always last.
      * @param {?number} dataCol - order of column (in data), if null sorts by IDs
      * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
+     * @param {boolean} [dontSave=false] - don't save into preferences
      */
-    this.sort = function (dataCol, asc, dontSave) {
+    this.sort = function(dataCol, asc, dontSave){
       var tbody = this.tableContainer.querySelector('tbody');
-      if(dataCol !== null){
-        if (typeof(dontSave) == 'undefined' || !dontSave) {
+      if (dataCol !== null) {
+        if (typeof dontSave == 'undefined' || !dontSave) {
           this.setPreference('sorting', {
             dataCol: dataCol,
             asc: asc
           });
         }
-        
+
         var column = this.data.cols[dataCol].columnOrder;
         this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? 'UP' : 'DOWN'], this.tableContainer);
       }
-      
+
       this.data.rows.sort(this.getCmp(dataCol).bind(null, asc));
       for (var i = 0; i < this.data.rows.length; i++) {
         tbody.appendChild(tbody.rows.namedItem('rowID-' + this.data.rows[i].id));
       }
-      
+
       this.toggleReorder();
     };
     /**
@@ -3027,11 +3056,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {?HTMLElement} [arrowBase] - base to pass to {@link tfw.dynamicTableClass~setActiveArrow} (defaults to column's heading)
      * @see tfw.dynamicTableClass~setActiveArrow
      */
-    this.setActiveFilterInColumn = function (column, on, arrowType, arrowBase) {
+    this.setActiveFilterInColumn = function(column, on, arrowType, arrowBase){
       var base = this.tableContainer.getElementsByClassName('headlines')[0].getElementsByTagName('th')[column];
       var filterIcon = base.getElementsByClassName('tfwArrow ' + arrowType)[0];
-      setActiveArrow(filterIcon, (typeof(arrowBase) != 'undefined') ? arrowBase : base, on);
-    }
+      setActiveArrow(filterIcon, (typeof arrowBase == 'undefined') ? base : arrowBase, on);
+    };
     /**
      * Apply any filter.
      * @param {number} dataCol - order number of filtered column (in data)
@@ -3040,7 +3069,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [dontSave=false] - dont save into preferences (for TEXT)
      * @todo Better behaviour when min and max are crossed (min > max)
      */
-    this.filterAny = function (dataCol, value, searchType, dontSave) {
+    this.filterAny = function(dataCol, value, searchType, dontSave){
       var p;
       var column = this.data.cols[dataCol].columnOrder;
       var type = this.data.cols[dataCol].type;
@@ -3060,6 +3089,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 value[p] = defaultFilterValues[dataCol][p];
               }
               break;
+            //intentionally omitted default
           }
         }
         if (value.min < defaultFilterValues[dataCol].min) {
@@ -3083,19 +3113,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
               case tfw.dynamicTableClass.colTypes.DATE:
                 prefix = 'date';
                 break;
+              //intentionally omitted default
             }
             desktop.div.querySelector('.tfwContainer .' + prefix + 'M' + p.substring(1)).value = value[p];
           }
         }
       }
       //update current filter values
-      this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof(dontSave) == 'undefined' || !dontSave));
+      this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == 'undefined' || !dontSave));
       this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
-      var tbody = this.tableContainer.querySelector('tbody');
-      if (typeof(searchType) != 'undefined') {
-        var searchFunc = (searchType == 1) ? 'startsWith' : 'includes';
-      }
-      var rowValue;
+      var tbody = this.tableContainer.querySelector('tbody'),
+          searchFunc = (typeof searchType != 'undefined' && searchType == 1) ? 'startsWith' : 'includes',
+          rowValue;
       for (var i = 0; i < tbody.rows.length; i++) {
         var matches = true;
         switch (type) {
@@ -3115,13 +3144,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
             rowValue = tbody.rows[i].cells[column].querySelector('input').value;
             matches = (rowValue === '' || (value.min <= rowValue && rowValue <= value.max));
             break;
+          //intentionally omitted default
         }
         tbody.rows[i][matches ? 'removeClass' : 'addClass']('filter' + dataCol + 'Invalid');
       }
       updateRowCounts.call(this);
-    }
+    };
     /** Reset all applied filters. */
-    this.resetFilters = function () {
+    this.resetFilters = function(){
       var last = null;
       for (var i = 0; i < this.data.cols.length; i++) {
         if ('filter' in this.data.cols) {
@@ -3135,23 +3165,23 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (last != null) {
         this.filterAny(last, defaultFilterValues[last]); //save
       }
-    }
+    };
     /**
      * Toggle visibility of a column. Only hides cells in TBODY and THEAD.
      * Requires .hideColumn{display:none}
      * @param {number} dataCol - number of column (in data)
      * @param {boolean} [dontSave=false] - don't save into preferences
      */
-    this.toggleColumn = function (dataCol, dontSave) {
+    this.toggleColumn = function(dataCol, dontSave){
       var column = this.data.cols[dataCol].columnOrder;
       var visible;
-      [].slice.call(this.tableContainer.querySelectorAll('tbody tr > :nth-child(' + (column + 1) + '), thead tr > :nth-child(' +
-        (column + 1) + ')')).forEach(function(cell) {
+      [].slice.call(this.tableContainer.querySelectorAll('tbody tr > :nth-child(' + (column + 1) + '), thead tr > :nth-child('
+        + (column + 1) + ')')).forEach(function(cell){
           visible = cell.hasClass('hideColumn');
           cell.toggleClass('hideColumn');
         });
       this.setTableWidth();
-      if (typeof(dontSave) == 'undefined' || !dontSave) {
+      if (typeof dontSave == 'undefined' || !dontSave) {
         /** @var {boolean[]} */
         var hiddenColumns = this.getPreference('hiddenColumns') || [];
         if (visible) {
@@ -3167,18 +3197,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Creates a {@link tfw.dialog|dialog} with checkboxes.
      * @param {HTMLElement} element - above which element should checkboxes be positioned
      */
-    this.toggleColumnDialog = function (element) {
+    this.toggleColumnDialog = function(element){
       var dynamicTable = this,
-        hiddenColumns = this.getPreference('hiddenColumns'),
-        c = tfw.div({
-          className: 'tfwDynamicTableColumnDialog'
-        });
+          hiddenColumns = this.getPreference('hiddenColumns'),
+          c = tfw.div({
+            className: 'tfwDynamicTableColumnDialog'
+          });
       for (var j = 0; j < this.data.cols.length; j++) {
         if (!this.data.cols[j].hidden) {
           var checkbox = tfw.checkbox({
             text: this.data.cols[j].name,
             value: (hiddenColumns != null && hiddenColumns[j] === true) ? 0 : 1,
-            onchange: function () {
+            onchange: function(){
               dynamicTable.toggleColumn(this.dataset.dataCol);
             }
           });
@@ -3192,7 +3222,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         overlay: true
       }, true, true);
       wrapper.add(c);
-    }
+    };
   },
   /**
    * Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
@@ -3201,25 +3231,25 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Table
    * @see tfw.dynamicTableClass
    */
-  dynamicTable: function (params) {
-    var t = new tfw.dynamicTableClass(params);
-    var ret = t.tableContainer;
-    for (var prop in t) {
-      ret[prop] = t[prop];
+  dynamicTable: function(params){
+    var tableObject = new tfw.dynamicTableClass(params);
+    var ret = tableObject.tableContainer;
+    for (var prop in tableObject) {
+      ret[prop] = tableObject[prop];
     }
     ret.reload();
     return ret;
   },
   /**
    * Create a calendar input field.
-   * For parameters, see {@link tfw.input}.
+   * @param {Object} params - see {@link tfw.input}
    * @see tfw.input
    * @see tfw.calendarExtend
    * @return {HTMLElement} Returns input (+ optionally legend) wrapper
    */
   calendar: function(params){
     var inputAndMaybeLegend = tfw.input(params);
-    if(inputAndMaybeLegend.tagName.toUpperCase() == 'INPUT'){
+    if (inputAndMaybeLegend.tagName.toUpperCase() == 'INPUT') {
       inputAndMaybeLegend = tfw.calendarExtend(inputAndMaybeLegend);
     } else {
       var input = inputAndMaybeLegend.querySelector('input');
@@ -3247,15 +3277,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
    * @see tfw.calendar
    */
-  calendarExtend: function (input) {
+  calendarExtend: function(input){
     var calendarInput = input,
-      calendarWrapper = document.createElement('span'),
-      calendarIcon = document.createElement('span');
+        calendarWrapper = document.createElement('span'),
+        calendarIcon = document.createElement('span');
     calendarWrapper.className = 'tfwCalendarWrapper';
     if (input.parentNode) {
       input.parentNode.insertBefore(calendarWrapper, input);
     }
-    if(input.style.width){
+    if (input.style.width) {
       calendarWrapper.style.width = input.style.width;
       input.style.width = '';
     }
@@ -3272,15 +3302,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {string} Date in format yyyy-mm-dd
      */
     function completeDate(date){
-      if(date.match(/^\d{4}$/)){ //yyyy
+      if (date.match(/^\d{4}$/)) { //yyyy
         return date+'-01-01';
-      } else if(date.match(/^\d{4}-\d{2}$/)){ //yyyy-mm
+      } else if (date.match(/^\d{4}-\d{2}$/)) { //yyyy-mm
         return date+'-01';
       } else {
         return date;
       }
     }
-    input.addEventListener('change', function(){this.value=completeDate(this.value);}, true);
+    input.addEventListener('change', function(){
+      this.value=completeDate(this.value);
+    }, true);
     var calendarContainer = document.createElement('div');
     calendarContainer.addClass('calendarWidget');
     var selectedYear;
@@ -3294,30 +3326,28 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      */
     var selectedDay;
-    var setSelectedDate = function (year, month, day) {
+    var setSelectedDate = function(year, month, day){
       selectedYear = parseInt(year);
       selectedMonth = parseInt(month);
       selectedDay = parseInt(day);
-    }
+    };
     var readonly = input.readOnly || input.disabled;
-    if(!readonly){
-      if (tfw.calendarExtend.placeCalendar != null) {
-        calendarIcon.addEventListener('click', function() {
-          tfw.calendarExtend.placeCalendar(calendarContainer, input);
-        });
-      } else {
-        console.error('Calendar widget was not added to the document - no callback was set.');
-      }
-    } else {
+    if (tfw.calendarExtend.placeCalendar == null) {
+      console.error('Calendar widget was not added to the document - no callback was set.');
+    } else if (readonly) {
       calendarIcon.addClass('disabled');
+    } else {
+      calendarIcon.addEventListener('click', function(){
+        tfw.calendarExtend.placeCalendar(calendarContainer, input);
+      });
     }
 
-    function paint() {
+    function paint(){
       var d = new Date(selectedYear, selectedMonth - 1, 1),
-        i,
-        /* which day of week is the first one of a month */
-        w = (d.getDay()+6) % 7, /* so that Monday is first */
-        sp = 0;
+          i,
+          //which day of week is the first one of a month
+          w = (d.getDay()+6) % 7, //so that Monday is first
+          sp = 0;
       calendarContainer.innerHTML = '';
       var header = document.createElement('div');
       header.setAttribute('class', 'head');
@@ -3356,8 +3386,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var pdm = new Date(selectedYear, selectedMonth, 0).getDate();
       for (i = 1; i <= pdm; i++) {
         day = document.createElement('span');
-        day.setAttribute('id', 'day-' + selectedYear + '-' + (selectedMonth < 10 ? '0' + selectedMonth : selectedMonth) + '-' + (i < 10 ? '0' +
-          i : i));
+        day.setAttribute('id', 'day-' + selectedYear + '-' + (selectedMonth < 10 ? '0' + selectedMonth : selectedMonth) + '-'
+          + (i < 10 ? '0' + i : i));
         day.setAttribute('class', 'day' + (sp % 7 == 6 ? ' sunday' : '') + (i == selectedDay ? ' current' : ''));
         day.innerHTML = i;
         day.addEventListener('mousedown', clicked, true);
@@ -3378,27 +3408,27 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       calendarContainer.add(week);
     }
-    calendarIcon.addEventListener('click', function() {
+    calendarIcon.addEventListener('click', function(){
       var selectedDate = this._calendarInput.value.split('-');
       setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
       paint();
     });
 
-    function backward(event) {
+    function backward(event){
       event.stopPropagation();
       event.preventDefault();
       setSelectedDate(selectedYear - (selectedMonth == 1 ? 1 : 0), selectedMonth == 1 ? 12 : selectedMonth - 1, 0);
       paint();
     }
 
-    function forward(event) {
+    function forward(event){
       event.stopPropagation();
       event.preventDefault();
       setSelectedDate(selectedYear + (selectedMonth == 12 ? 1 : 0), selectedMonth == 12 ? 1 : selectedMonth + 1, 0);
       paint();
     }
 
-    function clicked() {
+    function clicked(){
       input.value = this.id.substr(4);
       var current = calendarContainer.querySelector('.current');
       if (current) {
@@ -3409,7 +3439,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     return calendarWrapper;
   }
-}
+};
 /**
  * @typedef {Object} tfw.dynamicTableClass.serverAction
  * @property {string} name - action name sent to server
@@ -3480,12 +3510,13 @@ tfw.dynamicTableClass.colTypes = {
   CHECKBOX: 'checkbox',
   DATE: 'date',
   ORDER: 'order',
+  /** @type {Object} */
   cmpType: {
-    'text': tfw.dynamicTableClass.colCmpTypes.TEXT,
-    'date': tfw.dynamicTableClass.colCmpTypes.TEXT,
-    'number': tfw.dynamicTableClass.colCmpTypes.NUMERIC,
-    'checkbox': tfw.dynamicTableClass.colCmpTypes.NUMERIC,
-    'order': tfw.dynamicTableClass.colCmpTypes.NUMERIC
+    text: tfw.dynamicTableClass.colCmpTypes.TEXT,
+    date: tfw.dynamicTableClass.colCmpTypes.TEXT,
+    number: tfw.dynamicTableClass.colCmpTypes.NUMERIC,
+    checkbox: tfw.dynamicTableClass.colCmpTypes.NUMERIC,
+    order: tfw.dynamicTableClass.colCmpTypes.NUMERIC
   }
 };
 /**
@@ -3539,7 +3570,7 @@ tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
  * @var {tfw.calendarExtend~placeCalendar}
  * @default
  */
-tfw.calendarExtend.placeCalendar = function (cal, input) {
+tfw.calendarExtend.placeCalendar = function(cal, input){
   var wrapper = tfw.createLayerAndWrapperAtElement(input, {
     autoclose: true,
     modal: 'auto'
@@ -3548,15 +3579,21 @@ tfw.calendarExtend.placeCalendar = function (cal, input) {
 };
 window.addEventListener('load', tfw.init);
 
+/** @todo Remove */
+Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
+  console.error('DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.');
+  return tfw.AJAX_LOADER;
+}});
+
 /**
  * Function package for preparing HTML elements.
  * @class
  */
-var prvek = {
+var prvek = {//eslint-disable-line no-implicit-globals
   /**
    * @todo Move to {@link tfw} as tfw.multiCheckbox
    */
-  seznamZatrzitek: function (co) {
+  seznamZatrzitek: function(co){
     var z;
     var x = document.createElement('div');
     if (co.id) x.id = co.id;
@@ -3569,7 +3606,7 @@ var prvek = {
       for (var i = 0; i < co.seznam.length; i++) x.add(tfw.checkbox({
         id: co.id + '-' + co.seznam[i].id,
         text: co.seznam[i].text,
-        onchange: function () {
+        onchange: function(){
           var y = [];
           var s = this.parentNode;
           for (var i = 0; i < s.childNodes.length; i++)
@@ -3579,7 +3616,7 @@ var prvek = {
         }
       }));
     Object.defineProperty(x, 'value', {
-      set: function (val) {
+      set: function(val){
         y = [];
         if (val == 'A') {
           for (var i = 0; i < this.childNodes.length; i++) this.childNodes[i].value = 1;
@@ -3593,7 +3630,7 @@ var prvek = {
           }
         }
       },
-      get: function () {
+      get: function(){
         return this._value;
       },
       enumerable: true,
@@ -3601,11 +3638,11 @@ var prvek = {
     });
     x._value = '';
     if (co.init) x.value = co.init;
-    x.setNone = function () {
-      this.value = ''
+    x.setNone = function(){
+      this.value = '';
     };
-    x.setAll = function () {
-      this.value = 'A'
+    x.setAll = function(){
+      this.value = 'A';
     };
     return x;
   },
@@ -3613,7 +3650,7 @@ var prvek = {
    * @deprecated
    * @see tfw.table
    */
-  tabulka: function (co) {
+  tabulka: function(co){
     console.error('DEPRECATED prvek.tabulka(' + JSON.stringify(co) + ')');
     if (co.radky) co.rows = co.radky;
     return tfw.table(co);
@@ -3622,7 +3659,7 @@ var prvek = {
    * @deprecated
    * @see tfw.tr
    */
-  radek: function (co) {
+  radek: function(co){
     console.error('DEPRECATED prvek.radek(' + JSON.stringify(co) + ')');
     if (co.sloupce) co.columns = co.sloupce;
     return tfw.tr(co);
@@ -3631,7 +3668,7 @@ var prvek = {
    * @deprecated
    * @see tfw.td
    */
-  sloupec: function (co) {
+  sloupec: function(co){
     console.error('DEPRECATED prvek.sloupec(' + JSON.stringify(co) + ')');
     if (co.obsah) co.innerHTML = co.obsah;
     if (co.width) co.style = 'width:' + co.width + 'px;' + ((co.style) ? co.style : '');
@@ -3646,7 +3683,7 @@ var prvek = {
    * @todo Remove dependencies on Triobo
    * @todo Move to {@link tfw}
    */
-  barva: function (co) {
+  barva: function(co){
     var x = document.createElement('div');
     if (co.id) x.id = co.id;
     if (co.className) co.className = 'nastaveniBarvy ' + co.className;
@@ -3656,7 +3693,7 @@ var prvek = {
     x.mouseDown = 0;
     if (co.action) x.action = co.action;
     x.zmenaPalety = 0;
-    x.addEventListener('mousedown', function(e) {
+    x.addEventListener('mousedown', function(e){
       var b;
       var dlg = tfw.dialog({
         title: t(208),
@@ -3667,7 +3704,7 @@ var prvek = {
             id: 'dlgBarvaNastavit',
             text: t(134),
             default: 1,
-            action: function () {
+            action: function(){
               x.barvaAktualniAVychozi(x.value, 0);
               if (x.action) x.action();
               prvek.rezimVyberuBarvy = $('zalMichani').value;
@@ -3677,7 +3714,7 @@ var prvek = {
           },
           co.lzeOdebrat ? {
             text: t(309),
-            action: function () {
+            action: function(){
               x.barvaAktualniAVychozi('rgba(0,0,0,0)', x.value);
               x.value = '';
               if (x.action) x.action();
@@ -3687,7 +3724,7 @@ var prvek = {
             }
           } : {}, {
             text: t(1),
-            action: function () {
+            action: function(){
               x.value = x.puvodniHodnota;
               prvek.rezimVyberuBarvy = $('zalMichani').value;
               if (x.zmenaPalety) editorUlozitPaletu();
@@ -3717,7 +3754,7 @@ var prvek = {
           innerHTML: t(548),
           style: 'border-bottom:none;'
         }));
-        /* paleta vydání */
+        //paleta vydání
         c.add(b = tfw.div({
           id: 'dlgPaleta',
           className: 'tfwSelect',
@@ -3730,8 +3767,8 @@ var prvek = {
               className: 'ikona24',
               index: 51 * 24,
               title: t(20),
-              action: function (e) {
-                /* nová barva */
+              action: function(e){
+                //nová barva
                 if ($('dlgPaleta').value) $($('dlgPaleta').value).className = '';
                 var pi, max = 0;
                 for (i = 0; i < $('dlgPaleta').childNodes.length; i++) {
@@ -3763,7 +3800,7 @@ var prvek = {
               index: 57 * 24,
               title: t(9),
               zakazano: 1,
-              action: function (e) {
+              action: function(e){
                 var pal = $($('dlgPaleta').value);
                 pal.value = $('barvaR-v').value + ',' + $('barvaG-v').value + ',' + $('barvaB-v').value +
                   ',' + ($('barvaO-v').value / 100);
@@ -3783,7 +3820,7 @@ var prvek = {
               index: 52 * 24,
               title: t(17),
               zakazano: 1,
-              action: function (e) {
+              action: function(e){
                 var pal = $($('dlgPaleta').value);
                 pal.parentNode.removeChild(pal);
                 $('dlgPaleta').value = '';
@@ -3805,8 +3842,8 @@ var prvek = {
               index: 53 * 24,
               title: t(512),
               zakazano: 1,
-              action: function (e) {
-                /*"Nahoru"*/
+              action: function(e){
+                //Nahoru
                 var c = $('dlgPaleta').childNodes;
                 for (i = 1; i < c.length; i++)
                   if (c[i].hasClass('selected')) {
@@ -3823,8 +3860,8 @@ var prvek = {
               index: 54 * 24,
               title: t(513),
               zakazano: 1,
-              action: function (e) {
-                /*Dolů*/
+              action: function(e){
+                //Dolů
                 var c = $('dlgPaleta').childNodes;
                 for (i = (c.length - 2); i >= 0; i--)
                   if (c[i].hasClass('selected')) {
@@ -3917,14 +3954,14 @@ var prvek = {
           } else plt = HSV2RGB(0, 0, rx / 8 * 100);
           b.value = plt[0] + ',' + plt[1] + ',' + plt[2];
           b.style.backgroundColor = 'rgb(' + b.value + ')';
-          b.addEventListener('click', function() {
+          b.addEventListener('click', function(){
             var rb = this.value.split(',');
             $('barvaR').value = (rb[0]);
             $('barvaG').value = (rb[1]);
             $('barvaB').value = (rb[2]);
             x.repaintR();
           }, false);
-          b.addEventListener('dblclick', function(e) {
+          b.addEventListener('dblclick', function(e){
             $('dlgBarvaNastavit').onclick(e);
           }, false);
         }
@@ -4051,23 +4088,23 @@ var prvek = {
         $('barvaO-v').disabled = 1;
       }
       $('puvodniBarva').style.backgroundImage = '-webkit-linear-gradient(' + bar + ',' + bar + '),url(pics/vzorek.png)';
-      $('paletaHSV').addEventListener('mousedown', function(e) {
+      $('paletaHSV').addEventListener('mousedown', function(e){
         x.mouseDown = 1;
         x.paletaClick(e);
       }, false);
       desktop.layers[desktop.activeLayer].addEventListener('mousemove', x.paletaClick, false);
-      desktop.layers[desktop.activeLayer].addEventListener('mouseup', function(e) {
+      desktop.layers[desktop.activeLayer].addEventListener('mouseup', function(e){
         x.mouseDown = 0;
       }, false);
       x.zmenaPalety = 0;
       x.repaintR();
     }, false);
-    x.prejmenujBarvu = function () {
+    x.prejmenujBarvu = function(){
       tfw.dialog({
         title: t(545),
         width: 332,
         height: 180,
-        children: [ /* "Název barvy" */
+        children: [ //"Název barvy"
           tfw.input({
             id: 'nazevBarvy',
             value: $($('dlgPaleta').value).childNodes[1].innerHTML,
@@ -4080,13 +4117,13 @@ var prvek = {
         buttons: [{
           text: t(9),
           default: 1,
-          action: function () {
+          action: function(){
             $($('dlgPaleta').value).childNodes[1].innerHTML = $('nazevBarvy').value;
             desktop.closeTopLayer();
           }
         }, {
           text: t(342),
-          action: function () {
+          action: function(){
             $($('dlgPaleta').value).childNodes[1].innerHTML = 'r' + $('barvaR-v').value + ' g' + $('barvaG-v').value +
               ' b' + $('barvaB-v').value + ((parseInt($('barvaO-v').value) < 100) ? (' (' + $('barvaO-v').value +
                 ' %)') : '');
@@ -4097,8 +4134,8 @@ var prvek = {
           action: desktop.closeTopLayer
         }]
       });
-    }
-    x.pridatDoPalety = function (barva) {
+    };
+    x.pridatDoPalety = function(barva){
       $('dlgPaleta').add(d = tfw.div({
         id: 'paleta-' + barva.id,
         className: (barva.a ? 'selected' : ''),
@@ -4115,7 +4152,7 @@ var prvek = {
         ]
       }));
       d.value = barva.v;
-      d.addEventListener('click', function(e) {
+      d.addEventListener('click', function(e){
         if ($('dlgPaleta').value) $($('dlgPaleta').value).className = '';
         this.className = 'selected';
         $('dlgPaleta').value = this.id;
@@ -4132,11 +4169,11 @@ var prvek = {
         e.stopPropagation();
         e.preventDefault();
       }, false);
-      d.addEventListener('dblclick', function(e) {
+      d.addEventListener('dblclick', function(e){
         $('dlgBarvaNastavit').onclick(e);
       }, false);
-    }
-    x.paletaClick = function (e) {
+    };
+    x.paletaClick = function(e){
       if (x.mouseDown) {
         var lhr = tfw.getRealCoordinates($('paletaHSV'));
         var h = Math.floor((e.pageX - lhr[0]) / 200 * 360);
@@ -4151,8 +4188,8 @@ var prvek = {
         e.stopPropagation();
         e.preventDefault();
       }
-    }
-    x.repaintR = function () {
+    };
+    x.repaintR = function(){
       var hsv = RGB2HSV($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
       $('barvaH').value = (hsv[0]);
       $('barvaS').value = (hsv[1]);
@@ -4164,8 +4201,8 @@ var prvek = {
       $('barvaK').value = (cmyk[3]);
       $('barvaW').value = RGB2Web($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
       x.repaintPal();
-    }
-    x.repaintH = function () {
+    };
+    x.repaintH = function(){
       var rgb = HSV2RGB($('barvaH-v').value, $('barvaS-v').value, $('barvaV-v').value);
       $('barvaR').value = (rgb[0]);
       $('barvaG').value = (rgb[1]);
@@ -4177,8 +4214,8 @@ var prvek = {
       $('barvaK').value = (cmyk[3]);
       $('barvaW').value = RGB2Web($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
       x.repaintPal();
-    }
-    x.repaintC = function () {
+    };
+    x.repaintC = function(){
       var rgb = CMYK2RGB($('barvaC-v').value, $('barvaM-v').value, $('barvaY-v').value, $('barvaK-v').value);
       $('barvaR').value = (rgb[0]);
       $('barvaG').value = (rgb[1]);
@@ -4189,8 +4226,8 @@ var prvek = {
       $('barvaV').value = (hsv[2]);
       $('barvaW').value = RGB2Web($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
       x.repaintPal();
-    }
-    x.repaintW = function () {
+    };
+    x.repaintW = function(){
       var rgb = Web2RGB($('barvaW').value);
       $('barvaR').value = (rgb[0]);
       $('barvaG').value = (rgb[1]);
@@ -4205,8 +4242,8 @@ var prvek = {
       $('barvaY').value = (cmyk[2]);
       $('barvaK').value = (cmyk[3]);
       x.repaintPal();
-    }
-    x.repaintPal = function () {
+    };
+    x.repaintPal = function(){
       var h = parseInt($('barvaH-v').value);
       var s = parseInt($('barvaS-v').value);
       var v = parseInt($('barvaV-v').value);
@@ -4220,8 +4257,8 @@ var prvek = {
       $('barvaNahled').style.backgroundImage = '-webkit-linear-gradient(' + bar + ',' + bar + '),url(pics/vzorek.png)';
       if ($('dlgPaleta'))
         if ($('dlgPaleta').value) $('dlgPalUloz').disabled = 0;
-    }
-    x.barvaAktualniAVychozi = function (a, v) {
+    };
+    x.barvaAktualniAVychozi = function(a, v){
       if (a) {
         x.value = a;
         x.puvodniHodnota = a;
@@ -4231,7 +4268,7 @@ var prvek = {
         x.puvodniHodnota = v;
         x.style.backgroundImage = 'url(pics/vzorek.png)';
       }
-    }
+    };
     if (co.value) x.barvaAktualniAVychozi(co.value, co.value);
     return x;
   },
@@ -4239,7 +4276,7 @@ var prvek = {
    * @todo Remove dependencies on Triobo
    * @todo Move to {@link tfw}
    */
-  barvaSLegendou: function (co) {
+  barvaSLegendou: function(co){
     var x = document.createElement('p');
     var l = document.createElement('span');
     l.style.display = 'inline-block';
@@ -4251,17 +4288,17 @@ var prvek = {
     x.add(prvek.barva(co));
     return x;
   }
-}
+};
 
-function RGB2HSV(r, g, b) {
+function RGB2HSV(r, g, b){
   r /= 255, g /= 255, b /= 255;
   var max = Math.max(r, g, b),
-    min = Math.min(r, g, b);
+      min = Math.min(r, g, b);
   var h, s, v = max;
   var d = max - min;
   s = max == 0 ? 0 : d / max;
   if (max == min) {
-    h = 0; // achromatic
+    h = 0; //achromatic
   } else {
     switch (max) {
       case r:
@@ -4279,7 +4316,7 @@ function RGB2HSV(r, g, b) {
   return [Math.round(h * 360), Math.round(s * 100), Math.round(v * 100)];
 }
 
-function HSV2RGB(h, s, v) {
+function HSV2RGB(h, s, v){
   h /= 360, s /= 100, v /= 100;
   var r, g, b;
   var i = Math.floor(h * 6);
@@ -4310,7 +4347,7 @@ function HSV2RGB(h, s, v) {
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
-function RGB2CMYK(r, g, b) {
+function RGB2CMYK(r, g, b){
   r /= 255, g /= 255, b /= 255;
   var c = m = y = 0;
   var k = Math.min(1 - r, 1 - g, 1 - b);
@@ -4322,7 +4359,7 @@ function RGB2CMYK(r, g, b) {
   return [Math.round(c * 100), Math.round(m * 100), Math.round(y * 100), Math.round(k * 100)];
 }
 
-function CMYK2RGB(c, m, y, k) {
+function CMYK2RGB(c, m, y, k){
   c /= 100, m /= 100, y /= 100, k /= 100;
   var r, g, b;
   r = 1 - Math.min(1, c * (1 - k) + k);
@@ -4331,7 +4368,7 @@ function CMYK2RGB(c, m, y, k) {
   return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
 }
 
-function RGB2Web(r, g, b) {
+function RGB2Web(r, g, b){
   r = parseInt(r).toString(16);
   g = parseInt(g).toString(16);
   b = parseInt(b).toString(16);
@@ -4341,7 +4378,7 @@ function RGB2Web(r, g, b) {
   return (r + g + b);
 }
 
-function Web2RGB(h) {
+function Web2RGB(h){
   if (h.length == 3) h = h.substr(0, 1) + h.substr(0, 1) + h.substr(1, 1) + h.substr(1, 1) + h.substr(2, 1) + h.substr(2, 1);
   while (h.length < 6) h = '0' + h;
   var r = parseInt(h.substr(0, 2), 16);
@@ -4359,7 +4396,7 @@ function Web2RGB(h) {
  * @deprecated
  * @see tfw.dynamicTable
  */
-function Dyntable(x) {
+function Dyntable(x){
   console.error('DEPRECATED Dyntable(' + JSON.stringify(x) + '), use tfw.dynamicTable()');
   return tfw.Dyntable(x);
 }
