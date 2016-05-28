@@ -960,7 +960,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         case 'POST':
           o.parameters += '&' + tfw.ajaxIncludeParams();
           break;
-        //intentionally omitted default
+        // intentionally omitted default
       }
     }
     console.info('Desktop ajax ' + o.method + ' ' + ur);
@@ -973,7 +973,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         httpRequest.setRequestHeader('Cache-Control', 'no-cache');
         httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         break;
-      //intentionally omitted default
+      // intentionally omitted default
     }
     httpRequest.send(o.parameters);
     if (o.autohide && tfw.ajaxOnAutoHide != null) {
@@ -1466,7 +1466,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      */
     function savePreferences(){
-      //FIX: convert array to object
+      // convert array to object
       var savedPreferences = {};
       for (var prop in preferences) {
         savedPreferences[prop] = preferences[prop];
@@ -1657,10 +1657,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var movedDataRow = this.data.rows.splice(originalRowOrder, 1)[0];
       this.data.rows.splice(droppedRowOrder, 0, movedDataRow);
 
-      if (originalRowOrder < droppedRowOrder) { //drag down
+      if (originalRowOrder < droppedRowOrder) { // drag down
         tbody.rows[originalRowOrder].cells[orderColumn].innerHTML--;
         this.data.rows[originalRowOrder].cols[orderDataCol]--;
-      } else { //drag up
+      } else { // drag up
         tbody.rows[originalRowOrder].cells[orderColumn].innerHTML = parseInt(tbody.rows[originalRowOrder].cells[orderColumn].innerHTML) + 1;
         this.data.rows[originalRowOrder].cols[orderDataCol] = parseInt(this.data.rows[originalRowOrder].cols[orderDataCol]) + 1;
       }
@@ -1713,7 +1713,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             [tfw.dynamicTableClass.arrowTypes.UP, tfw.dynamicTableClass.arrowTypes.DOWN]
             ],
             i;
-        for (var j in arrowGroups) {
+        for (var j=0; j<arrowGroups.length; j++) {
           var arrowTypes = arrowGroups[j];
           for (i in arrowTypes) {
             if (element.hasClass(arrowTypes[i])) {
@@ -1781,7 +1781,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (rowEdit) {
         width += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
       }
-      width += 10; //scrollbar
+      width += 10; // scrollbar
 
       this.tableContainer.querySelector('table').style.width = width + 'px';
     };
@@ -1854,10 +1854,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
           readonlyCol,
           keyCallback = function(event){
             switch (event.keyCode) {
-              case 38: //up
+              case 38: // up
                 shift = -1;
                 break;
-              case 40: //down
+              case 40: // down
                 shift = 1;
                 break;
               default:
@@ -1969,7 +1969,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @listens keyup
      */
     this.createAndFillTable = function(){
-      //add CSS styling for filters
+      // add CSS styling for filters
       var tableCSS = '';
       for (var dataCol = 0; dataCol < this.data.cols.length; dataCol++) {
         tableCSS += '#' + this.tableHTMLId + ' .filter' + dataCol + 'Invalid{display:none}\n';
@@ -2222,7 +2222,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if ('onload' in params) {
           params.onload();
         }
-        //hide columns
+        // hide columns
         var hiddenColumns = this.getPreference('hiddenColumns');
         if (hiddenColumns != null) {
           for (dataCol in hiddenColumns) {
@@ -2231,7 +2231,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }
           }
         }
-        //apply column widths
+        // apply column widths
         var widths = this.getPreference('widths');
         if (widths != null) {
           for (dataCol in widths) {
@@ -2245,7 +2245,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             rowOrder;
         for (i = 0; i < changes.length; i++) {
           var rowID = changes[i].id;
-          if ('col' in changes[i]) { //update
+          if ('col' in changes[i]) { // update
             dataCol = changes[i].col;
             var column = this.data.cols[dataCol].columnOrder;
             var newValue = changes[i].value;
@@ -2277,19 +2277,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 }
               }
             }
-          } else if ('cols' in changes[i]) { //insertion
+          } else if ('cols' in changes[i]) { // insertion
             var comparator = this.getCmp(sorting === null ? null : sorting.dataCol).bind(null, sorting.asc);
             rowOrder = this.data.rows.push({id: rowID, cols: changes[i].cols}) - 1;
             var newRow = this.createRow(rowOrder);
             var greaterRow = null;
-            for (i = 0; i < this.data.rows.length - 1; i++) { //don't iterate over new row
+            for (i = 0; i < this.data.rows.length - 1; i++) { // don't iterate over new row
               if (comparator(this.data.rows[rowOrder], this.data.rows[i]) < 0) {
                 greaterRow = tbody.rows[i];
                 break;
               }
             }
             tbody.insertBefore(newRow, greaterRow);
-          } else { //deletion
+          } else { // deletion
             rowOrder = this.getDataRowById(rowID);
             this.data.rows.splice(rowOrder, 1);
             if (rowOrder === null) {
@@ -2306,7 +2306,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
         }
       }
-      //calculate filter default values
+      // calculate filter default values
       defaultFilterValues = {};
       var columnValues,
           minV,
@@ -2345,7 +2345,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           defaultFilterValues[i] = defaultValue;
         }
       }
-      //apply filters
+      // apply filters
       var filterValues = this.getPreference('filterValues');
       if (filterValues != null) {
         for (dataCol in filterValues) {
@@ -2354,7 +2354,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
         }
       }
-      //apply sorting
+      // apply sorting
       if (sorting == null) {
         this.toggleReorder();
       } else {
@@ -2715,9 +2715,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var p;
       var column = this.data.cols[dataCol].columnOrder;
       var type = this.data.cols[dataCol].type;
-      //reset invalid/unset values to defaults
+      // reset invalid/unset values to defaults
       if ([tfw.dynamicTableClass.colTypes.NUMBER, tfw.dynamicTableClass.colTypes.DATE].indexOf(type) != -1) {
-        var originalValue = JSON.parse(JSON.stringify(value)); //deep copy
+        var originalValue = JSON.parse(JSON.stringify(value)); // deep copy
         for (p in value) {
           switch (type) {
             case tfw.dynamicTableClass.colTypes.NUMBER:
@@ -2731,7 +2731,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 value[p] = defaultFilterValues[dataCol][p];
               }
               break;
-            //intentionally omitted default
+            // intentionally omitted default
           }
         }
         if (value.min < defaultFilterValues[dataCol].min) {
@@ -2741,7 +2741,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           value.max = defaultFilterValues[dataCol].max;
         }
         if (value.min > value.max) {
-          //could be better
+          // could be better
           value.min = defaultFilterValues[dataCol].min;
           value.max = defaultFilterValues[dataCol].max;
         }
@@ -2755,13 +2755,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
               case tfw.dynamicTableClass.colTypes.DATE:
                 prefix = 'date';
                 break;
-              //intentionally omitted default
+              // intentionally omitted default
             }
             this.filterContainer.querySelector('.tfwContainer .' + prefix + 'M' + p.substring(1)).value = value[p];
           }
         }
       }
-      //update current filter values
+      // update current filter values
       this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == 'undefined' || !dontSave));
       this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
       var tbody = this.tableContainer.querySelector('tbody'),
@@ -2786,7 +2786,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             rowValue = tbody.rows[i].cells[column].querySelector('input').value;
             matches = (rowValue === '' || (value.min <= rowValue && rowValue <= value.max));
             break;
-          //intentionally omitted default
+          // intentionally omitted default
         }
         tbody.rows[i][matches ? 'removeClass' : 'addClass']('filter' + dataCol + 'Invalid');
       }
@@ -2805,7 +2805,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       }
       if (last != null) {
-        this.filterAny(last, defaultFilterValues[last]); //save
+        this.filterAny(last, defaultFilterValues[last]); // save
       }
     };
     /**
@@ -2940,9 +2940,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {string} Date in format yyyy-mm-dd
      */
     function completeDate(date){
-      if (date.match(/^\d{4}$/)) { //yyyy
+      if (date.match(/^\d{4}$/)) { // yyyy
         return date+'-01-01';
-      } else if (date.match(/^\d{4}-\d{2}$/)) { //yyyy-mm
+      } else if (date.match(/^\d{4}-\d{2}$/)) { // yyyy-mm
         return date+'-01';
       } else {
         return date;
@@ -2987,8 +2987,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     function paint(){
       var d = new Date(selectedYear, selectedMonth - 1, 1),
           i,
-          //which day of week is the first one of a month
-          w = (d.getDay()+6) % 7, //so that Monday is first
+          // which day of week is the first one of a month
+          w = (d.getDay()+6) % 7, // so that Monday is first
           sp = 0;
       calendarContainer.innerHTML = '';
       var header = document.createElement('div');

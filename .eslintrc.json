@@ -26,6 +26,7 @@
                 }
             }
         ],
+        
         "block-scoped-var": [
             "error"
         ],
@@ -47,11 +48,20 @@
         "dot-notation": [
             "error", {"allowKeywords": false}
         ],
+        "guard-for-in": [
+            "warn"
+        ],
         "no-alert": [
             "error"
         ],
         "no-caller": [
             "error"
+        ],
+        "no-div-regex": [
+            "error"
+        ],
+        "no-empty-function": [
+            "warn"
         ],
         "no-eval": [
             "warn"
@@ -83,6 +93,9 @@
         "no-iterator": [
             "error"
         ],
+        "no-labels": [
+            "warn"
+        ],
         "no-lone-blocks": [
             "error"
         ],
@@ -108,6 +121,9 @@
             "error"
         ],
         "no-octal-escape": [
+            "warn"
+        ],
+        "no-param-reassign": [
             "warn"
         ],
         "no-proto": [
@@ -146,7 +162,20 @@
         "no-void": [
             "error"
         ],
+        "no-warning-comments": [
+            "warn",
+            { "terms": ["todo", "to do", "fix"] }
+        ],
+        "no-with": [
+            "warn"
+        ],
+        "wrap-iife": [
+            "warn", "inside"
+        ],
         
+        "no-catch-shadow": [
+            "error"
+        ],
         "no-label-var": [
             "error"
         ],
@@ -165,6 +194,7 @@
         "no-use-before-define": [
             "error"
         ],
+        
         "array-bracket-spacing": [
             "error",
             "never"
@@ -209,12 +239,25 @@
         "keyword-spacing": [
             "error"
         ],
+        "max-depth": [
+            "warn"
+        ],
         "max-len": [
             "warn",
             {"code": 160, "ignoreComments": true}
         ],
+        "max-nested-callbacks": [
+            "warn",
+            {"max": 5}
+        ],
         "max-params": [
             "warn", {"max": 4}
+        ],
+        "max-statements": [
+            "warn", {"max": 50}
+        ],
+        "max-statements-per-line": [
+            "warn", {"max": 2}
         ],
         "new-cap": [
             "error"
@@ -315,6 +358,14 @@
             "error"
         ],
         "space-unary-ops": [
+            "error"
+        ],
+        "spaced-comment": [
+            "error", "always", {
+                "line":{"markers": ["eslint-disable-line"]}
+            }
+        ],
+        "unicode-bom": [
             "error"
         ]
     }
