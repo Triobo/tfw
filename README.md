@@ -26,6 +26,7 @@
 **Todo**
 
 - [ ] Replace [reserved words](http://www.w3schools.com/js/js_reserved.asp) in function names
+- [ ] freeze
 
 
 * [tfw](#tfw)
@@ -136,11 +137,12 @@ Triobo framework. This is a singleton.
 
 ### tfw.dynamicTableClass
 **Kind**: static class of <code>[tfw](#tfw)</code>  
-**See**: AJAX_LOADER  
+**See**: tfw.AJAX_LOADER  
 **Todo**
 
 - [ ] View preferences (order of columns)
 - [ ] Custom filter renderers and custom filter functions (returning true/false if row passes/fails filter)
+- [ ] freeze
 
 
 * [.dynamicTableClass](#tfw.dynamicTableClass)
@@ -721,6 +723,10 @@ Value by which the table can be filtered.
 ### tfw.calendarExtend
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **See**: tfw.calendar  
+**Todo**
+
+- [ ] freeze
+
 
 * [.calendarExtend](#tfw.calendarExtend)
     * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
@@ -1330,6 +1336,10 @@ Callback after successfull HTTP request.
 
 ## desktop
 **Kind**: global class  
+**Todo**
+
+- [ ] freeze?
+
 
 * [desktop](#desktop)
     * [new desktop()](#new_desktop_new)

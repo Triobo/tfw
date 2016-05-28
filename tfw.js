@@ -78,6 +78,7 @@ HTMLElement.prototype.add = function(x){
  * Triobo framework. This is a singleton.
  * @class
  * @todo Replace {@link http://www.w3schools.com/js/js_reserved.asp|reserved words} in function names
+ * @todo freeze
  */
 var tfw = {//eslint-disable-line no-implicit-globals
   /**
@@ -1276,6 +1277,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @class
    * @todo View preferences (order of columns)
    * @todo Custom filter renderers and custom filter functions (returning true/false if row passes/fails filter)
+   * @todo freeze
    * @param {Object} params - table parameters
    * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
    * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
@@ -1302,7 +1304,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    *   }
    *  )
    * );
-   * @see AJAX_LOADER
+   * @see tfw.AJAX_LOADER
    */
   dynamicTableClass: function(params){
     /**
@@ -2900,6 +2902,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * If style.width is set on input, resulting input including calendar icon will have that width.
    * If input is readonly or disabled, calendar will be too.
    * @class
+   * @todo freeze
    * @example
    * var input = tfw.input({value:'2016-03-07',style:'width:200px'});
    * document.body.appendChild(input);
@@ -3076,6 +3079,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return calendarWrapper;
   }
 };
+Object.seal(tfw.strings);
 /**
  * Callback for showing controls.
  * @var {function}
@@ -3130,6 +3134,7 @@ tfw.dynamicTableClass.serverActions = {
     method: 'POST'
   }
 };
+Object.freeze(tfw.dynamicTableClass.serverActions);
 /**
  * Types of column sorting.
  * @readonly
@@ -3139,6 +3144,7 @@ tfw.dynamicTableClass.colCmpTypes = {
   NUMERIC: 0,
   TEXT: 1
 };
+Object.freeze(tfw.dynamicTableClass.colCmpTypes);
 /**
  * Types of columns (and filters).
  * @readonly
@@ -3159,6 +3165,7 @@ tfw.dynamicTableClass.colTypes = {
     order: tfw.dynamicTableClass.colCmpTypes.NUMERIC
   }
 };
+Object.freeze(tfw.dynamicTableClass.colTypes);
 /**
  * Types of sorting.
  * @readonly
@@ -3168,6 +3175,7 @@ tfw.dynamicTableClass.sortTypes = {
   ASC: 1,
   DESC: -1
 };
+Object.freeze(tfw.dynamicTableClass.sortTypes);
 /**
  * Types of "arrows".
  * @readonly
@@ -3178,6 +3186,7 @@ tfw.dynamicTableClass.arrowTypes = {
   UP: 'up',
   DOWN: 'down'
 };
+Object.freeze(tfw.dynamicTableClass.arrowTypes);
 /**
  * Width of column with row edit icon (icon's width including padding, border, margin + cell's padding + border), in pixels
  * @var {number}
@@ -3185,6 +3194,7 @@ tfw.dynamicTableClass.arrowTypes = {
  * @default
  */
 tfw.dynamicTableClass.ROW_EDIT_WIDTH = 25;
+Object.seal(tfw.dynamicTableClass);
 /**
  * List of months' names.
  * @var {string[]}
@@ -3210,7 +3220,10 @@ tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
  * @var {tfw.calendarExtend~placeCalendar}
  */
 tfw.calendarExtend.placeCalendar = null;
+Object.seal(tfw.calendarExtend);
+
 window.addEventListener('load', tfw.init);
+Object.seal(tfw);
 
 /** @todo Remove */
 Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
@@ -3221,6 +3234,7 @@ Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
 /**
  * Triobo. This is a singleton.
  * @class
+ * @todo freeze?
  */
 var desktop = {//eslint-disable-line no-implicit-globals
   div: null,
@@ -3654,6 +3668,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     });
   }
 };
+Object.seal(desktop);
 
 tfw.ajaxOnDone = desktop.done;
 tfw.ajaxOnAutoHide = desktop.working;
