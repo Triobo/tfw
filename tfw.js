@@ -3086,47 +3086,49 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object[]} [params.list] - list of checkboxes' parameters (makes params.id mandatory)
    * @param {string} params.list[].id - ID of checkbox
    * @param {string} params.list[].text - text of checkbox
-   * @param {string} [params.value] - initial value
-   * @return {HTMLElement} Returns container with checkboxes
+   * @param {string} [params.value] - initial value ("A" means all)
+   * @return {HTMLElement} Returns checkboxes' container (with value attribute and methods setNone and setAll)
    */
   multiCheckbox: function(params){
-    var z,
+    var i,
         container = document.createElement('div');
     params.className = (('className' in params) ? (params.className+' ') : '') + 'seznamZatrzitek';
     tfw.fillElemDefs(container, params);
+    var checkboxOnChange = function(){
+      var checkedIds = [],
+          checkboxContainer = this.parentNode,
+          checkboxes = checkboxContainer.childNodes;
+      for (var j = 0; j < checkboxes.length; j++) {
+        if (checkboxes[j].value) checkedIds.push(checkboxes[j].id.split('-')[1]);
+      }
+      checkboxContainer._value = checkedIds.join(',');
+      if (container.onchange) container.dispatchEvent(new Event('change'));
+    };
     if ('list' in params) {
-      for (var i = 0; i < params.list.length; i++) {
+      for (i = 0; i < params.list.length; i++) {
         container.add(tfw.checkbox({
           id: params.id + '-' + params.list[i].id,
           text: params.list[i].text,
-          onchange: function(){
-            var y = [],
-                s = this.parentNode;
-            for (var i = 0; i < s.childNodes.length; i++) {
-              if (s.childNodes[i].value) y.push(s.childNodes[i].id.split('-')[1]);
-            }
-            s._value = y.join(',');
-            if (container.onchange) container.onchange();
-          }
+          onchange: checkboxOnChange
         }));
       }
     }
     Object.defineProperty(container, 'value', {
       set: function(val){
-        y = [];
         if (val == 'A') {
-          for (var i = 0; i < this.childNodes.length; i++) {
+          for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 1;
           }
         } else {
-          v = [];
+          var v = [];
           if (val) v = val.split(',');
-          for (var i = 0; i < this.childNodes.length; i++) {
+          for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 0;
           }
-          for (var i = 0; i < v.length; i++) {
-            z = this.id + '-' + v[i];
-            if ($(z)) $(z).value = 1;
+          var itemId;
+          for (i = 0; i < v.length; i++) {
+            itemId = this.id + '-' + v[i];
+            if ($(itemId)) $(itemId).value = 1;
           }
         }
       },

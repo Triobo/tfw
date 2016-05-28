@@ -1309,7 +1309,7 @@ Create a calendar input field.
 Create a list of checkboxes, with common controls.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Returns container with checkboxes  
+**Returns**: <code>HTMLElement</code> - Returns checkboxes' container (with value attribute and methods setNone and setAll)  
 **Todo**
 
 - [ ] Change seznamZatrzitek to tfwMultiCheckbox
@@ -1322,7 +1322,7 @@ Create a list of checkboxes, with common controls.
 | [params.list] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
 | params.list[].id | <code>string</code> |  | ID of checkbox |
 | params.list[].text | <code>string</code> |  | text of checkbox |
-| [params.value] | <code>string</code> |  | initial value |
+| [params.value] | <code>string</code> |  | initial value ("A" means all) |
 
 <a name="tfw.dialogPrepareAndDownload"></a>
 
