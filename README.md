@@ -124,6 +124,7 @@
         * [.noveZalozky()](#tfw.noveZalozky)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
+        * [.multiCheckbox(params)](#tfw.multiCheckbox) ⇒ <code>HTMLElement</code>
         * [.dialogPrepareAndDownload(params)](#tfw.dialogPrepareAndDownload)
     * _inner_
         * [~ajaxGetCallback](#tfw..ajaxGetCallback) : <code>function</code>
@@ -950,7 +951,7 @@ Create a select field with specified parameters.
 | --- | --- | --- |
 | params | <code>Object</code> | select parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
 | [params.multiple] | <code>boolean</code> | can multiple values be selected |
-| params.list | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> | list of options as string "label1;label2" or "label1|value1;label2|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text) |
+| params.list | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> | list of options as string "label1;label2" or "label1\|value1;label2\|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text) |
 | [params.list[].id] | <code>string</code> | value (defaults to numeric index of option) |
 | params.list[].t | <code>string</code> | label |
 
@@ -1302,6 +1303,27 @@ Create a calendar input field.
 | --- | --- | --- |
 | params | <code>Object</code> | see [input](#tfw.input) |
 
+<a name="tfw.multiCheckbox"></a>
+
+### tfw.multiCheckbox(params) ⇒ <code>HTMLElement</code>
+Create a list of checkboxes, with common controls.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - Returns container with checkboxes  
+**Todo**
+
+- [ ] Change seznamZatrzitek to tfwMultiCheckbox
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | checkbox list parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.className] | <code>string</code> | <code>&quot;\&quot;seznamZatrzitek\&quot;&quot;</code> | container classes (seznamZatrzitek is always added) |
+| [params.list] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
+| params.list[].id | <code>string</code> |  | ID of checkbox |
+| params.list[].text | <code>string</code> |  | text of checkbox |
+| [params.value] | <code>string</code> |  | initial value |
+
 <a name="tfw.dialogPrepareAndDownload"></a>
 
 ### tfw.dialogPrepareAndDownload(params)
@@ -1416,7 +1438,7 @@ Create a dropdown menu.
 * [prvek](#prvek)
     * [new prvek()](#new_prvek_new)
     * [.rezimVyberuBarvy](#prvek.rezimVyberuBarvy)
-    * [.seznamZatrzitek()](#prvek.seznamZatrzitek)
+    * ~~[.seznamZatrzitek(params)](#prvek.seznamZatrzitek) ⇒ <code>HTMLElement</code>~~
     * ~~[.tabulka()](#prvek.tabulka)~~
     * ~~[.radek()](#prvek.radek)~~
     * ~~[.sloupec()](#prvek.sloupec)~~
@@ -1439,11 +1461,23 @@ Function package for preparing HTML elements.
 
 <a name="prvek.seznamZatrzitek"></a>
 
-### prvek.seznamZatrzitek()
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**Todo**
+### ~~prvek.seznamZatrzitek(params) ⇒ <code>HTMLElement</code>~~
+***Deprecated***
 
-- [ ] Move to [tfw](#tfw) as tfw.multiCheckbox
+Create a list of checkboxes, with common controls.
+
+**Kind**: static method of <code>[prvek](#prvek)</code>  
+**Returns**: <code>HTMLElement</code> - Returns container with checkboxes  
+**See**: tfw.multiCheckbox  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | checkbox list parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.className] | <code>string</code> | <code>&quot;\&quot;seznamZatrzitek\&quot;&quot;</code> | container classes (seznamZatrzitek is always added) |
+| [params.seznam] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
+| params.seznam[].id | <code>string</code> |  | ID of checkbox |
+| params.seznam[].text | <code>string</code> |  | text of checkbox |
+| [params.init] | <code>string</code> |  | initial value |
 
 <a name="prvek.tabulka"></a>
 

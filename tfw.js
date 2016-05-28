@@ -256,7 +256,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} params - select parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
    * @see tfw.fillElemDefs
    * @param {boolean} [params.multiple] - can multiple values be selected
-   * @param {(string|string[]|Object[])} params.list - list of options as string "label1;label2" or "label1|value1;label2|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text)
+   * @param {(string|string[]|Object[])} params.list - list of options as string "label1;label2" or "label1\|value1;label2\|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text)
    * @param {string} [params.list[].id] - value (defaults to numeric index of option)
    * @param {string} params.list[].t - label
    * @return {HTMLElement} Created select field.
@@ -3077,6 +3077,74 @@ var tfw = {//eslint-disable-line no-implicit-globals
       paint();
     });
     return calendarWrapper;
+  },
+  /**
+   * Create a list of checkboxes, with common controls.
+   * @todo Change seznamZatrzitek to tfwMultiCheckbox
+   * @param {Object} params - checkbox list parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {string} [params.className="seznamZatrzitek"] - container classes (seznamZatrzitek is always added)
+   * @param {Object[]} [params.list] - list of checkboxes' parameters (makes params.id mandatory)
+   * @param {string} params.list[].id - ID of checkbox
+   * @param {string} params.list[].text - text of checkbox
+   * @param {string} [params.value] - initial value
+   * @return {HTMLElement} Returns container with checkboxes
+   */
+  multiCheckbox: function(params){
+    var z,
+        container = document.createElement('div');
+    params.className = (('className' in params) ? (params.className+' ') : '') + 'seznamZatrzitek';
+    tfw.fillElemDefs(container, params);
+    if ('list' in params) {
+      for (var i = 0; i < params.list.length; i++) {
+        container.add(tfw.checkbox({
+          id: params.id + '-' + params.list[i].id,
+          text: params.list[i].text,
+          onchange: function(){
+            var y = [],
+                s = this.parentNode;
+            for (var i = 0; i < s.childNodes.length; i++) {
+              if (s.childNodes[i].value) y.push(s.childNodes[i].id.split('-')[1]);
+            }
+            s._value = y.join(',');
+            if (container.onchange) container.onchange();
+          }
+        }));
+      }
+    }
+    Object.defineProperty(container, 'value', {
+      set: function(val){
+        y = [];
+        if (val == 'A') {
+          for (var i = 0; i < this.childNodes.length; i++) {
+            this.childNodes[i].value = 1;
+          }
+        } else {
+          v = [];
+          if (val) v = val.split(',');
+          for (var i = 0; i < this.childNodes.length; i++) {
+            this.childNodes[i].value = 0;
+          }
+          for (var i = 0; i < v.length; i++) {
+            z = this.id + '-' + v[i];
+            if ($(z)) $(z).value = 1;
+          }
+        }
+      },
+      get: function(){
+        return this._value;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    container._value = '';
+    if (params.value) container.value = params.value;
+    container.setNone = function(){
+      this.value = '';
+    };
+    container.setAll = function(){
+      this.value = 'A';
+    };
+    return container;
   }
 };
 Object.seal(tfw.strings);
@@ -3694,60 +3762,24 @@ tfw.calendarExtend.placeCalendar = function(cal, input){
  */
 var prvek = {//eslint-disable-line no-implicit-globals
   /**
-   * @todo Move to {@link tfw} as tfw.multiCheckbox
+   * Create a list of checkboxes, with common controls.
+   * @deprecated
+   * @see tfw.multiCheckbox
+   * @param {Object} params - checkbox list parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {string} [params.className="seznamZatrzitek"] - container classes (seznamZatrzitek is always added)
+   * @param {Object[]} [params.seznam] - list of checkboxes' parameters (makes params.id mandatory)
+   * @param {string} params.seznam[].id - ID of checkbox
+   * @param {string} params.seznam[].text - text of checkbox
+   * @param {string} [params.init] - initial value
+   * @return {HTMLElement} Returns container with checkboxes
    */
-  seznamZatrzitek: function(co){
-    var z;
-    var x = document.createElement('div');
-    if (co.id) x.id = co.id;
-    var c = 'seznamZatrzitek';
-    if (co.className) c += ' ' + co.className;
-    x.className = c;
-    if (co.style) x.style.cssText = co.style;
-    if (co.onchange) x.onchange = co.onchange;
-    if (co.seznam)
-      for (var i = 0; i < co.seznam.length; i++) x.add(tfw.checkbox({
-        id: co.id + '-' + co.seznam[i].id,
-        text: co.seznam[i].text,
-        onchange: function(){
-          var y = [];
-          var s = this.parentNode;
-          for (var i = 0; i < s.childNodes.length; i++)
-            if (s.childNodes[i].value) y.push(s.childNodes[i].id.split('-')[1]);
-          s._value = y.join(',');
-          if (x.onchange) x.onchange();
-        }
-      }));
-    Object.defineProperty(x, 'value', {
-      set: function(val){
-        y = [];
-        if (val == 'A') {
-          for (var i = 0; i < this.childNodes.length; i++) this.childNodes[i].value = 1;
-        } else {
-          v = [];
-          if (val) v = val.split(',');
-          for (var i = 0; i < this.childNodes.length; i++) this.childNodes[i].value = 0;
-          for (var i = 0; i < v.length; i++) {
-            z = this.id + '-' + v[i];
-            if ($(z)) $(z).value = 1;
-          }
-        }
-      },
-      get: function(){
-        return this._value;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    x._value = '';
-    if (co.init) x.value = co.init;
-    x.setNone = function(){
-      this.value = '';
-    };
-    x.setAll = function(){
-      this.value = 'A';
-    };
-    return x;
+  seznamZatrzitek: function(params){
+    console.warn('DEPRECATED use of prvek.seznamZatrzitek, use tfw.multiCheckbox instead.');
+    params.list = params.seznam;
+    delete params.seznam;
+    params.value = params.init;
+    delete params.init;
+    return tfw.multiCheckbox(params);
   },
   /**
    * @deprecated
