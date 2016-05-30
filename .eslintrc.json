@@ -330,7 +330,7 @@
         ],
         "quotes": [
             "error",
-            "single"
+            "double"
         ],
         "require-jsdoc": [
             "warn", {

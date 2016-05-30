@@ -20,12 +20,12 @@ HTMLElement.prototype.nodeOrder = function(){
   return Array.prototype.indexOf.call(this.parentNode.children, this);
 };
 HTMLElement.prototype.hasClass = function(c){
-  return (this.className.split(' ').indexOf(c) != -1);
+  return (this.className.split(" ").indexOf(c) != -1);
 };
 HTMLElement.prototype.hasAnyClass = function(c){
-  var searchedClasses = c.split(' ');
+  var searchedClasses = c.split(" ");
   for (var i in searchedClasses) {
-    if (this.className.split(' ').indexOf(searchedClasses[i]) != -1) {
+    if (this.className.split(" ").indexOf(searchedClasses[i]) != -1) {
       return true;
     }
   }
@@ -34,18 +34,18 @@ HTMLElement.prototype.hasAnyClass = function(c){
 HTMLElement.prototype.addClass = function(c){
   if (!this.hasClass(c)) {
     if (this.className) {
-      var cs = this.className.split(' ');
+      var cs = this.className.split(" ");
       cs.push(c);
-      this.className = cs.join(' ');
+      this.className = cs.join(" ");
     } else this.className = c;
   }
 };
 HTMLElement.prototype.removeClass = function(c){
-  var cs = this.className.split(' ');
+  var cs = this.className.split(" ");
   var id = cs.indexOf(c);
   if (id >= 0) cs.splice(id, 1);
-  if (cs.length) this.className = cs.join(' ');
-  else this.removeAttribute('class');
+  if (cs.length) this.className = cs.join(" ");
+  else this.removeAttribute("class");
 };
 HTMLElement.prototype.toggleClass = function(c){
   if (this.hasClass(c)) this.removeClass(c);
@@ -96,32 +96,32 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @constant {string}
    * @default
    */
-  AJAX_LOADER: '<div class="tfwDivContentLoader"><span></span></div>',
+  AJAX_LOADER: "<div class=\"tfwDivContentLoader\"><span></span></div>",
   /**
    * Strings that are output by tfw functions. Change them for localization.
    * @enum {string}
    */
   strings: {
     /** Label for checkbox with false value. */
-    NO: 'No',
+    NO: "No",
     /** Label for checkbox with true value. */
-    YES: 'Yes',
-    /** Word for 'all' (e.g. both true and false) */
-    ALL: 'All',
+    YES: "Yes",
+    /** Word for "all" (e.g. both true and false) */
+    ALL: "All",
     /** Minimum input label */
-    FROM: 'From:',
+    FROM: "From:",
     /** Maximum input label */
-    TO: 'To:',
+    TO: "To:",
     /** Placeholder when searching anywhere in a string */
-    FILTER: 'Filter…',
+    FILTER: "Filter…",
     /** Label of hidden rows count */
-    HIDDEN_ROWS: 'Hidden rows',
+    HIDDEN_ROWS: "Hidden rows",
     /** progress during file upload */
-    UPLOADING: 'Uploading … %1',
+    UPLOADING: "Uploading … %1",
     /** when composing list, last OR word (f.e. jpg, png or gif) */
-    OR: 'or',
+    OR: "or",
     /** Error, when not allowed file extension is used  */
-    EXTNOTALLOWED: 'Only %1 files are allowed.'
+    EXTNOTALLOWED: "Only %1 files are allowed."
   },
   /**
    * Add Javascript-generated CSS to the document.
@@ -129,16 +129,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [tag] - identify (tag) CSS for overriding
    */
   insertStyle: function(style, tag){
-    var id = 'tfwInsertStyle';
-    if (typeof tag != 'undefined') {
-      id += '-' + tag;
+    var id = "tfwInsertStyle";
+    if (typeof tag != "undefined") {
+      id += "-" + tag;
     }
     if (document.getElementById(id) == null) {
-      var styleElement = document.createElement('style');
-      styleElement.setAttribute('id', id);
-      document.getElementsByTagName('head')[0].add(styleElement);
+      var styleElement = document.createElement("style");
+      styleElement.setAttribute("id", id);
+      document.getElementsByTagName("head")[0].add(styleElement);
     }
-    if (typeof tag == 'undefined') {
+    if (typeof tag == "undefined") {
       document.getElementById(id).innerHTML += style;
     } else {
       document.getElementById(id).innerHTML = style;
@@ -149,9 +149,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Can be run multiple times (after adding localized strings).
    */
   init: function(){
-    var tfwStyling = '.tfwDynamicTable .tfwCheckbox:after{content:"' + tfw.strings.NO + '"}\n'
-      + '.tfwDynamicTable .tfwCheckbox.checked:after{content:"' + tfw.strings.YES + '"}';
-    tfw.insertStyle(tfwStyling, 'tfwDynamicTable-checkbox');
+    var tfwStyling = ".tfwDynamicTable .tfwCheckbox:after{content:\"" + tfw.strings.NO + "\"}\n"
+      + ".tfwDynamicTable .tfwCheckbox.checked:after{content:\"" + tfw.strings.YES + "\"}";
+    tfw.insertStyle(tfwStyling, "tfwDynamicTable-checkbox");
   },
   /**
    * Add new translations and re-{@link tfw.init|init} tfw.
@@ -186,10 +186,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.placeholder] - text field placeholder
    */
   fillElemDefs: function(element, params){
-    if ('text' in params) {
+    if ("text" in params) {
       params.innerHTML = params.text;
     }
-    var attributesToCopy = ['id', 'innerHTML', 'disabled', 'readOnly', 'maxLength', 'evaluate', 'onclick', 'value', 'placeholder'];
+    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder"];
     var i;
     for (i = 0; i < attributesToCopy.length; i++) {
       var attribute = attributesToCopy[i];
@@ -197,37 +197,37 @@ var tfw = {//eslint-disable-line no-implicit-globals
         element[attribute] = params[attribute];
       }
     }
-    if ('style' in params) {
+    if ("style" in params) {
       element.style.cssText = params.style;
     }
-    if ('className' in params) {
+    if ("className" in params) {
       if (element.className) {
-        element.className += ' ' + params.className;
+        element.className += " " + params.className;
       } else {
         element.className = params.className;
       }
     }
-    if ('children' in params) {
+    if ("children" in params) {
       for (i = 0; i < params.children.length; i++) {
         if (params.children[i]) {
           element.add(params.children[i]);
         }
       }
     }
-    if ('onchange' in params) {
+    if ("onchange" in params) {
       element.speconchange = params.onchange;
     }
-    if ('onchange' in params || 'evaluate' in params) {
-      element.addEventListener('change', function(){
+    if ("onchange" in params || "evaluate" in params) {
+      element.addEventListener("change", function(){
         if (this.speconchange) {
           this.speconchange();
         }
         if (this.evaluate) {
           var a;
           try {
-            a = this.value.replace(/,/g, '.');
+            a = this.value.replace(/,/g, ".");
             a = eval(a);
-            if (isNaN(a)) a = '';
+            if (isNaN(a)) a = "";
           } catch (err) {
             a = this.value;
           }
@@ -237,17 +237,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
   },
   div: function(n){
-    var x = document.createElement('div');
+    var x = document.createElement("div");
     this.fillElemDefs(x, n);
     return x;
   },
   par: function(n){
-    var x = document.createElement('p');
+    var x = document.createElement("p");
     this.fillElemDefs(x, n);
     return x;
   },
   span: function(n){
-    var x = document.createElement('span');
+    var x = document.createElement("span");
     this.fillElemDefs(x, n);
     return x;
   },
@@ -262,42 +262,42 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created select field.
    */
   select: function(params){
-    var element = document.createElement('div');
-    params.className = 'tfwSelect ' + (('className' in params) ? params.className : '');
-    element.multiple = ('multiple' in params && params.multiple);
-    if (!('value' in params)) {
-      params.value = '0';
+    var element = document.createElement("div");
+    params.className = "tfwSelect " + (("className" in params) ? params.className : "");
+    element.multiple = ("multiple" in params && params.multiple);
+    if (!("value" in params)) {
+      params.value = "0";
     }
-    if ('onchange' in params) element.onchange=params.onchange;
+    if ("onchange" in params) element.onchange=params.onchange;
     this.fillElemDefs(element, params);
     element.clickOnItem = function(e){
       e.stopPropagation();
       e.preventDefault();
       var i;
       if (element.multiple) {
-        this.toggleClass('selected');
+        this.toggleClass("selected");
       } else {
-        for (i = 0; i < element.childNodes.length; i++) element.childNodes[i].removeClass('selected');
-        this.addClass('selected');
+        for (i = 0; i < element.childNodes.length; i++) element.childNodes[i].removeClass("selected");
+        this.addClass("selected");
       }
       var m = [];
       for (i = 0; i < element.childNodes.length; i++) {
-        if (element.childNodes[i].hasClass('selected')) {
+        if (element.childNodes[i].hasClass("selected")) {
           m.push(element.childNodes[i].value);
         }
       }
-      element.value = m.join(',');
+      element.value = m.join(",");
       if (element.onchange) element.onchange();
-      element.addClass('hasBeenChanged');
+      element.addClass("hasBeenChanged");
     };
     if (!element.value) element.value = 0;
-    var m = element.value.toString().split(','),
+    var m = element.value.toString().split(","),
         i;
-    if (typeof params.list === 'string') {
-      var szn = params.list.split(';');
+    if (typeof params.list === "string") {
+      var szn = params.list.split(";");
       params.list = [];
       for (i = 0; i < szn.length; i++) {
-        var prt = szn[i].split('|');
+        var prt = szn[i].split("|");
         if (prt.length == 1) prt[1] = i;
         params.list.push({
           id: prt[1],
@@ -307,27 +307,27 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     for (i = 0; i < params.list.length; i++) {
       var p = params.list[i];
-      if (typeof p === 'string') {
+      if (typeof p === "string") {
         p = {
           id: i,
           t: p
         };
       }
-      if (!('id' in p)) p.id = i;
-      var l = document.createElement('div');
+      if (!("id" in p)) p.id = i;
+      var l = document.createElement("div");
       l.value = String(p.id);
-      if ('n' in p) l.innerHTML = p.n;
+      if ("n" in p) l.innerHTML = p.n;
       else l.innerHTML = p.t;
-      if (m.indexOf(l.value) > -1) l.className = 'selected';
-      l.addEventListener('mousedown', element.clickOnItem, false);
+      if (m.indexOf(l.value) > -1) l.className = "selected";
+      l.addEventListener("mousedown", element.clickOnItem, false);
       element.add(l);
     }
     element.setValue = function(a){
       for (var i = 0; i < element.childNodes.length; i++) {
         if (element.childNodes[i].value == a) {
-          element.childNodes[i].addClass('selected');
+          element.childNodes[i].addClass("selected");
         } else {
-          element.childNodes[i].removeClass('selected');
+          element.childNodes[i].removeClass("selected");
         }
       }
       element.value = String(a);
@@ -341,7 +341,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @deprecated
    */
   dropDown: function(params){
-    console.warn('DEPRECATED use of tfw.dropDown, use desktop.dropDown instead.');
+    console.warn("DEPRECATED use of tfw.dropDown, use desktop.dropDown instead.");
     return desktop.dropDown(params);
   },
   /* eslint-enable */
@@ -356,9 +356,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created button
    */
   button: function(params){
-    var element = document.createElement('button');
+    var element = document.createElement("button");
     this.fillElemDefs(element, params);
-    element.type = ((params['default']) ? 'submit' : 'button');
+    element.type = ((params["default"]) ? "submit" : "button");
     if (params.action) {
       element.action = params.action;
       element.onclick = function(e){
@@ -383,12 +383,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} container with legend and input field
    */
   inputFieldLegend: function(element, params){
-    var x = document.createElement('p');
-    var l = document.createElement('span');
+    var x = document.createElement("p");
+    var l = document.createElement("span");
     if (params.legend) l.innerHTML = params.legend;
     if (params.legendStyle) l.style.cssText = params.legendStyle;
     if (params.containerId) x.id = params.containerId;
-    x.className = 'tfwContainer' + (params.containerClassName ? (' ' + params.containerClassName) : '');
+    x.className = "tfwContainer" + (params.containerClassName ? (" " + params.containerClassName) : "");
     if (params.containerStyle) x.style.cssText = params.containerStyle;
     x.add(l);
     x.add(element);
@@ -405,7 +405,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} params - input fields parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
    * @see tfw.fillElemDefs
    * @see tfw.inputFieldLegend
-   * @param {string} [params.type="text"] - input field type
+   * @param {string} [params.type=text] - input field type
    * @param {string} [params.value] - prefilled value
    * @param {number} [params.min] - minimum allowed value
    * @param {number} [params.max] - maximum allowed value
@@ -413,13 +413,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created input field, optionally wrapped with label
    */
   input: function(params){
-    var element = document.createElement('input');
-    element.addEventListener('change', function(){
-      this.addClass('hasBeenChanged');
+    var element = document.createElement("input");
+    element.addEventListener("change", function(){
+      this.addClass("hasBeenChanged");
     });
 
     this.fillElemDefs(element, params);
-    var attributesToCopy = ['type', 'min', 'max', 'step'];
+    var attributesToCopy = ["type", "min", "max", "step"];
     for (var i = 0; i < attributesToCopy.length; i++) {
       if (attributesToCopy[i] in params) {
         element[attributesToCopy[i]] = params[attributesToCopy[i]];
@@ -437,9 +437,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created text area, optionally wrapped with label
    */
   textArea: function(params){
-    var element = document.createElement('textarea');
-    element.addEventListener('change', function(){
-      this.addClass('hasBeenChanged');
+    var element = document.createElement("textarea");
+    element.addEventListener("change", function(){
+      this.addClass("hasBeenChanged");
     });
 
     this.fillElemDefs(element, params);
@@ -462,35 +462,35 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @todo Use "value" for real value, instead of using it for "checked"
    */
   checkbox: function(params){
-    var x = document.createElement('div');
-    var labelText = (params.text) ? params.text : '';
-    params.text = '';
+    var x = document.createElement("div");
+    var labelText = (params.text) ? params.text : "";
+    params.text = "";
     this.fillElemDefs(x, params);
-    x.addClass('tfwCheckbox');
+    x.addClass("tfwCheckbox");
     if (params.onchange) x.onchange = params.onchange;
     if (params.onclick) x.onclick = params.onclick;
-    var b = document.createElement('div');
+    var b = document.createElement("div");
     x._value = 0;
-    if ('value' in params) x._value = params.value ? 1 : 0;
-    x.className += x._value ? ' checked' : '';
-    b.className = x._value ? 'checked' : '';
+    if ("value" in params) x._value = params.value ? 1 : 0;
+    x.className += x._value ? " checked" : "";
+    b.className = x._value ? "checked" : "";
     x.add(b);
-    var text = document.createElement('span');
+    var text = document.createElement("span");
     text.innerHTML = labelText;
     x.add(text);
-    Object.defineProperty(x, 'value', {
+    Object.defineProperty(x, "value", {
       set: function(val){
         var box = this.childNodes[0];
         if (val) {
-          box.addClass('checked');
-          x.addClass('checked');
+          box.addClass("checked");
+          x.addClass("checked");
         } else {
-          box.removeClass('checked');
-          x.removeClass('checked');
+          box.removeClass("checked");
+          x.removeClass("checked");
         }
         this._value = val;
         if (this.onchange) this.onchange();
-        this.addClass('hasBeenChanged');
+        this.addClass("hasBeenChanged");
       },
       get: function(){
         return this._value;
@@ -498,10 +498,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    Object.defineProperty(x, 'disabled', {
+    Object.defineProperty(x, "disabled", {
       set: function(val){
-        if (val) this.addClass('disabled');
-        else this.removeClass('disabled');
+        if (val) this.addClass("disabled");
+        else this.removeClass("disabled");
         this.zakazano = val;
       },
       get: function(){
@@ -510,7 +510,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    x.addEventListener('click', function(e){
+    x.addEventListener("click", function(e){
       if (!this.zakazano) x.value = 1 - this._value;
       e.stopPropagation();
       e.preventDefault();
@@ -528,38 +528,38 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created icon
    */
   icon: function(params){
-    var element = document.createElement('div');
-    params.className = 'tfwIcon' + ((params.className) ? (' ' + params.className) : '');
+    var element = document.createElement("div");
+    params.className = "tfwIcon" + ((params.className) ? (" " + params.className) : "");
     this.fillElemDefs(element, params);
     if (params.action) {
       element.action = params.action;
       element.onclick = function(e){
-        if (!element.hasClass('disabled')) this.action(e);
+        if (!element.hasClass("disabled")) this.action(e);
       };
     }
-    var b = document.createElement('div');
-    if (params.index) b.style.backgroundPositionX = (-params.index) + 'px';
+    var b = document.createElement("div");
+    if (params.index) b.style.backgroundPositionX = (-params.index) + "px";
     element.add(b);
     element.disabled = 0;
-    Object.defineProperty(element, 'disabled', {
+    Object.defineProperty(element, "disabled", {
       set: function(val){
-        if (val) element.addClass('disabled');
-        else element.removeClass('disabled');
+        if (val) element.addClass("disabled");
+        else element.removeClass("disabled");
       },
       get: function(){
-        return element.hasClass('disabled');
+        return element.hasClass("disabled");
       },
       enumerable: true,
       configurable: true
     });
     if (params.disabled) element.disabled = params.disabled;
-    Object.defineProperty(element, 'selected', {
+    Object.defineProperty(element, "selected", {
       set: function(val){
-        if (val) element.addClass('selected');
-        else element.removeClass('selected');
+        if (val) element.addClass("selected");
+        else element.removeClass("selected");
       },
       get: function(){
-        return element.hasClass('selected');
+        return element.hasClass("selected");
       },
       enumerable: true,
       configurable: true
@@ -575,7 +575,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created table
    */
   table: function(params){
-    var element = document.createElement('table');
+    var element = document.createElement("table");
     this.fillElemDefs(element, params);
     return element;
   },
@@ -588,9 +588,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created table row
    */
   tr: function(params){
-    var element = document.createElement('tr');
+    var element = document.createElement("tr");
     this.fillElemDefs(element, params);
-    if ('columns' in params) {
+    if ("columns" in params) {
       for (var i = 0; i < params.columns.length; i++) {
         element.add(tfw.td(params.columns[i]));
       }
@@ -606,10 +606,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created table cell
    */
   td: function(params){
-    var element = document.createElement('td');
+    var element = document.createElement("td");
     this.fillElemDefs(element, params);
-    if ('colspan' in params) {
-      element.setAttribute('colspan', params.colspan);
+    if ("colspan" in params) {
+      element.setAttribute("colspan", params.colspan);
     }
     return element;
   },
@@ -630,26 +630,26 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created slider
    */
   slider: function(params){
-    var element = document.createElement('p');
+    var element = document.createElement("p");
     element.min = 0;
     element.max = 100;
-    params.className = 'tfwSlider' + ((params.className) ? (' ' + params.className) : '');
-    var sliderValue = ('value' in params) ? params.value : 0;
+    params.className = "tfwSlider" + ((params.className) ? (" " + params.className) : "");
+    var sliderValue = ("value" in params) ? params.value : 0;
     params.value = false;
     this.fillElemDefs(element, params);
-    var l = document.createElement('span');
+    var l = document.createElement("span");
     element.add(l);
     if (params.legend) l.innerHTML = params.legend;
     if (params.legendStyle) l.style.cssText = params.legendStyle;
-    var s = document.createElement('input');
+    var s = document.createElement("input");
     element.add(s);
-    s.type = 'range';
-    if (params.id) s.id = params.id + '-s';
+    s.type = "range";
+    if (params.id) s.id = params.id + "-s";
     if (params.max) {
       s.max = params.max;
       element.max = params.max;
     }
-    if ('min' in params) {
+    if ("min" in params) {
       s.min = params.min;
       element.min = params.min;
     }
@@ -657,33 +657,33 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.width) s.style.width = params.width;
     s.value = sliderValue;
     s.oninput = function(){
-      $(params.id + '-v').value = this.value;
+      $(params.id + "-v").value = this.value;
       if (element.onchange) element.onchange();
     };
     s.onkeyup = function(){
-      $(params.id + '-v').value = this.value;
+      $(params.id + "-v").value = this.value;
       if (element.onchange) element.onchange();
     };
-    var v = document.createElement('input');
+    var v = document.createElement("input");
     element.add(v);
-    v.type = 'text';
-    if (params.id) v.id = params.id + '-v';
+    v.type = "text";
+    if (params.id) v.id = params.id + "-v";
     if (params.valueStyle) v.style.cssText = params.valueStyle;
-    v.style.textAlign = 'right';
+    v.style.textAlign = "right";
     v.value = sliderValue;
     v.onchange = function(){
       if (!this.value.match(/^\d+$/)) this.value = 0;
       if (this.value < element.min) this.value = element.min;
       if (this.value > element.max) this.value = element.max;
-      $(params.id + '-s').value = this.value;
+      $(params.id + "-s").value = this.value;
       if (element.onchange) element.onchange();
     };
-    v.addEventListener('keydown', function(e){
+    v.addEventListener("keydown", function(e){
       var h = parseInt(this.value);
       if (e.which == 38) {
         this.value = h - (e.altKey ? 8 : 1);
         if (this.value < element.min) this.value = element.min;
-        $(element.id + '-s').value = this.value;
+        $(element.id + "-s").value = this.value;
         if (element.onchange) element.onchange();
         e.stopPropagation();
         e.preventDefault();
@@ -691,13 +691,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (e.which == 40) {
         this.value = h + (e.altKey ? 8 : 1);
         if (this.value > element.max) this.value = element.max;
-        $(element.id + '-s').value = this.value;
+        $(element.id + "-s").value = this.value;
         if (element.onchange) element.onchange();
         e.stopPropagation();
         e.preventDefault();
       }
     }, true);
-    Object.defineProperty(element, 'value', {
+    Object.defineProperty(element, "value", {
       set: function(a){
         this.childNodes[1].value = a;
         this.childNodes[2].value = a;
@@ -709,7 +709,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       configurable: true
     });
     if (params.postText) {
-      var p = document.createElement('span');
+      var p = document.createElement("span");
       element.add(p);
       p.innerHTML = params.postText;
       if (params.postStyle) p.style.cssText = params.postStyle;
@@ -726,7 +726,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created image
    */
   image: function(params){
-    var element = document.createElement('img');
+    var element = document.createElement("img");
     this.fillElemDefs(element, params);
     if (params.src) element.src = params.src;
     if (params.title) element.title = params.title;
@@ -736,86 +736,86 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Create control for uploading files (images).
    * @memberof tfw
    * @param {Object} params - file box parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
-   * @param {string} [params.id="filebox"] - ID of box
-   * @param {string} [params.className="tfwFilebox"] - class(es) of box (tfwFilebox is always appended)
+   * @param {string} [params.id=filebox] - ID of box
+   * @param {string} [params.className=tfwFilebox] - class(es) of box (tfwFilebox is always appended)
    * @param {number} [params.value=0]
-   * @param {string} [params.text=""] - text to be placed inside inner div (ignored for {@link tfw.fillElemDefs|fillElemDefs})
-   * @param {string} [params.filename=""] - name of file (image)
-   * @param {string} [params.path=""] - path to file (image), with trailing slash
-   * @param {string} [params.imgStyle=""] - CSS styling for image
+   * @param {string} [params.text] - text to be placed inside inner div (ignored for {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {string} [params.filename] - name of file (image)
+   * @param {string} [params.path] - path to file (image), with trailing slash
+   * @param {string} [params.imgStyle] - CSS styling for image
    * @param {function} [params.onloaded=null] - callback fired when upload finishes
    * @param {function} [params.onstart=null] - callback fired when upload starts
-   * @param {string} [params.limitExtensions=""] - allowed extensions, without dot (e.g. "png|jpeg|jpg|gif")
+   * @param {string} [params.limitExtensions] - allowed extensions, without dot (e.g. "png|jpeg|jpg|gif")
    * @param {string} [params.style] - CSS styling of outter and inner DIV
    * @see tfw.fillElemDefs
    * @see tfw.inputFieldLegend
    * @return {HTMLElement} Created file box, optionally wrapped with label
    */
   filebox: function(params){
-    var element = document.createElement('div');
-    if (!('id' in params)) params.id = 'filebox';
-    params.className = (('className' in params) ? (params.className+' ') : '') + 'tfwFilebox';
-    if (!('value' in params)) params.value = 0;
-    var innerDivStyle = ('style' in params) ? params.style : '';
-    element.text = ('text' in params) ? params.text : '';
+    var element = document.createElement("div");
+    if (!("id" in params)) params.id = "filebox";
+    params.className = (("className" in params) ? (params.className+" ") : "") + "tfwFilebox";
+    if (!("value" in params)) params.value = 0;
+    var innerDivStyle = ("style" in params) ? params.style : "";
+    element.text = ("text" in params) ? params.text : "";
     delete params.text;
     this.fillElemDefs(element, params);
 
-    element.filename = ('filename' in params) ? params.filename : '';
-    element.path = ('path' in params) ? params.path : '';
-    element.imgStyle = ('imgStyle' in params) ? ('style="' + params.imgStyle + '" ') : '';
-    element.onloaded = ('onloaded' in params) ? params.onloaded : null;
-    element.onstart = ('onstart' in params) ? params.onstart : null;
-    element.limitExtensions = ('limitExtensions' in params) ? params.limitExtensions : '';
+    element.filename = ("filename" in params) ? params.filename : "";
+    element.path = ("path" in params) ? params.path : "";
+    element.imgStyle = ("imgStyle" in params) ? ("style=\"" + params.imgStyle + "\" ") : "";
+    element.onloaded = ("onloaded" in params) ? params.onloaded : null;
+    element.onstart = ("onstart" in params) ? params.onstart : null;
+    element.limitExtensions = ("limitExtensions" in params) ? params.limitExtensions : "";
 
     element.uploading = 0;
     var b = tfw.div({});
     element.add(b);
-    b.className = 'content';
+    b.className = "content";
     if (innerDivStyle) b.style.cssText = innerDivStyle;
-    b.addEventListener('click', function(){
-      element.lastChild.dispatchEvent(new MouseEvent('click', {view: window, bubbles: true, cancelable: false}));
+    b.addEventListener("click", function(){
+      element.lastChild.dispatchEvent(new MouseEvent("click", {view: window, bubbles: true, cancelable: false}));
     });
-    b.addEventListener('dragenter', function(e){
-      this.style.outline = 'red 2px solid';
+    b.addEventListener("dragenter", function(e){
+      this.style.outline = "red 2px solid";
       e.stopPropagation();
       e.preventDefault();
     }, false);
-    b.addEventListener('dragleave', function(e){
-      this.style.outline = '';
+    b.addEventListener("dragleave", function(e){
+      this.style.outline = "";
       e.stopPropagation();
       e.preventDefault();
     }, false);
-    b.addEventListener('dragover', function(e){
+    b.addEventListener("dragover", function(e){
       e.stopPropagation();
       e.preventDefault();
     }, false);
-    b.addEventListener('drop', function(e){
+    b.addEventListener("drop", function(e){
       e.stopPropagation();
       e.preventDefault();
-      this.style.outline = '';
+      this.style.outline = "";
       element.upload(e.dataTransfer.files);
     }, false);
-    element.add(b = document.createElement('input'));
-    b.type = 'file';
-    b.style.display = 'none';
-    b.addEventListener('change', function(e){
+    element.add(b = document.createElement("input"));
+    b.type = "file";
+    b.style.display = "none";
+    b.addEventListener("change", function(e){
       element.upload(e.target.files);
     });
     element.prekresli = function(prc){
       if (element.uploading) {
-        element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + tfw.strings.UPLOADING.replace('%1', (prc + ' %')) + '</p>';
+        element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + tfw.strings.UPLOADING.replace("%1", (prc + " %")) + "</p>";
       } else if (element.value) {
-        element.removeClass('empty');
+        element.removeClass("empty");
         if (element.filename.match(/\.(gif|jpg|jpeg|png)$/i)) {
-          element.childNodes[0].innerHTML = '<img id="fileboximg' + element.id + '" class="verticalCenter" ' + element.imgStyle + ' src="/zdroje/'
-          + element.path + element.filename + '?' + element.value + '">';
+          element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\"/zdroje/"
+          + element.path + element.filename + "?" + element.value + "\">";
         } else {
-          element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:20px;">' + element.filename + '</p>';
+          element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + element.filename + "</p>";
         }
       } else {
-        element.addClass('empty');
-        element.childNodes[0].innerHTML = '<p class="verticalCenter" style="height:40px;">' + element.text + '</p>';
+        element.addClass("empty");
+        element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:40px;\">" + element.text + "</p>";
       }
     };
     element.upload = function(u){
@@ -823,7 +823,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var jmeno = u[0].name;
       var canbe = 1;
       if (element.limitExtensions) {
-        var re = new RegExp('\\.(' + element.limitExtensions + ')$', 'i');
+        var re = new RegExp("\\.(" + element.limitExtensions + ")$", "i");
         if (!jmeno.match(re)) canbe = 0;
       }
       if (canbe) {
@@ -831,10 +831,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (element.onstart) element.onstart();
         element.hr = new XMLHttpRequest();
         var fUp = element.hr.upload;
-        fUp.addEventListener('progress', function(e){
+        fUp.addEventListener("progress", function(e){
           element.prekresli(Math.round(e.loaded / element.uploading * 100));
         });
-        fUp.addEventListener('load', function(){
+        fUp.addEventListener("load", function(){
           element.uploading = 0;
           element.value = Math.floor(Math.random() * 1000000) + 1;
           if (element.onloaded) element.onloaded();
@@ -842,16 +842,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
             $(element.id).prekresli();
           }, 500);
         });
-        element.hr.open('POST', 'uploadFile.php?token=' + token);
-        element.hr.setRequestHeader('X_FILENAME', element.path + element.filename);
+        element.hr.open("POST", "uploadFile.php?token=" + token);
+        element.hr.setRequestHeader("X_FILENAME", element.path + element.filename);
         element.hr.send(u[0]);
       } else {
-        var lims = element.limitExtensions.split('|');
+        var lims = element.limitExtensions.split("|");
         var lastl = lims.pop();
         var lim;
-        if (lims.length) lim = '<b>' + lims.join('</b>, <b>') + '</b> ' + tfw.strings.OR + ' <b>' + lastl + '</b>';
-        else lim = '<b>' + lastl + '</b>';
-        chyba('#300-' + tfw.strings.EXTNOTALLOWED.replace('%1', lim));
+        if (lims.length) lim = "<b>" + lims.join("</b>, <b>") + "</b> " + tfw.strings.OR + " <b>" + lastl + "</b>";
+        else lim = "<b>" + lastl + "</b>";
+        chyba("#300-" + tfw.strings.EXTNOTALLOWED.replace("%1", lim));
       }
     };
     element.remove = function(){};
@@ -865,7 +865,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @deprecated
    */
   dialog: function(co){
-    console.warn('DEPRECATED use of tfw.dialog, use desktop.dialog instead.');
+    console.warn("DEPRECATED use of tfw.dialog, use desktop.dialog instead.");
     return desktop.dialog(co);
   },
   /**
@@ -874,7 +874,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @deprecated
    */
   dialogPrepareAndDownload: function(params){
-    console.warn('DEPRECATED use of tfw.dialogPrepareAndDownload, use desktop.dialogPrepareAndDownload instead.');
+    console.warn("DEPRECATED use of tfw.dialogPrepareAndDownload, use desktop.dialogPrepareAndDownload instead.");
     return desktop.dialogPrepareAndDownload(params);
   },
   /* eslint-enable */
@@ -922,7 +922,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} o.url - URL of server script with data
    * @param {tfw~ajaxGetCallback} o.onload - function to call when request has successfully completed
    * @param {number} [o.autohide=0] - whether to show overlay after finishing (0 = off, 2 = pass 1 to {@link tfw.ajaxOnAutoHide|ajaxOnAutoHide}, otherwise pass 0)
-   * @param {string} [o.method="GET"] - HTTP method to be used (GET or POST)
+   * @param {string} [o.method=GET] - HTTP method to be used (GET or POST)
    * @param {string} [o.parameters=null] - parameters to be send with the request (e.g. POST)
    * @return {XMLHttpRequest} Returns XMLHttpRequest object
    * @see tfw.ajaxIncludeParams
@@ -930,10 +930,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.ajaxOnError
    */
   ajaxGet: function(o){
-    if (!('method' in o)) {
-      o.method = 'GET';
+    if (!("method" in o)) {
+      o.method = "GET";
     }
-    if (!('parameters' in o)) {
+    if (!("parameters" in o)) {
       o.parameters = null;
     }
     var httpRequest = new XMLHttpRequest();
@@ -942,7 +942,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (tfw.ajaxOnDone != null) tfw.ajaxOnDone();
         if (httpRequest.status === 200) {
           var rt;
-          if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == '#') {
+          if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == "#") {
             tfw.ajaxOnErrorCode(rt);
           } else {
             o.onload(httpRequest);
@@ -955,24 +955,24 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var ur = o.url;
     if (tfw.ajaxIncludeParams) {
       switch (o.method) {
-        case 'GET':
-          ur += '&' + tfw.ajaxIncludeParams();
+        case "GET":
+          ur += "&" + tfw.ajaxIncludeParams();
           break;
-        case 'POST':
-          o.parameters += '&' + tfw.ajaxIncludeParams();
+        case "POST":
+          o.parameters += "&" + tfw.ajaxIncludeParams();
           break;
         // intentionally omitted default
       }
     }
-    console.info('Desktop ajax ' + o.method + ' ' + ur);
+    console.info("Desktop ajax " + o.method + " " + ur);
     httpRequest.open(o.method, ur);
     switch (o.method) {
-      case 'GET':
-        httpRequest.setRequestHeader('Cache-Control', 'max-age=0,no-cache,no-store,post-check=0,pre-check=0');
+      case "GET":
+        httpRequest.setRequestHeader("Cache-Control", "max-age=0,no-cache,no-store,post-check=0,pre-check=0");
         break;
-      case 'POST':
-        httpRequest.setRequestHeader('Cache-Control', 'no-cache');
-        httpRequest.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      case "POST":
+        httpRequest.setRequestHeader("Cache-Control", "no-cache");
+        httpRequest.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         break;
       // intentionally omitted default
     }
@@ -990,7 +990,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.ajaxGet
    */
   ajaxPost: function(o){
-    o.method = 'POST';
+    o.method = "POST";
     return tfw.ajaxGet(o);
   },
   /**
@@ -1003,10 +1003,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var x = [];
     for (var key in fields) {
       if (fields.hasOwnProperty(key)) {
-        x.push(key + '=' + encodeURIComponent($(fields[key]).value));
+        x.push(key + "=" + encodeURIComponent($(fields[key]).value));
       }
     }
-    return x.join('&');
+    return x.join("&");
   },
   /**
    * Decode JSON data, show error in case they are invalid.
@@ -1022,19 +1022,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
       tfw.dialog({
         width: 600,
         height: 420,
-        title: 'Error',
+        title: "Error",
         children: [
           tfw.div({
-            innerHTML: 'This is unknown error, please contact Triobo representative:',
-            className: 'nazev'
+            innerHTML: "This is unknown error, please contact Triobo representative:",
+            className: "nazev"
           }), tfw.div({
-            style: 'width:100%;height:300px;overflow-y:scroll;font-size:80%;',
-            innerHTML: json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            style: "width:100%;height:300px;overflow-y:scroll;font-size:80%;",
+            innerHTML: json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
           })
         ],
         buttons: [{
           action: desktop.closeTopLayer,
-          text: 'x'
+          text: "x"
         }]
       });
     }
@@ -1052,44 +1052,44 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /* eslint-disable */
   /** @deprecated */
   novyElement: function(typ, id, c, obsah, styl){
-    //console.error('DEPRECATED novyElement '+id);  -- tohoto je ještě strašně moc………
+    //console.error("DEPRECATED novyElement "+id);  // tohoto je ještě strašně moc………
     var x = document.createElement(typ);
-    if (id) x.setAttribute('id', id);
-    if (c) x.setAttribute('class', c);
+    if (id) x.setAttribute("id", id);
+    if (c) x.setAttribute("class", c);
     if (obsah) x.innerHTML = obsah;
-    if (styl) x.setAttribute('style', styl);
+    if (styl) x.setAttribute("style", styl);
     return x;
   },
   /** @todo Remove dependencies on Triobo */
   noveZalozky: function(id, w, h, zalozky, init){
     var l;
-    var x = document.createElement('div');
+    var x = document.createElement("div");
     x.id = id;
-    x.className = 'zalozkyObal';
+    x.className = "zalozkyObal";
     x.value = init;
-    var u = document.createElement('div');
-    u.className = 'zalozkySeznam';
+    var u = document.createElement("div");
+    u.className = "zalozkySeznam";
     x.add(u);
-    var z = zalozky.split(';'),
+    var z = zalozky.split(";"),
         i;
     for (i = 0; i < z.length; i++) {
-      l = document.createElement('p');
-      l.id = id + '-ousko-' + i;
-      l.className = 'zalozkyOusko' + ((i == init) ? ' aktivni' : '');
+      l = document.createElement("p");
+      l.id = id + "-ousko-" + i;
+      l.className = "zalozkyOusko" + ((i == init) ? " aktivni" : "");
       l.innerHTML = z[i];
-      l.addEventListener('mousedown', function(e){
+      l.addEventListener("mousedown", function(e){
         var t = e.target;
         var jmeno = t.parentNode.parentNode.id;
         var stary = cislo(t.parentNode.parentNode.value);
-        var novy = t.id.substr(t.id.lastIndexOf('-') + 1);
+        var novy = t.id.substr(t.id.lastIndexOf("-") + 1);
         if (novy != stary) {
           if (stary >= 0) {
-            document.getElementById(jmeno + '-obsah-' + stary).className = 'zalozkyObsah skryty';
-            document.getElementById(jmeno + '-ousko-' + stary).className = document.getElementById(jmeno + '-ousko-' + stary).className
-              .replace(/ aktivni/i, '');
+            document.getElementById(jmeno + "-obsah-" + stary).className = "zalozkyObsah skryty";
+            document.getElementById(jmeno + "-ousko-" + stary).className = document.getElementById(jmeno + "-ousko-" + stary).className
+              .replace(/ aktivni/i, "");
           }
-          document.getElementById(jmeno + '-obsah-' + novy).className = 'zalozkyObsah';
-          document.getElementById(jmeno + '-ousko-' + novy).className += ' aktivni';
+          document.getElementById(jmeno + "-obsah-" + novy).className = "zalozkyObsah";
+          document.getElementById(jmeno + "-ousko-" + novy).className += " aktivni";
           t.parentNode.parentNode.value = novy;
         }
         e.stopPropagation();
@@ -1099,11 +1099,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     var o;
     for (i = 0; i < z.length; i++) {
-      o = document.createElement('div');
-      o.id = id + '-obsah-' + i;
-      o.className = 'zalozkyObsah' + ((i == init) ? '' : ' skryty');
-      o.style.width = w + 'px';
-      o.style.height = h + 'px';
+      o = document.createElement("div");
+      o.id = id + "-obsah-" + i;
+      o.className = "zalozkyObsah" + ((i == init) ? "" : " skryty");
+      o.style.width = w + "px";
+      o.style.height = h + "px";
       x.add(o);
     }
     return x;
@@ -1112,67 +1112,67 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var l;
     var poziceY = 0;
     var idxs = [];
-    var x = document.createElement('div');
+    var x = document.createElement("div");
     x.id = id;
-    x.className = 'zalozkyObal';
+    x.className = "zalozkyObal";
     x.value = null;
     x.vybrany = 0;
     x.w = w;
     x.h = h;
-    var u = document.createElement('div');
-    u.className = 'zalozkySvisleSeznam';
-    u.style.width = wl + 'px';
-    u.style.height = h + 'px';
+    var u = document.createElement("div");
+    u.className = "zalozkySvisleSeznam";
+    u.style.width = wl + "px";
+    u.style.height = h + "px";
     x.add(u);
     x.vyber = function(ord){
       var stary = this.value;
       var novy = this.childNodes[0].childNodes[ord].value;
       if (novy != stary) {
-        if ($(this.id + '-ousko-' + stary)) {
-          $(this.id + '-obsah-' + stary).className = 'zalozkySvisleObsah skryty';
-          $(this.id + '-ousko-' + stary).className = $(this.id + '-ousko-' + stary).className.replace(/ aktivni/i, '');
-          if ($(this.id + '-obsah-' + stary).onHide) $(this.id + '-obsah-' + stary).onHide();
+        if ($(this.id + "-ousko-" + stary)) {
+          $(this.id + "-obsah-" + stary).className = "zalozkySvisleObsah skryty";
+          $(this.id + "-ousko-" + stary).className = $(this.id + "-ousko-" + stary).className.replace(/ aktivni/i, "");
+          if ($(this.id + "-obsah-" + stary).onHide) $(this.id + "-obsah-" + stary).onHide();
         }
-        $(this.id + '-obsah-' + novy).className = 'zalozkySvisleObsah';
-        $(this.id + '-ousko-' + novy).className += ' aktivni';
-        if ($(this.id + '-obsah-' + novy).onShow) $(this.id + '-obsah-' + novy).onShow();
+        $(this.id + "-obsah-" + novy).className = "zalozkySvisleObsah";
+        $(this.id + "-ousko-" + novy).className += " aktivni";
+        if ($(this.id + "-obsah-" + novy).onShow) $(this.id + "-obsah-" + novy).onShow();
         this.value = novy;
         this.vybrany = ord;
         if (this.onchange) this.onchange();
       }
     };
     x.appendItem = function(item){
-      l = document.createElement('p');
-      l.id = this.id + '-ousko-' + item.id;
-      l.className = 'zalozkyOusko' + (item.aktivni ? ' aktivni' : '');
+      l = document.createElement("p");
+      l.id = this.id + "-ousko-" + item.id;
+      l.className = "zalozkyOusko" + (item.aktivni ? " aktivni" : "");
       l.innerHTML = item.text;
       l.value = item.id;
-      l.addEventListener('mousedown', function(e){
+      l.addEventListener("mousedown", function(e){
         this.parentNode.parentNode.vyber(this.myOrder());
         e.stopPropagation();
         e.preventDefault();
       }, false);
       this.childNodes[0].add(l);
-      var o = document.createElement('div');
-      o.id = this.id + '-obsah-' + item.id;
-      o.className = 'zalozkySvisleObsah' + (item.aktivni ? '' : ' skryty');
-      o.style.width = this.w + 'px';
-      o.style.height = this.h + 'px';
+      var o = document.createElement("div");
+      o.id = this.id + "-obsah-" + item.id;
+      o.className = "zalozkySvisleObsah" + (item.aktivni ? "" : " skryty");
+      o.style.width = this.w + "px";
+      o.style.height = this.h + "px";
       o.removeItem = function(){
         if (this.onHide) this.onHide();
-        var casti = this.id.split('-');
-        var a = $(casti[0] + '-obsah-' + casti[2]);
-        var b = $(casti[0] + '-ousko-' + casti[2]);
+        var casti = this.id.split("-");
+        var a = $(casti[0] + "-obsah-" + casti[2]);
+        var b = $(casti[0] + "-ousko-" + casti[2]);
         a.parentNode.removeChild(a);
         b.parentNode.removeChild(b);
       };
       x.add(o);
     };
-    var z = zalozky.split(';'),
+    var z = zalozky.split(";"),
         sp,
         ind;
     for (var i = 0; i < z.length; i++) {
-      sp = z[i].split('|');
+      sp = z[i].split("|");
       if (sp.length > 1) ind = sp[1];
       else ind = i;
       idxs[i] = ind;
@@ -1196,41 +1196,41 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var stary = cislo($(jmeno).value);
     if (novy != stary) {
       if (stary >= 0) {
-        $(jmeno + '-obsah-' + stary).className = 'zalozkySvisleObsah skryty';
-        $(jmeno + '-ousko-' + stary).className = $(jmeno + '-ousko-' + stary).className.replace(/ aktivni/i, '');
+        $(jmeno + "-obsah-" + stary).className = "zalozkySvisleObsah skryty";
+        $(jmeno + "-ousko-" + stary).className = $(jmeno + "-ousko-" + stary).className.replace(/ aktivni/i, "");
       }
-      $(jmeno + '-obsah-' + novy).className = 'zalozkySvisleObsah';
-      $(jmeno + '-ousko-' + novy).className += ' aktivni';
+      $(jmeno + "-obsah-" + novy).className = "zalozkySvisleObsah";
+      $(jmeno + "-ousko-" + novy).className += " aktivni";
       $(jmeno).value = novy;
     }
   },
   novyCudl: function(id, c, pozice, stisk, popis){
-    var x = document.createElement('div');
-    x.className = 'cudl';
-    var b = document.createElement('div');
+    var x = document.createElement("div");
+    x.className = "cudl";
+    var b = document.createElement("div");
     b.id = id;
     b.className = c;
     if (popis) b.title = popis;
-    b.style.backgroundPositionX = (-pozice) + 'px';
-    b.addEventListener('mousedown', stisk, false);
+    b.style.backgroundPositionX = (-pozice) + "px";
+    b.addEventListener("mousedown", stisk, false);
     x.add(b);
     return x;
   },
   vstupniPole: function(id, styl, legenda, stylL, postT, postL){
-    var x = document.createElement('div');
-    x.className = 'vstup';
-    x.innerHTML = '<span class="legenda"' + (stylL ? (' style="' + stylL + '"') : '') + '>' + legenda + '</span><input id="' + id
-      + '" type="text" class="data"' + (styl ? (' style="' + styl + '"') : '') + '>' + (postT ? '<span ' + (postL ? (' style="' + postL + '"') : '')
-      + '>' + postT + '</span>' : '');
+    var x = document.createElement("div");
+    x.className = "vstup";
+    x.innerHTML = "<span class=\"legenda\"" + (stylL ? (" style=\"" + stylL + "\"") : "") + ">" + legenda + "</span><input id=\"" + id
+      + "\" type=\"text\" class=\"data\"" + (styl ? (" style=\"" + styl + "\"") : "") + ">" + (postT ? "<span " + (postL ? (" style=\"" + postL + "\"") : "")
+      + ">" + postT + "</span>" : "");
     return x;
   },
   vstupniPoleR: function(id, styl, legenda, stylL, postT, postL){
-    styl += ';text-align:right;';
+    styl += ";text-align:right;";
     var x = this.vstupniPole(id, styl, legenda, stylL, postT, postL);
     return x;
   },
   zatrzitko: function(id, text, init, styl){
-    console.warn('DEPRECATED tfw.zatrzitko');
+    console.warn("DEPRECATED tfw.zatrzitko");
     return tfw.checkbox({
       id: id,
       text: text,
@@ -1239,28 +1239,28 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
   },
   tlacitko: function(id, text, funkce, styl){
-    var x = document.createElement('div');
+    var x = document.createElement("div");
     x.id = id;
-    x.className = 'button';
+    x.className = "button";
     x.onclick = funkce;
     x.innerHTML = text;
     if (styl) x.style.cssText = styl;
     return x;
   },
   progressBar: function(id, styl){
-    var x = document.createElement('div');
+    var x = document.createElement("div");
     x.id = id;
     x.style.cssText = styl;
-    x.className = 'progressbar';
-    var y = document.createElement('div');
+    x.className = "progressbar";
+    var y = document.createElement("div");
     x.add(y);
-    y.add(document.createElement('div'));
+    y.add(document.createElement("div"));
     return x;
   },
   novySelect: function(id, w, h, l, i){
     return tfw.select({
       id: id,
-      style: 'width:' + w + 'px;height:' + h + 'px;',
+      style: "width:" + w + "px;height:" + h + "px;",
       list: l,
       value: i
     });
@@ -1281,7 +1281,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} params - table parameters
    * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
    * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
-   * @param {string} [params.id='dynamicTable'] - table ID (name) - required for field (cell) updates
+   * @param {string} [params.id=dynamicTable] - table ID (name) - required for field (cell) updates
    * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing/adding is triggered
    * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
    * @param {boolean} [params.rowAdd=false] - whether to allow adding new rows
@@ -1296,11 +1296,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * var table = document.body.appendChild(
    *  tfw.dynamicTable(
    *   {
-   *    id: 'table1',
-   *    baseURL: 'data.php',
-   *    urlParams: 'token=Nd5qPxH&timestamp=1234567890',
+   *    id: "table1",
+   *    baseURL: "data.php",
+   *    urlParams: "token=Nd5qPxH&timestamp=1234567890",
    *    rowEdit: myRowEditFunction,
-   *    bodyHeight: '300px'
+   *    bodyHeight: "300px"
    *   }
    *  )
    * );
@@ -1310,7 +1310,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * @private
      */
-    var tableId = ('id' in params) ? params.id : 'dynamicTable';
+    var tableId = ("id" in params) ? params.id : "dynamicTable";
     /**
      * DIV containing the table.
      * @var {Object}
@@ -1319,19 +1319,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.tableContainer = tfw.div({
       innerHTML: tfw.AJAX_LOADER,
-      className: 'tfwDynamicTableContainer'
+      className: "tfwDynamicTableContainer"
     });
     var baseURL = params.baseURL;
     /**
      * @var {string}
      * @private
      */
-    var urlParams = ('urlParams' in params) ? params.urlParams : '';
+    var urlParams = ("urlParams" in params) ? params.urlParams : "";
     /**
      * @var {string}
      * @private
      */
-    var bodyHeight = ('bodyHeight' in params) ? params.bodyHeight : null;
+    var bodyHeight = ("bodyHeight" in params) ? params.bodyHeight : null;
     /**
      * Object representing a column in data.
      * @typedef {Object} tfw.dynamicTableClass~dataCol
@@ -1371,20 +1371,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * @private
      */
-    var rowEdit = ('rowEdit' in params) ? params.rowEdit : null;
+    var rowEdit = ("rowEdit" in params) ? params.rowEdit : null;
     /**
      * @var {boolean}
      * @private
      */
-    var addRowEnabled = ('rowAdd' in params) ? params.rowAdd : false;
-    if (addRowEnabled && typeof rowEdit != 'function') {
-      console.error('No callback was set for adding new rows.');
+    var addRowEnabled = ("rowAdd" in params) ? params.rowAdd : false;
+    if (addRowEnabled && typeof rowEdit != "function") {
+      console.error("No callback was set for adding new rows.");
     }
     /**
      * @var {boolean}
      * @private
      */
-    var watchChanges = ('watchChanges' in params) ? params.watchChanges : false;
+    var watchChanges = ("watchChanges" in params) ? params.watchChanges : false;
     /**
      * Function that handles moving to subordinate table.
      * @callback tfw.dynamicTableClass~goToSub
@@ -1394,11 +1394,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * @private
      */
-    var goToSub = ('goToSub' in params) ? params.goToSub : null;
+    var goToSub = ("goToSub" in params) ? params.goToSub : null;
     /**
      * @private
      */
-    var columnRenderers = ('columnRenderers' in params) ? params.columnRenderers : [];
+    var columnRenderers = ("columnRenderers" in params) ? params.columnRenderers : [];
     /**
      * @private
      * @var {number}
@@ -1426,8 +1426,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function serverCall(params){
       pendingHttpRequests.push(tfw.ajaxGet({
-        url: baseURL + '?t=' + tableId + '&a=' + params.action.name + (urlParams ? ('&' + urlParams) : ''),
-        method: ('method' in params.action) ? params.action.method : 'GET',
+        url: baseURL + "?t=" + tableId + "&a=" + params.action.name + (urlParams ? ("&" + urlParams) : ""),
+        method: ("method" in params.action) ? params.action.method : "GET",
         parameters: params.parameters,
         onload: function(hr){
           pendingHttpRequests.splice(pendingHttpRequests.indexOf(hr), 1);
@@ -1475,7 +1475,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       serverCall({
         action: tfw.dynamicTableClass.serverActions.PREF_SET,
-        parameters: 'data=' + JSON.stringify(savedPreferences)
+        parameters: "data=" + JSON.stringify(savedPreferences)
       });
     }
     /**
@@ -1485,10 +1485,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.setPreference = function(key, value){
       if (preferences == null) {
-        console.error('Preferences were not loaded yet.');
+        console.error("Preferences were not loaded yet.");
         return;
       }
-      if (typeof value == 'undefined') {
+      if (typeof value == "undefined") {
         delete preferences[key];
       } else {
         preferences[key] = value;
@@ -1502,7 +1502,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.getPreference = function(key){
       if (preferences == null) {
-        console.error('Preferences were not loaded yet.');
+        console.error("Preferences were not loaded yet.");
         return null;
       }
       return (key in preferences) ? preferences[key] : null;
@@ -1531,7 +1531,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.reload = function(){
       var dynamicTable = this;
       if (ajaxPendingCalls > 0) {
-        console.error('Dynamic table reload called before last reload finished.');
+        console.error("Dynamic table reload called before last reload finished.");
         return;
       }
       ajaxPendingCalls = 2;
@@ -1571,15 +1571,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var i = 0; i < pendingHttpRequests.length; i++) {
         pendingHttpRequests[i].abort();
       }
-      document.getElementById('tfwInsertStyle-tfwDynamicTableStyling-' + this.tableHTMLId).remove();
+      document.getElementById("tfwInsertStyle-tfwDynamicTableStyling-" + this.tableHTMLId).remove();
     };
     /**
-     * Test if no filters are applied and table is sorted by column of type 'order'.
+     * Test if no filters are applied and table is sorted by column of type "order".
      * @return {boolean} True if reordering can be done, false otherwise.
      */
     this.reorderEnabled = function(){
-      var sorting = this.getPreference('sorting');
-      var sortedByOrder = (sorting != null && ('dataCol' in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC);
+      var sorting = this.getPreference("sorting");
+      var sortedByOrder = (sorting != null && ("dataCol" in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC);
       return sortedByOrder && this.getVisibleRowsCount() == this.getTotalRowsCount();
     };
     /**
@@ -1590,7 +1590,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     function serverUpdateOrder(params){
       serverCall({
         action: tfw.dynamicTableClass.serverActions.CHANGE_ORDER,
-        parameters: 'id=' + params.id + '&neworder=' + params.neworder
+        parameters: "id=" + params.id + "&neworder=" + params.neworder
       });
     }
     /**
@@ -1605,22 +1605,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.toggleReorder = function(){
       var dynamicTable = this;
       var rowReorderEnabled = this.reorderEnabled();
-      var tbody = this.tableContainer.querySelector('tbody');
+      var tbody = this.tableContainer.querySelector("tbody");
       if (rowReorderEnabled) {
         window.getSelection().removeAllRanges();
       }
-      var rows = tbody.getElementsByTagName('tr');
+      var rows = tbody.getElementsByTagName("tr");
       for (var i = 0; i < rows.length; i++) {
-        rows[i][rowReorderEnabled ? 'addClass' : 'removeClass']('draggable');
+        rows[i][rowReorderEnabled ? "addClass" : "removeClass"]("draggable");
         rows[i].draggable = rowReorderEnabled;
         rows[i].ondragstart = rowReorderEnabled ? function(event){
-          this.addClass('dragged');
-          event.dataTransfer.setData('text', event.target.nodeOrder());
+          this.addClass("dragged");
+          event.dataTransfer.setData("text", event.target.nodeOrder());
         } : null;
         rows[i].ondragover = rowReorderEnabled ? function(event){
           event.preventDefault();
-          event.dataTransfer.dropEffect = 'move';
-          var dragged = dynamicTable.tableContainer.querySelector('tbody tr.dragged');
+          event.dataTransfer.dropEffect = "move";
+          var dragged = dynamicTable.tableContainer.querySelector("tbody tr.dragged");
           if (!dragged.isSameNode(this)) {
             dynamicTable.orderChange((dragged.nodeOrder() < this.nodeOrder()) ? this.nextSibling : this);
           }
@@ -1630,7 +1630,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           event.preventDefault();
         } : null;
         rows[i].ondragend = rowReorderEnabled ? function(){
-          this.removeClass('dragged');
+          this.removeClass("dragged");
           serverUpdateOrder({
             id: this.dataset.rowid,
             neworder: this.nodeOrder() + 1
@@ -1643,11 +1643,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {?HTMLElement} referenceRow - before which row should be the moved row placed (if null, insert at the end)
      */
     this.orderChange = function(referenceRow){
-      var draggedRow = this.tableContainer.querySelector('tbody tr.dragged');
+      var draggedRow = this.tableContainer.querySelector("tbody tr.dragged");
       if (draggedRow.isSameNode(referenceRow)) {
         return;
       }
-      var tbody = this.tableContainer.querySelector('tbody');
+      var tbody = this.tableContainer.querySelector("tbody");
       var orderColumn = this.data.cols[orderDataCol].columnOrder;
       var originalRowOrder = draggedRow.nodeOrder();
       var droppedRowOrder = (referenceRow == null) ? (tbody.rows.length - 1)
@@ -1676,7 +1676,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     function serverUpdateCell(params){
       serverCall({
         action: tfw.dynamicTableClass.serverActions.SAVE,
-        parameters: 'id=' + params.id + '&col=' + params.col + '&value=' + encodeURIComponent(params.value)
+        parameters: "id=" + params.id + "&col=" + params.col + "&value=" + encodeURIComponent(params.value)
       });
     }
     /**
@@ -1686,12 +1686,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @see tfw.dynamicTableClass~serverUpdateCell
      */
     this.updateInput = function(input){
-      var rowID = input.closest('tr').dataset.rowid;
-      var dataCol = input.closest('td').dataset.dataCol;
+      var rowID = input.closest("tr").dataset.rowid;
+      var dataCol = input.closest("td").dataset.dataCol;
       var value = input.value;
       var rowOrder = this.getDataRowById(rowID);
       if (rowOrder == null) {
-        console.error('Input was updated in a row with ID not present in data.');
+        console.error("Input was updated in a row with ID not present in data.");
       }
       this.data.rows[rowOrder].cols[dataCol] = value;
       serverUpdateCell({
@@ -1707,7 +1707,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [on=true] - whether to toggle active on or off
      */
     function setActiveArrow(element, base, on){
-      if (typeof base != 'undefined' && base != null) {
+      if (typeof base != "undefined" && base != null) {
         var arrowType = null,
             arrowGroup = null,
             arrowGroups = [
@@ -1725,18 +1725,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
         }
         if (arrowType == null) {
-          console.error('setActiveArrow called on invalid element.');
+          console.error("setActiveArrow called on invalid element.");
         } else {
-          var otherArrows = base.getElementsByClassName('tfwArrow');
+          var otherArrows = base.getElementsByClassName("tfwArrow");
           for (i = 0; i < otherArrows.length; i++) {
-            if (otherArrows[i].hasAnyClass(arrowGroup.join(' '))) {
-              otherArrows[i].removeClass('active');
+            if (otherArrows[i].hasAnyClass(arrowGroup.join(" "))) {
+              otherArrows[i].removeClass("active");
             }
           }
         }
       }
-      if (element != null && (typeof on == 'undefined' || on)) {
-        element.addClass('active');
+      if (element != null && (typeof on == "undefined" || on)) {
+        element.addClass("active");
       }
     }
     /**
@@ -1761,7 +1761,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
         shift--;
       }
-      row.children[column].querySelector('input').focus();
+      row.children[column].querySelector("input").focus();
     }
     /**
      * @private
@@ -1769,8 +1769,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {boolean}
      */
     this.isColumnVisible = function(dataCol){
-      return (!('hidden' in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
-        && !(this.tableContainer.querySelector('thead').rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass('hideColumn'));
+      return (!("hidden" in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
+        && !(this.tableContainer.querySelector("thead").rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass("hideColumn"));
     };
     /**
      * @private
@@ -1785,7 +1785,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       width += 10; // scrollbar
 
-      this.tableContainer.querySelector('table').style.width = width + 'px';
+      this.tableContainer.querySelector("table").style.width = width + "px";
     };
     /**
      * @private
@@ -1794,10 +1794,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.setColumnCellsWidths = function(dataCol, newWidth){
       var columnOrder = this.data.cols[dataCol].columnOrder,
-          cells = this.tableContainer.querySelectorAll('thead tr > :nth-child('+(parseInt(columnOrder)+1)+'), '
-          + 'tbody tr > :nth-child('+(parseInt(columnOrder)+1)+')');
+          cells = this.tableContainer.querySelectorAll("thead tr > :nth-child("+(parseInt(columnOrder)+1)+"), "
+          + "tbody tr > :nth-child("+(parseInt(columnOrder)+1)+")");
       for (var i=0; i<cells.length; i++) {
-        cells[i].style.width = newWidth+'px';
+        cells[i].style.width = newWidth+"px";
       }
       this.data.cols[dataCol].width = newWidth;
       this.setTableWidth();
@@ -1809,7 +1809,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [dontSave=false] - don't save into preferences
      */
     this.setColumnWidth = function(dataCol, width, dontSave){
-      if (typeof dontSave == 'undefined' || !dontSave) {
+      if (typeof dontSave == "undefined" || !dontSave) {
         this.setWidthsPreference(width, dataCol, !dontSave);
       }
 
@@ -1821,26 +1821,26 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {HTMLElement} table row
      */
     this.createRow = function(rowOrder){
-      var readonlyRow = ('readonly' in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
+      var readonlyRow = ("readonly" in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
           r = tfw.tr({
-            id: 'rowID-' + this.data.rows[rowOrder].id
+            id: "rowID-" + this.data.rows[rowOrder].id
           });
       if (readonlyRow) {
-        r.addClass('readonly');
+        r.addClass("readonly");
       }
-      r.setAttribute('data-rowid', this.data.rows[rowOrder].id);
+      r.setAttribute("data-rowid", this.data.rows[rowOrder].id);
       var columnOrder = 0,
           b,
           dynamicTable = this;
       if (rowEdit) {
         r.add(tfw.td({
-          className: 'rowEditCell',
+          className: "rowEditCell",
           children: [b = tfw.span({
-            className: 'rowEditIcon clickable icon fa fa-info'
+            className: "rowEditIcon clickable icon fa fa-info"
           })]
         }));
         if (readonlyRow) {
-          b.addClass('disabled');
+          b.addClass("disabled");
         } else {
           b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
         }
@@ -1865,26 +1865,26 @@ var tfw = {//eslint-disable-line no-implicit-globals
               default:
                 return;
             }
-            moveFocusToCell(this.closest('td'), this.dataset.columnOrder, shift);
+            moveFocusToCell(this.closest("td"), this.dataset.columnOrder, shift);
           };
       for (var j = 0; j < this.data.cols.length; j++) {
-        if (!('hidden' in this.data.cols[j])) {
+        if (!("hidden" in this.data.cols[j])) {
           var params = {};
           params.children = [];
-          if ('subtable' in this.data.cols[j] && this.data.cols[j].subtable) {
-            params.className = 'withSubtable';
+          if ("subtable" in this.data.cols[j] && this.data.cols[j].subtable) {
+            params.className = "withSubtable";
             params.children.push(b = tfw.div({
-              className: 'subtable clickable icon fa fa-caret-down'
+              className: "subtable clickable icon fa fa-caret-down"
             }));
             b.onclick = goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j);
           }
           val = this.data.rows[rowOrder].cols[j];
-          readonlyCol = ('readonly' in this.data.cols[j]) && this.data.cols[j] === true;
-          if (typeof columnRenderers[j] == 'function') {
+          readonlyCol = ("readonly" in this.data.cols[j]) && this.data.cols[j] === true;
+          if (typeof columnRenderers[j] == "function") {
             params.children.push.apply(params.children, columnRenderers[j](val));
           } else {
-            type = ('type' in this.data.cols[j]) ? this.data.cols[j].type : null;
-            var id = 'tfwDynamicTable-' + rowOrder + '-' + columnOrder;
+            type = ("type" in this.data.cols[j]) ? this.data.cols[j].type : null;
+            var id = "tfwDynamicTable-" + rowOrder + "-" + columnOrder;
             var setKeys = null;
             switch (type) {
               case tfw.dynamicTableClass.colTypes.CHECKBOX:
@@ -1897,7 +1897,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 break;
               case tfw.dynamicTableClass.colTypes.NUMBER:
                 params.children.push(setKeys = tfw.input({
-                  type: 'number',
+                  type: "number",
                   id: id,
                   value: val,
                   onchange: updateInputCallback,
@@ -1914,7 +1914,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 break;
               case tfw.dynamicTableClass.colTypes.TEXT:
                 params.children.push(setKeys = tfw.input({
-                  type: 'text',
+                  type: "text",
                   id: id,
                   value: val,
                   onchange: updateInputCallback,
@@ -1926,12 +1926,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }
             if (setKeys != null) {
               setKeys.dataset.columnOrder = columnOrder;
-              setKeys.addEventListener('keyup', keyCallback);
+              setKeys.addEventListener("keyup", keyCallback);
             }
           }
           r.add(c = tfw.td(params));
           c.dataset.dataCol = j;
-          c.style.width = this.data.cols[j].width + 'px';
+          c.style.width = this.data.cols[j].width + "px";
           columnOrder++;
         }
       }
@@ -1943,7 +1943,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {number}
      */
     this.getVisibleRowsCount = function(){
-      return [].slice.call(this.tableContainer.querySelectorAll('tbody tr')).reduce(function(previous, current){
+      return [].slice.call(this.tableContainer.querySelectorAll("tbody tr")).reduce(function(previous, current){
         return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
       }, 0);
     };
@@ -1953,7 +1953,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {number}
      */
     this.getTotalRowsCount = function(){
-      return this.tableContainer.querySelectorAll('tbody tr').length;
+      return this.tableContainer.querySelectorAll("tbody tr").length;
     };
     /**
      * Recompute rows counts and update text in table footer.
@@ -1962,8 +1962,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     function updateRowCounts(){
       var vis = this.getVisibleRowsCount();
       var tot = this.getTotalRowsCount();
-      $(this.tableHTMLId + '-hiddenRowsInfo').style.display = (vis == tot) ? 'none' : 'inline-block';
-      $(this.tableHTMLId + '-hiddenRowsCount').innerHTML = tfw.strings.HIDDEN_ROWS + ': ' + (tot - vis);
+      $(this.tableHTMLId + "-hiddenRowsInfo").style.display = (vis == tot) ? "none" : "inline-block";
+      $(this.tableHTMLId + "-hiddenRowsCount").innerHTML = tfw.strings.HIDDEN_ROWS + ": " + (tot - vis);
     }
     /**
      * @private
@@ -1972,11 +1972,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.createAndFillTable = function(){
       // add CSS styling for filters
-      var tableCSS = '';
+      var tableCSS = "";
       for (var dataCol = 0; dataCol < this.data.cols.length; dataCol++) {
-        tableCSS += '#' + this.tableHTMLId + ' .filter' + dataCol + 'Invalid{display:none}\n';
+        tableCSS += "#" + this.tableHTMLId + " .filter" + dataCol + "Invalid{display:none}\n";
       }
-      tfw.insertStyle(tableCSS, 'tfwDynamicTableStyling-' + this.tableHTMLId);
+      tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-" + this.tableHTMLId);
       var o,
           thead,
           tbody,
@@ -1986,59 +1986,59 @@ var tfw = {//eslint-disable-line no-implicit-globals
           dynamicTable = this,
           b,
           j;
-      this.tableContainer.innerHTML = '';
+      this.tableContainer.innerHTML = "";
       this.tableContainer.add(o = tfw.table({
         id: this.tableHTMLId,
-        className: 'tfwDynamicTable'
+        className: "tfwDynamicTable"
       }));
       for (j = 0; j < this.data.cols.length; j++) {
-        if (!this.data.cols[j].hidden && this.data.cols[j].type == 'order') {
+        if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
           this.data.cols[j].sort = true;
           orderDataCol = j;
         }
       }
-      o.add(thead = document.createElement('thead'));
+      o.add(thead = document.createElement("thead"));
       thead.add(r = tfw.tr({
-        className: 'headlines'
+        className: "headlines"
       }));
 
       var RESIZING_MIN_WIDTH = 40;
       var resizerMouseDown = function(event){
-        var cell = window._resizedElement = event.target.closest('th');
-        cell.dispatchEvent(new CustomEvent('resizestart'));
-        document.body.addClass('resizing');
+        var cell = window._resizedElement = event.target.closest("th");
+        cell.dispatchEvent(new CustomEvent("resizestart"));
+        document.body.addClass("resizing");
         cell._resizePositionX = event.clientX;
       };
       var resizerMouseMove = function(event){
-        if (typeof window._resizedElement != 'undefined') {
+        if (typeof window._resizedElement != "undefined") {
           var cell = window._resizedElement;
           var diff = event.clientX - cell._resizePositionX;
           if (diff != 0) {
-            cell.dispatchEvent(new CustomEvent('resizing', {detail: {move: diff}}));
+            cell.dispatchEvent(new CustomEvent("resizing", {detail: {move: diff}}));
 
             /** @todo apply min/max width */
             var width = parseInt(cell.style.width) + diff;
             if (width < RESIZING_MIN_WIDTH) {
               width = RESIZING_MIN_WIDTH;
             }
-            cell.style.width = width + 'px';
+            cell.style.width = width + "px";
 
             cell._resizePositionX = event.clientX;
           }
         }
       };
       var resizerMouseEnd = function(){
-        if (typeof window._resizedElement != 'undefined') {
+        if (typeof window._resizedElement != "undefined") {
           var cell = window._resizedElement;
-          cell.dispatchEvent(new CustomEvent('resizestop'));
-          document.body.removeClass('resizing');
+          cell.dispatchEvent(new CustomEvent("resizestop"));
+          document.body.removeClass("resizing");
           delete window._resizedElement;
         }
       };
-      document.body.addEventListener('mousemove', resizerMouseMove);
-      document.body.addEventListener('mouseup', resizerMouseEnd);
-      document.addEventListener('mouseout', function(event){
-        if (!event.relatedTarget || event.relatedTarget.nodeName == 'HTML') {
+      document.body.addEventListener("mousemove", resizerMouseMove);
+      document.body.addEventListener("mouseup", resizerMouseEnd);
+      document.addEventListener("mouseout", function(event){
+        if (!event.relatedTarget || event.relatedTarget.nodeName == "HTML") {
           resizerMouseEnd(event);
         }
       });
@@ -2056,22 +2056,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
       columnOrder = 0;
       if (rowEdit) {
-        var th = document.createElement('th');
-        th.innerHTML = '&nbsp;';
-        th.className = 'rowEditCell';
+        var th = document.createElement("th");
+        th.innerHTML = "&nbsp;";
+        th.className = "rowEditCell";
         r.add(th);
         columnOrder++;
       }
       var resizer,
           d;
       for (j = 0; j < this.data.cols.length; j++) {
-        if (!('hidden' in this.data.cols[j])) {
-          c = document.createElement('th');
-          c.add(d=tfw.span({className: 'colHeadingControl'}));
+        if (!("hidden" in this.data.cols[j])) {
+          c = document.createElement("th");
+          c.add(d=tfw.span({className: "colHeadingControl"}));
           var deltaWidth=0;
-          if ('filter' in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
+          if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
             d.add(b = tfw.div({
-              className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.FILTER
+              className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.FILTER
             }));
             b.dataset.dataCol = j;
             b.onclick = function(){
@@ -2079,16 +2079,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
             };
             deltaWidth+=16;
           }
-          if ('sort' in this.data.cols[j] && this.data.cols[j].sort) {
+          if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
             var b1,
                 b2;
             d.add(b2 = tfw.div({
-              className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.UP,
-              style: 'position:relative;left:2px;'
+              className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.UP,
+              style: "position:relative;left:2px;"
             }));
             b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
             d.add(b1 = tfw.div({
-              className: 'tfwArrow ' + tfw.dynamicTableClass.arrowTypes.DOWN
+              className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.DOWN
             }));
             b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
             b1.dataset.dataCol = b2.dataset.dataCol = j;
@@ -2097,34 +2097,34 @@ var tfw = {//eslint-disable-line no-implicit-globals
             };
             deltaWidth+=24;
           }
-          if (!('noresize' in this.data.cols[j]) || this.data.cols[j].noresize === false) {
-            c.addClass('resizable');
-            d.add(resizer = tfw.span({className: 'resizer'}));
-            resizer.addEventListener('mousedown', resizerMouseDown);
-            c.addEventListener('resizing', function(){
+          if (!("noresize" in this.data.cols[j]) || this.data.cols[j].noresize === false) {
+            c.addClass("resizable");
+            d.add(resizer = tfw.span({className: "resizer"}));
+            resizer.addEventListener("mousedown", resizerMouseDown);
+            c.addEventListener("resizing", function(){
               onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));
             });
-            c.addEventListener('resizestop', function(){
+            c.addEventListener("resizestop", function(){
               dynamicTable.setColumnWidth(this.dataset.dataCol, parseInt(this.style.width));
             });
             deltaWidth+=8;
           }
 
-          c.add(tfw.span({className: 'colHeading', innerHTML: this.data.cols[j].name, style: 'width: calc(100% - '+deltaWidth+'px);'}));
+          c.add(tfw.span({className: "colHeading", innerHTML: this.data.cols[j].name, style: "width: calc(100% - "+deltaWidth+"px);"}));
 
-          if ('width' in this.data.cols[j]) {
+          if ("width" in this.data.cols[j]) {
             this.data.cols[j].width = parseInt(this.data.cols[j].width);
           } else {
             this.data.cols[j].width = 200;
           }
-          c.style.width = this.data.cols[j].width + 'px';
+          c.style.width = this.data.cols[j].width + "px";
           c.dataset.dataCol = j;
           r.add(c);
           this.data.cols[j].columnOrder = columnOrder;
           columnOrder++;
         }
       }
-      o.add(tbody = document.createElement('tbody'));
+      o.add(tbody = document.createElement("tbody"));
       if (bodyHeight != null) {
         tbody.style.maxHeight = bodyHeight;
       }
@@ -2132,29 +2132,29 @@ var tfw = {//eslint-disable-line no-implicit-globals
         tbody.add(this.createRow(i));
       }
       var tfoot;
-      o.add(tfoot = document.createElement('tfoot'));
+      o.add(tfoot = document.createElement("tfoot"));
       tfoot.add(tfw.tr({
         children: [
           tfw.td(addRowEnabled ? {
             children: [
               tfw.button({
                 onclick: rowEdit.bind(null, 0),
-                innerHTML: '<span class="fa fa-plus"></span>'
+                innerHTML: "<span class=\"fa fa-plus\"></span>"
               })
             ]
           } : {}), tfw.td({
             children: [
               tfw.div({
-                id: this.tableHTMLId + '-hiddenRowsInfo',
+                id: this.tableHTMLId + "-hiddenRowsInfo",
                 children: [
                   tfw.span({
-                    id: this.tableHTMLId + '-hiddenRowsCount'
+                    id: this.tableHTMLId + "-hiddenRowsCount"
                   }), tfw.button({
-                    className: 'resetTableFilter',
+                    className: "resetTableFilter",
                     onclick: function(){
                       dynamicTable.resetFilters();
                     },
-                    innerHTML: '<span class="tfwArrow filter reset"></span>'
+                    innerHTML: "<span class=\"tfwArrow filter reset\"></span>"
                   })
                 ]
               })
@@ -2165,7 +2165,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 onclick: function(){
                   dynamicTable.toggleColumnDialog(this);
                 },
-                innerHTML: '<span class="fa fa-cog"></span>'
+                innerHTML: "<span class=\"fa fa-cog\"></span>"
               })
             ]
           })
@@ -2214,18 +2214,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.paint = function(changes){
       var i,
           dataCol,
-          sorting = this.getPreference('sorting');
-      this.tableHTMLId = 'dynamicTable-' + tableId;
+          sorting = this.getPreference("sorting");
+      this.tableHTMLId = "dynamicTable-" + tableId;
       if (document.getElementById(this.tableHTMLId) == null) {
         this.createAndFillTable();
         if (watchChanges) {
           this.serverWatch();
         }
-        if ('onload' in params) {
+        if ("onload" in params) {
           params.onload();
         }
         // hide columns
-        var hiddenColumns = this.getPreference('hiddenColumns');
+        var hiddenColumns = this.getPreference("hiddenColumns");
         if (hiddenColumns != null) {
           for (dataCol in hiddenColumns) {
             if (hiddenColumns[dataCol] === true && this.isColumnVisible(dataCol)) {
@@ -2234,52 +2234,52 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
         }
         // apply column widths
-        var widths = this.getPreference('widths');
+        var widths = this.getPreference("widths");
         if (widths != null) {
           for (dataCol in widths) {
             this.setColumnWidth(dataCol, widths[dataCol], true);
           }
         }
-      } else if (typeof changes == 'undefined') {
-        console.error('Dynamic table reloading not implemented yet.');
+      } else if (typeof changes == "undefined") {
+        console.error("Dynamic table reloading not implemented yet.");
       } else {
-        var tbody = this.tableContainer.querySelector('tbody'),
+        var tbody = this.tableContainer.querySelector("tbody"),
             rowOrder;
         for (i = 0; i < changes.length; i++) {
           var rowID = changes[i].id;
-          if ('col' in changes[i]) { // update
+          if ("col" in changes[i]) { // update
             dataCol = changes[i].col;
             var column = this.data.cols[dataCol].columnOrder;
             var newValue = changes[i].value;
             rowOrder = this.getDataRowById(rowID);
             if (rowOrder == null) {
-              console.error('Row that is not present in the table was updated. (id=' + rowID + ')');
+              console.error("Row that is not present in the table was updated. (id=" + rowID + ")");
             } else if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
               this.data.rows[rowOrder].cols[dataCol] = newValue;
               var cell = tbody.rows[rowOrder].cells[column];
-              cell.addClass('hasBeenChanged');
+              cell.addClass("hasBeenChanged");
               setTimeout(function(updatedCell){
-                updatedCell.removeClass('hasBeenChanged');
+                updatedCell.removeClass("hasBeenChanged");
               }, 3000, cell);
-              if (typeof columnRenderers[dataCol] == 'function') {
-                cell.innerHTML = '';
+              if (typeof columnRenderers[dataCol] == "function") {
+                cell.innerHTML = "";
                 tfw.addAll(cell, columnRenderers[dataCol](newValue));
               } else {
                 switch (this.data.cols[dataCol].type) {
                   case tfw.dynamicTableClass.colTypes.CHECKBOX:
-                    cell.querySelector('.tfwCheckbox').value = parseInt(newValue);
+                    cell.querySelector(".tfwCheckbox").value = parseInt(newValue);
                     break;
                   case tfw.dynamicTableClass.colTypes.NUMBER:
                   case tfw.dynamicTableClass.colTypes.DATE:
                   case tfw.dynamicTableClass.colTypes.TEXT:
-                    cell.querySelector('input').value = newValue;
+                    cell.querySelector("input").value = newValue;
                     break;
                   default:
                     cell.innerHTML = newValue;
                 }
               }
             }
-          } else if ('cols' in changes[i]) { // insertion
+          } else if ("cols" in changes[i]) { // insertion
             var comparator = this.getCmp(sorting === null ? null : sorting.dataCol).bind(null, sorting.asc);
             rowOrder = this.data.rows.push({id: rowID, cols: changes[i].cols}) - 1;
             var newRow = this.createRow(rowOrder);
@@ -2295,7 +2295,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             rowOrder = this.getDataRowById(rowID);
             this.data.rows.splice(rowOrder, 1);
             if (rowOrder === null) {
-              console.error('Row that is not present in the table was deleted.');
+              console.error("Row that is not present in the table was deleted.");
             } else {
               tbody.rows[rowOrder].remove();
               if (orderDataCol !== null && this.reorderEnabled()) {
@@ -2318,10 +2318,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
           var defaultValue;
           switch (this.data.cols[i].type) {
             case tfw.dynamicTableClass.colTypes.CHECKBOX:
-              defaultValue = '0';
+              defaultValue = "0";
               break;
             case tfw.dynamicTableClass.colTypes.TEXT:
-              defaultValue = '';
+              defaultValue = "";
               break;
             case tfw.dynamicTableClass.colTypes.DATE:
               columnValues = this.data.rows.map(function(row){return row.cols[i];}).sort();//eslint-disable-line no-loop-func
@@ -2342,13 +2342,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
               };
               break;
             default:
-              console.error('Cannot calculate default value for filter on field of unsupported type "' + this.data.cols[i].type + '"');
+              console.error("Cannot calculate default value for filter on field of unsupported type \"" + this.data.cols[i].type + "\"");
           }
           defaultFilterValues[i] = defaultValue;
         }
       }
       // apply filters
-      var filterValues = this.getPreference('filterValues');
+      var filterValues = this.getPreference("filterValues");
       if (filterValues != null) {
         for (dataCol in filterValues) {
           if (filterValues[dataCol] != null) {
@@ -2374,7 +2374,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [save=true] - whether to save immidiatelly
      */
     this.setFilterPreferenceIfNotDefault = function(value, dataCol, save){
-      var filterValues = this.getPreference('filterValues');
+      var filterValues = this.getPreference("filterValues");
       if (filterValues == null) {
         filterValues = {};
       }
@@ -2383,8 +2383,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       } else {
         filterValues[dataCol] = value;
       }
-      if (typeof save == 'undefined' || save) {
-        this.setPreference('filterValues', filterValues);
+      if (typeof save == "undefined" || save) {
+        this.setPreference("filterValues", filterValues);
       }
     };
     /**
@@ -2395,7 +2395,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [save=true] - whether to save into preferences
      */
     this.setWidthsPreference = function(width, dataCol, save){
-      var widths = this.getPreference('widths');
+      var widths = this.getPreference("widths");
       if (widths == null) {
         widths = {};
       }
@@ -2404,8 +2404,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       } else {
         widths[dataCol] = width;
       }
-      if (typeof save == 'undefined' || save) {
-        this.setPreference('widths', widths);
+      if (typeof save == "undefined" || save) {
+        this.setPreference("widths", widths);
       }
     };
     /**
@@ -2430,9 +2430,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {boolean}
      */
     this.isFilterValueDefault = function(value, dataCol){
-      if (typeof value == 'object' && ('min' in value || 'max' in value)) {
-        return (!('min' in value) || value.min === defaultFilterValues[dataCol].min)
-          && (!('max' in value) || value.max === defaultFilterValues[dataCol].max);
+      if (typeof value == "object" && ("min" in value || "max" in value)) {
+        return (!("min" in value) || value.min === defaultFilterValues[dataCol].min)
+          && (!("max" in value) || value.max === defaultFilterValues[dataCol].max);
       }
       return value === defaultFilterValues[dataCol];
     };
@@ -2448,15 +2448,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.filter = function(filterElement, dataCol){
       var dynamicTable = this;
       if (this.data.cols[dataCol].hidden) {
-        console.error('Tried to apply filter on a hidden column.');
+        console.error("Tried to apply filter on a hidden column.");
         return;
-      } else if (!('filter' in this.data.cols[dataCol]) || !this.data.cols[dataCol].filter) {
-        console.error('Tried to apply filter on a column with no filter.');
+      } else if (!("filter" in this.data.cols[dataCol]) || !this.data.cols[dataCol].filter) {
+        console.error("Tried to apply filter on a column with no filter.");
         return;
       }
-      var c = document.createElement('div');
+      var c = document.createElement("div");
       var type = this.data.cols[dataCol].type,
-          value = this.getColumnPreference('filterValues', dataCol),
+          value = this.getColumnPreference("filterValues", dataCol),
           minV,
           maxV,
           f1,
@@ -2465,14 +2465,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       switch (type) {
         case tfw.dynamicTableClass.colTypes.CHECKBOX:
           var filter = tfw.select({
-            list: [tfw.strings.ALL, tfw.strings.YES, tfw.strings.NO].join(';'),
+            list: [tfw.strings.ALL, tfw.strings.YES, tfw.strings.NO].join(";"),
             value: value,
             onchange: function(){
               dynamicTable.filterAny(this.dataset.dataCol, this.value);
             }
           });
           filter.dataset.dataCol = dataCol;
-          filter.addEventListener('click', function(event){
+          filter.addEventListener("click", function(event){
             event.stopPropagation();
           });
           c.add(filter);
@@ -2481,10 +2481,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
           minV = defaultFilterValues[dataCol].min;
           maxV = defaultFilterValues[dataCol].max;
           f1 = tfw.input({
-            type: 'number',
-            className: 'rangeMin',
+            type: "number",
+            className: "rangeMin",
             onchange: function(){
-              var max = this.closest('th').querySelector('.rangeMax');
+              var max = this.closest("th").querySelector(".rangeMax");
               max.min = this.value;
               if (parseInt(max.value) < parseInt(max.min)) {
                 max.value = max.min;
@@ -2498,10 +2498,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
             legend: tfw.strings.FROM
           });
           f2 = tfw.input({
-            type: 'number',
-            className: 'rangeMax',
+            type: "number",
+            className: "rangeMax",
             onchange: function(){
-              var min = this.closest('th').querySelector('.rangeMin');
+              var min = this.closest("th").querySelector(".rangeMin");
               min.max = this.value;
               if (parseInt(min.value) > parseInt(min.max)) {
                 min.value = min.max;
@@ -2514,14 +2514,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
             value: (value) ? value.max : maxV,
             legend: tfw.strings.TO
           });
-          inputToFocus = f1.querySelector('.rangeMin');
-          f1.querySelector('.rangeMin').dataset.dataCol = f2.querySelector('.rangeMax').dataset.dataCol = dataCol;
+          inputToFocus = f1.querySelector(".rangeMin");
+          f1.querySelector(".rangeMin").dataset.dataCol = f2.querySelector(".rangeMax").dataset.dataCol = dataCol;
           c.add(f1);
           c.add(f2);
-          f1.addEventListener('click', function(event){
+          f1.addEventListener("click", function(event){
             event.stopPropagation();
           });
-          f2.addEventListener('click', function(event){
+          f2.addEventListener("click", function(event){
             event.stopPropagation();
           });
           break;
@@ -2530,39 +2530,39 @@ var tfw = {//eslint-disable-line no-implicit-globals
           maxV = defaultFilterValues[dataCol].max;
 
           f1 = tfw.input({
-            type: 'text',
-            className: 'dateMin',
+            type: "text",
+            className: "dateMin",
             value: (value) ? value.min : minV.match(/\d{4,}-\d{2}-\d{2}/)[0],
             legend: tfw.strings.FROM
           });
-          tfw.calendarExtend(inputToFocus = f1.querySelector('input'));
-          f1.querySelector('input').addEventListener('change', function(){
+          tfw.calendarExtend(inputToFocus = f1.querySelector("input"));
+          f1.querySelector("input").addEventListener("change", function(){
             dynamicTable.filterAny(this.dataset.dataCol, {
               min: this.value,
-              max: this.closest('div').querySelector('.dateMax').value
+              max: this.closest("div").querySelector(".dateMax").value
             });
           });
 
           f2 = tfw.input({
-            type: 'text',
-            className: 'dateMax',
+            type: "text",
+            className: "dateMax",
             value: (value) ? value.max : maxV.match(/\d{4,}-\d{2}-\d{2}/)[0],
             legend: tfw.strings.TO
           });
-          tfw.calendarExtend(f2.querySelector('input'));
-          f2.querySelector('input').addEventListener('change', function(){
+          tfw.calendarExtend(f2.querySelector("input"));
+          f2.querySelector("input").addEventListener("change", function(){
             dynamicTable.filterAny(this.dataset.dataCol, {
-              min: this.closest('div').querySelector('.dateMin').value,
+              min: this.closest("div").querySelector(".dateMin").value,
               max: this.value
             });
           });
 
-          f1.querySelector('input').size = f2.querySelector('input').size = 10;
-          f1.querySelector('.dateMin').dataset.dataCol = f2.querySelector('.dateMax').dataset.dataCol = dataCol;
-          f1.addEventListener('click', function(event){
+          f1.querySelector("input").size = f2.querySelector("input").size = 10;
+          f1.querySelector(".dateMin").dataset.dataCol = f2.querySelector(".dateMax").dataset.dataCol = dataCol;
+          f1.addEventListener("click", function(event){
             event.stopPropagation();
           });
-          f2.addEventListener('click', function(event){
+          f2.addEventListener("click", function(event){
             event.stopPropagation();
           });
           c.add(f1);
@@ -2570,7 +2570,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           break;
         case tfw.dynamicTableClass.colTypes.TEXT:
           var searchInput = inputToFocus = tfw.input({
-            type: 'text',
+            type: "text",
             placeholder: tfw.strings.FILTER,
             value: value,
             onchange: function(){
@@ -2583,16 +2583,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
             dynamicTable.filterAny(this.dataset.dataCol, this.value.trim(), this.dataset.searchType, true);
           };
           c.add(searchInput);
-          searchInput.addEventListener('click', function(event){
+          searchInput.addEventListener("click", function(event){
             event.stopPropagation();
           });
           break;
         default:
-          console.error('Tried to apply filter on type that is not supported: "' + type + '"');
+          console.error("Tried to apply filter on type that is not supported: \"" + type + "\"");
           return;
       }
-      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error('tfw.dynamicTableClass.placePositionedDialog has not been set.');
-      else tfw.dynamicTableClass.placePositionedDialog(filterElement.closest('th'), c);
+      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error("tfw.dynamicTableClass.placePositionedDialog has not been set.");
+      else tfw.dynamicTableClass.placePositionedDialog(filterElement.closest("th"), c);
       this.filterContainer = c;
       if (inputToFocus !== null) {
         inputToFocus.focus();
@@ -2647,8 +2647,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     function cmpTextRows(dataCol, asc, row1, row2){
       var a = row1.cols[dataCol],
           b = row2.cols[dataCol];
-      return (a === '' && b === '') ? (cmpRowsIds(asc, row1, row2))
-        : ((a === '') ? 1 : ((b === '') ? -1 : ((a.localeCompare(b) * asc) || cmpRowsIds(asc, row1, row2))));
+      return (a === "" && b === "") ? (cmpRowsIds(asc, row1, row2))
+        : ((a === "") ? 1 : ((b === "") ? -1 : ((a.localeCompare(b) * asc) || cmpRowsIds(asc, row1, row2))));
     }
 
     /**
@@ -2672,22 +2672,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [dontSave=false] - don't save into preferences
      */
     this.sort = function(dataCol, asc, dontSave){
-      var tbody = this.tableContainer.querySelector('tbody');
+      var tbody = this.tableContainer.querySelector("tbody");
       if (dataCol !== null) {
-        if (typeof dontSave == 'undefined' || !dontSave) {
-          this.setPreference('sorting', {
+        if (typeof dontSave == "undefined" || !dontSave) {
+          this.setPreference("sorting", {
             dataCol: dataCol,
             asc: asc
           });
         }
 
         var column = this.data.cols[dataCol].columnOrder;
-        this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? 'UP' : 'DOWN'], this.tableContainer);
+        this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? "UP" : "DOWN"], this.tableContainer);
       }
 
       this.data.rows.sort(this.getCmp(dataCol).bind(null, asc));
       for (var i = 0; i < this.data.rows.length; i++) {
-        tbody.appendChild(tbody.rows.namedItem('rowID-' + this.data.rows[i].id));
+        tbody.appendChild(tbody.rows.namedItem("rowID-" + this.data.rows[i].id));
       }
 
       this.toggleReorder();
@@ -2701,9 +2701,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @see tfw.dynamicTableClass~setActiveArrow
      */
     this.setActiveFilterInColumn = function(column, on, arrowType, arrowBase){
-      var base = this.tableContainer.getElementsByClassName('headlines')[0].getElementsByTagName('th')[column];
-      var filterIcon = base.getElementsByClassName('tfwArrow ' + arrowType)[0];
-      setActiveArrow(filterIcon, (typeof arrowBase == 'undefined') ? base : arrowBase, on);
+      var base = this.tableContainer.getElementsByClassName("headlines")[0].getElementsByTagName("th")[column];
+      var filterIcon = base.getElementsByClassName("tfwArrow " + arrowType)[0];
+      setActiveArrow(filterIcon, (typeof arrowBase == "undefined") ? base : arrowBase, on);
     };
     /**
      * Apply any filter.
@@ -2752,45 +2752,45 @@ var tfw = {//eslint-disable-line no-implicit-globals
             var prefix;
             switch (type) {
               case tfw.dynamicTableClass.colTypes.NUMBER:
-                prefix = 'range';
+                prefix = "range";
                 break;
               case tfw.dynamicTableClass.colTypes.DATE:
-                prefix = 'date';
+                prefix = "date";
                 break;
               // intentionally omitted default
             }
-            this.filterContainer.querySelector('.tfwContainer .' + prefix + 'M' + p.substring(1)).value = value[p];
+            this.filterContainer.querySelector(".tfwContainer ." + prefix + "M" + p.substring(1)).value = value[p];
           }
         }
       }
       // update current filter values
-      this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == 'undefined' || !dontSave));
+      this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == "undefined" || !dontSave));
       this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
-      var tbody = this.tableContainer.querySelector('tbody'),
-          searchFunc = (typeof searchType != 'undefined' && searchType == 1) ? 'startsWith' : 'includes',
+      var tbody = this.tableContainer.querySelector("tbody"),
+          searchFunc = (typeof searchType != "undefined" && searchType == 1) ? "startsWith" : "includes",
           rowValue;
       for (var i = 0; i < tbody.rows.length; i++) {
         var matches = true;
         switch (type) {
           case tfw.dynamicTableClass.colTypes.CHECKBOX:
-            var checked = tbody.rows[i].cells[column].querySelector('.checked') != null;
-            matches = (value === '0') || (value === '1' && checked) || (value === '2' && !checked);
+            var checked = tbody.rows[i].cells[column].querySelector(".checked") != null;
+            matches = (value === "0") || (value === "1" && checked) || (value === "2" && !checked);
             break;
           case tfw.dynamicTableClass.colTypes.TEXT:
-            matches = (value == '') || tbody.rows[i].cells[column].querySelector('input[type="text"]').value.toLowerCase()[searchFunc](
+            matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type=\"text\"]").value.toLowerCase()[searchFunc](
               value.toLowerCase());
             break;
           case tfw.dynamicTableClass.colTypes.NUMBER:
-            rowValue = parseInt(tbody.rows[i].cells[column].querySelector('input').rowValue);
-            matches = (rowValue === '' || (value.min <= rowValue && rowValue <= value.max));
+            rowValue = parseInt(tbody.rows[i].cells[column].querySelector("input").rowValue);
+            matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
           case tfw.dynamicTableClass.colTypes.DATE:
-            rowValue = tbody.rows[i].cells[column].querySelector('input').value;
-            matches = (rowValue === '' || (value.min <= rowValue && rowValue <= value.max));
+            rowValue = tbody.rows[i].cells[column].querySelector("input").value;
+            matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
           // intentionally omitted default
         }
-        tbody.rows[i][matches ? 'removeClass' : 'addClass']('filter' + dataCol + 'Invalid');
+        tbody.rows[i][matches ? "removeClass" : "addClass"]("filter" + dataCol + "Invalid");
       }
       updateRowCounts.call(this);
     };
@@ -2798,8 +2798,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.resetFilters = function(){
       var last = null;
       for (var i = 0; i < this.data.cols.length; i++) {
-        if ('filter' in this.data.cols) {
-          var value = this.getColumnPreference('filterValues', i);
+        if ("filter" in this.data.cols) {
+          var value = this.getColumnPreference("filterValues", i);
           if (value != null && !this.isFilterValueDefault(value, i)) {
             this.filterAny(i, defaultFilterValues[i], null, true);
             last = i;
@@ -2819,21 +2819,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.toggleColumn = function(dataCol, dontSave){
       var column = this.data.cols[dataCol].columnOrder;
       var visible;
-      [].slice.call(this.tableContainer.querySelectorAll('tbody tr > :nth-child(' + (column + 1) + '), thead tr > :nth-child('
-        + (column + 1) + ')')).forEach(function(cell){
-          visible = cell.hasClass('hideColumn');
-          cell.toggleClass('hideColumn');
+      [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
+        + (column + 1) + ")")).forEach(function(cell){
+          visible = cell.hasClass("hideColumn");
+          cell.toggleClass("hideColumn");
         });
       this.setTableWidth();
-      if (typeof dontSave == 'undefined' || !dontSave) {
+      if (typeof dontSave == "undefined" || !dontSave) {
         /** @var {boolean[]} */
-        var hiddenColumns = this.getPreference('hiddenColumns') || [];
+        var hiddenColumns = this.getPreference("hiddenColumns") || [];
         if (visible) {
           delete hiddenColumns[dataCol];
         } else {
           hiddenColumns[dataCol] = true;
         }
-        this.setPreference('hiddenColumns', hiddenColumns);
+        this.setPreference("hiddenColumns", hiddenColumns);
       }
     };
     /**
@@ -2843,9 +2843,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.toggleColumnDialog = function(element){
       var dynamicTable = this,
-          hiddenColumns = this.getPreference('hiddenColumns'),
+          hiddenColumns = this.getPreference("hiddenColumns"),
           c = tfw.div({
-            className: 'tfwDynamicTableColumnDialog'
+            className: "tfwDynamicTableColumnDialog"
           });
       for (var j = 0; j < this.data.cols.length; j++) {
         if (!this.data.cols[j].hidden) {
@@ -2860,7 +2860,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           c.add(checkbox);
         }
       }
-      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error('tfw.dynamicTableClass.placePositionedDialog has not been set.');
+      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error("tfw.dynamicTableClass.placePositionedDialog has not been set.");
       else tfw.dynamicTableClass.placePositionedDialog(element, c, true);
     };
   },
@@ -2889,10 +2889,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   calendar: function(params){
     var inputAndMaybeLegend = tfw.input(params);
-    if (inputAndMaybeLegend.tagName.toUpperCase() == 'INPUT') {
+    if (inputAndMaybeLegend.tagName.toUpperCase() == "INPUT") {
       inputAndMaybeLegend = tfw.calendarExtend(inputAndMaybeLegend);
     } else {
-      var input = inputAndMaybeLegend.querySelector('input');
+      var input = inputAndMaybeLegend.querySelector("input");
       tfw.calendarExtend(input);
     }
     return inputAndMaybeLegend;
@@ -2904,7 +2904,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @class
    * @todo freeze
    * @example
-   * var input = tfw.input({value:'2016-03-07',style:'width:200px'});
+   * var input = tfw.input({value:"2016-03-07",style:"width:200px"});
    * document.body.appendChild(input);
    *
    * tfw.calendarExtend(input);
@@ -2913,30 +2913,30 @@ var tfw = {//eslint-disable-line no-implicit-globals
    *  input.parentNode.insertBefore(cal, input);
    * }
    *
-   * document.body.add(tfw.calendarExtend(tfw.input({value: '2016-03-07'})));
+   * document.body.add(tfw.calendarExtend(tfw.input({value: "2016-03-07"})));
    * @param {HTMLElement} input - input field to turn into calendar field
    * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
    * @see tfw.calendar
    */
   calendarExtend: function(input){
     var calendarInput = input,
-        calendarWrapper = document.createElement('span'),
-        calendarIcon = document.createElement('span');
-    calendarWrapper.className = 'tfwCalendarWrapper';
+        calendarWrapper = document.createElement("span"),
+        calendarIcon = document.createElement("span");
+    calendarWrapper.className = "tfwCalendarWrapper";
     if (input.parentNode) {
       input.parentNode.insertBefore(calendarWrapper, input);
     }
     if (input.style.width) {
       calendarWrapper.style.width = input.style.width;
-      input.style.width = '';
+      input.style.width = "";
     }
     calendarWrapper.appendChild(input);
     calendarWrapper.appendChild(calendarIcon);
-    calendarIcon.className = 'tfwCalendarIcon clicable icon fa fa-calendar';
+    calendarIcon.className = "tfwCalendarIcon clicable icon fa fa-calendar";
     calendarIcon._calendarInput = input;
-    input.addClass('calendarInput');
+    input.addClass("calendarInput");
     input._calendar = this;
-    input.setAttribute('pattern', '[0-9]{4,}-[0-9]{2}-[0-9]{2}');
+    input.setAttribute("pattern", "[0-9]{4,}-[0-9]{2}-[0-9]{2}");
     /**
      * Adjust date.
      * @param {string} date - inserted date (yyyy/yyyy-mm/yyyy-mm-dd)
@@ -2944,18 +2944,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function completeDate(date){
       if (date.match(/^\d{4}$/)) { // yyyy
-        return date+'-01-01';
+        return date+"-01-01";
       } else if (date.match(/^\d{4}-\d{2}$/)) { // yyyy-mm
-        return date+'-01';
+        return date+"-01";
       } else {
         return date;
       }
     }
-    input.addEventListener('change', function(){
+    input.addEventListener("change", function(){
       this.value=completeDate(this.value);
     }, true);
-    var calendarContainer = document.createElement('div');
-    calendarContainer.addClass('calendarWidget');
+    var calendarContainer = document.createElement("div");
+    calendarContainer.addClass("calendarWidget");
     var selectedYear;
     /**
      * Month number, 1-12
@@ -2974,11 +2974,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     var readonly = input.readOnly || input.disabled;
     if (tfw.calendarExtend.placeCalendar == null) {
-      console.error('Calendar widget was not added to the document - no callback was set.');
+      console.error("Calendar widget was not added to the document - no callback was set.");
     } else if (readonly) {
-      calendarIcon.addClass('disabled');
+      calendarIcon.addClass("disabled");
     } else {
-      calendarIcon.addEventListener('click', function(){
+      calendarIcon.addEventListener("click", function(){
         tfw.calendarExtend.placeCalendar(calendarContainer, input);
       });
     }
@@ -2993,25 +2993,25 @@ var tfw = {//eslint-disable-line no-implicit-globals
           // which day of week is the first one of a month
           w = (d.getDay()+6) % 7, // so that Monday is first
           sp = 0;
-      calendarContainer.innerHTML = '';
-      var header = document.createElement('div');
-      header.setAttribute('class', 'head');
-      header.innerHTML = tfw.calendarExtend.months[selectedMonth - 1] + ' ' + selectedYear;
+      calendarContainer.innerHTML = "";
+      var header = document.createElement("div");
+      header.setAttribute("class", "head");
+      header.innerHTML = tfw.calendarExtend.months[selectedMonth - 1] + " " + selectedYear;
       calendarContainer.add(header);
-      var backButton = document.createElement('div');
-      backButton.addClass('calendarBackButton');
-      backButton.innerHTML = '&nbsp;';
-      backButton.addEventListener('mousedown', function backward(event){
+      var backButton = document.createElement("div");
+      backButton.addClass("calendarBackButton");
+      backButton.innerHTML = "&nbsp;";
+      backButton.addEventListener("mousedown", function backward(event){
         event.stopPropagation();
         event.preventDefault();
         setSelectedDate(selectedYear - (selectedMonth == 1 ? 1 : 0), selectedMonth == 1 ? 12 : selectedMonth - 1, 0);
         paint();
       }, true);
       header.add(backButton);
-      var forwardButton = document.createElement('div');
-      forwardButton.addClass('calendarForwardButton');
-      forwardButton.innerHTML = '&nbsp;';
-      forwardButton.addEventListener('mousedown', function forward(event){
+      var forwardButton = document.createElement("div");
+      forwardButton.addClass("calendarForwardButton");
+      forwardButton.innerHTML = "&nbsp;";
+      forwardButton.addEventListener("mousedown", function forward(event){
         event.stopPropagation();
         event.preventDefault();
         setSelectedDate(selectedYear + (selectedMonth == 12 ? 1 : 0), selectedMonth == 12 ? 1 : selectedMonth + 1, 0);
@@ -3019,60 +3019,60 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, true);
       header.add(forwardButton);
       var day;
-      var dayNames = document.createElement('p');
-      dayNames.setAttribute('class', 'dayNames');
+      var dayNames = document.createElement("p");
+      dayNames.setAttribute("class", "dayNames");
       for (i = 0; i < 7; i++) {
-        day = document.createElement('span');
+        day = document.createElement("span");
         day.innerHTML = tfw.calendarExtend.daysShort[i];
         if (i % 7 == 6) {
-          day.setAttribute('class', 'sunday');
+          day.setAttribute("class", "sunday");
         }
         dayNames.add(day);
       }
       calendarContainer.add(dayNames);
-      var week = document.createElement('p');
-      week.setAttribute('class', 'week');
+      var week = document.createElement("p");
+      week.setAttribute("class", "week");
       for (i = 0; i < w; i++) {
-        day = document.createElement('span');
-        day.innerHTML = '&nbsp;';
+        day = document.createElement("span");
+        day.innerHTML = "&nbsp;";
         week.add(day);
         sp++;
       }
       var pdm = new Date(selectedYear, selectedMonth, 0).getDate();
       for (i = 1; i <= pdm; i++) {
-        day = document.createElement('span');
-        day.setAttribute('id', 'day-' + selectedYear + '-' + (selectedMonth < 10 ? '0' + selectedMonth : selectedMonth) + '-'
-          + (i < 10 ? '0' + i : i));
-        day.setAttribute('class', 'day' + (sp % 7 == 6 ? ' sunday' : '') + (i == selectedDay ? ' current' : ''));
+        day = document.createElement("span");
+        day.setAttribute("id", "day-" + selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth) + "-"
+          + (i < 10 ? "0" + i : i));
+        day.setAttribute("class", "day" + (sp % 7 == 6 ? " sunday" : "") + (i == selectedDay ? " current" : ""));
         day.innerHTML = i;
-        day.addEventListener('mousedown', function clicked(){
+        day.addEventListener("mousedown", function clicked(){
           input.value = this.id.substr(4);
-          var current = calendarContainer.querySelector('.current');
+          var current = calendarContainer.querySelector(".current");
           if (current) {
-            current.toggleClass('current');
+            current.toggleClass("current");
           }
-          this.addClass('current');
-          calendarInput.dispatchEvent(new Event('change'));
+          this.addClass("current");
+          calendarInput.dispatchEvent(new Event("change"));
         }, true);
         week.add(day);
         sp++;
         if ((sp == 7) && (i < pdm)) {
           sp = 0;
           calendarContainer.add(week);
-          week = document.createElement('p');
-          week.setAttribute('class', 'week');
+          week = document.createElement("p");
+          week.setAttribute("class", "week");
         }
       }
       for (i = sp; i < 7; i++) {
-        day = document.createElement('span');
-        if (i % 7 == 6) day.setAttribute('class', 'sunday');
-        day.innerHTML = '&nbsp;';
+        day = document.createElement("span");
+        if (i % 7 == 6) day.setAttribute("class", "sunday");
+        day.innerHTML = "&nbsp;";
         week.add(day);
       }
       calendarContainer.add(week);
     }
-    calendarIcon.addEventListener('click', function(){
-      var selectedDate = this._calendarInput.value.split('-');
+    calendarIcon.addEventListener("click", function(){
+      var selectedDate = this._calendarInput.value.split("-");
       setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
       paint();
     });
@@ -3082,7 +3082,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Create a list of checkboxes, with common controls.
    * @todo Change seznamZatrzitek to tfwMultiCheckbox
    * @param {Object} params - checkbox list parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
-   * @param {string} [params.className="seznamZatrzitek"] - container classes (seznamZatrzitek is always added)
+   * @param {string} [params.className=seznamZatrzitek] - container classes (seznamZatrzitek is always added)
    * @param {Object[]} [params.list] - list of checkboxes' parameters (makes params.id mandatory)
    * @param {string} params.list[].id - ID of checkbox
    * @param {string} params.list[].text - text of checkbox
@@ -3091,43 +3091,43 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   multiCheckbox: function(params){
     var i,
-        container = document.createElement('div');
-    params.className = (('className' in params) ? (params.className+' ') : '') + 'seznamZatrzitek';
+        container = document.createElement("div");
+    params.className = (("className" in params) ? (params.className+" ") : "") + "seznamZatrzitek";
     tfw.fillElemDefs(container, params);
     var checkboxOnChange = function(){
       var checkedIds = [],
           checkboxContainer = this.parentNode,
           checkboxes = checkboxContainer.childNodes;
       for (var j = 0; j < checkboxes.length; j++) {
-        if (checkboxes[j].value) checkedIds.push(checkboxes[j].id.split('-')[1]);
+        if (checkboxes[j].value) checkedIds.push(checkboxes[j].id.split("-")[1]);
       }
-      checkboxContainer._value = checkedIds.join(',');
-      if (container.onchange) container.dispatchEvent(new Event('change'));
+      checkboxContainer._value = checkedIds.join(",");
+      if (container.onchange) container.dispatchEvent(new Event("change"));
     };
-    if ('list' in params) {
+    if ("list" in params) {
       for (i = 0; i < params.list.length; i++) {
         container.add(tfw.checkbox({
-          id: params.id + '-' + params.list[i].id,
+          id: params.id + "-" + params.list[i].id,
           text: params.list[i].text,
           onchange: checkboxOnChange
         }));
       }
     }
-    Object.defineProperty(container, 'value', {
+    Object.defineProperty(container, "value", {
       set: function(val){
-        if (val == 'A') {
+        if (val == "A") {
           for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 1;
           }
         } else {
           var v = [];
-          if (val) v = val.split(',');
+          if (val) v = val.split(",");
           for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 0;
           }
           var itemId;
           for (i = 0; i < v.length; i++) {
-            itemId = this.id + '-' + v[i];
+            itemId = this.id + "-" + v[i];
             if ($(itemId)) $(itemId).value = 1;
           }
         }
@@ -3138,13 +3138,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    container._value = '';
+    container._value = "";
     if (params.value) container.value = params.value;
     container.setNone = function(){
-      this.value = '';
+      this.value = "";
     };
     container.setAll = function(){
-      this.value = 'A';
+      this.value = "A";
     };
     return container;
   }
@@ -3158,7 +3158,7 @@ tfw.dynamicTableClass.placePositionedDialog = null;
 /**
  * @typedef {Object} tfw.dynamicTableClass.serverAction
  * @property {string} name - action name sent to server
- * @property {string} [method="GET"] - HTTP method to use (e.g. GET, POST)
+ * @property {string} [method=GET] - HTTP method to use (e.g. GET, POST)
  */
 /**
  * Implemented server actions.
@@ -3168,40 +3168,40 @@ tfw.dynamicTableClass.placePositionedDialog = null;
 tfw.dynamicTableClass.serverActions = {
   /** load all rows */
   LOAD: {
-    name: 'load'
+    name: "load"
   },
   /** add new row, return ID */
   NEW: {
-    name: 'new',
-    method: 'POST'
+    name: "new",
+    method: "POST"
   },
   /** edit 1 cell (id, col) */
   SAVE: {
-    name: 'savedata',
-    method: 'POST'
+    name: "savedata",
+    method: "POST"
   },
   /** change order of rows - updates multiple rows */
   CHANGE_ORDER: {
-    name: 'changeorder',
-    method: 'POST'
+    name: "changeorder",
+    method: "POST"
   },
   /** long polling */
   WATCH: {
-    name: 'watch'
+    name: "watch"
   },
   /** delete row */
   DELETE: {
-    name: 'delete',
-    method: 'POST'
+    name: "delete",
+    method: "POST"
   },
   /** load user's preferences */
   PREF_GET: {
-    name: 'getusersettings'
+    name: "getusersettings"
   },
   /** save user's preferences */
   PREF_SET: {
-    name: 'setusersettings',
-    method: 'POST'
+    name: "setusersettings",
+    method: "POST"
   }
 };
 Object.freeze(tfw.dynamicTableClass.serverActions);
@@ -3221,11 +3221,11 @@ Object.freeze(tfw.dynamicTableClass.colCmpTypes);
  * @enum {string}
  */
 tfw.dynamicTableClass.colTypes = {
-  TEXT: 'text',
-  NUMBER: 'number',
-  CHECKBOX: 'checkbox',
-  DATE: 'date',
-  ORDER: 'order',
+  TEXT: "text",
+  NUMBER: "number",
+  CHECKBOX: "checkbox",
+  DATE: "date",
+  ORDER: "order",
   /** @type {tfw.dynamicTableClass.colCmpTypes[]} */
   cmpType: {
     text: tfw.dynamicTableClass.colCmpTypes.TEXT,
@@ -3252,9 +3252,9 @@ Object.freeze(tfw.dynamicTableClass.sortTypes);
  * @enum {string}
  */
 tfw.dynamicTableClass.arrowTypes = {
-  FILTER: 'filter',
-  UP: 'up',
-  DOWN: 'down'
+  FILTER: "filter",
+  UP: "up",
+  DOWN: "down"
 };
 Object.freeze(tfw.dynamicTableClass.arrowTypes);
 /**
@@ -3270,13 +3270,13 @@ Object.seal(tfw.dynamicTableClass);
  * @var {string[]}
  * @default
  */
-tfw.calendarExtend.months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+tfw.calendarExtend.months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 /**
  * List of days' names' first two letters (beginning with Monday)
  * @var {string[]}
  * @default
  */
-tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
+tfw.calendarExtend.daysShort = ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"];
 /**
  * Callback function that puts calendar widget for an input field into page.
  * Most likely create an overlay that closes calendar when user clicks somewhere else.
@@ -3292,12 +3292,12 @@ tfw.calendarExtend.daysShort = ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'];
 tfw.calendarExtend.placeCalendar = null;
 Object.seal(tfw.calendarExtend);
 
-window.addEventListener('load', tfw.init);
+window.addEventListener("load", tfw.init);
 Object.seal(tfw);
 
 /** @todo Remove */
-Object.defineProperty(window, 'AJAX_LOADER', {get: function(){
-  console.warn('DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.');
+Object.defineProperty(window, "AJAX_LOADER", {get: function(){
+  console.warn("DEPRECATED use of global AJAX_LOADER, use tfw.AJAX_LOADER instead.");
   return tfw.AJAX_LOADER;
 }});
 
@@ -3315,29 +3315,29 @@ var desktop = {//eslint-disable-line no-implicit-globals
   resizingFunctions: [],
   isWorking: 0,
   mainLoaderTimer: null,
-  URLbase: '',
+  URLbase: "",
   URLparams: [],
   go: null,
   dialogMoveData: {},
   init: function(id){
     desktop.div = $(id);
     desktop.clean();
-    window.addEventListener('resize', function(){
+    window.addEventListener("resize", function(){
       desktop.width = desktop.div.clientWidth;
       desktop.height = desktop.div.clientHeight;
       for (var i = 0; i < desktop.resizingFunctions.length; i++) desktop.resizingFunctions[i]();
     }, false);
-    var myURLparts = document.URL.split('?');
+    var myURLparts = document.URL.split("?");
     desktop.URLbase = myURLparts[0];
-    if (myURLparts.length > 1) desktop.URLparams = myURLparts[1].substr(2).split('/');
+    if (myURLparts.length > 1) desktop.URLparams = myURLparts[1].substr(2).split("/");
   },
   clean: function(){
     desktop.layers = [];
     desktop.activeLayer = 0;
-    desktop.div.innerHTML = '';
+    desktop.div.innerHTML = "";
     desktop.div.add(desktop.layers[0] = tfw.div({
-      id: 'tfwLayer0',
-      className: 'tfwLayer'
+      id: "tfwLayer0",
+      className: "tfwLayer"
     }));
     desktop.width = desktop.div.clientWidth;
     desktop.height = desktop.div.clientHeight;
@@ -3347,7 +3347,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
   },
   closeTopLayer: function(){
     if (desktop.activeLayer) {
-      desktop.layers[desktop.activeLayer].innerHTML = '';
+      desktop.layers[desktop.activeLayer].innerHTML = "";
       desktop.div.removeChild(desktop.layers[desktop.activeLayer]);
       desktop.activeLayer--;
     }
@@ -3364,26 +3364,26 @@ var desktop = {//eslint-disable-line no-implicit-globals
    */
   newLayer: function(params){
     if (params.modal) {
-      if (params.modal == 'auto') {
-        params.modal = desktop.layers[desktop.activeLayer].hasClass('modal') ? 1 : 0;
+      if (params.modal == "auto") {
+        params.modal = desktop.layers[desktop.activeLayer].hasClass("modal") ? 1 : 0;
       }
     }
     desktop.activeLayer++;
     desktop.div.add(desktop.layers[desktop.activeLayer] = tfw.div({
-      id: 'tfwLayer' + desktop.activeLayer,
-      className: 'tfwLayer' + (params.modal ? ' modal' : '')
+      id: "tfwLayer" + desktop.activeLayer,
+      className: "tfwLayer" + (params.modal ? " modal" : "")
     }));
     if (params.autoclose) {
-      desktop.layers[desktop.activeLayer].addEventListener('click', desktop.closeTopLayer);
+      desktop.layers[desktop.activeLayer].addEventListener("click", desktop.closeTopLayer);
     }
     if (params.overlay) {
       desktop.layers[desktop.activeLayer].add(tfw.div({
-        id: 'tfwLayerOverlay' + desktop.activeLayer,
-        className: 'tfwLayerOverlay'
+        id: "tfwLayerOverlay" + desktop.activeLayer,
+        className: "tfwLayerOverlay"
       }));
     }
-    desktop.layers[desktop.activeLayer].addEventListener('mousemove', desktop.dialogMoveGo, false);
-    desktop.layers[desktop.activeLayer].addEventListener('mouseup', desktop.dialogMoveEnd, false);
+    desktop.layers[desktop.activeLayer].addEventListener("mousemove", desktop.dialogMoveGo, false);
+    desktop.layers[desktop.activeLayer].addEventListener("mouseup", desktop.dialogMoveEnd, false);
   },
   /**
    * Create a new layer and a wrapper that starts at a given element.
@@ -3395,20 +3395,20 @@ var desktop = {//eslint-disable-line no-implicit-globals
    * @see desktop.newLayer
    */
   createLayerAndWrapperAtElement: function(element, params, above, right){
-    if (typeof above == 'undefined') {
+    if (typeof above == "undefined") {
       above = false;
     }
-    if (typeof right == 'undefined') {
+    if (typeof right == "undefined") {
       right = false;
     }
     desktop.newLayer(params);
     var rect = element.getBoundingClientRect(),
         wrapper,
-        leftOrRight = right ? 'right' : 'left',
+        leftOrRight = right ? "right" : "left",
         leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
     desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
-      style: 'overflow:hidden;position:absolute;'+leftOrRight+':' + leftOrRightPx + 'px;'
-        + (above ? 'bottom' : 'top') + ':' + (above ? (window.innerHeight - rect.top) : rect.bottom) + 'px'
+      style: "overflow:hidden;position:absolute;"+leftOrRight+":" + leftOrRightPx + "px;"
+        + (above ? "bottom" : "top") + ":" + (above ? (window.innerHeight - rect.top) : rect.bottom) + "px"
     }));
     return wrapper;
   },
@@ -3422,13 +3422,13 @@ var desktop = {//eslint-disable-line no-implicit-globals
   },
   hide: function(){
     desktop.layers[desktop.activeLayer].add(tfw.div({
-      id: 'tfwLayerOverlay' + desktop.activeLayer,
-      className: 'tfwLayerOverlay',
-      style: 'cursor:progress;'
+      id: "tfwLayerOverlay" + desktop.activeLayer,
+      className: "tfwLayerOverlay",
+      style: "cursor:progress;"
     }));
     desktop.layers[desktop.activeLayer].add(tfw.div({
-      id: 'tfwLoader',
-      style: 'left:' + Math.round(desktop.width / 2 - 16) + 'px;top:' + Math.round(desktop.height / 2 - 16) + 'px'
+      id: "tfwLoader",
+      style: "left:" + Math.round(desktop.width / 2 - 16) + "px;top:" + Math.round(desktop.height / 2 - 16) + "px"
     }));
   },
   done: function(){
@@ -3444,24 +3444,24 @@ var desktop = {//eslint-disable-line no-implicit-globals
       y: e.clientY,
       who: e.target
     };
-    while (desktop.dialogMoveData.who.className != 'tfwDialogContainer') desktop.dialogMoveData.who = desktop.dialogMoveData.who.parentNode;
+    while (desktop.dialogMoveData.who.className != "tfwDialogContainer") desktop.dialogMoveData.who = desktop.dialogMoveData.who.parentNode;
     e.stopPropagation();
     e.preventDefault();
   },
   dialogMoveGo: function(e){
-    if ('who' in desktop.dialogMoveData) {
+    if ("who" in desktop.dialogMoveData) {
       var px = e.clientX - desktop.dialogMoveData.x;
       var py = e.clientY - desktop.dialogMoveData.y;
       desktop.dialogMoveData.x = e.clientX;
       desktop.dialogMoveData.y = e.clientY;
-      desktop.dialogMoveData.who.style.left = parseInt(desktop.dialogMoveData.who.style.left) + px + 'px';
-      desktop.dialogMoveData.who.style.top = parseInt(desktop.dialogMoveData.who.style.top) + py + 'px';
+      desktop.dialogMoveData.who.style.left = parseInt(desktop.dialogMoveData.who.style.left) + px + "px";
+      desktop.dialogMoveData.who.style.top = parseInt(desktop.dialogMoveData.who.style.top) + py + "px";
       e.stopPropagation();
       e.preventDefault();
     }
   },
   dialogMoveEnd: function(e){
-    if ('who' in desktop.dialogMoveData) {
+    if ("who" in desktop.dialogMoveData) {
       e.stopPropagation();
       e.preventDefault();
       desktop.dialogMoveData = {};
@@ -3487,11 +3487,11 @@ var desktop = {//eslint-disable-line no-implicit-globals
    * @see tfw.select
    */
   dropDown: function(params){
-    var y = document.createElement('p');
-    y.className = 'tfwContainer';
+    var y = document.createElement("p");
+    y.className = "tfwContainer";
     if (params.legend) {
-      var l = document.createElement('span');
-      l.style.display = 'inline-block';
+      var l = document.createElement("span");
+      l.style.display = "inline-block";
       l.innerHTML = params.legend;
       if (params.legendWidth) {
         l.style.width = params.legendWidth;
@@ -3512,9 +3512,9 @@ var desktop = {//eslint-disable-line no-implicit-globals
       x.id = params.id;
     }
     if (params.className) {
-      x.className = 'tfwDropDown ' + params.className;
+      x.className = "tfwDropDown " + params.className;
     } else {
-      x.className = 'tfwDropDown';
+      x.className = "tfwDropDown";
     }
     if (params.style) {
       x.style.cssText = params.style;
@@ -3547,13 +3547,13 @@ var desktop = {//eslint-disable-line no-implicit-globals
         var rect = x.getBoundingClientRect();
         var c = desktop.createLayerAndWrapperAtElement(x, {
           autoclose: true,
-          modal: 'auto'
+          modal: "auto"
         });
         var b = tfw.select({
-          id: 'drop' + params.id,
+          id: "drop" + params.id,
           list: params.list,
           value: x.value,
-          style: 'width:' + (rect.width - 2 + x.itemWidth) + 'px;position:relative;top:-1px;height:' + vyska + 'px;',
+          style: "width:" + (rect.width - 2 + x.itemWidth) + "px;position:relative;top:-1px;height:" + vyska + "px;",
           onchange: function(){
             for (var i = 0; i < this.childNodes.length; i++) {
               if (this.childNodes[i].value == this.value) {
@@ -3564,20 +3564,20 @@ var desktop = {//eslint-disable-line no-implicit-globals
             if (x.onchange) {
               x.onchange();
             }
-            x.addClass('hasBeenChanged');
+            x.addClass("hasBeenChanged");
           }
         });
         c.add(b);
-        b.style.webkitTransform = 'translateY(-' + vyska + 'px)';
+        b.style.webkitTransform = "translateY(-" + vyska + "px)";
         window.setTimeout(function(){
-          $('drop' + params.id).style.webkitTransform='';
+          $("drop" + params.id).style.webkitTransform="";
         }, 10);
       }
     };
-    Object.defineProperty(x, 'disabled', {
+    Object.defineProperty(x, "disabled", {
       set: function(val){
-        if (val) this.addClass('disabled');
-        else this.removeClass('disabled');
+        if (val) this.addClass("disabled");
+        else this.removeClass("disabled");
         this._disabled = val;
       },
       get: function(){
@@ -3587,23 +3587,23 @@ var desktop = {//eslint-disable-line no-implicit-globals
       configurable: true
     });
 
-    if (('value' in params) && params.list) {
+    if (("value" in params) && params.list) {
       for (var i = 0; i < params.list.length; i++) {
-        if (typeof params.list[i] === 'object') {
+        if (typeof params.list[i] === "object") {
           if (params.list[i].id == params.value) x.innerHTML = params.list[i].t;
         } else if (i == params.value) x.innerHTML = params.list[i];
       }
     }
-    if ('value' in params) {
+    if ("value" in params) {
       x.value = params.value;
     }
-    if ('disabled' in params) {
+    if ("disabled" in params) {
       x.disabled = params.disabled;
     }
     x.setValue = function(a){
       x.value = a;
       for (var i = 0; i < params.list.length; i++) {
-        if (typeof params.list[i] === 'object') {
+        if (typeof params.list[i] === "object") {
           if (params.list[i].id == a) x.innerHTML = params.list[i].t;
         } else if (i == a) x.innerHTML = params.list[i];
       }
@@ -3621,45 +3621,45 @@ var desktop = {//eslint-disable-line no-implicit-globals
         dlg,
         sirka = 300,
         vyska = 200,
-        nazev = '';
+        nazev = "";
     if (co.width) sirka = co.width;
     if (co.height) vyska = co.height;
     if (co.title) nazev = co.title;
     var obal = tfw.div({
-      className: 'tfwDialogContainer' + (nazev ? '' : ' noTitle'),
-      style: 'left:' + Math.round((desktop.width - sirka) / 2) + 'px;top:' + Math.round((desktop.height - vyska) / 2) + 'px;width:'
-        + sirka + 'px;height:' + vyska + 'px;'
+      className: "tfwDialogContainer" + (nazev ? "" : " noTitle"),
+      style: "left:" + Math.round((desktop.width - sirka) / 2) + "px;top:" + Math.round((desktop.height - vyska) / 2) + "px;width:"
+        + sirka + "px;height:" + vyska + "px;"
     });
-    obal.style.webkitTransform = 'translateY(-32px)';
+    obal.style.webkitTransform = "translateY(-32px)";
     obal.style.opacity = 0;
-    obal.id = 'tfwDialog' + desktop.activeLayer;
+    obal.id = "tfwDialog" + desktop.activeLayer;
     desktop.layers[desktop.activeLayer].add(obal);
     if (nazev) {
       var h = tfw.par({
         innerHTML: nazev,
-        className: 'tfwDialogTitle'
+        className: "tfwDialogTitle"
       });
       obal.add(h);
-      h.addEventListener('mousedown', desktop.dialogMoveStart, false);
+      h.addEventListener("mousedown", desktop.dialogMoveStart, false);
     }
-    var f = document.createElement('form');
+    var f = document.createElement("form");
     f.onsubmit = function(e){
       e.stopPropagation();
       e.preventDefault();
     };
     obal.add(f);
     f.add(vnit = tfw.div({
-      className: 'tfwDialog',
-      style: 'height:' + (vyska - (nazev ? 60 : 32)) + 'px'
+      className: "tfwDialog",
+      style: "height:" + (vyska - (nazev ? 60 : 32)) + "px"
     }));
-    desktop.layers[desktop.activeLayer].addEventListener('keydown', function(e){
+    desktop.layers[desktop.activeLayer].addEventListener("keydown", function(e){
       if (e.which == 27) desktop.closeTopLayer();
     }, true);
     /**/
     vnit.add(dlg = tfw.div({
-      style: 'height:' + (vyska - (nazev ? 60 : 32) - 27) + 'px'
+      style: "height:" + (vyska - (nazev ? 60 : 32) - 27) + "px"
     }));
-    dlg.addEventListener('mousedown', function(e){
+    dlg.addEventListener("mousedown", function(e){
       e.stopPropagation();
     }, false);
     if (co.obsah) dlg.innerHTML = co.obsah;
@@ -3670,28 +3670,28 @@ var desktop = {//eslint-disable-line no-implicit-globals
       }
     }
     vnit.add(dlg.buttons = tfw.div({
-      className: 'buttonsBar'
+      className: "buttonsBar"
     }));
     if (co.buttons) {
       for (i = 0; i < co.buttons.length; i++) {
         if (co.buttons[i].text) {
           dlg.buttons.add(b = tfw.button(co.buttons[i]));
-          if (!co.vychozi && b.type == 'submit') b.focus();
+          if (!co.vychozi && b.type == "submit") b.focus();
         }
       }
     }
     if (co.id) dlg.id = co.id;
     if (co.vychozi) $(co.vychozi).focus();
     dlg.hasBeenChanged=function(){
-      return this.getElementsByClassName('hasBeenChanged').length?1:0;
+      return this.getElementsByClassName("hasBeenChanged").length?1:0;
     };
     dlg.resetChanges=function(){
-      var list = this.getElementsByClassName('hasBeenChanged');
-      for (var i = 0; i < list.length; i++) list[i].removeClass('hasBeenChanged');
+      var list = this.getElementsByClassName("hasBeenChanged");
+      for (var i = 0; i < list.length; i++) list[i].removeClass("hasBeenChanged");
     };
     window.setTimeout(function(){
-      $('tfwDialog' + desktop.activeLayer).style.webkitTransform='';
-      $('tfwDialog' + desktop.activeLayer).style.opacity=1;
+      $("tfwDialog" + desktop.activeLayer).style.webkitTransform="";
+      $("tfwDialog" + desktop.activeLayer).style.opacity=1;
     }, 10);
     return dlg;
   },
@@ -3714,7 +3714,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
       title: params.title,
       children: [
         tfw.div({
-          id: 'dlgPaD',
+          id: "dlgPaD",
           children: [
             tfw.par({
               innerHTML: params.waiting
@@ -3730,9 +3730,9 @@ var desktop = {//eslint-disable-line no-implicit-globals
       }]
     });
     tfw.ajaxGet({
-      url: params.ajaxFile + '?' + params.ajaxParam,
+      url: params.ajaxFile + "?" + params.ajaxParam,
       onload: function(hr){
-        $('dlgPaD').innerHTML = params.text.replace('%1', '<a href="' + hr.responseText + '" download>' + params.item + '</a>');
+        $("dlgPaD").innerHTML = params.text.replace("%1", "<a href=\"" + hr.responseText + "\" download>" + params.item + "</a>");
       },
       autohide: 0
     });
@@ -3745,14 +3745,14 @@ tfw.ajaxOnAutoHide = desktop.working;
 tfw.dynamicTableClass.placePositionedDialog = function(positionAtElement, filterElement, right){
   var wrapper = desktop.createLayerAndWrapperAtElement(positionAtElement, {
     autoclose: true,
-    modal: 'auto'
-  }, true, typeof right == 'undefined' ? false : right);
+    modal: "auto"
+  }, true, typeof right == "undefined" ? false : right);
   wrapper.add(filterElement);
 };
 tfw.calendarExtend.placeCalendar = function(cal, input){
   var wrapper = desktop.createLayerAndWrapperAtElement(input, {
     autoclose: true,
-    modal: 'auto'
+    modal: "auto"
   });
   wrapper.add(cal);
 };
@@ -3768,7 +3768,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @deprecated
    * @see tfw.multiCheckbox
    * @param {Object} params - checkbox list parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
-   * @param {string} [params.className="seznamZatrzitek"] - container classes (seznamZatrzitek is always added)
+   * @param {string} [params.className=seznamZatrzitek] - container classes (seznamZatrzitek is always added)
    * @param {Object[]} [params.seznam] - list of checkboxes' parameters (makes params.id mandatory)
    * @param {string} params.seznam[].id - ID of checkbox
    * @param {string} params.seznam[].text - text of checkbox
@@ -3776,7 +3776,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Returns container with checkboxes
    */
   seznamZatrzitek: function(params){
-    console.warn('DEPRECATED use of prvek.seznamZatrzitek, use tfw.multiCheckbox instead.');
+    console.warn("DEPRECATED use of prvek.seznamZatrzitek, use tfw.multiCheckbox instead.");
     params.list = params.seznam;
     delete params.seznam;
     params.value = params.init;
@@ -3788,7 +3788,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.table
    */
   tabulka: function(co){
-    console.warn('DEPRECATED prvek.tabulka(' + JSON.stringify(co) + ')');
+    console.warn("DEPRECATED prvek.tabulka(" + JSON.stringify(co) + ")");
     if (co.radky) co.rows = co.radky;
     return tfw.table(co);
   },
@@ -3797,7 +3797,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.tr
    */
   radek: function(co){
-    console.warn('DEPRECATED prvek.radek(' + JSON.stringify(co) + ')');
+    console.warn("DEPRECATED prvek.radek(" + JSON.stringify(co) + ")");
     if (co.sloupce) co.columns = co.sloupce;
     return tfw.tr(co);
   },
@@ -3806,9 +3806,9 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.td
    */
   sloupec: function(co){
-    console.warn('DEPRECATED prvek.sloupec(' + JSON.stringify(co) + ')');
+    console.warn("DEPRECATED prvek.sloupec(" + JSON.stringify(co) + ")");
     if (co.obsah) co.innerHTML = co.obsah;
-    if (co.width) co.style = 'width:' + co.width + 'px;' + ((co.style) ? co.style : '');
+    if (co.width) co.style = "width:" + co.width + "px;" + ((co.style) ? co.style : "");
     return tfw.td(co);
   },
   /**
@@ -3821,16 +3821,16 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @todo Move to {@link tfw}
    */
   barva: function(co){
-    var x = document.createElement('div');
+    var x = document.createElement("div");
     if (co.id) x.id = co.id;
-    if (co.className) co.className = 'nastaveniBarvy ' + co.className;
-    else co.className = 'nastaveniBarvy';
+    if (co.className) co.className = "nastaveniBarvy " + co.className;
+    else co.className = "nastaveniBarvy";
     x.className = co.className;
     if (co.style) x.style.cssText = co.style;
     x.mouseDown = 0;
     if (co.action) x.action = co.action;
     x.zmenaPalety = 0;
-    x.addEventListener('mousedown', function(e){
+    x.addEventListener("mousedown", function(e){
       var b;
       var dlg = tfw.dialog({
         title: t(208),
@@ -3838,13 +3838,13 @@ var prvek = {//eslint-disable-line no-implicit-globals
         height: 420,
         buttons: [
           co.zadnaAkce ? {} : {
-            id: 'dlgBarvaNastavit',
+            id: "dlgBarvaNastavit",
             text: t(134),
             default: 1,
             action: function(){
               x.barvaAktualniAVychozi(x.value, 0);
               if (x.action) x.action();
-              prvek.rezimVyberuBarvy = $('zalMichani').value;
+              prvek.rezimVyberuBarvy = $("zalMichani").value;
               if (x.zmenaPalety) editorUlozitPaletu();
               desktop.closeTopLayer();
             }
@@ -3852,10 +3852,10 @@ var prvek = {//eslint-disable-line no-implicit-globals
           co.lzeOdebrat ? {
             text: t(309),
             action: function(){
-              x.barvaAktualniAVychozi('rgba(0,0,0,0)', x.value);
-              x.value = '';
+              x.barvaAktualniAVychozi("rgba(0,0,0,0)", x.value);
+              x.value = "";
               if (x.action) x.action();
-              prvek.rezimVyberuBarvy = $('zalMichani').value;
+              prvek.rezimVyberuBarvy = $("zalMichani").value;
               if (x.zmenaPalety) editorUlozitPaletu();
               desktop.closeTopLayer();
             }
@@ -3863,7 +3863,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
             text: t(1),
             action: function(){
               x.value = x.puvodniHodnota;
-              prvek.rezimVyberuBarvy = $('zalMichani').value;
+              prvek.rezimVyberuBarvy = $("zalMichani").value;
               if (x.zmenaPalety) editorUlozitPaletu();
               desktop.closeTopLayer();
             }
@@ -3871,217 +3871,217 @@ var prvek = {//eslint-disable-line no-implicit-globals
         ]
       });
       var bar = x.value;
-      if (bar == 'transparent') bar = 'rgba(255,255,255,0)';
-      if (!bar) bar = 'rgba(255,255,255,0)';
-      if (bar.substr(0, 4) == 'rgba') rgb = bar.slice(5, -1).split(',');
-      else if (bar.substr(0, 3) == 'rgb') {
-        rgb = bar.slice(4, -1).split(',');
+      if (bar == "transparent") bar = "rgba(255,255,255,0)";
+      if (!bar) bar = "rgba(255,255,255,0)";
+      if (bar.substr(0, 4) == "rgba") rgb = bar.slice(5, -1).split(",");
+      else if (bar.substr(0, 3) == "rgb") {
+        rgb = bar.slice(4, -1).split(",");
         rgb[3] = 1;
       } else rgb = [0, 0, 0, 1];
       var opac = Math.round(rgb[3] * 100);
       if (isNaN(opac)) opac = 100;
-      var ab = parseInt(rgb[0]) + ',' + parseInt(rgb[1]) + ',' + parseInt(rgb[2]) + ',' + (Math.round(parseFloat(rgb[3]) * 100)) / 100;
+      var ab = parseInt(rgb[0]) + "," + parseInt(rgb[1]) + "," + parseInt(rgb[2]) + "," + (Math.round(parseFloat(rgb[3]) * 100)) / 100;
       if (co.paleta) {
         dlg.add(c = tfw.div({
-          style: 'width:200px;height:312px;',
-          className: 'tfwInline tfwSeparatorRight'
+          style: "width:200px;height:312px;",
+          className: "tfwInline tfwSeparatorRight"
         }));
         c.add(tfw.par({
-          className: 'nadpis',
+          className: "nadpis",
           innerHTML: t(548),
-          style: 'border-bottom:none;'
+          style: "border-bottom:none;"
         }));
         //paleta vydání
         c.add(b = tfw.div({
-          id: 'dlgPaleta',
-          className: 'tfwSelect',
-          style: 'width:200px;height:250px;margin:2px 0 4px;'
+          id: "dlgPaleta",
+          className: "tfwSelect",
+          style: "width:200px;height:250px;margin:2px 0 4px;"
         }));
         c.add(tfw.div({
-          className: 'tfwIconGroup',
+          className: "tfwIconGroup",
           children: [
             tfw.icon({
-              className: 'ikona24',
+              className: "ikona24",
               index: 51 * 24,
               title: t(20),
               action: function(e){
                 //nová barva
-                if ($('dlgPaleta').value) $($('dlgPaleta').value).className = '';
+                if ($("dlgPaleta").value) $($("dlgPaleta").value).className = "";
                 var pi, max = 0;
-                for (i = 0; i < $('dlgPaleta').childNodes.length; i++) {
-                  pi = parseInt($('dlgPaleta').childNodes[i].id.substr(7));
+                for (i = 0; i < $("dlgPaleta").childNodes.length; i++) {
+                  pi = parseInt($("dlgPaleta").childNodes[i].id.substr(7));
                   if (pi > max) max = pi;
                 }
                 max++;
                 x.pridatDoPalety({
                   id: max,
-                  n: 'r' + $('barvaR-v').value + ' g' + $('barvaG-v').value + ' b' + $(
-                    'barvaB-v').value + ((parseInt($('barvaO-v').value) < 100) ? (' (' +
-                    $('barvaO-v').value + ' %)') : ''),
-                  v: $('barvaR-v').value + ',' + $('barvaG-v').value + ',' + $('barvaB-v').value +
-                    ',' + ($('barvaO-v').value / 100),
+                  n: "r" + $("barvaR-v").value + " g" + $("barvaG-v").value + " b" + $(
+                    "barvaB-v").value + ((parseInt($("barvaO-v").value) < 100) ? (" (" +
+                    $("barvaO-v").value + " %)") : ""),
+                  v: $("barvaR-v").value + "," + $("barvaG-v").value + "," + $("barvaB-v").value +
+                    "," + ($("barvaO-v").value / 100),
                   a: 1
                 });
-                $('dlgPaleta').value = 'paleta-' + max;
-                $('dlgPalUloz').disabled = 0;
-                $('dlgPalSmaz').disabled = 0;
-                $('dlgPalNahoru').disabled = 0;
-                $('dlgPalDolu').disabled = 1;
-                $('paleta-' + max).scrollIntoView(true);
+                $("dlgPaleta").value = "paleta-" + max;
+                $("dlgPalUloz").disabled = 0;
+                $("dlgPalSmaz").disabled = 0;
+                $("dlgPalNahoru").disabled = 0;
+                $("dlgPalDolu").disabled = 1;
+                $("paleta-" + max).scrollIntoView(true);
                 x.zmenaPalety = 1;
                 x.prejmenujBarvu();
               }
             }), tfw.icon({
-              id: 'dlgPalUloz',
-              className: 'ikona24',
+              id: "dlgPalUloz",
+              className: "ikona24",
               index: 57 * 24,
               title: t(9),
               zakazano: 1,
               action: function(e){
-                var pal = $($('dlgPaleta').value);
-                pal.value = $('barvaR-v').value + ',' + $('barvaG-v').value + ',' + $('barvaB-v').value +
-                  ',' + ($('barvaO-v').value / 100);
-                pal.childNodes[0].style.backgroundImage = '-webkit-linear-gradient(rgba(' + pal.value +
-                  '),rgba(' + pal.value + ')),url(pics/vzorek.png)';
+                var pal = $($("dlgPaleta").value);
+                pal.value = $("barvaR-v").value + "," + $("barvaG-v").value + "," + $("barvaB-v").value +
+                  "," + ($("barvaO-v").value / 100);
+                pal.childNodes[0].style.backgroundImage = "-webkit-linear-gradient(rgba(" + pal.value +
+                  "),rgba(" + pal.value + ")),url(pics/vzorek.png)";
                 var re = /^r[0-9]+ g[0-9]+ b[0-9]+/;
-                if (re.test($($('dlgPaleta').value).childNodes[1].innerHTML)) $($('dlgPaleta').value).childNodes[
-                    1].innerHTML = 'r' + $('barvaR-v').value + ' g' + $('barvaG-v').value + ' b' +
-                  $('barvaB-v').value + ((parseInt($('barvaO-v').value) < 100) ? (' (' + $('barvaO-v')
-                    .value + ' %)') : '');
+                if (re.test($($("dlgPaleta").value).childNodes[1].innerHTML)) $($("dlgPaleta").value).childNodes[
+                    1].innerHTML = "r" + $("barvaR-v").value + " g" + $("barvaG-v").value + " b" +
+                  $("barvaB-v").value + ((parseInt($("barvaO-v").value) < 100) ? (" (" + $("barvaO-v")
+                    .value + " %)") : "");
                 x.zmenaPalety = 1;
                 x.prejmenujBarvu();
               }
             }), tfw.icon({
-              id: 'dlgPalSmaz',
-              className: 'ikona24',
+              id: "dlgPalSmaz",
+              className: "ikona24",
               index: 52 * 24,
               title: t(17),
               zakazano: 1,
               action: function(e){
-                var pal = $($('dlgPaleta').value);
+                var pal = $($("dlgPaleta").value);
                 pal.parentNode.removeChild(pal);
-                $('dlgPaleta').value = '';
-                $('dlgPalUloz').disabled = 1;
-                $('dlgPalSmaz').disabled = 1;
-                $('dlgPalNahoru').disabled = 1;
-                $('dlgPalDolu').disabled = 1;
+                $("dlgPaleta").value = "";
+                $("dlgPalUloz").disabled = 1;
+                $("dlgPalSmaz").disabled = 1;
+                $("dlgPalNahoru").disabled = 1;
+                $("dlgPalDolu").disabled = 1;
                 x.zmenaPalety = 1;
               }
             })
           ]
         }));
         c.add(tfw.div({
-          className: 'tfwIconGroup',
+          className: "tfwIconGroup",
           children: [
             tfw.icon({
-              id: 'dlgPalNahoru',
-              className: 'ikona24',
+              id: "dlgPalNahoru",
+              className: "ikona24",
               index: 53 * 24,
               title: t(512),
               zakazano: 1,
               action: function(e){
                 //Nahoru
-                var c = $('dlgPaleta').childNodes;
+                var c = $("dlgPaleta").childNodes;
                 for (i = 1; i < c.length; i++)
-                  if (c[i].hasClass('selected')) {
+                  if (c[i].hasClass("selected")) {
                     c[i].parentNode.insertBefore(c[i], c[i - 1]);
-                    $('dlgPalNahoru').disabled = (i == 1) ? 1 : 0;
-                    $('dlgPalDolu').disabled = 0;
+                    $("dlgPalNahoru").disabled = (i == 1) ? 1 : 0;
+                    $("dlgPalDolu").disabled = 0;
                     break;
                   }
                 x.zmenaPalety = 1;
               }
             }), tfw.icon({
-              id: 'dlgPalDolu',
-              className: 'ikona24',
+              id: "dlgPalDolu",
+              className: "ikona24",
               index: 54 * 24,
               title: t(513),
               zakazano: 1,
               action: function(e){
                 //Dolů
-                var c = $('dlgPaleta').childNodes;
+                var c = $("dlgPaleta").childNodes;
                 for (i = (c.length - 2); i >= 0; i--)
-                  if (c[i].hasClass('selected')) {
+                  if (c[i].hasClass("selected")) {
                     c[i].parentNode.insertBefore(c[i + 1], c[i]);
-                    $('dlgPalNahoru').disabled = 0;
-                    $('dlgPalDolu').disabled = (i == c.length - 2) ? 1 : 0;
+                    $("dlgPalNahoru").disabled = 0;
+                    $("dlgPalDolu").disabled = (i == c.length - 2) ? 1 : 0;
                   }
                 x.zmenaPalety = 1;
               }
             })
           ]
         }));
-        $('dlgPaleta').value = '';
+        $("dlgPaleta").value = "";
         for (var i = 0; i < editor.aktVydani.paleta.length; i++) {
           x.pridatDoPalety(editor.aktVydani.paleta[i]);
-          if (!$('dlgPaleta').value)
+          if (!$("dlgPaleta").value)
             if (ab == editor.aktVydani.paleta[i].v) {
-              $('dlgPaleta').value = 'paleta-' + editor.aktVydani.paleta[i].id;
-              $('dlgPaleta').childNodes[i].className = 'selected';
-              $('dlgPalUloz').disabled = 0;
-              $('dlgPalSmaz').disabled = 0;
-              $('dlgPalNahoru').disabled = (i == 0) ? 1 : 0;
-              $('dlgPalDolu').disabled = (i == editor.aktVydani.paleta.length - 1) ? 1 : 0;
-              $('paleta-' + editor.aktVydani.paleta[i].id).scrollIntoView(true);
+              $("dlgPaleta").value = "paleta-" + editor.aktVydani.paleta[i].id;
+              $("dlgPaleta").childNodes[i].className = "selected";
+              $("dlgPalUloz").disabled = 0;
+              $("dlgPalSmaz").disabled = 0;
+              $("dlgPalNahoru").disabled = (i == 0) ? 1 : 0;
+              $("dlgPalDolu").disabled = (i == editor.aktVydani.paleta.length - 1) ? 1 : 0;
+              $("paleta-" + editor.aktVydani.paleta[i].id).scrollIntoView(true);
             }
         }
       }
       dlg.add(b = tfw.div({
-        style: 'width:216px;height:312px;',
-        className: 'tfwInline tfwSeparatorRight'
+        style: "width:216px;height:312px;",
+        className: "tfwInline tfwSeparatorRight"
       }));
-      b.add(z = tfw.noveZalozky('zalMichani', 216, 200, t(546) + ';' + t(547), prvek.rezimVyberuBarvy));
+      b.add(z = tfw.noveZalozky("zalMichani", 216, 200, t(546) + ";" + t(547), prvek.rezimVyberuBarvy));
       z.childNodes[1].add(tfw.div({
-        id: 'paletaHSV',
-        style: 'width:200px;height:200px;background-size: 200px 200px;position:relative;overflow:hidden;cursor:crosshair;',
+        id: "paletaHSV",
+        style: "width:200px;height:200px;background-size: 200px 200px;position:relative;overflow:hidden;cursor:crosshair;",
         children: [
           tfw.div({
-            id: 'paletaHSVpoint',
-            style: 'position:absolute;width:7px;height:7px;border:1px solid black;border-radius:4px;'
+            id: "paletaHSVpoint",
+            style: "position:absolute;width:7px;height:7px;border:1px solid black;border-radius:4px;"
           })
         ]
       }));
       z.childNodes[1].add(tfw.slider({
-        id: 'barvaH',
-        legend: 'H:',
-        legendStyle: 'width:18px',
-        postText: '°',
+        id: "barvaH",
+        legend: "H:",
+        legendStyle: "width:18px",
+        postText: "°",
         min: 0,
         max: 359,
         step: 1,
         value: 0,
-        valueStyle: 'width:32px',
+        valueStyle: "width:32px",
         onchange: x.repaintH,
-        style: 'margin-top:16px;'
+        style: "margin-top:16px;"
       }));
       z.childNodes[1].add(tfw.slider({
-        id: 'barvaS',
-        legend: 'S:',
-        legendStyle: 'width:18px',
-        postText: '%',
+        id: "barvaS",
+        legend: "S:",
+        legendStyle: "width:18px",
+        postText: "%",
         min: 0,
         max: 100,
         step: 1,
         value: 0,
-        valueStyle: 'width:32px',
+        valueStyle: "width:32px",
         onchange: x.repaintH
       }));
       z.childNodes[1].add(tfw.slider({
-        id: 'barvaV',
-        legend: 'B:',
-        legendStyle: 'width:18px',
-        postText: '%',
+        id: "barvaV",
+        legend: "B:",
+        legendStyle: "width:18px",
+        postText: "%",
         min: 0,
         max: 100,
         step: 1,
         value: 0,
-        valueStyle: 'width:32px',
+        valueStyle: "width:32px",
         onchange: x.repaintH
       }));
       for (var ry = 0; ry < 10; ry++)
         for (var rx = 0; rx < 9; rx++) {
           z.childNodes[2].add(b = tfw.div({
-            className: 'paletaTrioboPole'
+            className: "paletaTrioboPole"
           }));
           if (ry < 9) {
             hue = [0, 30, 60, 120, 180, 200, 240, 270, 300];
@@ -4089,148 +4089,148 @@ var prvek = {//eslint-disable-line no-implicit-globals
             bri = [100, 80, 50];
             plt = HSV2RGB(hue[rx], sat[ry % 3], bri[Math.floor(ry / 3)]);
           } else plt = HSV2RGB(0, 0, rx / 8 * 100);
-          b.value = plt[0] + ',' + plt[1] + ',' + plt[2];
-          b.style.backgroundColor = 'rgb(' + b.value + ')';
-          b.addEventListener('click', function(){
-            var rb = this.value.split(',');
-            $('barvaR').value = (rb[0]);
-            $('barvaG').value = (rb[1]);
-            $('barvaB').value = (rb[2]);
+          b.value = plt[0] + "," + plt[1] + "," + plt[2];
+          b.style.backgroundColor = "rgb(" + b.value + ")";
+          b.addEventListener("click", function(){
+            var rb = this.value.split(",");
+            $("barvaR").value = (rb[0]);
+            $("barvaG").value = (rb[1]);
+            $("barvaB").value = (rb[2]);
             x.repaintR();
           }, false);
-          b.addEventListener('dblclick', function(e){
-            $('dlgBarvaNastavit').onclick(e);
+          b.addEventListener("dblclick", function(e){
+            $("dlgBarvaNastavit").onclick(e);
           }, false);
         }
       dlg.add(b = tfw.div({
-        style: 'width:220px;height:312px;',
-        className: 'tfwInline',
+        style: "width:220px;height:312px;",
+        className: "tfwInline",
         children: [
           tfw.div({
-            style: 'text-align:center;',
+            style: "text-align:center;",
             children: [
               tfw.div({
-                id: 'puvodniBarva',
-                className: 'ukazkaBarvy',
-                style: 'width:88px;height:58px;display:inline-block;border:1px solid black;border-right:none;'
+                id: "puvodniBarva",
+                className: "ukazkaBarvy",
+                style: "width:88px;height:58px;display:inline-block;border:1px solid black;border-right:none;"
               }), tfw.div({
-                id: 'barvaNahled',
-                className: 'ukazkaBarvy',
-                style: 'width:88px;height:58px;display:inline-block;border:1px solid black;border-left:none;'
+                id: "barvaNahled",
+                className: "ukazkaBarvy",
+                style: "width:88px;height:58px;display:inline-block;border:1px solid black;border-left:none;"
               })
             ]
           }), tfw.slider({
-            id: 'barvaR',
-            legend: 'R:',
-            legendStyle: 'width:18px',
+            id: "barvaR",
+            legend: "R:",
+            legendStyle: "width:18px",
             min: 0,
             max: 255,
             step: 1,
             value: parseInt(rgb[0]),
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintR,
-            style: 'margin-top:8px;'
+            style: "margin-top:8px;"
           }), tfw.slider({
-            id: 'barvaG',
-            legend: 'G:',
-            legendStyle: 'width:18px',
+            id: "barvaG",
+            legend: "G:",
+            legendStyle: "width:18px",
             min: 0,
             max: 255,
             step: 1,
             value: parseInt(rgb[1]),
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintR
           }), tfw.slider({
-            id: 'barvaB',
-            legend: 'B:',
-            legendStyle: 'width:18px',
+            id: "barvaB",
+            legend: "B:",
+            legendStyle: "width:18px",
             min: 0,
             max: 255,
             step: 1,
             value: parseInt(rgb[2]),
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintR
           }), tfw.slider({
-            id: 'barvaC',
-            legend: 'C:',
-            legendStyle: 'width:18px',
-            postText: '%',
+            id: "barvaC",
+            legend: "C:",
+            legendStyle: "width:18px",
+            postText: "%",
             min: 0,
             max: 100,
             step: 1,
             value: 0,
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintC,
-            style: 'margin-top:8px;'
+            style: "margin-top:8px;"
           }), tfw.slider({
-            id: 'barvaM',
-            legend: 'M:',
-            legendStyle: 'width:18px',
-            postText: '%',
+            id: "barvaM",
+            legend: "M:",
+            legendStyle: "width:18px",
+            postText: "%",
             min: 0,
             max: 100,
             step: 1,
             value: 0,
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintC
           }), tfw.slider({
-            id: 'barvaY',
-            legend: 'Y:',
-            legendStyle: 'width:18px',
-            postText: '%',
+            id: "barvaY",
+            legend: "Y:",
+            legendStyle: "width:18px",
+            postText: "%",
             min: 0,
             max: 100,
             step: 1,
             value: 0,
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintC
           }), tfw.slider({
-            id: 'barvaK',
-            legend: 'K:',
-            legendStyle: 'width:18px',
-            postText: '%',
+            id: "barvaK",
+            legend: "K:",
+            legendStyle: "width:18px",
+            postText: "%",
             min: 0,
             max: 100,
             step: 1,
             value: 0,
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintC
           }), tfw.input({
-            id: 'barvaW',
-            legend: 'Web #',
-            legendStyle: 'width:138px',
-            style: 'width:56px;margin-top:8px;text-align:center;font-family:courier,monospace;font-size:13px;',
+            id: "barvaW",
+            legend: "Web #",
+            legendStyle: "width:138px",
+            style: "width:56px;margin-top:8px;text-align:center;font-family:courier,monospace;font-size:13px;",
             maxLength: 6,
             onchange: x.repaintW
           }), tfw.par({
-            innerHTML: t(36) + ':',
-            style: 'margin:8 0 0px;'
+            innerHTML: t(36) + ":",
+            style: "margin:8 0 0px;"
           }), tfw.slider({
-            id: 'barvaO',
-            legend: '',
-            legendStyle: 'width:18px',
-            postText: '%',
+            id: "barvaO",
+            legend: "",
+            legendStyle: "width:18px",
+            postText: "%",
             min: 0,
             max: 100,
             step: 1,
             value: opac,
-            valueStyle: 'width:32px',
+            valueStyle: "width:32px",
             onchange: x.repaintR
           })
         ]
       }));
       if (co.bezSytosti) {
-        $('barvaO').value = (100);
-        $('barvaO-s').disabled = 1;
-        $('barvaO-v').disabled = 1;
+        $("barvaO").value = (100);
+        $("barvaO-s").disabled = 1;
+        $("barvaO-v").disabled = 1;
       }
-      $('puvodniBarva').style.backgroundImage = '-webkit-linear-gradient(' + bar + ',' + bar + '),url(pics/vzorek.png)';
-      $('paletaHSV').addEventListener('mousedown', function(e){
+      $("puvodniBarva").style.backgroundImage = "-webkit-linear-gradient(" + bar + "," + bar + "),url(pics/vzorek.png)";
+      $("paletaHSV").addEventListener("mousedown", function(e){
         x.mouseDown = 1;
         x.paletaClick(e);
       }, false);
-      desktop.layers[desktop.activeLayer].addEventListener('mousemove', x.paletaClick, false);
-      desktop.layers[desktop.activeLayer].addEventListener('mouseup', function(e){
+      desktop.layers[desktop.activeLayer].addEventListener("mousemove", x.paletaClick, false);
+      desktop.layers[desktop.activeLayer].addEventListener("mouseup", function(e){
         x.mouseDown = 0;
       }, false);
       x.zmenaPalety = 0;
@@ -4243,27 +4243,27 @@ var prvek = {//eslint-disable-line no-implicit-globals
         height: 180,
         children: [ //"Název barvy"
           tfw.input({
-            id: 'nazevBarvy',
-            value: $($('dlgPaleta').value).childNodes[1].innerHTML,
-            legend: t(545) + ':',
-            legendStyle: 'width:80px',
-            style: 'width:200px'
+            id: "nazevBarvy",
+            value: $($("dlgPaleta").value).childNodes[1].innerHTML,
+            legend: t(545) + ":",
+            legendStyle: "width:80px",
+            style: "width:200px"
           })
         ],
-        vychozi: 'nazevBarvy',
+        vychozi: "nazevBarvy",
         buttons: [{
           text: t(9),
           default: 1,
           action: function(){
-            $($('dlgPaleta').value).childNodes[1].innerHTML = $('nazevBarvy').value;
+            $($("dlgPaleta").value).childNodes[1].innerHTML = $("nazevBarvy").value;
             desktop.closeTopLayer();
           }
         }, {
           text: t(342),
           action: function(){
-            $($('dlgPaleta').value).childNodes[1].innerHTML = 'r' + $('barvaR-v').value + ' g' + $('barvaG-v').value +
-              ' b' + $('barvaB-v').value + ((parseInt($('barvaO-v').value) < 100) ? (' (' + $('barvaO-v').value +
-                ' %)') : '');
+            $($("dlgPaleta").value).childNodes[1].innerHTML = "r" + $("barvaR-v").value + " g" + $("barvaG-v").value +
+              " b" + $("barvaB-v").value + ((parseInt($("barvaO-v").value) < 100) ? (" (" + $("barvaO-v").value +
+                " %)") : "");
             desktop.closeTopLayer();
           }
         }, {
@@ -4273,137 +4273,137 @@ var prvek = {//eslint-disable-line no-implicit-globals
       });
     };
     x.pridatDoPalety = function(barva){
-      $('dlgPaleta').add(d = tfw.div({
-        id: 'paleta-' + barva.id,
-        className: (barva.a ? 'selected' : ''),
+      $("dlgPaleta").add(d = tfw.div({
+        id: "paleta-" + barva.id,
+        className: (barva.a ? "selected" : ""),
         children: [
           tfw.span({
-            className: 'vzorekBarvy',
-            style: 'float:left;background-image:-webkit-linear-gradient(rgba(' + barva.v + '),rgba(' + barva.v +
-              ')),url(pics/vzorek.png)'
+            className: "vzorekBarvy",
+            style: "float:left;background-image:-webkit-linear-gradient(rgba(" + barva.v + "),rgba(" + barva.v +
+              ")),url(pics/vzorek.png)"
           }), tfw.span({
-            className: 'nazevBarvy',
-            style: 'width:160px;',
+            className: "nazevBarvy",
+            style: "width:160px;",
             innerHTML: barva.n
           })
         ]
       }));
       d.value = barva.v;
-      d.addEventListener('click', function(e){
-        if ($('dlgPaleta').value) $($('dlgPaleta').value).className = '';
-        this.className = 'selected';
-        $('dlgPaleta').value = this.id;
-        var rgb = this.value.split(',');
-        $('barvaR').value = (rgb[0]);
-        $('barvaG').value = (rgb[1]);
-        $('barvaB').value = (rgb[2]);
-        $('barvaO').value = (rgb[3] * 100);
+      d.addEventListener("click", function(e){
+        if ($("dlgPaleta").value) $($("dlgPaleta").value).className = "";
+        this.className = "selected";
+        $("dlgPaleta").value = this.id;
+        var rgb = this.value.split(",");
+        $("barvaR").value = (rgb[0]);
+        $("barvaG").value = (rgb[1]);
+        $("barvaB").value = (rgb[2]);
+        $("barvaO").value = (rgb[3] * 100);
         x.repaintR();
-        $('dlgPalUloz').disabled = 0;
-        $('dlgPalSmaz').disabled = 0;
-        $('dlgPalNahoru').disabled = this.myOrder() ? 0 : 1;
-        $('dlgPalDolu').disabled = (this.myOrder() == this.parentNode.childNodes.length - 1) ? 1 : 0;
+        $("dlgPalUloz").disabled = 0;
+        $("dlgPalSmaz").disabled = 0;
+        $("dlgPalNahoru").disabled = this.myOrder() ? 0 : 1;
+        $("dlgPalDolu").disabled = (this.myOrder() == this.parentNode.childNodes.length - 1) ? 1 : 0;
         e.stopPropagation();
         e.preventDefault();
       }, false);
-      d.addEventListener('dblclick', function(e){
-        $('dlgBarvaNastavit').onclick(e);
+      d.addEventListener("dblclick", function(e){
+        $("dlgBarvaNastavit").onclick(e);
       }, false);
     };
     x.paletaClick = function(e){
       if (x.mouseDown) {
-        var lhr = tfw.getRealCoordinates($('paletaHSV'));
+        var lhr = tfw.getRealCoordinates($("paletaHSV"));
         var h = Math.floor((e.pageX - lhr[0]) / 200 * 360);
         var s = 100 - Math.floor((e.pageY - lhr[1]) / 2);
         if (h < 0) h = 0;
         if (h > 359) h = 359;
         if (s < 0) s = 0;
         if (s > 100) s = 100;
-        $('barvaH').value = (h);
-        $('barvaS').value = (s);
+        $("barvaH").value = (h);
+        $("barvaS").value = (s);
         x.repaintH();
         e.stopPropagation();
         e.preventDefault();
       }
     };
     x.repaintR = function(){
-      var hsv = RGB2HSV($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
-      $('barvaH').value = (hsv[0]);
-      $('barvaS').value = (hsv[1]);
-      $('barvaV').value = (hsv[2]);
-      var cmyk = RGB2CMYK($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
-      $('barvaC').value = (cmyk[0]);
-      $('barvaM').value = (cmyk[1]);
-      $('barvaY').value = (cmyk[2]);
-      $('barvaK').value = (cmyk[3]);
-      $('barvaW').value = RGB2Web($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
+      var hsv = RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
+      $("barvaH").value = (hsv[0]);
+      $("barvaS").value = (hsv[1]);
+      $("barvaV").value = (hsv[2]);
+      var cmyk = RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
+      $("barvaC").value = (cmyk[0]);
+      $("barvaM").value = (cmyk[1]);
+      $("barvaY").value = (cmyk[2]);
+      $("barvaK").value = (cmyk[3]);
+      $("barvaW").value = RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     };
     x.repaintH = function(){
-      var rgb = HSV2RGB($('barvaH-v').value, $('barvaS-v').value, $('barvaV-v').value);
-      $('barvaR').value = (rgb[0]);
-      $('barvaG').value = (rgb[1]);
-      $('barvaB').value = (rgb[2]);
-      var cmyk = RGB2CMYK($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
-      $('barvaC').value = (cmyk[0]);
-      $('barvaM').value = (cmyk[1]);
-      $('barvaY').value = (cmyk[2]);
-      $('barvaK').value = (cmyk[3]);
-      $('barvaW').value = RGB2Web($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
+      var rgb = HSV2RGB($("barvaH-v").value, $("barvaS-v").value, $("barvaV-v").value);
+      $("barvaR").value = (rgb[0]);
+      $("barvaG").value = (rgb[1]);
+      $("barvaB").value = (rgb[2]);
+      var cmyk = RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
+      $("barvaC").value = (cmyk[0]);
+      $("barvaM").value = (cmyk[1]);
+      $("barvaY").value = (cmyk[2]);
+      $("barvaK").value = (cmyk[3]);
+      $("barvaW").value = RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     };
     x.repaintC = function(){
-      var rgb = CMYK2RGB($('barvaC-v').value, $('barvaM-v').value, $('barvaY-v').value, $('barvaK-v').value);
-      $('barvaR').value = (rgb[0]);
-      $('barvaG').value = (rgb[1]);
-      $('barvaB').value = (rgb[2]);
-      var hsv = RGB2HSV($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
-      $('barvaH').value = (hsv[0]);
-      $('barvaS').value = (hsv[1]);
-      $('barvaV').value = (hsv[2]);
-      $('barvaW').value = RGB2Web($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
+      var rgb = CMYK2RGB($("barvaC-v").value, $("barvaM-v").value, $("barvaY-v").value, $("barvaK-v").value);
+      $("barvaR").value = (rgb[0]);
+      $("barvaG").value = (rgb[1]);
+      $("barvaB").value = (rgb[2]);
+      var hsv = RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
+      $("barvaH").value = (hsv[0]);
+      $("barvaS").value = (hsv[1]);
+      $("barvaV").value = (hsv[2]);
+      $("barvaW").value = RGB2Web($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
       x.repaintPal();
     };
     x.repaintW = function(){
-      var rgb = Web2RGB($('barvaW').value);
-      $('barvaR').value = (rgb[0]);
-      $('barvaG').value = (rgb[1]);
-      $('barvaB').value = (rgb[2]);
-      var hsv = RGB2HSV($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
-      $('barvaH').value = (hsv[0]);
-      $('barvaS').value = (hsv[1]);
-      $('barvaV').value = (hsv[2]);
-      var cmyk = RGB2CMYK($('barvaR-v').value, $('barvaG-v').value, $('barvaB-v').value);
-      $('barvaC').value = (cmyk[0]);
-      $('barvaM').value = (cmyk[1]);
-      $('barvaY').value = (cmyk[2]);
-      $('barvaK').value = (cmyk[3]);
+      var rgb = Web2RGB($("barvaW").value);
+      $("barvaR").value = (rgb[0]);
+      $("barvaG").value = (rgb[1]);
+      $("barvaB").value = (rgb[2]);
+      var hsv = RGB2HSV($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
+      $("barvaH").value = (hsv[0]);
+      $("barvaS").value = (hsv[1]);
+      $("barvaV").value = (hsv[2]);
+      var cmyk = RGB2CMYK($("barvaR-v").value, $("barvaG-v").value, $("barvaB-v").value);
+      $("barvaC").value = (cmyk[0]);
+      $("barvaM").value = (cmyk[1]);
+      $("barvaY").value = (cmyk[2]);
+      $("barvaK").value = (cmyk[3]);
       x.repaintPal();
     };
     x.repaintPal = function(){
-      var h = parseInt($('barvaH-v').value);
-      var s = parseInt($('barvaS-v').value);
-      var v = parseInt($('barvaV-v').value);
-      $('paletaHSVpoint').style.left = (Math.round(h / 360 * 200) - 4) + 'px';
-      $('paletaHSVpoint').style.top = ((100 - s) * 2 - 4) + 'px';
-      $('paletaHSVpoint').style.borderColor = (v > 50) ? 'black' : 'white';
-      var jas = 'rgba(0,0,0,' + (1 - v / 100) + ')';
-      $('paletaHSV').style.backgroundImage = '-webkit-linear-gradient(' + jas + ',' + jas + '),url(pics/hsl.png)';
-      var bar = 'rgba(' + $('barvaR-v').value + ',' + $('barvaG-v').value + ',' + $('barvaB-v').value + ',' + $('barvaO-v').value / 100 + ')';
+      var h = parseInt($("barvaH-v").value);
+      var s = parseInt($("barvaS-v").value);
+      var v = parseInt($("barvaV-v").value);
+      $("paletaHSVpoint").style.left = (Math.round(h / 360 * 200) - 4) + "px";
+      $("paletaHSVpoint").style.top = ((100 - s) * 2 - 4) + "px";
+      $("paletaHSVpoint").style.borderColor = (v > 50) ? "black" : "white";
+      var jas = "rgba(0,0,0," + (1 - v / 100) + ")";
+      $("paletaHSV").style.backgroundImage = "-webkit-linear-gradient(" + jas + "," + jas + "),url(pics/hsl.png)";
+      var bar = "rgba(" + $("barvaR-v").value + "," + $("barvaG-v").value + "," + $("barvaB-v").value + "," + $("barvaO-v").value / 100 + ")";
       x.value = bar;
-      $('barvaNahled').style.backgroundImage = '-webkit-linear-gradient(' + bar + ',' + bar + '),url(pics/vzorek.png)';
-      if ($('dlgPaleta'))
-        if ($('dlgPaleta').value) $('dlgPalUloz').disabled = 0;
+      $("barvaNahled").style.backgroundImage = "-webkit-linear-gradient(" + bar + "," + bar + "),url(pics/vzorek.png)";
+      if ($("dlgPaleta"))
+        if ($("dlgPaleta").value) $("dlgPalUloz").disabled = 0;
     };
     x.barvaAktualniAVychozi = function(a, v){
       if (a) {
         x.value = a;
         x.puvodniHodnota = a;
-        x.style.backgroundImage = '-webkit-linear-gradient(' + a + ',' + a + '),url(pics/vzorek.png)';
+        x.style.backgroundImage = "-webkit-linear-gradient(" + a + "," + a + "),url(pics/vzorek.png)";
       } else {
         x.value = v;
         x.puvodniHodnota = v;
-        x.style.backgroundImage = 'url(pics/vzorek.png)';
+        x.style.backgroundImage = "url(pics/vzorek.png)";
       }
     };
     if (co.value) x.barvaAktualniAVychozi(co.value, co.value);
@@ -4414,9 +4414,9 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @todo Move to {@link tfw}
    */
   barvaSLegendou: function(co){
-    var x = document.createElement('p');
-    var l = document.createElement('span');
-    l.style.display = 'inline-block';
+    var x = document.createElement("p");
+    var l = document.createElement("span");
+    l.style.display = "inline-block";
     if (co.legenda) l.innerHTML = co.legenda;
     if (co.legend) l.innerHTML = co.legend;
     if (co.legendaSirka) l.style.width = co.legendaSirka;
@@ -4509,15 +4509,15 @@ function RGB2Web(r, g, b){
   r = parseInt(r).toString(16);
   g = parseInt(g).toString(16);
   b = parseInt(b).toString(16);
-  if (r.length < 2) r = '0' + r;
-  if (g.length < 2) g = '0' + g;
-  if (b.length < 2) b = '0' + b;
+  if (r.length < 2) r = "0" + r;
+  if (g.length < 2) g = "0" + g;
+  if (b.length < 2) b = "0" + b;
   return (r + g + b);
 }
 
 function Web2RGB(h){
   if (h.length == 3) h = h.substr(0, 1) + h.substr(0, 1) + h.substr(1, 1) + h.substr(1, 1) + h.substr(2, 1) + h.substr(2, 1);
-  while (h.length < 6) h = '0' + h;
+  while (h.length < 6) h = "0" + h;
   var r = parseInt(h.substr(0, 2), 16);
   var g = parseInt(h.substr(2, 2), 16);
   var b = parseInt(h.substr(4, 2), 16);
@@ -4534,6 +4534,6 @@ function Web2RGB(h){
  * @see tfw.dynamicTable
  */
 function Dyntable(x){
-  console.warn('DEPRECATED Dyntable(' + JSON.stringify(x) + '), use tfw.dynamicTable()');
+  console.warn("DEPRECATED Dyntable(" + JSON.stringify(x) + "), use tfw.dynamicTable()");
   return tfw.Dyntable(x);
 }

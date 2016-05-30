@@ -205,7 +205,7 @@ Class for creating dynamic tables.
 | params | <code>Object</code> |  | table parameters |
 | params.baseURL | <code>string</code> |  | URL of script (etc.) handling data, without query string |
 | [params.urlParams] | <code>string</code> |  | general parameters appended to requests (e.g. a token) |
-| [params.id] | <code>string</code> | <code>&quot;&#x27;dynamicTable&#x27;&quot;</code> | table ID (name) - required for field (cell) updates |
+| [params.id] | <code>string</code> | <code>&quot;dynamicTable&quot;</code> | table ID (name) - required for field (cell) updates |
 | [params.rowEdit] | <code>[rowEdit](#tfw.dynamicTableClass..rowEdit)</code> |  | Function fired when row editing/adding is triggered |
 | [params.goToSub] | <code>[goToSub](#tfw.dynamicTableClass..goToSub)</code> |  | Function fired when moving to subordinate table is triggered |
 | [params.rowAdd] | <code>boolean</code> | <code>false</code> | whether to allow adding new rows |
@@ -216,7 +216,7 @@ Class for creating dynamic tables.
 
 **Example**  
 ```js
-function myRowEditFunction(id){    // ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: 'table1',   baseURL: 'data.php',   urlParams: 'token=Nd5qPxH&timestamp=1234567890',   rowEdit: myRowEditFunction,   bodyHeight: '300px'  } ));
+function myRowEditFunction(id){    // ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   baseURL: "data.php",   urlParams: "token=Nd5qPxH&timestamp=1234567890",   rowEdit: myRowEditFunction,   bodyHeight: "300px"  } ));
 ```
 <a name="tfw.dynamicTableClass+tableContainer"></a>
 
@@ -300,7 +300,7 @@ A "destructor" for table.Aborts all pending requests created by current table.
 <a name="tfw.dynamicTableClass+reorderEnabled"></a>
 
 #### dynamicTableClass.reorderEnabled() ⇒ <code>boolean</code>
-Test if no filters are applied and table is sorted by column of type 'order'.
+Test if no filters are applied and table is sorted by column of type "order".
 
 **Kind**: instance method of <code>[dynamicTableClass](#tfw.dynamicTableClass)</code>  
 **Returns**: <code>boolean</code> - True if reordering can be done, false otherwise.  
@@ -562,7 +562,7 @@ Width of column with row edit icon (icon's width including padding, border, marg
 | Name | Type | Default | Description |
 | --- | --- | --- | --- |
 | name | <code>string</code> |  | action name sent to server |
-| method | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to use (e.g. GET, POST) |
+| method | <code>string</code> | <code>&quot;GET&quot;</code> | HTTP method to use (e.g. GET, POST) |
 
 <a name="tfw.dynamicTableClass..serverCall"></a>
 
@@ -752,11 +752,11 @@ Class for enhancing date input fields. Requires CSS styling.If style.width is s
 
 **Example**  
 ```js
-var input = tfw.input({value:'2016-03-07',style:'width:200px'});document.body.appendChild(input);tfw.calendarExtend(input);
+var input = tfw.input({value:"2016-03-07",style:"width:200px"});document.body.appendChild(input);tfw.calendarExtend(input);
 ```
 **Example**  
 ```js
-tfw.calendarExtend.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}document.body.add(tfw.calendarExtend(tfw.input({value: '2016-03-07'})));
+tfw.calendarExtend.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}document.body.add(tfw.calendarExtend(tfw.input({value: "2016-03-07"})));
 ```
 <a name="tfw.calendarExtend.months"></a>
 
@@ -814,7 +814,7 @@ Strings that are output by tfw functions. Change them for localization.
 | --- | --- | --- | --- |
 | NO | <code>string</code> | <code>&quot;No&quot;</code> | Label for checkbox with false value. |
 | YES | <code>string</code> | <code>&quot;Yes&quot;</code> | Label for checkbox with true value. |
-| ALL | <code>string</code> | <code>&quot;All&quot;</code> | Word for 'all' (e.g. both true and false) |
+| ALL | <code>string</code> | <code>&quot;All&quot;</code> | Word for "all" (e.g. both true and false) |
 | FROM | <code>string</code> | <code>&quot;From:&quot;</code> | Minimum input label |
 | TO | <code>string</code> | <code>&quot;To:&quot;</code> | Maximum input label |
 | FILTER | <code>string</code> | <code>&quot;Filter…&quot;</code> | Placeholder when searching anywhere in a string |
@@ -1013,7 +1013,7 @@ Create an input field with specified parameters.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | input fields parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
-| [params.type] | <code>string</code> | <code>&quot;\&quot;text\&quot;&quot;</code> | input field type |
+| [params.type] | <code>string</code> | <code>&quot;text&quot;</code> | input field type |
 | [params.value] | <code>string</code> |  | prefilled value |
 | [params.min] | <code>number</code> |  | minimum allowed value |
 | [params.max] | <code>number</code> |  | maximum allowed value |
@@ -1171,16 +1171,16 @@ Create control for uploading files (images).
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | file box parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
-| [params.id] | <code>string</code> | <code>&quot;\&quot;filebox\&quot;&quot;</code> | ID of box |
-| [params.className] | <code>string</code> | <code>&quot;\&quot;tfwFilebox\&quot;&quot;</code> | class(es) of box (tfwFilebox is always appended) |
+| [params.id] | <code>string</code> | <code>&quot;filebox&quot;</code> | ID of box |
+| [params.className] | <code>string</code> | <code>&quot;tfwFilebox&quot;</code> | class(es) of box (tfwFilebox is always appended) |
 | [params.value] | <code>number</code> | <code>0</code> |  |
-| [params.text] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | text to be placed inside inner div (ignored for [fillElemDefs](#tfw.fillElemDefs)) |
-| [params.filename] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | name of file (image) |
-| [params.path] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | path to file (image), with trailing slash |
-| [params.imgStyle] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | CSS styling for image |
+| [params.text] | <code>string</code> |  | text to be placed inside inner div (ignored for [fillElemDefs](#tfw.fillElemDefs)) |
+| [params.filename] | <code>string</code> |  | name of file (image) |
+| [params.path] | <code>string</code> |  | path to file (image), with trailing slash |
+| [params.imgStyle] | <code>string</code> |  | CSS styling for image |
 | [params.onloaded] | <code>function</code> | <code></code> | callback fired when upload finishes |
 | [params.onstart] | <code>function</code> | <code></code> | callback fired when upload starts |
-| [params.limitExtensions] | <code>string</code> | <code>&quot;\&quot;\&quot;&quot;</code> | allowed extensions, without dot (e.g. "png|jpeg|jpg|gif") |
+| [params.limitExtensions] | <code>string</code> |  | allowed extensions, without dot (e.g. "png|jpeg|jpg|gif") |
 | [params.style] | <code>string</code> |  | CSS styling of outter and inner DIV |
 
 <a name="tfw.dialog"></a>
@@ -1219,7 +1219,7 @@ Get data from server via AJAX.
 | o.url | <code>string</code> |  | URL of server script with data |
 | o.onload | <code>[ajaxGetCallback](#tfw..ajaxGetCallback)</code> |  | function to call when request has successfully completed |
 | [o.autohide] | <code>number</code> | <code>0</code> | whether to show overlay after finishing (0 = off, 2 = pass 1 to [ajaxOnAutoHide](#tfw.ajaxOnAutoHide), otherwise pass 0) |
-| [o.method] | <code>string</code> | <code>&quot;\&quot;GET\&quot;&quot;</code> | HTTP method to be used (GET or POST) |
+| [o.method] | <code>string</code> | <code>&quot;GET&quot;</code> | HTTP method to be used (GET or POST) |
 | [o.parameters] | <code>string</code> | <code>null</code> | parameters to be send with the request (e.g. POST) |
 
 <a name="tfw.ajaxPost"></a>
@@ -1318,7 +1318,7 @@ Create a list of checkboxes, with common controls.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | checkbox list parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
-| [params.className] | <code>string</code> | <code>&quot;\&quot;seznamZatrzitek\&quot;&quot;</code> | container classes (seznamZatrzitek is always added) |
+| [params.className] | <code>string</code> | <code>&quot;seznamZatrzitek&quot;</code> | container classes (seznamZatrzitek is always added) |
 | [params.list] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
 | params.list[].id | <code>string</code> |  | ID of checkbox |
 | params.list[].text | <code>string</code> |  | text of checkbox |
@@ -1473,7 +1473,7 @@ Create a list of checkboxes, with common controls.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | checkbox list parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
-| [params.className] | <code>string</code> | <code>&quot;\&quot;seznamZatrzitek\&quot;&quot;</code> | container classes (seznamZatrzitek is always added) |
+| [params.className] | <code>string</code> | <code>&quot;seznamZatrzitek&quot;</code> | container classes (seznamZatrzitek is always added) |
 | [params.seznam] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
 | params.seznam[].id | <code>string</code> |  | ID of checkbox |
 | params.seznam[].text | <code>string</code> |  | text of checkbox |
