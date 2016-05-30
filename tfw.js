@@ -87,7 +87,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {HTMLElement[]} childNodes - nodes to append
    */
   addAll: function(parentNode, childNodes){
-    for (var i=0; i<childNodes.length; i++) {
+    for (var i = 0; i < childNodes.length; i++) {
       parentNode.appendChild(childNodes[i]);
     }
   },
@@ -268,7 +268,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (!("value" in params)) {
       params.value = "0";
     }
-    if ("onchange" in params) element.onchange=params.onchange;
+    if ("onchange" in params) element.onchange = params.onchange;
     this.fillElemDefs(element, params);
     element.clickOnItem = function(e){
       e.stopPropagation();
@@ -754,7 +754,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   filebox: function(params){
     var element = document.createElement("div");
     if (!("id" in params)) params.id = "filebox";
-    params.className = (("className" in params) ? (params.className+" ") : "") + "tfwFilebox";
+    params.className = (("className" in params) ? (params.className + " ") : "") + "tfwFilebox";
     if (!("value" in params)) params.value = 0;
     var innerDivStyle = ("style" in params) ? params.style : "";
     element.text = ("text" in params) ? params.text : "";
@@ -1715,7 +1715,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             [tfw.dynamicTableClass.arrowTypes.UP, tfw.dynamicTableClass.arrowTypes.DOWN]
             ],
             i;
-        for (var j=0; j<arrowGroups.length; j++) {
+        for (var j = 0; j < arrowGroups.length; j++) {
           var arrowTypes = arrowGroups[j];
           for (i in arrowTypes) {
             if (element.hasClass(arrowTypes[i])) {
@@ -1794,10 +1794,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.setColumnCellsWidths = function(dataCol, newWidth){
       var columnOrder = this.data.cols[dataCol].columnOrder,
-          cells = this.tableContainer.querySelectorAll("thead tr > :nth-child("+(parseInt(columnOrder)+1)+"), "
-          + "tbody tr > :nth-child("+(parseInt(columnOrder)+1)+")");
-      for (var i=0; i<cells.length; i++) {
-        cells[i].style.width = newWidth+"px";
+          cells = this.tableContainer.querySelectorAll("thead tr > :nth-child(" + (parseInt(columnOrder) + 1) + "), "
+          + "tbody tr > :nth-child(" + (parseInt(columnOrder) + 1) + ")");
+      for (var i = 0; i < cells.length; i++) {
+        cells[i].style.width = newWidth + "px";
       }
       this.data.cols[dataCol].width = newWidth;
       this.setTableWidth();
@@ -1821,7 +1821,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {HTMLElement} table row
      */
     this.createRow = function(rowOrder){
-      var readonlyRow = ("readonly" in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly===true,
+      var readonlyRow = ("readonly" in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly === true,
           r = tfw.tr({
             id: "rowID-" + this.data.rows[rowOrder].id
           });
@@ -2067,8 +2067,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (j = 0; j < this.data.cols.length; j++) {
         if (!("hidden" in this.data.cols[j])) {
           c = document.createElement("th");
-          c.add(d=tfw.span({className: "colHeadingControl"}));
-          var deltaWidth=0;
+          c.add(d = tfw.span({className: "colHeadingControl"}));
+          var deltaWidth = 0;
           if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
             d.add(b = tfw.div({
               className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.FILTER
@@ -2077,7 +2077,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             b.onclick = function(){
               dynamicTable.filter(this, this.dataset.dataCol);
             };
-            deltaWidth+=16;
+            deltaWidth += 16;
           }
           if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
             var b1,
@@ -2095,7 +2095,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             b1.onclick = b2.onclick = function(){
               dynamicTable.sort(this.dataset.dataCol, this.dataset.sortOrder);
             };
-            deltaWidth+=24;
+            deltaWidth += 24;
           }
           if (!("noresize" in this.data.cols[j]) || this.data.cols[j].noresize === false) {
             c.addClass("resizable");
@@ -2107,10 +2107,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
             c.addEventListener("resizestop", function(){
               dynamicTable.setColumnWidth(this.dataset.dataCol, parseInt(this.style.width));
             });
-            deltaWidth+=8;
+            deltaWidth += 8;
           }
 
-          c.add(tfw.span({className: "colHeading", innerHTML: this.data.cols[j].name, style: "width: calc(100% - "+deltaWidth+"px);"}));
+          c.add(tfw.span({className: "colHeading", innerHTML: this.data.cols[j].name, style: "width: calc(100% - " + deltaWidth + "px);"}));
 
           if ("width" in this.data.cols[j]) {
             this.data.cols[j].width = parseInt(this.data.cols[j].width);
@@ -2299,7 +2299,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             } else {
               tbody.rows[rowOrder].remove();
               if (orderDataCol !== null && this.reorderEnabled()) {
-                for (i = rowOrder; i<this.data.rows.length; i++) {
+                for (i = rowOrder; i < this.data.rows.length; i++) {
                   this.data.rows[i].cols[orderDataCol] -= 1;
                   tbody.rows[i].cells[this.data.cols[orderDataCol].columnOrder].innerHTML -= 1;
                 }
@@ -2944,15 +2944,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function completeDate(date){
       if (date.match(/^\d{4}$/)) { // yyyy
-        return date+"-01-01";
+        return date + "-01-01";
       } else if (date.match(/^\d{4}-\d{2}$/)) { // yyyy-mm
-        return date+"-01";
+        return date + "-01";
       } else {
         return date;
       }
     }
     input.addEventListener("change", function(){
-      this.value=completeDate(this.value);
+      this.value = completeDate(this.value);
     }, true);
     var calendarContainer = document.createElement("div");
     calendarContainer.addClass("calendarWidget");
@@ -2991,7 +2991,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var d = new Date(selectedYear, selectedMonth - 1, 1),
           i,
           // which day of week is the first one of a month
-          w = (d.getDay()+6) % 7, // so that Monday is first
+          w = (d.getDay() + 6) % 7, // so that Monday is first
           sp = 0;
       calendarContainer.innerHTML = "";
       var header = document.createElement("div");
@@ -3092,7 +3092,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   multiCheckbox: function(params){
     var i,
         container = document.createElement("div");
-    params.className = (("className" in params) ? (params.className+" ") : "") + "seznamZatrzitek";
+    params.className = (("className" in params) ? (params.className + " ") : "") + "seznamZatrzitek";
     tfw.fillElemDefs(container, params);
     var checkboxOnChange = function(){
       var checkedIds = [],
@@ -3407,7 +3407,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         leftOrRight = right ? "right" : "left",
         leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
     desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
-      style: "overflow:hidden;position:absolute;"+leftOrRight+":" + leftOrRightPx + "px;"
+      style: "overflow:hidden;position:absolute;" + leftOrRight + ":" + leftOrRightPx + "px;"
         + (above ? "bottom" : "top") + ":" + (above ? (window.innerHeight - rect.top) : rect.bottom) + "px"
     }));
     return wrapper;
@@ -3570,7 +3570,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         c.add(b);
         b.style.webkitTransform = "translateY(-" + vyska + "px)";
         window.setTimeout(function(){
-          $("drop" + params.id).style.webkitTransform="";
+          $("drop" + params.id).style.webkitTransform = "";
         }, 10);
       }
     };
@@ -3682,16 +3682,16 @@ var desktop = {//eslint-disable-line no-implicit-globals
     }
     if (co.id) dlg.id = co.id;
     if (co.vychozi) $(co.vychozi).focus();
-    dlg.hasBeenChanged=function(){
-      return this.getElementsByClassName("hasBeenChanged").length?1:0;
+    dlg.hasBeenChanged = function(){
+      return this.getElementsByClassName("hasBeenChanged").length ? 1 : 0;
     };
-    dlg.resetChanges=function(){
+    dlg.resetChanges = function(){
       var list = this.getElementsByClassName("hasBeenChanged");
       for (var i = 0; i < list.length; i++) list[i].removeClass("hasBeenChanged");
     };
     window.setTimeout(function(){
-      $("tfwDialog" + desktop.activeLayer).style.webkitTransform="";
-      $("tfwDialog" + desktop.activeLayer).style.opacity=1;
+      $("tfwDialog" + desktop.activeLayer).style.webkitTransform = "";
+      $("tfwDialog" + desktop.activeLayer).style.opacity = 1;
     }, 10);
     return dlg;
   },
