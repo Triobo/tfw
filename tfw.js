@@ -3725,10 +3725,10 @@ var desktop = {//eslint-disable-line no-implicit-globals
       var list = this.getElementsByClassName("hasBeenChanged");
       for (var i = 0; i < list.length; i++) list[i].removeClass("hasBeenChanged");
     };
-    window.setTimeout(function(){
-      $("tfwDialog" + desktop.activeLayer).style.webkitTransform = "";
-      $("tfwDialog" + desktop.activeLayer).style.opacity = 1;
-    }, 10);
+    window.setTimeout(function(activeLayer){
+      activeLayer.style.webkitTransform = "";
+      activeLayer.style.opacity = 1;
+    }, 10, $("tfwDialog" + desktop.activeLayer));
     return dlg;
   },
   /**
