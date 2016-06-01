@@ -3920,6 +3920,7 @@ tfw.calendarExtend.placeCalendar = function(cal, input){
 /**
  * Function package for preparing HTML elements.
  * @class
+ * @deprecated
  */
 var prvek = {//eslint-disable-line no-implicit-globals
   /**

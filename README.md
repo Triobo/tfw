@@ -5,7 +5,7 @@
 <dd></dd>
 <dt><a href="#desktop">desktop</a></dt>
 <dd></dd>
-<dt><a href="#prvek">prvek</a></dt>
+<dt><del><a href="#prvek">prvek</a></del></dt>
 <dd></dd>
 <dt><del><a href="#Dyntable">Dyntable</a></del></dt>
 <dd></dd>
@@ -1652,10 +1652,12 @@ Create a dropdown menu.
 
 <a name="prvek"></a>
 
-## prvek
+## ~~prvek~~
+***Deprecated***
+
 **Kind**: global class  
 
-* [prvek](#prvek)
+* ~~[prvek](#prvek)~~
     * [new prvek()](#new_prvek_new)
     * [.rezimVyberuBarvy](#prvek.rezimVyberuBarvy)
     * ~~[.seznamZatrzitek(params)](#prvek.seznamZatrzitek) ⇒ <code>HTMLElement</code>~~
