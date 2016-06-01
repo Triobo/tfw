@@ -32,6 +32,16 @@
 * [tfw](#tfw)
     * [new tfw()](#new_tfw_new)
     * _static_
+        * [.Tabs](#tfw.Tabs)
+            * [new Tabs(params)](#new_tfw.Tabs_new)
+            * _instance_
+                * [.tabContainer](#tfw.Tabs+tabContainer) : <code>HTMLElement</code>
+                * [.activeTab](#tfw.Tabs+activeTab) : <code>number</code>
+                * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
+                * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
+                * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
+            * _inner_
+                * [~tab](#tfw.Tabs..tab) : <code>Object</code>
         * [.dynamicTableClass](#tfw.dynamicTableClass)
             * [new dynamicTableClass(params)](#new_tfw.dynamicTableClass_new)
             * _instance_
@@ -96,10 +106,15 @@
         * [.ajaxOnAutoHide](#tfw.ajaxOnAutoHide) : <code>function</code>
         * [.AJAX_LOADER](#tfw.AJAX_LOADER) : <code>string</code>
         * [.addAll(parentNode, childNodes)](#tfw.addAll)
+        * [.parseIntOr0(str)](#tfw.parseIntOr0) ⇒ <code>number</code>
         * [.insertStyle(style, [tag])](#tfw.insertStyle)
         * [.init()](#tfw.init)
         * [.localize(newStrings)](#tfw.localize)
         * [.fillElemDefs(element, params)](#tfw.fillElemDefs)
+        * [.createAndFillElement(tag, params)](#tfw.createAndFillElement) ⇒ <code>HTMLElement</code>
+        * [.div(params)](#tfw.div) ⇒ <code>HTMLElement</code>
+        * [.par(params)](#tfw.par) ⇒ <code>HTMLElement</code>
+        * [.span(params)](#tfw.span) ⇒ <code>HTMLElement</code>
         * [.select(params)](#tfw.select) ⇒ <code>HTMLElement</code>
         * ~~[.dropDown()](#tfw.dropDown)~~
         * [.button(params)](#tfw.button) ⇒ <code>HTMLElement</code>
@@ -121,7 +136,15 @@
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
         * ~~[.novyElement()](#tfw.novyElement)~~
-        * [.noveZalozky()](#tfw.noveZalozky)
+        * ~~[.zatrzitko()](#tfw.zatrzitko)~~
+        * ~~[.tlacitko()](#tfw.tlacitko)~~
+        * ~~[.novySelect()](#tfw.novySelect)~~
+        * ~~[.noveZalozky()](#tfw.noveZalozky)~~
+        * ~~[.noveSvisleZalozky()](#tfw.noveSvisleZalozky)~~
+        * ~~[.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)~~
+        * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
+        * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
+        * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
         * [.multiCheckbox(params)](#tfw.multiCheckbox) ⇒ <code>HTMLElement</code>
@@ -133,6 +156,81 @@
 
 ### new tfw()
 Triobo framework. This is a singleton.
+
+<a name="tfw.Tabs"></a>
+
+### tfw.Tabs
+**Kind**: static class of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Remove IDs and classes zalozkyObal, zalozkySeznam, zalozkyObsah, aktivni, skryty
+
+
+* [.Tabs](#tfw.Tabs)
+    * [new Tabs(params)](#new_tfw.Tabs_new)
+    * _instance_
+        * [.tabContainer](#tfw.Tabs+tabContainer) : <code>HTMLElement</code>
+        * [.activeTab](#tfw.Tabs+activeTab) : <code>number</code>
+        * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
+        * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
+        * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
+    * _inner_
+        * [~tab](#tfw.Tabs..tab) : <code>Object</code>
+
+<a name="new_tfw.Tabs_new"></a>
+
+#### new Tabs(params)
+Class for creating tabs.
+
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | table parameters |
+| params.id | <code>string</code> |  | ID of tabs container |
+| params.tabWidth | <code>number</code> |  | width of a tab (in pixels) |
+| params.tabHeight | <code>number</code> |  | height of a tab (in pixels) |
+| [params.active] | <code>number</code> | <code>-1</code> | order number of tab active by default (negative means none) |
+| params.tabs | <code>Array.&lt;Object&gt;</code> |  | array of tabs |
+| params.tabs[].title | <code>string</code> |  | tab title |
+| params.tabs[].content | <code>Array.&lt;HTMLElement&gt;</code> |  | tab content |
+
+<a name="tfw.Tabs+tabContainer"></a>
+
+#### tabs.tabContainer : <code>HTMLElement</code>
+**Kind**: instance property of <code>[Tabs](#tfw.Tabs)</code>  
+<a name="tfw.Tabs+activeTab"></a>
+
+#### tabs.activeTab : <code>number</code>
+**Kind**: instance property of <code>[Tabs](#tfw.Tabs)</code>  
+<a name="tfw.Tabs+tabNav"></a>
+
+#### tabs.tabNav : <code>HTMLElement</code>
+**Kind**: instance property of <code>[Tabs](#tfw.Tabs)</code>  
+<a name="tfw.Tabs+tabs"></a>
+
+#### tabs.tabs : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
+**Kind**: instance property of <code>[Tabs](#tfw.Tabs)</code>  
+<a name="tfw.Tabs+setActiveTab"></a>
+
+#### tabs.setActiveTab(tabIndex)
+Set active tab (and set previously active tab as inactive).
+
+**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tabIndex | <code>number</code> | index of tab to make active (starting from 0) |
+
+<a name="tfw.Tabs..tab"></a>
+
+#### Tabs~tab : <code>Object</code>
+**Kind**: inner typedef of <code>[Tabs](#tfw.Tabs)</code>  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| title | <code>HTMLElement</code> | tab title |
+| content | <code>HTMLElement</code> | tab content |
 
 <a name="tfw.dynamicTableClass"></a>
 
@@ -881,6 +979,17 @@ Add multiple HTML elements.
 | parentNode | <code>HTMLElement</code> | node to append to |
 | childNodes | <code>Array.&lt;HTMLElement&gt;</code> | nodes to append |
 
+<a name="tfw.parseIntOr0"></a>
+
+### tfw.parseIntOr0(str) ⇒ <code>number</code>
+Wrapper for parseInt, additionally turns NaN into zero (0).
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type |
+| --- | --- |
+| str | <code>string</code> | 
+
 <a name="tfw.insertStyle"></a>
 
 ### tfw.insertStyle(style, [tag])
@@ -938,6 +1047,52 @@ Set attributes of a HTML element.
 | [params.value] | <code>string</code> |  | default field value (or button text) |
 | [params.placeholder] | <code>string</code> |  | text field placeholder |
 
+<a name="tfw.createAndFillElement"></a>
+
+### tfw.createAndFillElement(tag, params) ⇒ <code>HTMLElement</code>
+Helper function for methods that create simple elements.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.fillElemDefs  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tag | <code>string</code> | HTML tag name |
+| params | <code>Object</code> |  |
+
+<a name="tfw.div"></a>
+
+### tfw.div(params) ⇒ <code>HTMLElement</code>
+Alias for tfw.createAndFillElement("div", params)
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type |
+| --- | --- |
+| params | <code>Object</code> | 
+
+<a name="tfw.par"></a>
+
+### tfw.par(params) ⇒ <code>HTMLElement</code>
+Alias for tfw.createAndFillElement("p", params)
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type |
+| --- | --- |
+| params | <code>Object</code> | 
+
+<a name="tfw.span"></a>
+
+### tfw.span(params) ⇒ <code>HTMLElement</code>
+Alias for tfw.createAndFillElement("span", params)
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type |
+| --- | --- |
+| params | <code>Object</code> | 
+
 <a name="tfw.select"></a>
 
 ### tfw.select(params) ⇒ <code>HTMLElement</code>
@@ -949,7 +1104,7 @@ Create a select field with specified parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | select parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> | select parameters |
 | [params.multiple] | <code>boolean</code> | can multiple values be selected |
 | params.list | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> | list of options as string "label1;label2" or "label1\|value1;label2\|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text) |
 | [params.list[].id] | <code>string</code> | value (defaults to numeric index of option) |
@@ -960,9 +1115,8 @@ Create a select field with specified parameters.
 ### ~~tfw.dropDown()~~
 ***Deprecated***
 
-Use [dropDown](#desktop.dropDown) instead.
-
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: desktop.dropDown  
 <a name="tfw.button"></a>
 
 ### tfw.button(params) ⇒ <code>HTMLElement</code>
@@ -974,7 +1128,7 @@ Create a button with specified parameters.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | button parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> |  | button parameters |
 | [params.step] | <code>number</code> |  | step between allowed numeric values |
 | [params.default] | <code>boolean</code> | <code>false</code> | if true, type=submit, otherwise type=button |
 | [params.action] | <code>function</code> |  | Function to fire when button is clicked (event propagation is stopped) |
@@ -1012,7 +1166,7 @@ Create an input field with specified parameters.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | input fields parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
+| params | <code>Object</code> |  | input fields parameters |
 | [params.type] | <code>string</code> | <code>&quot;text&quot;</code> | input field type |
 | [params.value] | <code>string</code> |  | prefilled value |
 | [params.min] | <code>number</code> |  | minimum allowed value |
@@ -1034,7 +1188,7 @@ Create a text area with specified parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | text area parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
+| params | <code>Object</code> | text area parameters |
 | [params.value] | <code>string</code> | prefilled value |
 
 <a name="tfw.checkbox"></a>
@@ -1056,7 +1210,7 @@ Create a checkbox with specified parameters.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | checkbox parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
+| params | <code>Object</code> |  | checkbox parameters |
 | [params.onchange] | <code>function</code> |  | function to call when field changes value (onchange fires) |
 | [params.text] | <code>string</code> |  | checkbox label text |
 | [params.value] | <code>string</code> | <code>0</code> | initial value (0=unchecked,1=checked) |
@@ -1073,22 +1227,20 @@ Create an icon with specified parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | icon parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> | icon parameters |
 | [params.action] | <code>function</code> | function triggered when icon is clicked (basically onclick) |
 | [params.index] | <code>number</code> | move background image up by this number of pixels (background-position-x) |
 
 <a name="tfw.table"></a>
 
 ### tfw.table(params) ⇒ <code>HTMLElement</code>
-Create a table with specified parameters.
+Alias for tfw.createAndFillElement("table", params)
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - Created table  
-**See**: tfw.fillElemDefs  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | table parameters (for more see [fillElemDefs](#tfw.fillElemDefs), use params.children for rows) |
+| params | <code>Object</code> | table parameters (use params.children for rows) |
 
 <a name="tfw.tr"></a>
 
@@ -1101,7 +1253,7 @@ Create a table row with specified parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | table row parameters (for more see [fillElemDefs](#tfw.fillElemDefs), use params.children for columns/cells) |
+| params | <code>Object</code> | table row parameters (use params.children for columns/cells) |
 | [params.columns] | <code>Array</code> | list of objects, that will be passed to tfw.td and added as children |
 
 <a name="tfw.td"></a>
@@ -1115,7 +1267,7 @@ Create a table cell with specified parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | table cell parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> | table cell parameters |
 | [params.colspan] | <code>number</code> | number of columns that this cell will merge |
 
 <a name="tfw.slider"></a>
@@ -1129,7 +1281,7 @@ Create a slider with specified parameters.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | slider parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> |  | slider parameters |
 | params.id | <code>string</code> |  | ID, has to be present! |
 | [params.legend] | <code>string</code> |  | legend text |
 | [params.legendStyle] | <code>string</code> |  | legend CSS styling |
@@ -1151,7 +1303,7 @@ Create an image with specified parameters.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | image parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> | image parameters |
 | [params.src] | <code>string</code> | URL of image |
 | [params.title] | <code>title</code> | image title (displays on hover) |
 
@@ -1170,7 +1322,7 @@ Create control for uploading files (images).
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | file box parameters (for more see [fillElemDefs](#tfw.fillElemDefs) and [inputFieldLegend](#tfw.inputFieldLegend)) |
+| params | <code>Object</code> |  | file box parameters |
 | [params.id] | <code>string</code> | <code>&quot;filebox&quot;</code> | ID of box |
 | [params.className] | <code>string</code> | <code>&quot;tfwFilebox&quot;</code> | class(es) of box (tfwFilebox is always appended) |
 | [params.value] | <code>number</code> | <code>0</code> |  |
@@ -1188,17 +1340,15 @@ Create control for uploading files (images).
 ### ~~tfw.dialog()~~
 ***Deprecated***
 
-Use [desktop.dialog](desktop.dialog) instead.
-
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: desktop.dialog  
 <a name="tfw.dialogPrepareAndDownload"></a>
 
 ### ~~tfw.dialogPrepareAndDownload()~~
 ***Deprecated***
 
-Use [desktop.dialogPrepareAndDownload](desktop.dialogPrepareAndDownload) instead.
-
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: desktop.dialogPrepareAndDownload  
 <a name="tfw.ajaxGet"></a>
 
 ### tfw.ajaxGet(o) ⇒ <code>XMLHttpRequest</code>
@@ -1233,7 +1383,7 @@ Post data to server via AJAX.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| o | <code>Object</code> | parameters object (see [ajaxGet](#tfw.ajaxGet)) |
+| o | <code>Object</code> | parameters object |
 
 <a name="tfw.encodeFormValues"></a>
 
@@ -1264,14 +1414,83 @@ Decode JSON data, show error in case they are invalid.
 ### ~~tfw.novyElement()~~
 ***Deprecated***
 
+Use various tfw functions instead.
+
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+<a name="tfw.zatrzitko"></a>
+
+### ~~tfw.zatrzitko()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.checkbox  
+<a name="tfw.tlacitko"></a>
+
+### ~~tfw.tlacitko()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.div  
+<a name="tfw.novySelect"></a>
+
+### ~~tfw.novySelect()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.select  
 <a name="tfw.noveZalozky"></a>
 
-### tfw.noveZalozky()
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Todo**
+### ~~tfw.noveZalozky()~~
+***Deprecated***
 
-- [ ] Remove dependencies on Triobo
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.tabs  
+<a name="tfw.noveSvisleZalozky"></a>
+
+### ~~tfw.noveSvisleZalozky()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+<a name="tfw.zvolSvislouZalozku"></a>
+
+### ~~tfw.zvolSvislouZalozku()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+<a name="tfw.ol"></a>
+
+### tfw.ol(params) ⇒ <code>HTMLElement</code>
+Alias for tfw.createAndFillElement("ol", params)
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type |
+| --- | --- |
+| params | <code>Object</code> | 
+
+<a name="tfw.li"></a>
+
+### tfw.li(params) ⇒ <code>HTMLElement</code>
+Alias for tfw.createAndFillElement("li", params)
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+
+| Param | Type |
+| --- | --- |
+| params | <code>Object</code> | 
+
+<a name="tfw.tabs"></a>
+
+### tfw.tabs(params) ⇒ <code>HTMLElement</code>
+Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.API methods are mirrored into the HTML element.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - Tabs  
+**See**: tfw.Tabs  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | tabs parameters |
 
 <a name="tfw.dynamicTable"></a>
 
@@ -1284,7 +1503,7 @@ Wrapper that creates a dynamic table and returns it's HTML node for inserting in
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | table parameters (see [dynamicTableClass](#tfw.dynamicTableClass)) |
+| params | <code>Object</code> | table parameters |
 
 <a name="tfw.calendar"></a>
 
@@ -1301,7 +1520,7 @@ Create a calendar input field.
 
 | Param | Type | Description |
 | --- | --- | --- |
-| params | <code>Object</code> | see [input](#tfw.input) |
+| params | <code>Object</code> | parameters |
 
 <a name="tfw.multiCheckbox"></a>
 
@@ -1310,6 +1529,7 @@ Create a list of checkboxes, with common controls.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - Returns checkboxes' container (with value attribute and methods setNone and setAll)  
+**See**: tfw.fillElemDefs  
 **Todo**
 
 - [ ] Change seznamZatrzitek to tfwMultiCheckbox
@@ -1317,7 +1537,7 @@ Create a list of checkboxes, with common controls.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | checkbox list parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> |  | checkbox list parameters |
 | [params.className] | <code>string</code> | <code>&quot;seznamZatrzitek&quot;</code> | container classes (seznamZatrzitek is always added) |
 | [params.list] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
 | params.list[].id | <code>string</code> |  | ID of checkbox |
@@ -1468,11 +1688,15 @@ Create a list of checkboxes, with common controls.
 
 **Kind**: static method of <code>[prvek](#prvek)</code>  
 **Returns**: <code>HTMLElement</code> - Returns container with checkboxes  
-**See**: tfw.multiCheckbox  
+**See**
+
+- tfw.multiCheckbox
+- tfw.fillElemDefs
+
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| params | <code>Object</code> |  | checkbox list parameters (for more see [fillElemDefs](#tfw.fillElemDefs)) |
+| params | <code>Object</code> |  | checkbox list parameters |
 | [params.className] | <code>string</code> | <code>&quot;seznamZatrzitek&quot;</code> | container classes (seznamZatrzitek is always added) |
 | [params.seznam] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
 | params.seznam[].id | <code>string</code> |  | ID of checkbox |

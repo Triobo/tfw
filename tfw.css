@@ -827,21 +827,26 @@ button:disabled:hover {
 }
 /**************/
 .tfwDynamicTable thead th{
-    /*resize: horizontal;*/
-    overflow: visible;
+  overflow: visible;
 }
 .tfwDynamicTable thead tr > .resizable{
-    padding-right: 0;
+  padding-right: 0;
 }
 .tfwDynamicTable thead .resizer{
-    margin-left: 4px; /* replace 6px right padding + 3px of right shift */
-    display: inline-block;
-    width: 6px;
-    position: relative;
-    right: -3px;
-    height: 100%;
-    float: right;
+  margin-left: 4px; /* replace 6px right padding + 3px of right shift */
+  display: inline-block;
+  width: 6px;
+  position: relative;
+  right: -3px;
+  height: 100%;
+  float: right;
 }
 .tfwDynamicTable thead .resizer, body.resizing{
-    cursor: col-resize;
+  cursor: col-resize;
+}
+/**************/
+ul.semantic, ol.semantic, ul.semantic > li, ol.semantic > li{
+  display: block;
+  margin: 0;
+  padding: 0;
 }

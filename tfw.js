@@ -4,7 +4,7 @@
  * @author melanger
  */
 
-/* global token:false, chyba:false, t:false, editor:false, cislo:false */
+/* global token:false, chyba:false, t:false, editor:false */
 
 /**
  * Get HTML element by ID.
@@ -90,6 +90,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     for (var i = 0; i < childNodes.length; i++) {
       parentNode.appendChild(childNodes[i]);
     }
+  },
+  /**
+   * Wrapper for parseInt, additionally turns NaN into zero (0).
+   * @param {string} str
+   * @return {number}
+   */
+  parseIntOr0: function(str){
+    var number = parseInt(str);
+    return isNaN(number) ? 0 : number;
   },
   /**
    * HTML to show when some content is being loaded.
@@ -236,24 +245,48 @@ var tfw = {//eslint-disable-line no-implicit-globals
       });
     }
   },
-  div: function(n){
-    var x = document.createElement("div");
-    this.fillElemDefs(x, n);
-    return x;
+  /**
+   * Helper function for methods that create simple elements.
+   * @param {string} tag - HTML tag name
+   * @param {Object} params
+   * @see tfw.fillElemDefs
+   * @return {HTMLElement}
+   */
+  createAndFillElement: function(tag, params){
+    var element = document.createElement(tag);
+    this.fillElemDefs(element, params);
+    return element;
   },
-  par: function(n){
-    var x = document.createElement("p");
-    this.fillElemDefs(x, n);
-    return x;
+  /**
+   * Alias for tfw.createAndFillElement("div", params)
+   * @param {Object} params
+   * @memberof tfw
+   * @return {HTMLElement}
+   */
+  div: function(params){
+    return tfw.createAndFillElement("div", params);
   },
-  span: function(n){
-    var x = document.createElement("span");
-    this.fillElemDefs(x, n);
-    return x;
+  /**
+   * Alias for tfw.createAndFillElement("p", params)
+   * @param {Object} params
+   * @memberof tfw
+   * @return {HTMLElement}
+   */
+  par: function(params){
+    return tfw.createAndFillElement("p", params);
+  },
+  /**
+   * Alias for tfw.createAndFillElement("span", params)
+   * @param {Object} params
+   * @memberof tfw
+   * @return {HTMLElement}
+   */
+  span: function(params){
+    return tfw.createAndFillElement("span", params);
   },
   /**
    * Create a select field with specified parameters.
-   * @param {Object} params - select parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - select parameters
    * @see tfw.fillElemDefs
    * @param {boolean} [params.multiple] - can multiple values be selected
    * @param {(string|string[]|Object[])} params.list - list of options as string "label1;label2" or "label1\|value1;label2\|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text)
@@ -336,9 +369,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /* eslint-disable */
   /**
-   * Use {@link desktop.dropDown} instead.
    * @memberof tfw
    * @deprecated
+   * @see desktop.dropDown
    */
   dropDown: function(params){
     console.warn("DEPRECATED use of tfw.dropDown, use desktop.dropDown instead.");
@@ -348,7 +381,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create a button with specified parameters.
    * @memberof tfw
-   * @param {Object} params - button parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - button parameters
    * @see tfw.fillElemDefs
    * @param {number} [params.step] - step between allowed numeric values
    * @param {boolean} [params.default=false] - if true, type=submit, otherwise type=button
@@ -356,8 +389,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Created button
    */
   button: function(params){
-    var element = document.createElement("button");
-    this.fillElemDefs(element, params);
+    var element = tfw.createAndFillElement("button", params);
     element.type = ((params["default"]) ? "submit" : "button");
     if (params.action) {
       element.action = params.action;
@@ -402,7 +434,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create an input field with specified parameters.
    * @memberof tfw
-   * @param {Object} params - input fields parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @param {Object} params - input fields parameters
    * @see tfw.fillElemDefs
    * @see tfw.inputFieldLegend
    * @param {string} [params.type=text] - input field type
@@ -430,7 +462,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create a text area with specified parameters.
    * @memberof tfw
-   * @param {Object} params - text area parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @param {Object} params - text area parameters
    * @see tfw.fillElemDefs
    * @see tfw.inputFieldLegend
    * @param {string} [params.value] - prefilled value
@@ -451,7 +483,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create a checkbox with specified parameters.
    * @memberof tfw
-   * @param {Object} params - checkbox parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @param {Object} params - checkbox parameters
    * @see tfw.fillElemDefs
    * @see tfw.inputFieldLegend
    * @param {function} [params.onchange] - function to call when field changes value (onchange fires)
@@ -462,10 +494,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @todo Use "value" for real value, instead of using it for "checked"
    */
   checkbox: function(params){
-    var x = document.createElement("div");
     var labelText = (params.text) ? params.text : "";
     params.text = "";
-    this.fillElemDefs(x, params);
+    var x = tfw.createAndFillElement("div", params);
     x.addClass("tfwCheckbox");
     if (params.onchange) x.onchange = params.onchange;
     if (params.onclick) x.onclick = params.onclick;
@@ -521,16 +552,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create an icon with specified parameters.
    * @memberof tfw
-   * @param {Object} params - icon parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - icon parameters
    * @see tfw.fillElemDefs
    * @param {function} [params.action] - function triggered when icon is clicked (basically onclick)
    * @param {number} [params.index] - move background image up by this number of pixels (background-position-x)
    * @return {HTMLElement} Created icon
    */
   icon: function(params){
-    var element = document.createElement("div");
     params.className = "tfwIcon" + ((params.className) ? (" " + params.className) : "");
-    this.fillElemDefs(element, params);
+    var element = tfw.createAndFillElement("div", params);
     if (params.action) {
       element.action = params.action;
       element.onclick = function(e){
@@ -568,28 +598,24 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return element;
   },
   /**
-   * Create a table with specified parameters.
+   * Alias for tfw.createAndFillElement("table", params)
+   * @param {Object} params - table parameters (use params.children for rows)
    * @memberof tfw
-   * @param {Object} params - table parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for rows)
-   * @see tfw.fillElemDefs
-   * @return {HTMLElement} Created table
+   * @return {HTMLElement}
    */
   table: function(params){
-    var element = document.createElement("table");
-    this.fillElemDefs(element, params);
-    return element;
+    return tfw.createAndFillElement("table", params);
   },
   /**
    * Create a table row with specified parameters.
    * @memberof tfw
-   * @param {Object} params - table row parameters (for more see {@link tfw.fillElemDefs|fillElemDefs}, use params.children for columns/cells)
+   * @param {Object} params - table row parameters (use params.children for columns/cells)
    * @see tfw.fillElemDefs
    * @param {Array} [params.columns] - list of objects, that will be passed to tfw.td and added as children
    * @return {HTMLElement} Created table row
    */
   tr: function(params){
-    var element = document.createElement("tr");
-    this.fillElemDefs(element, params);
+    var element = tfw.createAndFillElement("tr", params);
     if ("columns" in params) {
       for (var i = 0; i < params.columns.length; i++) {
         element.add(tfw.td(params.columns[i]));
@@ -600,14 +626,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create a table cell with specified parameters.
    * @memberof tfw
-   * @param {Object} params - table cell parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - table cell parameters
    * @param {number} [params.colspan] - number of columns that this cell will merge
    * @see tfw.fillElemDefs
    * @return {HTMLElement} Created table cell
    */
   td: function(params){
-    var element = document.createElement("td");
-    this.fillElemDefs(element, params);
+    var element = tfw.createAndFillElement("td", params);
     if ("colspan" in params) {
       element.setAttribute("colspan", params.colspan);
     }
@@ -616,7 +641,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create a slider with specified parameters.
    * @memberof tfw
-   * @param {Object} params - slider parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - slider parameters
    * @see tfw.fillElemDefs
    * @param {string} params.id - ID, has to be present!
    * @param {string} [params.legend] - legend text
@@ -719,15 +744,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create an image with specified parameters.
    * @memberof tfw
-   * @param {Object} params - image parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - image parameters
    * @param {string} [params.src] - URL of image
    * @param {title} [params.title] - image title (displays on hover)
    * @see tfw.fillElemDefs
    * @return {HTMLElement} Created image
    */
   image: function(params){
-    var element = document.createElement("img");
-    this.fillElemDefs(element, params);
+    var element = tfw.createAndFillElement("img", params);
     if (params.src) element.src = params.src;
     if (params.title) element.title = params.title;
     return element;
@@ -735,7 +759,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create control for uploading files (images).
    * @memberof tfw
-   * @param {Object} params - file box parameters (for more see {@link tfw.fillElemDefs|fillElemDefs} and {@link tfw.inputFieldLegend|inputFieldLegend})
+   * @param {Object} params - file box parameters
+   * @see tfw.fillElemDefs
+   * @see tfw.inputFieldLegend
    * @param {string} [params.id=filebox] - ID of box
    * @param {string} [params.className=tfwFilebox] - class(es) of box (tfwFilebox is always appended)
    * @param {number} [params.value=0]
@@ -747,8 +773,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {function} [params.onstart=null] - callback fired when upload starts
    * @param {string} [params.limitExtensions] - allowed extensions, without dot (e.g. "png|jpeg|jpg|gif")
    * @param {string} [params.style] - CSS styling of outter and inner DIV
-   * @see tfw.fillElemDefs
-   * @see tfw.inputFieldLegend
    * @return {HTMLElement} Created file box, optionally wrapped with label
    */
   filebox: function(params){
@@ -860,18 +884,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /* eslint-disable */
   /**
-   * Use {@link desktop.dialog} instead.
    * @memberof tfw
    * @deprecated
+   * @see desktop.dialog
    */
   dialog: function(co){
     console.warn("DEPRECATED use of tfw.dialog, use desktop.dialog instead.");
     return desktop.dialog(co);
   },
   /**
-   * Use {@link desktop.dialogPrepareAndDownload} instead.
    * @memberof tfw
    * @deprecated
+   * @see desktop.dialogPrepareAndDownload
    */
   dialogPrepareAndDownload: function(params){
     console.warn("DEPRECATED use of tfw.dialogPrepareAndDownload, use desktop.dialogPrepareAndDownload instead.");
@@ -985,7 +1009,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Post data to server via AJAX.
    * @memberof tfw
-   * @param {Object} o - parameters object (see {@link tfw.ajaxGet})
+   * @param {Object} o - parameters object
    * @return {XMLHttpRequest} Returns XMLHttpRequest object
    * @see tfw.ajaxGet
    */
@@ -1050,9 +1074,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return [totalOffsetX, totalOffsetY];
   },
   /* eslint-disable */
-  /** @deprecated */
+  /**
+   * Use various tfw functions instead.
+   * @deprecated
+   */
   novyElement: function(typ, id, c, obsah, styl){
-    //console.error("DEPRECATED novyElement "+id);  // tohoto je ještě strašně moc………
+    //console.warn("DEPRECATED novyElement "+id);  // tohoto je ještě strašně moc………
     var x = document.createElement(typ);
     if (id) x.setAttribute("id", id);
     if (c) x.setAttribute("class", c);
@@ -1060,54 +1087,63 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (styl) x.setAttribute("style", styl);
     return x;
   },
-  /** @todo Remove dependencies on Triobo */
-  noveZalozky: function(id, w, h, zalozky, init){
-    var l;
-    var x = document.createElement("div");
-    x.id = id;
-    x.className = "zalozkyObal";
-    x.value = init;
-    var u = document.createElement("div");
-    u.className = "zalozkySeznam";
-    x.add(u);
-    var z = zalozky.split(";"),
-        i;
-    for (i = 0; i < z.length; i++) {
-      l = document.createElement("p");
-      l.id = id + "-ousko-" + i;
-      l.className = "zalozkyOusko" + ((i == init) ? " aktivni" : "");
-      l.innerHTML = z[i];
-      l.addEventListener("mousedown", function(e){
-        var t = e.target;
-        var jmeno = t.parentNode.parentNode.id;
-        var stary = cislo(t.parentNode.parentNode.value);
-        var novy = t.id.substr(t.id.lastIndexOf("-") + 1);
-        if (novy != stary) {
-          if (stary >= 0) {
-            document.getElementById(jmeno + "-obsah-" + stary).className = "zalozkyObsah skryty";
-            document.getElementById(jmeno + "-ousko-" + stary).className = document.getElementById(jmeno + "-ousko-" + stary).className
-              .replace(/ aktivni/i, "");
-          }
-          document.getElementById(jmeno + "-obsah-" + novy).className = "zalozkyObsah";
-          document.getElementById(jmeno + "-ousko-" + novy).className += " aktivni";
-          t.parentNode.parentNode.value = novy;
-        }
-        e.stopPropagation();
-        e.preventDefault();
-      }, false);
-      u.add(l);
-    }
-    var o;
-    for (i = 0; i < z.length; i++) {
-      o = document.createElement("div");
-      o.id = id + "-obsah-" + i;
-      o.className = "zalozkyObsah" + ((i == init) ? "" : " skryty");
-      o.style.width = w + "px";
-      o.style.height = h + "px";
-      x.add(o);
-    }
-    return x;
+  /**
+   * @deprecated
+   * @see tfw.checkbox
+   */
+  zatrzitko: function(id, text, init, styl){
+    console.warn("DEPRECATED tfw.zatrzitko, use tfw.checkbox instead.");
+    return tfw.checkbox({
+      id: id,
+      text: text,
+      value: init,
+      style: styl
+    });
   },
+  /**
+   * @deprecated
+   * @see tfw.div
+   */
+  tlacitko: function(id, text, funkce, styl){
+    console.warn("DEPRECATED tfw.tlacitko, use tfw.div({className: \"button\"}) instead.");
+    return tfw.div({
+      className: "button",
+      id: id,
+      innerHTML: text,
+      onclick: funkce,
+      style: styl
+    });
+  },
+  /**
+   * @deprecated
+   * @see tfw.select
+   */
+  novySelect: function(id, w, h, l, i){
+    console.warn("DEPRECATED tfw.novySelect, use tfw.select instead.");
+    return tfw.select({
+      id: id,
+      style: "width:" + w + "px;height:" + h + "px;",
+      list: l,
+      value: i
+    });
+  },
+  /**
+   * @deprecated
+   * @see tfw.tabs
+   */
+  noveZalozky: function(id, w, h, zalozky, init){
+    console.warn("DEPRECATED tfw.noveZalozky, use tfw.tabs instead.");
+    return tfw.tabs({
+      id: id,
+      width: w,
+      height: h,
+      tabs: zalozky.split(";").map(function(value){
+        return {title: value};
+      }),
+      active: init
+    });
+  },
+  /** @deprecated */
   noveSvisleZalozky: function(id, wl, w, h, zalozky, init){
     var l;
     var poziceY = 0;
@@ -1188,12 +1224,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       });
     }
     window.setTimeout(function(elementId, verticalScroll){
-      if ($(elementId)) $(elementId).childNodes[0].scrollTop=verticalScroll*20;
+      if ($(elementId)) $(elementId).childNodes[0].scrollTop = verticalScroll * 20;
     }, 20, id, poziceY);
     return x;
   },
+  /** @deprecated */
   zvolSvislouZalozku: function(jmeno, novy){
-    var stary = cislo($(jmeno).value);
+    var stary = tfw.parseIntOr0($(jmeno).value);
     if (novy != stary) {
       if (stary >= 0) {
         $(jmeno + "-obsah-" + stary).className = "zalozkySvisleObsah skryty";
@@ -1203,6 +1240,119 @@ var tfw = {//eslint-disable-line no-implicit-globals
       $(jmeno + "-ousko-" + novy).className += " aktivni";
       $(jmeno).value = novy;
     }
+  },
+  /* eslint-enable */
+  /**
+   * Alias for tfw.createAndFillElement("ol", params)
+   * @param {Object} params
+   * @memberof tfw
+   * @return {HTMLElement}
+   */
+  ol: function(params){
+    return tfw.createAndFillElement("ol", params);
+  },
+  /**
+   * Alias for tfw.createAndFillElement("li", params)
+   * @param {Object} params
+   * @memberof tfw
+   * @return {HTMLElement}
+   */
+  li: function(params){
+    return tfw.createAndFillElement("li", params);
+  },
+  /**
+   * Class for creating tabs.
+   * @class
+   * @param {Object} params - table parameters
+   * @param {string} params.id - ID of tabs container
+   * @param {number} params.tabWidth - width of a tab (in pixels)
+   * @param {number} params.tabHeight - height of a tab (in pixels)
+   * @param {number} [params.active=-1] - order number of tab active by default (negative means none)
+   * @param {Object[]} params.tabs - array of tabs
+   * @param {string} params.tabs[].title - tab title
+   * @param {HTMLElement[]} params.tabs[].content - tab content
+   * @todo Remove IDs and classes zalozkyObal, zalozkySeznam, zalozkyObsah, aktivni, skryty
+   */
+  Tabs: function(params){
+    this.name = params.id;
+    /** @var {HTMLElement} */
+    this.tabContainer = tfw.div({className: "zalozkyObal tfwTabContainer", id: this.name});
+    /** @var {number} */
+    this.activeTab = ("active" in params) ? tfw.parseIntOr0(params.active) : -1;
+    /** @var {HTMLElement} */
+    this.tabNav = tfw.ol({className: "semantic zalozkySeznam tfwTabNav"});
+
+    /**
+     * @typedef {Object} tfw.Tabs~tab
+     * @property {HTMLElement} title - tab title
+     * @property {HTMLElement} content - tab content
+     */
+    /** @var {tfw.Tabs~tab[]} */
+    this.tabs = [];
+
+    this.tabContainer.add(this.tabNav);
+
+    /**
+     * Set active tab (and set previously active tab as inactive).
+     * @param {number} tabIndex - index of tab to make active (starting from 0)
+     */
+    this.setActiveTab = function(tabIndex){
+      if (tabIndex != this.activeTab) {
+        if (this.activeTab >= 0) {
+          $(this.name + "-obsah-" + this.activeTab).className = "zalozkyObsah skryty";
+          $(this.name + "-ousko-" + this.activeTab).className = $(this.name + "-ousko-" + this.activeTab).className.replace(/ aktivni/i, "");
+        }
+        $(this.name + "-obsah-" + tabIndex).className = "zalozkyObsah";
+        $(this.name + "-ousko-" + tabIndex).className += " aktivni";
+        this.activeTab = tabIndex;
+      }
+    };
+
+    var tabs = this,
+        tabTitle,
+        tabContent;
+    for (var i = 0; i < params.tabs.length; i++) {
+      // create tab title
+      tabTitle = tfw.li({
+        id: this.name + "-ousko-" + i,
+        className: "zalozkyOusko" + ((i == params.active) ? " aktivni" : ""),
+        innerHTML: params.tabs[i].title
+      });
+      tabTitle.dataset.tabIndex = i;
+      tabTitle.addEventListener("mousedown", function(e){
+        tabs.setActiveTab(this.dataset.tabIndex);
+        e.stopPropagation();
+        e.preventDefault();
+      }, false);
+      this.tabNav.add(tabTitle);
+
+      // create tab content
+      this.tabContainer.add(
+        tabContent = tfw.div({
+          id: this.name + "-obsah-" + i,
+          className: "zalozkyObsah" + ((i == params.active) ? "" : " skryty"),
+          style: "width:" + params.tabWidth + "px;height:" + params.tabHeight + "px;"
+        })
+      );
+
+      this.tabs[i] = {title: tabTitle, content: tabContent};
+    }
+  },
+  /**
+   * Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
+   * API methods are mirrored into the HTML element.
+   * @param {Object} params - tabs parameters
+   * @return {HTMLElement} Tabs
+   * @see tfw.Tabs
+   */
+  tabs: function(params){
+    var tabObject = new tfw.Tabs(params),
+        container = tabObject.tabContainer,
+        api = [];
+    for (var i = 0; i < api.length; i++) {
+      container[api[i]] = tabObject[api[i]];
+    }
+    return container;
   },
   novyCudl: function(id, c, pozice, stisk, popis){
     var x = document.createElement("div");
@@ -1229,24 +1379,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var x = this.vstupniPole(id, styl, legenda, stylL, postT, postL);
     return x;
   },
-  zatrzitko: function(id, text, init, styl){
-    console.warn("DEPRECATED tfw.zatrzitko");
-    return tfw.checkbox({
-      id: id,
-      text: text,
-      value: init,
-      style: styl
-    });
-  },
-  tlacitko: function(id, text, funkce, styl){
-    var x = document.createElement("div");
-    x.id = id;
-    x.className = "button";
-    x.onclick = funkce;
-    x.innerHTML = text;
-    if (styl) x.style.cssText = styl;
-    return x;
-  },
   progressBar: function(id, styl){
     var x = document.createElement("div");
     x.id = id;
@@ -1257,15 +1389,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
     y.add(document.createElement("div"));
     return x;
   },
-  novySelect: function(id, w, h, l, i){
-    return tfw.select({
-      id: id,
-      style: "width:" + w + "px;height:" + h + "px;",
-      list: l,
-      value: i
-    });
-  },
-  /* eslint-enable */
   /**
    * Callback that creates content to insert into a custom column.
    * @callback tfw.dynamicTableClass~columnRenderer
@@ -1991,7 +2114,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         id: this.tableHTMLId,
         className: "tfwDynamicTable"
       }));
-      o.addEventListener("focus", function(){
+      o.addEventListener("focus", function(event){
         dynamicTable.setFocusedRow(dynamicTable.data.rows[event.target.closest("tr").myOrder()].id);
       }, true);
       o.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
@@ -2903,7 +3026,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
    * Class instance's properties are mirrored into the HTML element.
-   * @param {Object} params - table parameters (see {@link tfw.dynamicTableClass})
+   * @param {Object} params - table parameters
    * @return {HTMLElement} Table
    * @see tfw.dynamicTableClass
    */
@@ -2918,7 +3041,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /**
    * Create a calendar input field.
-   * @param {Object} params - see {@link tfw.input}
+   * @param {Object} params - parameters
    * @see tfw.input
    * @see tfw.calendarExtend
    * @return {HTMLElement} Returns input (+ optionally legend) wrapper
@@ -3117,7 +3240,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
   /**
    * Create a list of checkboxes, with common controls.
    * @todo Change seznamZatrzitek to tfwMultiCheckbox
-   * @param {Object} params - checkbox list parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - checkbox list parameters
+   * @see tfw.fillElemDefs
    * @param {string} [params.className=seznamZatrzitek] - container classes (seznamZatrzitek is always added)
    * @param {Object[]} [params.list] - list of checkboxes' parameters (makes params.id mandatory)
    * @param {string} params.list[].id - ID of checkbox
@@ -3126,10 +3250,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement} Returns checkboxes' container (with value attribute and methods setNone and setAll)
    */
   multiCheckbox: function(params){
-    var i,
-        container = document.createElement("div");
+    var i;
     params.className = (("className" in params) ? (params.className + " ") : "") + "seznamZatrzitek";
-    tfw.fillElemDefs(container, params);
+    var container = tfw.createAndFillElement("div", params);
     var checkboxOnChange = function(){
       var checkedIds = [],
           checkboxContainer = this.parentNode,
@@ -3803,7 +3926,8 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * Create a list of checkboxes, with common controls.
    * @deprecated
    * @see tfw.multiCheckbox
-   * @param {Object} params - checkbox list parameters (for more see {@link tfw.fillElemDefs|fillElemDefs})
+   * @param {Object} params - checkbox list parameters
+   * @see tfw.fillElemDefs
    * @param {string} [params.className=seznamZatrzitek] - container classes (seznamZatrzitek is always added)
    * @param {Object[]} [params.seznam] - list of checkboxes' parameters (makes params.id mandatory)
    * @param {string} params.seznam[].id - ID of checkbox
@@ -3824,7 +3948,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.table
    */
   tabulka: function(co){
-    console.warn("DEPRECATED prvek.tabulka(" + JSON.stringify(co) + ")");
+    console.warn("DEPRECATED prvek.tabulka, use tfw.table instead.");
     if (co.radky) co.rows = co.radky;
     return tfw.table(co);
   },
@@ -3833,7 +3957,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.tr
    */
   radek: function(co){
-    console.warn("DEPRECATED prvek.radek(" + JSON.stringify(co) + ")");
+    console.warn("DEPRECATED prvek.radek, use tfw.tr instead.");
     if (co.sloupce) co.columns = co.sloupce;
     return tfw.tr(co);
   },
@@ -3842,7 +3966,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
    * @see tfw.td
    */
   sloupec: function(co){
-    console.warn("DEPRECATED prvek.sloupec(" + JSON.stringify(co) + ")");
+    console.warn("DEPRECATED prvek.sloupec, use tfw.td instead.");
     if (co.obsah) co.innerHTML = co.obsah;
     if (co.width) co.style = "width:" + co.width + "px;" + ((co.style) ? co.style : "");
     return tfw.td(co);
@@ -4570,6 +4694,6 @@ function Web2RGB(h){
  * @see tfw.dynamicTable
  */
 function Dyntable(x){
-  console.warn("DEPRECATED Dyntable(" + JSON.stringify(x) + "), use tfw.dynamicTable()");
+  console.warn("DEPRECATED Dyntable, use tfw.dynamicTable instead.");
   return tfw.Dyntable(x);
 }
