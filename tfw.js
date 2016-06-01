@@ -1991,6 +1991,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
         id: this.tableHTMLId,
         className: "tfwDynamicTable"
       }));
+      o.addEventListener("focus", function(){
+        dynamicTable.setFocusedRow(dynamicTable.data.rows[event.target.closest("tr").myOrder()].id);
+      }, true);
+      o.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
       for (j = 0; j < this.data.cols.length; j++) {
         if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
           this.data.cols[j].sort = true;
@@ -2214,7 +2218,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.paint = function(changes){
       var i,
           dataCol,
-          sorting = this.getPreference("sorting");
+          sorting = this.getPreference("sorting"),
+          changeInSortCol = false;
       this.tableHTMLId = "dynamicTable-" + tableId;
       if (document.getElementById(this.tableHTMLId) == null) {
         this.createAndFillTable();
@@ -2277,6 +2282,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
                   default:
                     cell.innerHTML = newValue;
                 }
+              }
+              if (sorting != null && sorting.dataCol == dataCol) {
+                changeInSortCol = true;
               }
             }
           } else if ("cols" in changes[i]) { // insertion
@@ -2359,7 +2367,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // apply sorting
       if (sorting == null) {
         this.toggleReorder();
-      } else {
+      } else if (changeInSortCol) {
         this.sort(sorting.dataCol, sorting.asc, true);
       }
     };
@@ -2680,18 +2688,46 @@ var tfw = {//eslint-disable-line no-implicit-globals
             asc: asc
           });
         }
-
         var column = this.data.cols[dataCol].columnOrder;
         this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? "UP" : "DOWN"], this.tableContainer);
       }
 
-      this.data.rows.sort(this.getCmp(dataCol).bind(null, asc));
-      for (var i = 0; i < this.data.rows.length; i++) {
+      var comp = this.getCmp(dataCol).bind(null, asc);
+      this.data.rows.sort(comp);
+
+      var i = 0;
+      if (this.focusedRowId != null) {
+        // sort so that focused row is not moved, therefore not looses focus
+        var focusedDataRow = this.data.rows[this.getDataRowById(this.focusedRowId)],
+            focusedRow = tbody.rows.namedItem("rowID-" + this.focusedRowId);
+        while (comp(this.data.rows[i], focusedDataRow) < 0) {
+          tbody.insertBefore(tbody.rows.namedItem("rowID-" + this.data.rows[i].id), focusedRow);
+          i++;
+        }
+        // leave focusedRow untouched
+        i++;
+      }
+      for (; i < this.data.rows.length; i++) {
         tbody.appendChild(tbody.rows.namedItem("rowID-" + this.data.rows[i].id));
       }
 
       this.toggleReorder();
     };
+
+    /**
+     * @private
+     * @var {?number}
+     * @default null
+     */
+    this.focusedRowId = null;
+    /**
+     * @private
+     * @param {?number} rowId
+     */
+    this.setFocusedRow = function(rowId){
+      this.focusedRowId = rowId;
+    };
+
     /**
      * Set status of filter icon in a column.
      * @param {number} column - column number
