@@ -1391,7 +1391,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /**
    * Callback that creates content to insert into a custom column.
-   * @callback tfw.dynamicTableClass~columnRenderer
+   * @callback tfw.DynamicTable~columnRenderer
    * @param {string} columnValue - value that was loaded as data from server
    * @return {HTMLElement[]} Return array of elements to be inserted into table cell
    */
@@ -1405,13 +1405,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} params.baseURL - URL of script (etc.) handling data, without query string
    * @param {string} [params.urlParams] - general parameters appended to requests (e.g. a token)
    * @param {string} [params.id=dynamicTable] - table ID (name) - required for field (cell) updates
-   * @param {tfw.dynamicTableClass~rowEdit} [params.rowEdit] - Function fired when row editing/adding is triggered
-   * @param {tfw.dynamicTableClass~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
+   * @param {tfw.DynamicTable~rowEdit} [params.rowEdit] - Function fired when row editing/adding is triggered
+   * @param {tfw.DynamicTable~goToSub} [params.goToSub] - Function fired when moving to subordinate table is triggered
    * @param {boolean} [params.rowAdd=false] - whether to allow adding new rows
    * @param {string} [params.bodyHeight] - (CSS) height of table body including unit (to make header and footer always visible)
-   * @param {boolean} [params.watchChanges=false] - whether to allow {@link tfw.dynamicTableClass#serverWatch|watching} for changes (long polling)
+   * @param {boolean} [params.watchChanges=false] - whether to allow {@link tfw.DynamicTable#serverWatch|watching} for changes (long polling)
    * @param {function} [params.onload] - function to call after data is loaded for the first time
-   * @param {tfw.dynamicTableClass~columnRenderer[]} [params.columnRenderers] - functions to create custom columns' content
+   * @param {tfw.DynamicTable~columnRenderer[]} [params.columnRenderers] - functions to create custom columns' content
    * @example
    * function myRowEditFunction(id){
    *     // ...
@@ -1429,7 +1429,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * );
    * @see tfw.AJAX_LOADER
    */
-  dynamicTableClass: function(params){
+  DynamicTable: function(params){
     /**
      * @private
      */
@@ -1457,11 +1457,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var bodyHeight = ("bodyHeight" in params) ? params.bodyHeight : null;
     /**
      * Object representing a column in data.
-     * @typedef {Object} tfw.dynamicTableClass~dataCol
+     * @typedef {Object} tfw.DynamicTable~dataCol
      * @property {string} name - name (HTML)
      * @property {number} [width=200] - width (in pixels)
      * @property {boolean} [hidden=false] - hidden
-     * @property {?tfw.dynamicTableClass.colTypes} [type=null] - type of field (string)
+     * @property {?tfw.DynamicTable.colTypes} [type=null] - type of field (string)
      * @property {boolean} [sort=false] - whether to allow sorting by this column's values
      * @property {(boolean|number)} [filter=false] - whether to allow filtering/searching (depends on type; 1=match from beginning, 2=match anywhere)
      * @property {boolean} [subtable=false] - whether this column should contain a link to subtable (handled by goToSub)
@@ -1470,25 +1470,25 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     /**
      * Object representing a row in data.
-     * @typedef {Object} tfw.dynamicTableClass~dataRow
+     * @typedef {Object} tfw.DynamicTable~dataRow
      * @property {number} id - row ID
      * @property {string[]} cols - contents for each column (HTML)
      * @property {boolean} [readonly=false] - whether inputs in this row should be disabled
      */
     /**
-     * Data obtained from server. {@link tfw.dynamicTableClass#reload|reload()} has to be called to fill this.
+     * Data obtained from server. {@link tfw.DynamicTable#reload|reload()} has to be called to fill this.
      * Any other attributes provided by server are preserved (e.g. data.meta).
      * @var {Object}
      * @default null
      * @public
      * @readonly
-     * @property {tfw.dynamicTableClass~dataCol[]} cols - list of columns
-     * @property {tfw.dynamicTableClass~dataRow[]} rows - list of rows
+     * @property {tfw.DynamicTable~dataCol[]} cols - list of columns
+     * @property {tfw.DynamicTable~dataRow[]} rows - list of rows
      */
     this.data = null;
     /**
      * Function that handles row editing.
-     * @callback tfw.dynamicTableClass~rowEdit
+     * @callback tfw.DynamicTable~rowEdit
      * @param {number} id - ID of the row being edited or 0 if new row is being inserted
      */
     /**
@@ -1510,7 +1510,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var watchChanges = ("watchChanges" in params) ? params.watchChanges : false;
     /**
      * Function that handles moving to subordinate table.
-     * @callback tfw.dynamicTableClass~goToSub
+     * @callback tfw.DynamicTable~goToSub
      * @param {number} rowID - ID of the row being edited
      * @param {number} column - order number of column in which the callback was triggered
      */
@@ -1534,15 +1534,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var pendingHttpRequests = [];
     /**
      * Function that handles data received from server.
-     * @callback tfw.dynamicTableClass~serverCallback
+     * @callback tfw.DynamicTable~serverCallback
      * @param {Object} receivedData - JSON decoded data received from request
      */
     /**
      * Send a table-specific request to server.
-     * If table is {@link tfw.dynamicTableClass#destroy|destroy}ed, pending requests are aborted.
+     * If table is {@link tfw.DynamicTable#destroy|destroy}ed, pending requests are aborted.
      * @param {Object} params - query parameters
-     * @param {tfw.dynamicTableClass.serverActions} params.action - server action
-     * @param {tfw.dynamicTableClass~serverCallback} [params.callback] - callback that receives data
+     * @param {tfw.DynamicTable.serverActions} params.action - server action
+     * @param {tfw.DynamicTable~serverCallback} [params.callback] - callback that receives data
      * @param {string} [params.parameters=null] - parameters to be send with the request (e.g. POST)
      * @see tfw.ajaxGet
      * @see tfw.decodeJSON
@@ -1575,7 +1575,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function loadPreferences(callback){
       serverCall({
-        action: tfw.dynamicTableClass.serverActions.PREF_GET,
+        action: tfw.DynamicTable.serverActions.PREF_GET,
         callback: function(receivedData){
           if (receivedData == null) {
             preferences = {};
@@ -1597,7 +1597,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         savedPreferences[prop] = preferences[prop];
       }
       serverCall({
-        action: tfw.dynamicTableClass.serverActions.PREF_SET,
+        action: tfw.DynamicTable.serverActions.PREF_SET,
         parameters: "data=" + JSON.stringify(savedPreferences)
       });
     }
@@ -1647,9 +1647,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     /**
      * Reload (or load) data from server.
-     * Loads preferences and data, then {@link tfw.dynamicTableClass#paint|paint}s the table.
-     * @see tfw.dynamicTableClass#paint
-     * @see tfw.dynamicTableClass~serverCall
+     * Loads preferences and data, then {@link tfw.DynamicTable#paint|paint}s the table.
+     * @see tfw.DynamicTable#paint
+     * @see tfw.DynamicTable~serverCall
      */
     this.reload = function(){
       var dynamicTable = this;
@@ -1659,7 +1659,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       ajaxPendingCalls = 2;
       serverCall({
-        action: tfw.dynamicTableClass.serverActions.LOAD,
+        action: tfw.DynamicTable.serverActions.LOAD,
         callback: function(receivedData){
           dynamicTable.data = receivedData;
 
@@ -1670,12 +1670,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     /**
      * Watch for updates from the server.
-     * @see tfw.dynamicTableClass#paint
+     * @see tfw.DynamicTable#paint
      */
     this.serverWatch = function(){
       var dynamicTable = this;
       serverCall({
-        action: tfw.dynamicTableClass.serverActions.WATCH,
+        action: tfw.DynamicTable.serverActions.WATCH,
         callback: function(changes){
           if (changes.length > 0) {
             dynamicTable.paint(changes);
@@ -1688,7 +1688,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * A "destructor" for table.
      * Aborts all pending requests created by current table.
      * Removes associated CSS.
-     * @see tfw.dynamicTableClass~serverCall
+     * @see tfw.DynamicTable~serverCall
      */
     this.destroy = function(){
       for (var i = 0; i < pendingHttpRequests.length; i++) {
@@ -1702,7 +1702,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.reorderEnabled = function(){
       var sorting = this.getPreference("sorting");
-      var sortedByOrder = (sorting != null && ("dataCol" in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.dynamicTableClass.sortTypes.ASC);
+      var sortedByOrder = (sorting != null && ("dataCol" in sorting) && sorting.dataCol == orderDataCol && sorting.asc == tfw.DynamicTable.sortTypes.ASC);
       return sortedByOrder && this.getVisibleRowsCount() == this.getTotalRowsCount();
     };
     /**
@@ -1712,7 +1712,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function serverUpdateOrder(params){
       serverCall({
-        action: tfw.dynamicTableClass.serverActions.CHANGE_ORDER,
+        action: tfw.DynamicTable.serverActions.CHANGE_ORDER,
         parameters: "id=" + params.id + "&neworder=" + params.neworder
       });
     }
@@ -1798,7 +1798,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     function serverUpdateCell(params){
       serverCall({
-        action: tfw.dynamicTableClass.serverActions.SAVE,
+        action: tfw.DynamicTable.serverActions.SAVE,
         parameters: "id=" + params.id + "&col=" + params.col + "&value=" + encodeURIComponent(params.value)
       });
     }
@@ -1806,7 +1806,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Updates data and sends change to server.
      * @param {HTMLElement} input - input field in a cell of dynamic table
      * @param {string} input.value - value that can be obtained
-     * @see tfw.dynamicTableClass~serverUpdateCell
+     * @see tfw.DynamicTable~serverUpdateCell
      */
     this.updateInput = function(input){
       var rowID = input.closest("tr").dataset.rowid;
@@ -1834,8 +1834,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
         var arrowType = null,
             arrowGroup = null,
             arrowGroups = [
-            [tfw.dynamicTableClass.arrowTypes.FILTER],
-            [tfw.dynamicTableClass.arrowTypes.UP, tfw.dynamicTableClass.arrowTypes.DOWN]
+            [tfw.DynamicTable.arrowTypes.FILTER],
+            [tfw.DynamicTable.arrowTypes.UP, tfw.DynamicTable.arrowTypes.DOWN]
             ],
             i;
         for (var j = 0; j < arrowGroups.length; j++) {
@@ -1904,7 +1904,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             return (dynamicTable.isColumnVisible(dataCol) ? parseInt(current.width) : 0) + previous;
           }, 0);
       if (rowEdit) {
-        width += tfw.dynamicTableClass.ROW_EDIT_WIDTH;
+        width += tfw.DynamicTable.ROW_EDIT_WIDTH;
       }
       width += 10; // scrollbar
 
@@ -2010,7 +2010,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             var id = "tfwDynamicTable-" + rowOrder + "-" + columnOrder;
             var setKeys = null;
             switch (type) {
-              case tfw.dynamicTableClass.colTypes.CHECKBOX:
+              case tfw.DynamicTable.colTypes.CHECKBOX:
                 params.children.push(tfw.checkbox({
                   id: id,
                   value: (val ? 1 : 0),
@@ -2018,7 +2018,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                   disabled: readonlyRow || readonlyCol
                 }));
                 break;
-              case tfw.dynamicTableClass.colTypes.NUMBER:
+              case tfw.DynamicTable.colTypes.NUMBER:
                 params.children.push(setKeys = tfw.input({
                   type: "number",
                   id: id,
@@ -2027,7 +2027,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                   readOnly: readonlyRow || readonlyCol
                 }));
                 break;
-              case tfw.dynamicTableClass.colTypes.DATE:
+              case tfw.DynamicTable.colTypes.DATE:
                 params.children.push(tfw.calendar({
                   id: id,
                   value: val.match(/\d{4,}-\d{2}-\d{2}/)[0],
@@ -2035,7 +2035,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                   readOnly: readonlyRow || readonlyCol
                 }));
                 break;
-              case tfw.dynamicTableClass.colTypes.TEXT:
+              case tfw.DynamicTable.colTypes.TEXT:
                 params.children.push(setKeys = tfw.input({
                   type: "text",
                   id: id,
@@ -2198,7 +2198,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           var deltaWidth = 0;
           if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
             d.add(b = tfw.div({
-              className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.FILTER
+              className: "tfwArrow " + tfw.DynamicTable.arrowTypes.FILTER
             }));
             b.dataset.dataCol = j;
             b.onclick = function(){
@@ -2210,14 +2210,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
             var b1,
                 b2;
             d.add(b2 = tfw.div({
-              className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.UP,
+              className: "tfwArrow " + tfw.DynamicTable.arrowTypes.UP,
               style: "position:relative;left:2px;"
             }));
-            b2.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.ASC;
+            b2.dataset.sortOrder = tfw.DynamicTable.sortTypes.ASC;
             d.add(b1 = tfw.div({
-              className: "tfwArrow " + tfw.dynamicTableClass.arrowTypes.DOWN
+              className: "tfwArrow " + tfw.DynamicTable.arrowTypes.DOWN
             }));
-            b1.dataset.sortOrder = tfw.dynamicTableClass.sortTypes.DESC;
+            b1.dataset.sortOrder = tfw.DynamicTable.sortTypes.DESC;
             b1.dataset.dataCol = b2.dataset.dataCol = j;
             b1.onclick = b2.onclick = function(){
               dynamicTable.sort(this.dataset.dataCol, this.dataset.sortOrder);
@@ -2325,7 +2325,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * Object representing an update/insertion/deletion in data.
      * Type of change is determined by present properties.
-     * @typedef {Object} tfw.dynamicTableClass~dataChange
+     * @typedef {Object} tfw.DynamicTable~dataChange
      * @param {number} id - ID of row - if neither col nor cols are present, implies deletion
      * @param {number} [col] - column number of updated cell (in data) - implies update
      * @param {string} [value] - new value of updated cell - for change only
@@ -2334,7 +2334,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * Refresh the content of the table using data gotten by (re)loading.
      * Assumes that there is only 1 order column and that data is initially sorted by that column.
-     * @param {tfw.dynamicTableClass~dataChange[]} [changes] - changes made to data (loaded by {@link tfw.dynamicTableClass#serverWatch|watch})
+     * @param {tfw.DynamicTable~dataChange[]} [changes] - changes made to data (loaded by {@link tfw.DynamicTable#serverWatch|watch})
      * @todo Change checkbox value so that it's not sent back to server
      * @todo Handle update of cell that is currently being edited
      */
@@ -2394,12 +2394,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 tfw.addAll(cell, columnRenderers[dataCol](newValue));
               } else {
                 switch (this.data.cols[dataCol].type) {
-                  case tfw.dynamicTableClass.colTypes.CHECKBOX:
+                  case tfw.DynamicTable.colTypes.CHECKBOX:
                     cell.querySelector(".tfwCheckbox").value = parseInt(newValue);
                     break;
-                  case tfw.dynamicTableClass.colTypes.NUMBER:
-                  case tfw.dynamicTableClass.colTypes.DATE:
-                  case tfw.dynamicTableClass.colTypes.TEXT:
+                  case tfw.DynamicTable.colTypes.NUMBER:
+                  case tfw.DynamicTable.colTypes.DATE:
+                  case tfw.DynamicTable.colTypes.TEXT:
                     cell.querySelector("input").value = newValue;
                     break;
                   default:
@@ -2448,13 +2448,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (this.data.cols[i].filter) {
           var defaultValue;
           switch (this.data.cols[i].type) {
-            case tfw.dynamicTableClass.colTypes.CHECKBOX:
+            case tfw.DynamicTable.colTypes.CHECKBOX:
               defaultValue = "0";
               break;
-            case tfw.dynamicTableClass.colTypes.TEXT:
+            case tfw.DynamicTable.colTypes.TEXT:
               defaultValue = "";
               break;
-            case tfw.dynamicTableClass.colTypes.DATE:
+            case tfw.DynamicTable.colTypes.DATE:
               columnValues = this.data.rows.map(function(row){return row.cols[i];}).sort();//eslint-disable-line no-loop-func
               minV = columnValues[0];
               maxV = columnValues.pop();
@@ -2463,7 +2463,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 max: maxV
               };
               break;
-            case tfw.dynamicTableClass.colTypes.NUMBER:
+            case tfw.DynamicTable.colTypes.NUMBER:
               columnValues = this.data.rows.map(function(row){return row.cols[i];});//eslint-disable-line no-loop-func
               minV = Math.min.apply(null, columnValues);
               maxV = Math.max.apply(null, columnValues);
@@ -2496,11 +2496,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     /**
      * Value by which the table can be filtered.
-     * @typedef {(string|{min:(string|number),max:(string|number)})} tfw.dynamicTableClass~filterValue
+     * @typedef {(string|{min:(string|number),max:(string|number)})} tfw.DynamicTable~filterValue
      */
     /**
      * @private
-     * @param {tfw.dynamicTableClass~filterValue} value - filter value
+     * @param {tfw.DynamicTable~filterValue} value - filter value
      * @param {number} dataCol - order of filtered column (in data)
      * @param {boolean} [save=true] - whether to save immidiatelly
      */
@@ -2543,7 +2543,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      * @param {string} preference - preference name
      * @param {number} dataCol - order of column (in data)
-     * @return {tfw.dynamicTableClass~filterValue|Object} preference value
+     * @return {tfw.DynamicTable~filterValue|Object} preference value
      */
     this.getColumnPreference = function(preference, dataCol){
       var values = this.getPreference(preference);
@@ -2556,7 +2556,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * Test whether a value if filter's default.
      * @private
-     * @param {tfw.dynamicTableClass~filterValue} value - filter value
+     * @param {tfw.DynamicTable~filterValue} value - filter value
      * @param {number} dataCol - order of filtered column (in data)
      * @return {boolean}
      */
@@ -2574,7 +2574,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Creates a {@link tfw.dialog|dialog} with filter (and moves focus to input field).
      * @param {HTMLElement} filterElement - element to position new layer to
      * @param {number} dataCol - order of searched column (in data)
-     * @todo Change rangeMin/rangeMax/dateMin/dateMax classes + {@link tfw.dynamicTableClass#filterAny}
+     * @todo Change rangeMin/rangeMax/dateMin/dateMax classes + {@link tfw.DynamicTable#filterAny}
      */
     this.filter = function(filterElement, dataCol){
       var dynamicTable = this;
@@ -2594,7 +2594,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           f2,
           inputToFocus = null;
       switch (type) {
-        case tfw.dynamicTableClass.colTypes.CHECKBOX:
+        case tfw.DynamicTable.colTypes.CHECKBOX:
           var filter = tfw.select({
             list: [tfw.strings.ALL, tfw.strings.YES, tfw.strings.NO].join(";"),
             value: value,
@@ -2608,7 +2608,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           });
           c.add(filter);
           break;
-        case tfw.dynamicTableClass.colTypes.NUMBER:
+        case tfw.DynamicTable.colTypes.NUMBER:
           minV = defaultFilterValues[dataCol].min;
           maxV = defaultFilterValues[dataCol].max;
           f1 = tfw.input({
@@ -2656,7 +2656,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             event.stopPropagation();
           });
           break;
-        case tfw.dynamicTableClass.colTypes.DATE:
+        case tfw.DynamicTable.colTypes.DATE:
           minV = defaultFilterValues[dataCol].min;
           maxV = defaultFilterValues[dataCol].max;
 
@@ -2699,7 +2699,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           c.add(f1);
           c.add(f2);
           break;
-        case tfw.dynamicTableClass.colTypes.TEXT:
+        case tfw.DynamicTable.colTypes.TEXT:
           var searchInput = inputToFocus = tfw.input({
             type: "text",
             placeholder: tfw.strings.FILTER,
@@ -2722,8 +2722,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           console.error("Tried to apply filter on type that is not supported: \"" + type + "\"");
           return;
       }
-      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error("tfw.dynamicTableClass.placePositionedDialog has not been set.");
-      else tfw.dynamicTableClass.placePositionedDialog(filterElement.closest("th"), c);
+      if (tfw.DynamicTable.placePositionedDialog == null) console.error("tfw.DynamicTable.placePositionedDialog has not been set.");
+      else tfw.DynamicTable.placePositionedDialog(filterElement.closest("th"), c);
       this.filterContainer = c;
       if (inputToFocus !== null) {
         inputToFocus.focus();
@@ -2744,9 +2744,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * @private
      * Compare two table rows by their IDs - for use with sorting functions.
-     * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
-     * @param {tfw.dynamicTableClass~dataRow} row1 - row to be compared
-     * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
+     * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
+     * @param {tfw.DynamicTable~dataRow} row1 - row to be compared
+     * @param {tfw.DynamicTable~dataRow} row2 - row to compare to
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
      */
     function cmpRowsIds(asc, row1, row2){
@@ -2756,9 +2756,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      * Compare two table rows by numeric value of a column - for use with sorting functions.
      * @param {number} dataCol - order of column (in data)
-     * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
-     * @param {tfw.dynamicTableClass~dataRow} row1 - row to be compared
-     * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
+     * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
+     * @param {tfw.DynamicTable~dataRow} row1 - row to be compared
+     * @param {tfw.DynamicTable~dataRow} row2 - row to compare to
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
      */
     function cmpNumericRows(dataCol, asc, row1, row2){
@@ -2770,9 +2770,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      * Compare two table rows alphabetically by value of a column - for use with sorting functions.
      * @param {number} dataCol - order of column (in data)
-     * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
-     * @param {tfw.dynamicTableClass~dataRow} row1 - row to be compared
-     * @param {tfw.dynamicTableClass~dataRow} row2 - row to compare to
+     * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
+     * @param {tfw.DynamicTable~dataRow} row1 - row to be compared
+     * @param {tfw.DynamicTable~dataRow} row2 - row to compare to
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
      */
     function cmpTextRows(dataCol, asc, row1, row2){
@@ -2790,7 +2790,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.getCmp = function(dataCol){
       return (dataCol === null) ? cmpRowsIds : (
-        (tfw.dynamicTableClass.colTypes.cmpType[this.data.cols[dataCol].type] == tfw.dynamicTableClass.colCmpTypes.NUMERIC)
+        (tfw.DynamicTable.colTypes.cmpType[this.data.cols[dataCol].type] == tfw.DynamicTable.colCmpTypes.NUMERIC)
           ? cmpNumericRows : cmpTextRows
       ).bind(null, dataCol);
     };
@@ -2799,7 +2799,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Apply sorting by values (text without HTML) of a column.
      * Text fields are sorted locale aware, with empty strings always last.
      * @param {?number} dataCol - order of column (in data), if null sorts by IDs
-     * @param {tfw.dynamicTableClass.sortTypes} asc - sorting type (ascending or descending)
+     * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
      * @param {boolean} [dontSave=false] - don't save into preferences
      */
     this.sort = function(dataCol, asc, dontSave){
@@ -2812,7 +2812,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           });
         }
         var column = this.data.cols[dataCol].columnOrder;
-        this.setActiveFilterInColumn(column, true, tfw.dynamicTableClass.arrowTypes[asc == 1 ? "UP" : "DOWN"], this.tableContainer);
+        this.setActiveFilterInColumn(column, true, tfw.DynamicTable.arrowTypes[asc == 1 ? "UP" : "DOWN"], this.tableContainer);
       }
 
       var comp = this.getCmp(dataCol).bind(null, asc);
@@ -2855,9 +2855,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Set status of filter icon in a column.
      * @param {number} column - column number
      * @param {boolean} on - whether to toggle active on or off
-     * @param {tfw.dynamicTableClass.arrowTypes} arrowType - type of arrow
-     * @param {?HTMLElement} [arrowBase] - base to pass to {@link tfw.dynamicTableClass~setActiveArrow} (defaults to column's heading)
-     * @see tfw.dynamicTableClass~setActiveArrow
+     * @param {tfw.DynamicTable.arrowTypes} arrowType - type of arrow
+     * @param {?HTMLElement} [arrowBase] - base to pass to {@link tfw.DynamicTable~setActiveArrow} (defaults to column's heading)
+     * @see tfw.DynamicTable~setActiveArrow
      */
     this.setActiveFilterInColumn = function(column, on, arrowType, arrowBase){
       var base = this.tableContainer.getElementsByClassName("headlines")[0].getElementsByTagName("th")[column];
@@ -2867,7 +2867,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * Apply any filter.
      * @param {number} dataCol - order number of filtered column (in data)
-     * @param {tfw.dynamicTableClass~filterValue} value - value to filter by
+     * @param {tfw.DynamicTable~filterValue} value - value to filter by
      * @param {number} [searchType=2] - type of search for TEXT (1 = starts with, 2 = includes)
      * @param {boolean} [dontSave=false] - dont save into preferences (for TEXT)
      * @todo Better behaviour when min and max are crossed (min > max)
@@ -2877,17 +2877,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var column = this.data.cols[dataCol].columnOrder;
       var type = this.data.cols[dataCol].type;
       // reset invalid/unset values to defaults
-      if ([tfw.dynamicTableClass.colTypes.NUMBER, tfw.dynamicTableClass.colTypes.DATE].indexOf(type) != -1) {
+      if ([tfw.DynamicTable.colTypes.NUMBER, tfw.DynamicTable.colTypes.DATE].indexOf(type) != -1) {
         var originalValue = JSON.parse(JSON.stringify(value)); // deep copy
         for (p in value) {
           switch (type) {
-            case tfw.dynamicTableClass.colTypes.NUMBER:
+            case tfw.DynamicTable.colTypes.NUMBER:
               value[p] = parseInt(value[p]);
               if (!value[p].match(/^[0-9]+$/)) {
                 value[p] = defaultFilterValues[dataCol][p];
               }
               break;
-            case tfw.dynamicTableClass.colTypes.DATE:
+            case tfw.DynamicTable.colTypes.DATE:
               if (!value[p].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)) {
                 value[p] = defaultFilterValues[dataCol][p];
               }
@@ -2910,10 +2910,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
           if (value[p] != originalValue[p]) {
             var prefix;
             switch (type) {
-              case tfw.dynamicTableClass.colTypes.NUMBER:
+              case tfw.DynamicTable.colTypes.NUMBER:
                 prefix = "range";
                 break;
-              case tfw.dynamicTableClass.colTypes.DATE:
+              case tfw.DynamicTable.colTypes.DATE:
                 prefix = "date";
                 break;
               // intentionally omitted default
@@ -2924,26 +2924,26 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       // update current filter values
       this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == "undefined" || !dontSave));
-      this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.dynamicTableClass.arrowTypes.FILTER);
+      this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.DynamicTable.arrowTypes.FILTER);
       var tbody = this.tableContainer.querySelector("tbody"),
           searchFunc = (typeof searchType != "undefined" && searchType == 1) ? "startsWith" : "includes",
           rowValue;
       for (var i = 0; i < tbody.rows.length; i++) {
         var matches = true;
         switch (type) {
-          case tfw.dynamicTableClass.colTypes.CHECKBOX:
+          case tfw.DynamicTable.colTypes.CHECKBOX:
             var checked = tbody.rows[i].cells[column].querySelector(".checked") != null;
             matches = (value === "0") || (value === "1" && checked) || (value === "2" && !checked);
             break;
-          case tfw.dynamicTableClass.colTypes.TEXT:
+          case tfw.DynamicTable.colTypes.TEXT:
             matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type=\"text\"]").value.toLowerCase()[searchFunc](
               value.toLowerCase());
             break;
-          case tfw.dynamicTableClass.colTypes.NUMBER:
+          case tfw.DynamicTable.colTypes.NUMBER:
             rowValue = parseInt(tbody.rows[i].cells[column].querySelector("input").rowValue);
             matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
-          case tfw.dynamicTableClass.colTypes.DATE:
+          case tfw.DynamicTable.colTypes.DATE:
             rowValue = tbody.rows[i].cells[column].querySelector("input").value;
             matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
@@ -3019,8 +3019,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           c.add(checkbox);
         }
       }
-      if (tfw.dynamicTableClass.placePositionedDialog == null) console.error("tfw.dynamicTableClass.placePositionedDialog has not been set.");
-      else tfw.dynamicTableClass.placePositionedDialog(element, c, true);
+      if (tfw.DynamicTable.placePositionedDialog == null) console.error("tfw.DynamicTable.placePositionedDialog has not been set.");
+      else tfw.DynamicTable.placePositionedDialog(element, c, true);
     };
   },
   /**
@@ -3028,10 +3028,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Class instance's properties are mirrored into the HTML element.
    * @param {Object} params - table parameters
    * @return {HTMLElement} Table
-   * @see tfw.dynamicTableClass
+   * @see tfw.DynamicTable
    */
   dynamicTable: function(params){
-    var tableObject = new tfw.dynamicTableClass(params);
+    var tableObject = new tfw.DynamicTable(params);
     var ret = tableObject.tableContainer;
     for (var prop in tableObject) {
       ret[prop] = tableObject[prop];
@@ -3313,18 +3313,18 @@ Object.seal(tfw.strings);
  * Callback for showing controls.
  * @var {function}
  */
-tfw.dynamicTableClass.placePositionedDialog = null;
+tfw.DynamicTable.placePositionedDialog = null;
 /**
- * @typedef {Object} tfw.dynamicTableClass.serverAction
+ * @typedef {Object} tfw.DynamicTable.serverAction
  * @property {string} name - action name sent to server
  * @property {string} [method=GET] - HTTP method to use (e.g. GET, POST)
  */
 /**
  * Implemented server actions.
  * @readonly
- * @enum {tfw.dynamicTableClass.serverAction}
+ * @enum {tfw.DynamicTable.serverAction}
  */
-tfw.dynamicTableClass.serverActions = {
+tfw.DynamicTable.serverActions = {
   /** load all rows */
   LOAD: {
     name: "load"
@@ -3363,67 +3363,67 @@ tfw.dynamicTableClass.serverActions = {
     method: "POST"
   }
 };
-Object.freeze(tfw.dynamicTableClass.serverActions);
+Object.freeze(tfw.DynamicTable.serverActions);
 /**
  * Types of column sorting.
  * @readonly
  * @enum {number}
  */
-tfw.dynamicTableClass.colCmpTypes = {
+tfw.DynamicTable.colCmpTypes = {
   NUMERIC: 0,
   TEXT: 1
 };
-Object.freeze(tfw.dynamicTableClass.colCmpTypes);
+Object.freeze(tfw.DynamicTable.colCmpTypes);
 /**
  * Types of columns (and filters).
  * @readonly
  * @enum {string}
  */
-tfw.dynamicTableClass.colTypes = {
+tfw.DynamicTable.colTypes = {
   TEXT: "text",
   NUMBER: "number",
   CHECKBOX: "checkbox",
   DATE: "date",
   ORDER: "order",
-  /** @type {tfw.dynamicTableClass.colCmpTypes[]} */
+  /** @type {tfw.DynamicTable.colCmpTypes[]} */
   cmpType: {
-    text: tfw.dynamicTableClass.colCmpTypes.TEXT,
-    date: tfw.dynamicTableClass.colCmpTypes.TEXT,
-    number: tfw.dynamicTableClass.colCmpTypes.NUMERIC,
-    checkbox: tfw.dynamicTableClass.colCmpTypes.NUMERIC,
-    order: tfw.dynamicTableClass.colCmpTypes.NUMERIC
+    text: tfw.DynamicTable.colCmpTypes.TEXT,
+    date: tfw.DynamicTable.colCmpTypes.TEXT,
+    number: tfw.DynamicTable.colCmpTypes.NUMERIC,
+    checkbox: tfw.DynamicTable.colCmpTypes.NUMERIC,
+    order: tfw.DynamicTable.colCmpTypes.NUMERIC
   }
 };
-Object.freeze(tfw.dynamicTableClass.colTypes);
+Object.freeze(tfw.DynamicTable.colTypes);
 /**
  * Types of sorting.
  * @readonly
  * @enum {number}
  */
-tfw.dynamicTableClass.sortTypes = {
+tfw.DynamicTable.sortTypes = {
   ASC: 1,
   DESC: -1
 };
-Object.freeze(tfw.dynamicTableClass.sortTypes);
+Object.freeze(tfw.DynamicTable.sortTypes);
 /**
  * Types of "arrows".
  * @readonly
  * @enum {string}
  */
-tfw.dynamicTableClass.arrowTypes = {
+tfw.DynamicTable.arrowTypes = {
   FILTER: "filter",
   UP: "up",
   DOWN: "down"
 };
-Object.freeze(tfw.dynamicTableClass.arrowTypes);
+Object.freeze(tfw.DynamicTable.arrowTypes);
 /**
  * Width of column with row edit icon (icon's width including padding, border, margin + cell's padding + border), in pixels
  * @var {number}
  * @readonly
  * @default
  */
-tfw.dynamicTableClass.ROW_EDIT_WIDTH = 25;
-Object.seal(tfw.dynamicTableClass);
+tfw.DynamicTable.ROW_EDIT_WIDTH = 25;
+Object.seal(tfw.DynamicTable);
 /**
  * List of months' names.
  * @var {string[]}
@@ -3901,7 +3901,7 @@ Object.seal(desktop);
 
 tfw.ajaxOnDone = desktop.done;
 tfw.ajaxOnAutoHide = desktop.working;
-tfw.dynamicTableClass.placePositionedDialog = function(positionAtElement, filterElement, right){
+tfw.DynamicTable.placePositionedDialog = function(positionAtElement, filterElement, right){
   var wrapper = desktop.createLayerAndWrapperAtElement(positionAtElement, {
     autoclose: true,
     modal: "auto"
