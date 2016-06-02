@@ -1581,6 +1581,7 @@ Create a list of checkboxes, with common controls.
 | params.list[].id | <code>string</code> |  | ID of checkbox |
 | params.list[].text | <code>string</code> |  | text of checkbox |
 | [params.value] | <code>string</code> |  | initial value ("A" means all) |
+| [params._deprecated] | <code>boolean</code> | <code>false</code> | provide value in format "id1,id2,id3" instead of ["id1", "id2", "id3"] |
 
 <a name="tfw.dialogPrepareAndDownload"></a>
 

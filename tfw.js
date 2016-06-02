@@ -3281,12 +3281,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} params.list[].id - ID of checkbox
    * @param {string} params.list[].text - text of checkbox
    * @param {string} [params.value] - initial value ("A" means all)
+   * @param {boolean} [params._deprecated=false] - provide value in format "id1,id2,id3" instead of ["id1", "id2", "id3"]
    * @return {HTMLElement} Returns checkboxes' container (with value attribute and methods setNone and setAll)
    */
   multiCheckbox: function(params){
-    var i;
-    params.className = (("className" in params) ? (params.className + " ") : "") + "seznamZatrzitek";
-    var container = tfw.createAndFillElement("div", params);
+    var i,
+        container = tfw.createAndFillElement("div", params);
+    container.addClass("seznamZatrzitek");
+    container._deprecated = ("_deprecated" in params) && params._deprecated;
     var checkboxOnChange = function(){
       var checkedIds = [],
           checkboxContainer = this.parentNode,
@@ -3294,7 +3296,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var j = 0; j < checkboxes.length; j++) {
         if (checkboxes[j].value) checkedIds.push(checkboxes[j].id.split("-")[1]);
       }
-      checkboxContainer._value = checkedIds.join(",");
+      checkboxContainer._value = checkboxContainer._deprecated ? checkedIds.join(",") : checkedIds;
       if (container.onchange) container.dispatchEvent(new Event("change"));
     };
     if ("list" in params) {
@@ -3314,7 +3316,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
         } else {
           var v = [];
-          if (val) v = val.split(",");
+          if (val) {
+            v = this._deprecated ? val.split(",") : val;
+          }
           for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 0;
           }
@@ -3331,10 +3335,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    container._value = "";
+    container._value = container._deprecated ? "" : [];
     if (params.value) container.value = params.value;
     container.setNone = function(){
-      this.value = "";
+      this.value = this._deprecated ? "" : [];
     };
     container.setAll = function(){
       this.value = "A";
@@ -3976,6 +3980,7 @@ var prvek = {//eslint-disable-line no-implicit-globals
     delete params.seznam;
     params.value = params.init;
     delete params.init;
+    params._deprecated = true;
     return tfw.multiCheckbox(params);
   },
   /**
