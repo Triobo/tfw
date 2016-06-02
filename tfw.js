@@ -1271,16 +1271,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object[]} params.tabs - array of tabs
    * @param {string} params.tabs[].title - tab title
    * @param {HTMLElement[]} params.tabs[].content - tab content
-   * @todo Remove IDs and classes zalozkyObal, zalozkySeznam, zalozkyObsah, aktivni, skryty
+   * @todo Remove IDs
    */
   Tabs: function(params){
     this.name = params.id;
     /** @var {HTMLElement} */
-    this.tabContainer = tfw.div({className: "zalozkyObal tfwTabContainer", id: this.name});
+    this.tabContainer = tfw.div({className: "tfwTabContainer", id: this.name});
     /** @var {number} */
     this.activeTab = ("active" in params) ? tfw.parseIntOr0(params.active) : -1;
     /** @var {HTMLElement} */
-    this.tabNav = tfw.ol({className: "semantic zalozkySeznam tfwTabNav"});
+    this.tabNav = tfw.ol({className: "semantic tfwTabNav"});
 
     this.tabWidth = params.tabWidth;
     this.tabHeight = params.tabHeight;
@@ -1302,11 +1302,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.setActiveTab = function(tabIndex){
       if (tabIndex != this.activeTab) {
         if (this.activeTab >= 0) {
-          $(this.name + "-obsah-" + this.activeTab).className = "zalozkyObsah skryty";
-          $(this.name + "-ousko-" + this.activeTab).className = $(this.name + "-ousko-" + this.activeTab).className.replace(/ aktivni/i, "");
+          $(this.name + "-obsah-" + this.activeTab).removeClass("active");
+          $(this.name + "-ousko-" + this.activeTab).removeClass("active");
         }
-        $(this.name + "-obsah-" + tabIndex).className = "zalozkyObsah";
-        $(this.name + "-ousko-" + tabIndex).className += " aktivni";
+        $(this.name + "-obsah-" + tabIndex).addClass("active");
+        $(this.name + "-ousko-" + tabIndex).addClass("active");
         this.activeTab = tabIndex;
       }
     };
@@ -1326,7 +1326,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // create tab title
       tabTitle = tfw.li({
         id: this.name + "-ousko-" + i,
-        className: "zalozkyOusko" + (active ? " aktivni" : ""),
+        className: "tfwTabTitle" + (active ? " active" : ""),
         innerHTML: title
       });
       tabTitle.dataset.tabIndex = i;
@@ -1341,7 +1341,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       this.tabContainer.add(
         tabContent = tfw.div({
           id: this.name + "-obsah-" + i,
-          className: "zalozkyObsah" + (active ? "" : " skryty"),
+          className: "tfwTabContent" + (active ? " active" : ""),
           style: "width:" + this.tabWidth + "px;height:" + this.tabHeight + "px;"
         })
       );

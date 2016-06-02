@@ -166,7 +166,7 @@ Triobo framework. This is a singleton.
 **Kind**: static class of <code>[tfw](#tfw)</code>  
 **Todo**
 
-- [ ] Remove IDs and classes zalozkyObal, zalozkySeznam, zalozkyObsah, aktivni, skryty
+- [ ] Remove IDs
 
 
 * [.Tabs](#tfw.Tabs)

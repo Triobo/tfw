@@ -850,3 +850,45 @@ ul.semantic, ol.semantic, ul.semantic > li, ol.semantic > li{
   margin: 0;
   padding: 0;
 }
+/**************/
+.tfwTabContainer{
+  margin-bottom: 16px;
+}
+.tfwTabNav{
+  display: inline-block;
+  overflow: hidden;
+  margin: 4px 0 0;
+  padding: 0;
+}
+.tfwTabNav .tfwTabTitle {
+  display:inline-block;
+  background-color: #ddd;/*silver*/
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  color:#000;
+  margin:0 0 0 1px;
+  padding:4px 8px;
+  cursor:pointer;
+  text-align:center;
+}
+.tfwTabNav .tfwTabTitle:first-child{
+  margin-left:0px;
+}
+.tfwTabNav .tfwTabTitle:hover {
+  color:#000;
+  background-color: #8cc;/*azure*/  
+}
+.tfwTabNav .tfwTabTitle.active {
+  color:#000;
+  background-color: #fc5;/*orange*/
+}
+.tfwTabNav .tfwTabTitle.active:hover {
+  background-color: #fd5;/*orange-light*/
+}
+.tfwTabContent {
+  display:none;
+  vertical-align: top;
+}
+.tfwTabContent.active {
+  display:block;
+}
