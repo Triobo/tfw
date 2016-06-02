@@ -1282,6 +1282,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /** @var {HTMLElement} */
     this.tabNav = tfw.ol({className: "semantic zalozkySeznam tfwTabNav"});
 
+    this.tabWidth = params.tabWidth;
+    this.tabHeight = params.tabHeight;
+
     /**
      * @typedef {Object} tfw.Tabs~tab
      * @property {HTMLElement} title - tab title
@@ -1308,15 +1311,23 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     };
 
-    var tabs = this,
-        tabTitle,
-        tabContent;
-    for (var i = 0; i < params.tabs.length; i++) {
+    /**
+     * Add a new tab.
+     * @param {string} title - new tab title
+     * @param {HTMLElement[]} content - new tab content
+     * @param {boolean} [active=false] - whether to make new tab active by default
+     */
+    this.appendTab = function(title, content, active){
+      var i = this.tabs.length,
+          tabs = this,
+          tabTitle,
+          tabContent;
+
       // create tab title
       tabTitle = tfw.li({
         id: this.name + "-ousko-" + i,
-        className: "zalozkyOusko" + ((i == params.active) ? " aktivni" : ""),
-        innerHTML: params.tabs[i].title
+        className: "zalozkyOusko" + (active ? " aktivni" : ""),
+        innerHTML: title
       });
       tabTitle.dataset.tabIndex = i;
       tabTitle.addEventListener("mousedown", function(e){
@@ -1330,12 +1341,36 @@ var tfw = {//eslint-disable-line no-implicit-globals
       this.tabContainer.add(
         tabContent = tfw.div({
           id: this.name + "-obsah-" + i,
-          className: "zalozkyObsah" + ((i == params.active) ? "" : " skryty"),
-          style: "width:" + params.tabWidth + "px;height:" + params.tabHeight + "px;"
+          className: "zalozkyObsah" + (active ? "" : " skryty"),
+          style: "width:" + this.tabWidth + "px;height:" + this.tabHeight + "px;"
         })
       );
 
       this.tabs[i] = {title: tabTitle, content: tabContent};
+    };
+
+    /**
+     * Getter for tab content container (for editing).
+     * @param {number} tabIndex - index of tab (starting from 0)
+     * @return {HTMLElement}
+     */
+    this.getTab = function(tabIndex){
+      return this.tabs[tabIndex].content;
+    };
+
+    /**
+     * Setter for tab content.
+     * @param {number} tabIndex - index of tab (starting from 0)
+     * @param {HTMLElement[]} content - contents of tab (no container)
+     */
+    this.setTab = function(tabIndex, content){
+      this.tabs[tabIndex].content.innerHTML = "";
+      tfw.addAll(this.tabs[tabIndex].content, content);
+    };
+
+
+    for (var i = 0; i < params.tabs.length; i++) {
+      this.appendTab(params.tabs[i].title, params.tabs[i].content, params.active == i);
     }
   },
   /**
@@ -1348,7 +1383,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   tabs: function(params){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
-        api = [];
+        api = ["setActiveTab", "appendTab", "getTab", "setTab"];
     for (var i = 0; i < api.length; i++) {
       container[api[i]] = tabObject[api[i]];
     }

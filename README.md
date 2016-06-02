@@ -40,6 +40,9 @@
                 * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
                 * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
                 * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
+                * [.appendTab(title, content, [active])](#tfw.Tabs+appendTab)
+                * [.getTab(tabIndex)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
+                * [.setTab(tabIndex, content)](#tfw.Tabs+setTab)
             * _inner_
                 * [~tab](#tfw.Tabs..tab) : <code>Object</code>
         * [.DynamicTable](#tfw.DynamicTable)
@@ -174,6 +177,9 @@ Triobo framework. This is a singleton.
         * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
         * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
         * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
+        * [.appendTab(title, content, [active])](#tfw.Tabs+appendTab)
+        * [.getTab(tabIndex)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
+        * [.setTab(tabIndex, content)](#tfw.Tabs+setTab)
     * _inner_
         * [~tab](#tfw.Tabs..tab) : <code>Object</code>
 
@@ -220,6 +226,42 @@ Set active tab (and set previously active tab as inactive).
 | Param | Type | Description |
 | --- | --- | --- |
 | tabIndex | <code>number</code> | index of tab to make active (starting from 0) |
+
+<a name="tfw.Tabs+appendTab"></a>
+
+#### tabs.appendTab(title, content, [active])
+Add a new tab.
+
+**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| title | <code>string</code> |  | new tab title |
+| content | <code>Array.&lt;HTMLElement&gt;</code> |  | new tab content |
+| [active] | <code>boolean</code> | <code>false</code> | whether to make new tab active by default |
+
+<a name="tfw.Tabs+getTab"></a>
+
+#### tabs.getTab(tabIndex) ⇒ <code>HTMLElement</code>
+Getter for tab content container (for editing).
+
+**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tabIndex | <code>number</code> | index of tab (starting from 0) |
+
+<a name="tfw.Tabs+setTab"></a>
+
+#### tabs.setTab(tabIndex, content)
+Setter for tab content.
+
+**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| tabIndex | <code>number</code> | index of tab (starting from 0) |
+| content | <code>Array.&lt;HTMLElement&gt;</code> | contents of tab (no container) |
 
 <a name="tfw.Tabs..tab"></a>
 
