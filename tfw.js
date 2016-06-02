@@ -491,7 +491,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.value=0] - initial value (0=unchecked,1=checked)
    * @param {boolean} [params.disabled=false] - whether checkbox should be disabled
    * @return {HTMLElement} Created checkbox, optionally wrapped with label
-   * @todo Use "value" for real value, instead of using it for "checked"
    */
   checkbox: function(params){
     var labelText = (params.text) ? params.text : "";
@@ -1143,7 +1142,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       active: init
     });
   },
-  /** @deprecated */
+  /**
+   * @deprecated
+   * @todo Replace by tfw.tabs
+   */
   noveSvisleZalozky: function(id, wl, w, h, zalozky, init){
     var l;
     var poziceY = 0;
@@ -1228,7 +1230,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }, 20, id, poziceY);
     return x;
   },
-  /** @deprecated */
+  /**
+   * @deprecated
+   * @todo Replace by tfw.tabs
+   */
   zvolSvislouZalozku: function(jmeno, novy){
     var stary = tfw.parseIntOr0($(jmeno).value);
     if (novy != stary) {
@@ -1413,6 +1418,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var x = this.vstupniPole(id, styl, legenda, stylL, postT, postL);
     return x;
   },
+  /** @todo Create value attribute (simulate <progress>). */
   progressBar: function(id, styl){
     var x = document.createElement("div");
     x.id = id;

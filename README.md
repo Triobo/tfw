@@ -148,6 +148,7 @@
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
+        * [.progressBar()](#tfw.progressBar)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
         * [.multiCheckbox(params)](#tfw.multiCheckbox) ⇒ <code>HTMLElement</code>
@@ -1241,10 +1242,6 @@ Create a checkbox with specified parameters.
 - tfw.fillElemDefs
 - tfw.inputFieldLegend
 
-**Todo**
-
-- [ ] Use "value" for real value, instead of using it for "checked"
-
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -1489,12 +1486,20 @@ Use various tfw functions instead.
 ***Deprecated***
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Replace by tfw.tabs
+
 <a name="tfw.zvolSvislouZalozku"></a>
 
 ### ~~tfw.zvolSvislouZalozku()~~
 ***Deprecated***
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Replace by tfw.tabs
+
 <a name="tfw.ol"></a>
 
 ### tfw.ol(params) ⇒ <code>HTMLElement</code>
@@ -1529,6 +1534,14 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | tabs parameters |
+
+<a name="tfw.progressBar"></a>
+
+### tfw.progressBar()
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Todo**
+
+- [ ] Create value attribute (simulate <progress>).
 
 <a name="tfw.dynamicTable"></a>
 
