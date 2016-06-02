@@ -164,10 +164,6 @@ Triobo framework. This is a singleton.
 
 ### tfw.Tabs
 **Kind**: static class of <code>[tfw](#tfw)</code>  
-**Todo**
-
-- [ ] Remove IDs
-
 
 * [.Tabs](#tfw.Tabs)
     * [new Tabs(params)](#new_tfw.Tabs_new)

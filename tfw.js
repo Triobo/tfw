@@ -1271,7 +1271,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object[]} params.tabs - array of tabs
    * @param {string} params.tabs[].title - tab title
    * @param {HTMLElement[]} params.tabs[].content - tab content
-   * @todo Remove IDs
    */
   Tabs: function(params){
     this.name = params.id;
@@ -1302,11 +1301,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.setActiveTab = function(tabIndex){
       if (tabIndex != this.activeTab) {
         if (this.activeTab >= 0) {
-          $(this.name + "-obsah-" + this.activeTab).removeClass("active");
-          $(this.name + "-ousko-" + this.activeTab).removeClass("active");
+          var previousTab = this.tabs[this.activeTab];
+          previousTab.title.removeClass("active");
+          previousTab.content.removeClass("active");
         }
-        $(this.name + "-obsah-" + tabIndex).addClass("active");
-        $(this.name + "-ousko-" + tabIndex).addClass("active");
+        var nextTab = this.tabs[tabIndex];
+        nextTab.title.addClass("active");
+        nextTab.content.addClass("active");
         this.activeTab = tabIndex;
       }
     };
@@ -1325,7 +1326,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
       // create tab title
       tabTitle = tfw.li({
-        id: this.name + "-ousko-" + i,
         className: "tfwTabTitle" + (active ? " active" : ""),
         innerHTML: title
       });
@@ -1340,7 +1340,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // create tab content
       this.tabContainer.add(
         tabContent = tfw.div({
-          id: this.name + "-obsah-" + i,
           className: "tfwTabContent" + (active ? " active" : ""),
           style: "width:" + this.tabWidth + "px;height:" + this.tabHeight + "px;"
         })
