@@ -3306,7 +3306,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var j = 0; j < checkboxes.length; j++) {
         if (checkboxes[j].value) checkboxContainer._value.push(checkboxes[j].id.split("-")[1]);
       }
-      if (container.onchange) container.onchange();
+      if (container.onchange) container.dispatchEvent(new Event("change"));
     };
     if ("list" in params) {
       for (i = 0; i < params.list.length; i++) {
