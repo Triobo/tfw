@@ -119,7 +119,7 @@
         * [.par(params)](#tfw.par) ⇒ <code>HTMLElement</code>
         * [.span(params)](#tfw.span) ⇒ <code>HTMLElement</code>
         * [.select(params)](#tfw.select) ⇒ <code>HTMLElement</code>
-        * ~~[.dropDown()](#tfw.dropDown)~~
+        * [.dropDown()](#tfw.dropDown)
         * [.button(params)](#tfw.button) ⇒ <code>HTMLElement</code>
         * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>HTMLElement</code>
         * [.input(params)](#tfw.input) ⇒ <code>HTMLElement</code>
@@ -1151,8 +1151,8 @@ Create a select field with specified parameters.
 
 <a name="tfw.dropDown"></a>
 
-### ~~tfw.dropDown()~~
-***Deprecated***
+### tfw.dropDown()
+Alias for desktop.dropDown
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: desktop.dropDown  

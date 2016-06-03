@@ -367,17 +367,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     return element;
   },
-  /* eslint-disable */
   /**
+   * Alias for desktop.dropDown
    * @memberof tfw
-   * @deprecated
    * @see desktop.dropDown
    */
   dropDown: function(params){
-    console.warn("DEPRECATED use of tfw.dropDown, use desktop.dropDown instead.");
     return desktop.dropDown(params);
   },
-  /* eslint-enable */
   /**
    * Create a button with specified parameters.
    * @memberof tfw
