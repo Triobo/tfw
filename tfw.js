@@ -1091,7 +1091,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.checkbox
    */
   zatrzitko: function(id, text, init, styl){
-    console.warn("DEPRECATED tfw.zatrzitko, use tfw.checkbox instead.");
+    console.warn("DEPRECATED tfw.zatrzitko, use tfw.checkbox instead. (call from " + arguments.callee.caller.name + ")");
     return tfw.checkbox({
       id: id,
       text: text,
@@ -1118,7 +1118,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.select
    */
   novySelect: function(id, w, h, l, i){
-    console.warn("DEPRECATED tfw.novySelect, use tfw.select instead.");
+    console.warn("DEPRECATED tfw.novySelect, use tfw.select instead. (call from " + arguments.callee.caller.name + ")");
     return tfw.select({
       id: id,
       style: "width:" + w + "px;height:" + h + "px;",
@@ -1131,7 +1131,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.tabs
    */
   noveZalozky: function(id, w, h, zalozky, init){
-    console.warn("DEPRECATED tfw.noveZalozky, use tfw.tabs instead.");
+    console.warn("DEPRECATED tfw.noveZalozky, use tfw.tabs instead. (call from " + arguments.callee.caller.name + ")");
     return tfw.tabs({
       id: id,
       width: w,
@@ -3295,36 +3295,39 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var i,
         container = tfw.createAndFillElement("div", params);
     container.addClass("seznamZatrzitek");
-    container._deprecated = ("_deprecated" in params) && params._deprecated;
+    container._value = [];
+    if (params.value) container._value = params.value;
+    if ("onchange" in params) container.onchange = params.onchange;
     var checkboxOnChange = function(){
       var checkedIds = [],
           checkboxContainer = this.parentNode,
           checkboxes = checkboxContainer.childNodes;
+      checkboxContainer._value = [];
       for (var j = 0; j < checkboxes.length; j++) {
-        if (checkboxes[j].value) checkedIds.push(checkboxes[j].id.split("-")[1]);
+        if (checkboxes[j].value) checkboxContainer._value.push(checkboxes[j].id.split("-")[1]);
       }
-      checkboxContainer._value = checkboxContainer._deprecated ? checkedIds.join(",") : checkedIds;
-      if (container.onchange) container.dispatchEvent(new Event("change"));
+      if (container.onchange) container.onchange();
     };
     if ("list" in params) {
       for (i = 0; i < params.list.length; i++) {
         container.add(tfw.checkbox({
           id: params.id + "-" + params.list[i].id,
           text: params.list[i].text,
-          onchange: checkboxOnChange
+          onchange: checkboxOnChange,
+          value: (container._value.indexOf(params.list[i].id) > -1) ? 1 : 0
         }));
       }
     }
     Object.defineProperty(container, "value", {
       set: function(val){
-        if (val == "A") {
+        if (val === "AllItems") {
           for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 1;
           }
         } else {
           var v = [];
           if (val) {
-            v = this._deprecated ? val.split(",") : val;
+            v = val;
           }
           for (i = 0; i < this.childNodes.length; i++) {
             this.childNodes[i].value = 0;
@@ -3342,13 +3345,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    container._value = container._deprecated ? "" : [];
-    if (params.value) container.value = params.value;
     container.setNone = function(){
-      this.value = this._deprecated ? "" : [];
+      this.value = [];
     };
     container.setAll = function(){
-      this.value = "A";
+      this.value = "AllItems";
     };
     return container;
   }
@@ -3983,12 +3984,6 @@ var prvek = {//eslint-disable-line no-implicit-globals
    */
   seznamZatrzitek: function(params){
     console.warn("DEPRECATED use of prvek.seznamZatrzitek, use tfw.multiCheckbox instead.");
-    params.list = params.seznam;
-    delete params.seznam;
-    params.value = params.init;
-    delete params.init;
-    params._deprecated = true;
-    return tfw.multiCheckbox(params);
   },
   /**
    * @deprecated
