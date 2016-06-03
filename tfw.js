@@ -2392,6 +2392,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if ("onload" in params) {
           params.onload();
         }
+        changeInSortCol = true;
         // hide columns
         var hiddenColumns = this.getPreference("hiddenColumns");
         if (hiddenColumns != null) {
