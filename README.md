@@ -132,8 +132,8 @@
         * [.slider(params)](#tfw.slider) ⇒ <code>HTMLElement</code>
         * [.image(params)](#tfw.image) ⇒ <code>HTMLElement</code>
         * [.filebox(params)](#tfw.filebox) ⇒ <code>HTMLElement</code>
-        * ~~[.dialog()](#tfw.dialog)~~
-        * ~~[.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)~~
+        * [.dialog()](#tfw.dialog)
+        * [.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)
         * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
@@ -1372,15 +1372,15 @@ Create control for uploading files (images).
 
 <a name="tfw.dialog"></a>
 
-### ~~tfw.dialog()~~
-***Deprecated***
+### tfw.dialog()
+Alias for desktop.dialog
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: desktop.dialog  
 <a name="tfw.dialogPrepareAndDownload"></a>
 
-### ~~tfw.dialogPrepareAndDownload()~~
-***Deprecated***
+### tfw.dialogPrepareAndDownload()
+Alias for desktop.dialogPrepareAndDownload
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: desktop.dialogPrepareAndDownload  

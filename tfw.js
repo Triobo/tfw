@@ -881,26 +881,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
     element.prekresli();
     return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
-  /* eslint-disable */
   /**
+   * Alias for desktop.dialog
    * @memberof tfw
-   * @deprecated
    * @see desktop.dialog
    */
   dialog: function(co){
-    console.warn("DEPRECATED use of tfw.dialog, use desktop.dialog instead.");
     return desktop.dialog(co);
   },
   /**
+   * Alias for desktop.dialogPrepareAndDownload
    * @memberof tfw
-   * @deprecated
    * @see desktop.dialogPrepareAndDownload
    */
   dialogPrepareAndDownload: function(params){
-    console.warn("DEPRECATED use of tfw.dialogPrepareAndDownload, use desktop.dialogPrepareAndDownload instead.");
     return desktop.dialogPrepareAndDownload(params);
   },
-  /* eslint-enable */
   /**
    * Generates permanent AJAX queries parameters (e.g. tokens, anti-cache)
    * @var {function}
