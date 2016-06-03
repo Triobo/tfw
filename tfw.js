@@ -3287,8 +3287,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object[]} [params.list] - list of checkboxes' parameters (makes params.id mandatory)
    * @param {string} params.list[].id - ID of checkbox
    * @param {string} params.list[].text - text of checkbox
-   * @param {string} [params.value] - initial value ("A" means all)
-   * @param {boolean} [params._deprecated=false] - provide value in format "id1,id2,id3" instead of ["id1", "id2", "id3"]
+   * @param {string[]|string} [params.value] - initial value ("AllItems" means all)
    * @return {HTMLElement} Returns checkboxes' container (with value attribute and methods setNone and setAll)
    */
   multiCheckbox: function(params){
@@ -3297,10 +3296,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     container.addClass("seznamZatrzitek");
     container._value = [];
     if (params.value) container._value = params.value;
-    if ("onchange" in params) container.onchange = params.onchange;
     var checkboxOnChange = function(){
-      var checkedIds = [],
-          checkboxContainer = this.parentNode,
+      var checkboxContainer = this.parentNode,
           checkboxes = checkboxContainer.childNodes;
       checkboxContainer._value = [];
       for (var j = 0; j < checkboxes.length; j++) {
