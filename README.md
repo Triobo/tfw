@@ -39,7 +39,7 @@
                 * [.activeTab](#tfw.Tabs+activeTab) : <code>number</code>
                 * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
                 * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
-                * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒
+                * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒ <code>number</code>
                 * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
                 * [.appendTab(title, content, [active])](#tfw.Tabs+appendTab)
                 * [.getTab(tabIndex)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
@@ -121,6 +121,8 @@
         * [.span(params)](#tfw.span) ⇒ <code>HTMLElement</code>
         * [.select(params)](#tfw.select) ⇒ <code>HTMLElement</code>
         * [.dropDown()](#tfw.dropDown)
+        * [.dialog()](#tfw.dialog)
+        * [.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)
         * [.button(params)](#tfw.button) ⇒ <code>HTMLElement</code>
         * [.inputFieldLegend(element, params)](#tfw.inputFieldLegend) ⇒ <code>HTMLElement</code>
         * [.input(params)](#tfw.input) ⇒ <code>HTMLElement</code>
@@ -133,8 +135,6 @@
         * [.slider(params)](#tfw.slider) ⇒ <code>HTMLElement</code>
         * [.image(params)](#tfw.image) ⇒ <code>HTMLElement</code>
         * [.filebox(params)](#tfw.filebox) ⇒ <code>HTMLElement</code>
-        * [.dialog()](#tfw.dialog)
-        * [.dialogPrepareAndDownload()](#tfw.dialogPrepareAndDownload)
         * [.ajaxGet(o)](#tfw.ajaxGet) ⇒ <code>XMLHttpRequest</code>
         * [.ajaxPost(o)](#tfw.ajaxPost) ⇒ <code>XMLHttpRequest</code>
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
@@ -149,6 +149,7 @@
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
+        * ~~[.novyCudl()](#tfw.novyCudl)~~
         * [.progressBar()](#tfw.progressBar)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
@@ -174,7 +175,7 @@ Triobo framework. This is a singleton.
         * [.activeTab](#tfw.Tabs+activeTab) : <code>number</code>
         * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
         * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
-        * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒
+        * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒ <code>number</code>
         * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
         * [.appendTab(title, content, [active])](#tfw.Tabs+appendTab)
         * [.getTab(tabIndex)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
@@ -217,11 +218,11 @@ Class for creating tabs.
 **Kind**: instance property of <code>[Tabs](#tfw.Tabs)</code>  
 <a name="tfw.Tabs+getActiveTab"></a>
 
-#### tabs.getActiveTab() ⇒
+#### tabs.getActiveTab() ⇒ <code>number</code>
 Getter for activeTab.
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
-**Returns**: Value of activeTab  
+**Returns**: <code>number</code> - Value of [activeTab](#tfw.Tabs+activeTab)  
 <a name="tfw.Tabs+setActiveTab"></a>
 
 #### tabs.setActiveTab(tabIndex)
@@ -1165,6 +1166,20 @@ Alias for desktop.dropDown
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: desktop.dropDown  
+<a name="tfw.dialog"></a>
+
+### tfw.dialog()
+Alias for desktop.dialog
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: desktop.dialog  
+<a name="tfw.dialogPrepareAndDownload"></a>
+
+### tfw.dialogPrepareAndDownload()
+Alias for desktop.dialogPrepareAndDownload
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: desktop.dialogPrepareAndDownload  
 <a name="tfw.button"></a>
 
 ### tfw.button(params) ⇒ <code>HTMLElement</code>
@@ -1379,20 +1394,6 @@ Create control for uploading files (images).
 | [params.limitExtensions] | <code>string</code> |  | allowed extensions, without dot (e.g. "png|jpeg|jpg|gif") |
 | [params.style] | <code>string</code> |  | CSS styling of outter and inner DIV |
 
-<a name="tfw.dialog"></a>
-
-### tfw.dialog()
-Alias for desktop.dialog
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: desktop.dialog  
-<a name="tfw.dialogPrepareAndDownload"></a>
-
-### tfw.dialogPrepareAndDownload()
-Alias for desktop.dialogPrepareAndDownload
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: desktop.dialogPrepareAndDownload  
 <a name="tfw.ajaxGet"></a>
 
 ### tfw.ajaxGet(o) ⇒ <code>XMLHttpRequest</code>
@@ -1544,6 +1545,28 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 | --- | --- | --- |
 | params | <code>Object</code> | tabs parameters |
 
+<a name="tfw.iconButton"></a>
+
+Create a custom button with an icon.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.fillElemDefs  
+**Todo**
+
+- [ ] Rename class "cudl"
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | parameters |
+
+<a name="tfw.novyCudl"></a>
+
+### ~~tfw.novyCudl()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.iconButton  
 <a name="tfw.progressBar"></a>
 
 ### tfw.progressBar()

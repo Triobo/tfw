@@ -169,7 +169,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   localize: function(newStrings){
     for (var stringKey in newStrings) {
-      tfw.strings[stringKey] = newStrings[stringKey];
+      if ({}.hasOwnProperty.call(newStrings, stringKey)) {
+        tfw.strings[stringKey] = newStrings[stringKey];
+      }
     }
     tfw.init();
   },
@@ -367,14 +369,32 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     return element;
   },
+  /* eslint-disable */
   /**
    * Alias for desktop.dropDown
    * @memberof tfw
    * @see desktop.dropDown
    */
   dropDown: function(params){
-    return desktop.dropDown(params);//eslint-disable-line no-use-before-define
+    return desktop.dropDown(params);
   },
+  /**
+   * Alias for desktop.dialog
+   * @memberof tfw
+   * @see desktop.dialog
+   */
+  dialog: function(co){
+    return desktop.dialog(co);//eslint-disable-line no-use-before-define
+  },
+  /**
+   * Alias for desktop.dialogPrepareAndDownload
+   * @memberof tfw
+   * @see desktop.dialogPrepareAndDownload
+   */
+  dialogPrepareAndDownload: function(params){
+    return desktop.dialogPrepareAndDownload(params);//eslint-disable-line no-use-before-define
+  },
+  /* eslint-enable */
   /**
    * Create a button with specified parameters.
    * @memberof tfw
@@ -879,22 +899,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /**
-   * Alias for desktop.dialog
-   * @memberof tfw
-   * @see desktop.dialog
-   */
-  dialog: function(co){
-    return desktop.dialog(co);//eslint-disable-line no-use-before-define
-  },
-  /**
-   * Alias for desktop.dialogPrepareAndDownload
-   * @memberof tfw
-   * @see desktop.dialogPrepareAndDownload
-   */
-  dialogPrepareAndDownload: function(params){
-    return desktop.dialogPrepareAndDownload(params);//eslint-disable-line no-use-before-define
-  },
-  /**
    * Generates permanent AJAX queries parameters (e.g. tokens, anti-cache)
    * @var {function}
    * @default null
@@ -1056,13 +1060,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     return odpoved;
   },
-  getRealCoordinates: function(o){
-    var totalOffsetX = 0;
-    var totalOffsetY = 0;
+  getRealCoordinates: function(element){
+    var totalOffsetX = 0,
+        totalOffsetY = 0,
+        ancestor = element;
     do {
-      totalOffsetX += o.offsetLeft - o.scrollLeft;
-      totalOffsetY += o.offsetTop - o.scrollTop;
-    } while (o = o.offsetParent); //eslint-disable-line no-cond-assign
+      totalOffsetX += ancestor.offsetLeft - ancestor.scrollLeft;
+      totalOffsetY += ancestor.offsetTop - ancestor.scrollTop;
+      ancestor = ancestor.offsetParent;
+    } while (ancestor != null);
     return [totalOffsetX, totalOffsetY];
   },
   /* eslint-disable */
@@ -1294,7 +1300,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
     /**
      * Getter for activeTab.
-     * @return Value of activeTab
+     * @return {number} Value of {@link tfw.Tabs#activeTab}
      */
     this.getActiveTab = function(){
       return this.activeTab;
@@ -1404,17 +1410,35 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     return container;
   },
+  /**
+   * Create a custom button with an icon.
+   * @param {Object} params - parameters
+   * @param {number} params.position - negated background-position-x for icons sprite
+   * @param {function} params.onmousedown - click callback
+   * @see tfw.fillElemDefs
+   * @todo Rename class "cudl"
+   */
+  iconButton: function(params){
+    var container = tfw.div({className: "cudl"}),
+        icon = tfw.createAndFillElement("div", params);
+    icon.style.backgroundPositionX = (-params.position) + "px";
+    icon.addEventListener("mousedown", params.onmousedown, false);
+    container.add(icon);
+    return container;
+  },
+  /**
+   * @deprecated
+   * @see tfw.iconButton
+   */
   novyCudl: function(id, c, pozice, stisk, popis){
-    var x = document.createElement("div");
-    x.className = "cudl";
-    var b = document.createElement("div");
-    b.id = id;
-    b.className = c;
-    if (popis) b.title = popis;
-    b.style.backgroundPositionX = (-pozice) + "px";
-    b.addEventListener("mousedown", stisk, false);
-    x.add(b);
-    return x;
+    console.warn("DEPRECATED novyCudl, use iconButton instead.");
+    return tfw.iconButton({
+      id: id,
+      className: c,
+      title: typeof popis == "undefined" ? "" : popis,
+      position: pozice,
+      onmousedown: stisk
+    });
   },
   vstupniPole: function(id, styl, legenda, stylL, postT, postL){
     var x = document.createElement("div");
@@ -3086,7 +3110,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var tableObject = new tfw.DynamicTable(params);
     var ret = tableObject.tableContainer;
     for (var prop in tableObject) {
-      ret[prop] = tableObject[prop];
+      if ({}.hasOwnProperty.call(tableObject, prop)) {
+        ret[prop] = tableObject[prop];
+      }
     }
     ret.reload();
     return ret;

@@ -63,9 +63,6 @@
         "no-empty-function": [
             "warn"
         ],
-        "no-eval": [
-            "warn"
-        ],
         "no-extend-native": [
             "warn"
         ],
@@ -218,10 +215,6 @@
         ],
         "computed-property-spacing": [
             "error"
-        ],
-        "consistent-this": [
-            "warn",
-            "dynamicTable"
         ],
         "indent": [
             "error", 2, {
