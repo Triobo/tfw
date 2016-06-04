@@ -39,6 +39,7 @@
                 * [.activeTab](#tfw.Tabs+activeTab) : <code>number</code>
                 * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
                 * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
+                * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒
                 * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
                 * [.appendTab(title, content, [active])](#tfw.Tabs+appendTab)
                 * [.getTab(tabIndex)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
@@ -173,6 +174,7 @@ Triobo framework. This is a singleton.
         * [.activeTab](#tfw.Tabs+activeTab) : <code>number</code>
         * [.tabNav](#tfw.Tabs+tabNav) : <code>HTMLElement</code>
         * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
+        * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒
         * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
         * [.appendTab(title, content, [active])](#tfw.Tabs+appendTab)
         * [.getTab(tabIndex)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
@@ -213,6 +215,13 @@ Class for creating tabs.
 
 #### tabs.tabs : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
 **Kind**: instance property of <code>[Tabs](#tfw.Tabs)</code>  
+<a name="tfw.Tabs+getActiveTab"></a>
+
+#### tabs.getActiveTab() ⇒
+Getter for activeTab.
+
+**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
+**Returns**: Value of activeTab  
 <a name="tfw.Tabs+setActiveTab"></a>
 
 #### tabs.setActiveTab(tabIndex)

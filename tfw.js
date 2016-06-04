@@ -1293,6 +1293,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.tabContainer.add(this.tabNav);
 
     /**
+     * Getter for activeTab.
+     * @return Value of activeTab
+     */
+    this.getActiveTab = function(){
+      return this.activeTab;
+    };
+
+    /**
      * Set active tab (and set previously active tab as inactive).
      * @param {number} tabIndex - index of tab to make active (starting from 0)
      */
@@ -1380,10 +1388,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
   tabs: function(params){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
-        api = ["setActiveTab", "appendTab", "getTab", "setTab"];
+        api = ["getActiveTab", "setActiveTab", "appendTab", "getTab", "setTab"];
     for (var i = 0; i < api.length; i++) {
-      container[api[i]] = tabObject[api[i]];
+      container[api[i]] = tabObject[api[i]].bind(tabObject);
     }
+    Object.defineProperty(container, "value", {
+      configurable: false,
+      enumerable: true,
+      get: function(){
+        return tabObject.getActiveTab();
+      },
+      set: function(value){
+        tabObject.setActiveTab(value);
+      }
+    });
     return container;
   },
   novyCudl: function(id, c, pozice, stisk, popis){
