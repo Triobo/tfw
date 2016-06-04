@@ -149,6 +149,7 @@
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
+        * [.iconButton(params)](#tfw.iconButton)
         * ~~[.novyCudl()](#tfw.novyCudl)~~
         * [.progressBar()](#tfw.progressBar)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
@@ -1547,6 +1548,7 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 
 <a name="tfw.iconButton"></a>
 
+### tfw.iconButton(params)
 Create a custom button with an icon.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
@@ -1559,6 +1561,8 @@ Create a custom button with an icon.
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | parameters |
+| params.position | <code>number</code> | negated background-position-x for icons sprite |
+| params.onmousedown | <code>function</code> | click callback |
 
 <a name="tfw.novyCudl"></a>
 
