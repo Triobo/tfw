@@ -367,9 +367,6 @@
             "error", "always", {
                 "line":{"markers": ["eslint-disable-line"]}
             }
-        ],
-        "unicode-bom": [
-            "error"
         ]
     }
 }

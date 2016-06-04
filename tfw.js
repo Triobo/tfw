@@ -373,7 +373,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see desktop.dropDown
    */
   dropDown: function(params){
-    return desktop.dropDown(params);
+    return desktop.dropDown(params);//eslint-disable-line no-use-before-define
   },
   /**
    * Create a button with specified parameters.
@@ -884,7 +884,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see desktop.dialog
    */
   dialog: function(co){
-    return desktop.dialog(co);
+    return desktop.dialog(co);//eslint-disable-line no-use-before-define
   },
   /**
    * Alias for desktop.dialogPrepareAndDownload
@@ -892,7 +892,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see desktop.dialogPrepareAndDownload
    */
   dialogPrepareAndDownload: function(params){
-    return desktop.dialogPrepareAndDownload(params);
+    return desktop.dialogPrepareAndDownload(params);//eslint-disable-line no-use-before-define
   },
   /**
    * Generates permanent AJAX queries parameters (e.g. tokens, anti-cache)
