@@ -1024,7 +1024,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   encodeFormValues: function(fields){
     var x = [];
     for (var key in fields) {
-      if (fields.hasOwnProperty(key)) {
+      if ({}.hasOwnProperty.call(fields, key)) {
         x.push(key + "=" + encodeURIComponent($(fields[key]).value));
       }
     }
@@ -1735,7 +1735,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // convert array to object
       var savedPreferences = {};
       for (var prop in preferences) {
-        savedPreferences[prop] = preferences[prop];
+        if ({}.hasOwnProperty.call(preferences, prop)) {
+          savedPreferences[prop] = preferences[prop];
+        }
       }
       serverCall({
         action: tfw.DynamicTable.serverActions.PREF_SET,
@@ -2010,20 +2012,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {number} shift - how many rows to move by (positive = down, negative = up)
      */
     function moveFocusToCell(cell, column, shift){
-      var row = cell.parentNode;
-      while (shift < 0) {
+      var row = cell.parentNode,
+          shifted = shift;
+      while (shifted < 0) {
         row = row.previousSibling;
         if (row == null) {
           return;
         }
-        shift++;
+        shifted++;
       }
-      while (shift > 0) {
+      while (shifted > 0) {
         row = row.nextSibling;
         if (row == null) {
           return;
         }
-        shift--;
+        shifted--;
       }
       row.children[column].querySelector("input").focus();
     }
@@ -2507,7 +2510,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
         var widths = this.getPreference("widths");
         if (widths != null) {
           for (dataCol in widths) {
-            this.setColumnWidth(dataCol, widths[dataCol], true);
+            if ({}.hasOwnProperty.call(widths, dataCol)) {
+              this.setColumnWidth(dataCol, widths[dataCol], true);
+            }
           }
         }
       } else if (typeof changes == "undefined") {
@@ -2879,9 +2884,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
      */
     function cmp(a, b){
-      a = parseInt(a);
-      b = parseInt(b);
-      return a < b ? -1 : a > b;
+      var l = parseInt(a),
+          r = parseInt(b);
+      return l < r ? -1 : l > r;
     }
     /**
      * @private
@@ -3022,19 +3027,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if ([tfw.DynamicTable.colTypes.NUMBER, tfw.DynamicTable.colTypes.DATE].indexOf(type) != -1) {
         var originalValue = JSON.parse(JSON.stringify(value)); // deep copy
         for (p in value) {
-          switch (type) {
-            case tfw.DynamicTable.colTypes.NUMBER:
-              value[p] = parseInt(value[p]);
-              if (!value[p].match(/^[0-9]+$/)) {
-                value[p] = defaultFilterValues[dataCol][p];
-              }
-              break;
-            case tfw.DynamicTable.colTypes.DATE:
-              if (!value[p].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)) {
-                value[p] = defaultFilterValues[dataCol][p];
-              }
-              break;
-            // intentionally omitted default
+          if ({}.hasOwnProperty.call(value, p)) {
+            switch (type) {
+              case tfw.DynamicTable.colTypes.NUMBER:
+                value[p] = parseInt(value[p]);
+                if (!value[p].match(/^[0-9]+$/)) {
+                  value[p] = defaultFilterValues[dataCol][p];
+                }
+                break;
+              case tfw.DynamicTable.colTypes.DATE:
+                if (!value[p].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)) {
+                  value[p] = defaultFilterValues[dataCol][p];
+                }
+                break;
+              // intentionally omitted default
+            }
           }
         }
         if (value.min < defaultFilterValues[dataCol].min) {
@@ -3700,20 +3707,16 @@ var desktop = {//eslint-disable-line no-implicit-globals
    * @see desktop.newLayer
    */
   createLayerAndWrapperAtElement: function(element, params, above, right){
-    if (typeof above == "undefined") {
-      above = false;
-    }
-    if (typeof right == "undefined") {
-      right = false;
-    }
+    var placeAbove = (typeof above != "undefined" && above),
+        placeRight = (typeof right != "undefined" && right);
     desktop.newLayer(params);
     var rect = element.getBoundingClientRect(),
         wrapper,
-        leftOrRight = right ? "right" : "left",
-        leftOrRightPx = right ? (window.innerWidth - rect.right) : rect.left;
+        leftOrRight = placeRight ? "right" : "left",
+        leftOrRightPx = placeRight ? (window.innerWidth - rect.right) : rect.left;
     desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
       style: "overflow:hidden;position:absolute;" + leftOrRight + ":" + leftOrRightPx + "px;"
-        + (above ? "bottom" : "top") + ":" + (above ? (window.innerHeight - rect.top) : rect.bottom) + "px"
+        + (placeAbove ? "bottom" : "top") + ":" + (placeAbove ? (window.innerHeight - rect.top) : rect.bottom) + "px"
     }));
     return wrapper;
   },
