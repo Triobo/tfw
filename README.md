@@ -149,12 +149,13 @@
         * ~~[.novyCudl()](#tfw.novyCudl)~~
         * ~~[.vstupniPole()](#tfw.vstupniPole)~~
         * ~~[.vstupniPoleR()](#tfw.vstupniPoleR)~~
+        * ~~[.progressBar()](#tfw.progressBar)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
         * [.iconButton(params)](#tfw.iconButton) ⇒ <code>HTMLElement</code>
         * [.wrappedInput(params)](#tfw.wrappedInput) ⇒ <code>HTMLElement</code>
-        * [.progressBar()](#tfw.progressBar)
+        * [.progress(params)](#tfw.progress) ⇒ <code>HTMLElement</code>
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
         * [.multiCheckbox(params)](#tfw.multiCheckbox) ⇒ <code>HTMLElement</code>
@@ -1537,6 +1538,13 @@ Use various tfw functions instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: tfw.wrappedInput  
+<a name="tfw.progressBar"></a>
+
+### ~~tfw.progressBar()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.progress  
 <a name="tfw.ol"></a>
 
 ### tfw.ol(params) ⇒ <code>HTMLElement</code>
@@ -1607,13 +1615,21 @@ Basically a wrapper for tfw.input with legend, with some parameters prefilled.
 | [params.textAfterStyle] | <code>string</code> |  | CSS to apply to appended text |
 | [params.right] | <code>boolean</code> | <code>false</code> | whether to align input text to the right |
 
-<a name="tfw.progressBar"></a>
+<a name="tfw.progress"></a>
 
-### tfw.progressBar()
+### tfw.progress(params) ⇒ <code>HTMLElement</code>
+Create a progress bar.
+
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**Todo**
+**Returns**: <code>HTMLElement</code> - Created progress bar  
+**See**: tfw.fillElemDefs  
 
-- [ ] Create value attribute (simulate <progress>).
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | parameters |
+| [params.max] | <code>number</code> | <code>1</code> | equivalent of 100 % (e. g. 100) |
+| params.value | <code>number</code> |  | current progress, between 0 and params.max |
+| [params.showPercentage] | <code>boolean</code> | <code>false</code> | if true, show "value %" after progress bar (requires params.max=100) |
 
 <a name="tfw.dynamicTable"></a>
 

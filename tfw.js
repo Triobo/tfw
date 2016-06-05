@@ -1292,6 +1292,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
       right: true
     });
   },
+  /**
+   * @deprecated
+   * @see tfw.progress
+   */
+  progressBar: function(id, styl){
+    console.warn("DEPRECATED tfw.progressBar, use tfw.progress instead (with value attribute).");
+    var x = document.createElement("div");
+    x.id = id;
+    x.style.cssText = styl;
+    x.className = "progressbar";
+    var y = document.createElement("div");
+    x.add(y);
+    y.add(document.createElement("div"));
+    return x;
+  },
   /* eslint-enable */
   /**
    * Alias for tfw.createAndFillElement("ol", params)
@@ -1500,16 +1515,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     return container;
   },
-  /** @todo Create value attribute (simulate <progress>). */
-  progressBar: function(id, styl){
-    var x = document.createElement("div");
-    x.id = id;
-    x.style.cssText = styl;
-    x.className = "progressbar";
-    var y = document.createElement("div");
-    x.add(y);
-    y.add(document.createElement("div"));
-    return x;
+  /**
+   * Create a progress bar.
+   * @param {Object} params - parameters
+   * @see tfw.fillElemDefs
+   * @param {number} [params.max=1] - equivalent of 100 % (e. g. 100)
+   * @param {number} params.value - current progress, between 0 and params.max
+   * @param {boolean} [params.showPercentage=false] - if true, show "value %" after progress bar (requires params.max=100)
+   * @return {HTMLElement} Created progress bar
+   */
+  progress: function(params){
+    var progressbar = tfw.createAndFillElement("progress", params);
+    progressbar.max = ("max" in params) ? params.max : 1;
+    if ("showPercentage" in params && params.showPercentage) progressbar.addClass("showPercentage");
+    return progressbar;
   },
   /**
    * Callback that creates content to insert into a custom column.
