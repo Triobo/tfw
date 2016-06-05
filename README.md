@@ -146,11 +146,14 @@
         * ~~[.noveZalozky()](#tfw.noveZalozky)~~
         * ~~[.noveSvisleZalozky()](#tfw.noveSvisleZalozky)~~
         * ~~[.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)~~
+        * ~~[.novyCudl()](#tfw.novyCudl)~~
+        * ~~[.vstupniPole()](#tfw.vstupniPole)~~
+        * ~~[.vstupniPoleR()](#tfw.vstupniPoleR)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
-        * [.iconButton(params)](#tfw.iconButton)
-        * ~~[.novyCudl()](#tfw.novyCudl)~~
+        * [.iconButton(params)](#tfw.iconButton) ⇒ <code>HTMLElement</code>
+        * [.wrappedInput(params)](#tfw.wrappedInput) ⇒ <code>HTMLElement</code>
         * [.progressBar()](#tfw.progressBar)
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
@@ -1205,15 +1208,17 @@ Wrap an input field with a legend and a container.
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - container with legend and input field  
 
-| Param | Type | Description |
-| --- | --- | --- |
-| element | <code>HTMLElement</code> | input field |
-| params | <code>Object</code> | legend parameters |
-| params.legend | <code>string</code> | legend text |
-| [params.legendStyle] | <code>string</code> | legend CSS styling |
-| [params.containerId] | <code>string</code> | legend container ID |
-| [params.containerStyle] | <code>string</code> | legend container CSS styling |
-| [params.postText] | <code>string</code> | text after input field |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| element | <code>HTMLElement</code> |  | input field |
+| params | <code>Object</code> |  | legend parameters |
+| params.legend | <code>string</code> |  | legend text |
+| [params.legendStyle] | <code>string</code> |  | legend CSS styling |
+| [params.containerTag] | <code>string</code> | <code>&quot;p&quot;</code> | tag to use as legend container |
+| [params.containerId] | <code>string</code> |  | legend container ID |
+| [params.containerClassName] | <code>string</code> |  | legend container class(es) |
+| [params.containerStyle] | <code>string</code> |  | legend container CSS styling |
+| [params.postText] | <code>string</code> |  | text after input field |
 
 <a name="tfw.input"></a>
 
@@ -1511,6 +1516,27 @@ Use various tfw functions instead.
 
 - [ ] Replace by tfw.tabs
 
+<a name="tfw.novyCudl"></a>
+
+### ~~tfw.novyCudl()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.iconButton  
+<a name="tfw.vstupniPole"></a>
+
+### ~~tfw.vstupniPole()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.wrappedInput  
+<a name="tfw.vstupniPoleR"></a>
+
+### ~~tfw.vstupniPoleR()~~
+***Deprecated***
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**See**: tfw.wrappedInput  
 <a name="tfw.ol"></a>
 
 ### tfw.ol(params) ⇒ <code>HTMLElement</code>
@@ -1548,10 +1574,11 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 
 <a name="tfw.iconButton"></a>
 
-### tfw.iconButton(params)
+### tfw.iconButton(params) ⇒ <code>HTMLElement</code>
 Create a custom button with an icon.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - button with an icon  
 **See**: tfw.fillElemDefs  
 **Todo**
 
@@ -1564,13 +1591,22 @@ Create a custom button with an icon.
 | params.position | <code>number</code> | negated background-position-x for icons sprite |
 | params.onmousedown | <code>function</code> | click callback |
 
-<a name="tfw.novyCudl"></a>
+<a name="tfw.wrappedInput"></a>
 
-### ~~tfw.novyCudl()~~
-***Deprecated***
+### tfw.wrappedInput(params) ⇒ <code>HTMLElement</code>
+Basically a wrapper for tfw.input with legend, with some parameters prefilled.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.iconButton  
+**Returns**: <code>HTMLElement</code> - input container with legend(s)  
+**See**: tfw.input  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | parameters |
+| [params.textAfter] | <code>string</code> |  | text to append after input |
+| [params.textAfterStyle] | <code>string</code> |  | CSS to apply to appended text |
+| [params.right] | <code>boolean</code> | <code>false</code> | whether to align input text to the right |
+
 <a name="tfw.progressBar"></a>
 
 ### tfw.progressBar()

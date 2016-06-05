@@ -426,13 +426,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} params - legend parameters
    * @param {string} params.legend - legend text
    * @param {string} [params.legendStyle] - legend CSS styling
+   * @param {string} [params.containerTag=p] - tag to use as legend container
    * @param {string} [params.containerId] - legend container ID
+   * @param {string} [params.containerClassName] - legend container class(es)
    * @param {string} [params.containerStyle] - legend container CSS styling
    * @param {string} [params.postText] - text after input field
    * @return {HTMLElement} container with legend and input field
    */
   inputFieldLegend: function(element, params){
-    var x = document.createElement("p");
+    var x = document.createElement(("containerTag" in params) ? params.containerTag : "p");
     var l = document.createElement("span");
     if (params.legend) l.innerHTML = params.legend;
     if (params.legendStyle) l.style.cssText = params.legendStyle;
@@ -1245,6 +1247,51 @@ var tfw = {//eslint-disable-line no-implicit-globals
       $(jmeno).value = novy;
     }
   },
+  /**
+   * @deprecated
+   * @see tfw.iconButton
+   */
+  novyCudl: function(id, c, pozice, stisk, popis){
+    console.warn("DEPRECATED novyCudl, use iconButton instead.");
+    return tfw.iconButton({
+      id: id,
+      className: c,
+      title: typeof popis == "undefined" ? "" : popis,
+      position: pozice,
+      onmousedown: stisk
+    });
+  },
+  /**
+   * @deprecated
+   * @see tfw.wrappedInput
+   */
+  vstupniPole: function(id, styl, legenda, stylL, postT, postL){
+    console.warn("DEPRECATED tfw.vstupniPole, use tfw.wrappedInput instead.");
+    return tfw.wrappedInput({
+      id: id,
+      style: typeof styl == "undefined" ? "" : styl,
+      legend: legenda,
+      legendStyle: typeof stylL == "undefined" ? "" : stylL,
+      textAfter: typeof postT == "undefined" ? null : postT,
+      textAfterStyle: typeof postL == "undefined" ? "" : postL
+    });
+  },
+  /**
+   * @deprecated
+   * @see tfw.wrappedInput
+   */
+  vstupniPoleR: function(id, styl, legenda, stylL, postT, postL){
+    console.warn("DEPRECATED tfw.vstupniPoleR, use tfw.wrappedInput instead.");
+    return tfw.wrappedInput({
+      id: id,
+      style: typeof styl == "undefined" ? "" : styl,
+      legend: legenda,
+      legendStyle: typeof stylL == "undefined" ? "" : stylL,
+      textAfter: typeof postT == "undefined" ? null : postT,
+      textAfterStyle: typeof postL == "undefined" ? "" : postL,
+      right: true
+    });
+  },
   /* eslint-enable */
   /**
    * Alias for tfw.createAndFillElement("ol", params)
@@ -1415,6 +1462,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} params - parameters
    * @param {number} params.position - negated background-position-x for icons sprite
    * @param {function} params.onmousedown - click callback
+   * @return {HTMLElement} button with an icon
    * @see tfw.fillElemDefs
    * @todo Rename class "cudl"
    */
@@ -1427,31 +1475,30 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return container;
   },
   /**
-   * @deprecated
-   * @see tfw.iconButton
+   * Basically a wrapper for tfw.input with legend, with some parameters prefilled.
+   * @param {Object} params - parameters
+   * @param {string} [params.textAfter] - text to append after input
+   * @param {string} [params.textAfterStyle] - CSS to apply to appended text
+   * @param {boolean} [params.right=false] - whether to align input text to the right
+   * @return {HTMLElement} input container with legend(s)
+   * @see tfw.input
    */
-  novyCudl: function(id, c, pozice, stisk, popis){
-    console.warn("DEPRECATED novyCudl, use iconButton instead.");
-    return tfw.iconButton({
-      id: id,
-      className: c,
-      title: typeof popis == "undefined" ? "" : popis,
-      position: pozice,
-      onmousedown: stisk
-    });
-  },
-  vstupniPole: function(id, styl, legenda, stylL, postT, postL){
-    var x = document.createElement("div");
-    x.className = "vstup";
-    x.innerHTML = "<span class=\"legenda\"" + (stylL ? (" style=\"" + stylL + "\"") : "") + ">" + legenda + "</span><input id=\"" + id
-      + "\" type=\"text\" class=\"data\"" + (styl ? (" style=\"" + styl + "\"") : "") + ">" + (postT ? "<span " + (postL ? (" style=\"" + postL + "\"") : "")
-      + ">" + postT + "</span>" : "");
-    return x;
-  },
-  vstupniPoleR: function(id, styl, legenda, stylL, postT, postL){
-    styl += ";text-align:right;";
-    var x = this.vstupniPole(id, styl, legenda, stylL, postT, postL);
-    return x;
+  wrappedInput: function(params){
+    var inputParams = params;
+    inputParams.containerTag = "div";
+    inputParams.containerClassName = "vstup";
+    inputParams.className = "data";
+    if ("right" in params && params.right) {
+      inputParams.style = "text-align: right;" + (("style" in inputParams) ? inputParams.style : "");
+    }
+    var container = tfw.input(inputParams);
+    if ("textAfter" in params && params.textAfter != null) {// null only for compatibility with tfw.vstupniPole
+      container.appendChild(tfw.span({
+        innerHTML: params.textAfter,
+        style: ("textAfterStyle" in params) ? params.textAfterStyle : ""
+      }));
+    }
+    return container;
   },
   /** @todo Create value attribute (simulate <progress>). */
   progressBar: function(id, styl){
