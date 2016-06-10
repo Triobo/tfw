@@ -16,9 +16,6 @@ function $(id){//eslint-disable-line no-implicit-globals
   return x;
 }
 
-HTMLElement.prototype.nodeOrder = function(){
-  return Array.prototype.indexOf.call(this.parentNode.children, this);
-};
 HTMLElement.prototype.hasClass = function(c){
   return (this.className.split(" ").indexOf(c) != -1);
 };
@@ -52,23 +49,7 @@ HTMLElement.prototype.toggleClass = function(c){
   else this.addClass(c);
 };
 HTMLElement.prototype.myOrder = function(){
-  var x = 0;
-  if (this.parentNode) {
-    for (var i = 0; i < this.parentNode.childNodes.length; i++) {
-      if (this == this.parentNode.childNodes[i]) x = i;
-    }
-  }
-  return x;
-};
-HTMLElement.prototype.amIFirst = function(){
-  var x = 0;
-  if (!this.myOrder) x = 1;
-  return x;
-};
-HTMLElement.prototype.amILast = function(){
-  var x = 0;
-  if (this.myOrder == (this.parentNode.childNodes.length - 1)) x = 1;
-  return x;
+  return this.parentNode == null ? null : Array.prototype.indexOf.call(this.parentNode.children, this);
 };
 HTMLElement.prototype.add = function(x){
   this.appendChild(x);
@@ -1881,14 +1862,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
         rows[i].draggable = rowReorderEnabled;
         rows[i].ondragstart = rowReorderEnabled ? function(event){
           this.addClass("dragged");
-          event.dataTransfer.setData("text", event.target.nodeOrder());
+          event.dataTransfer.setData("text", event.target.myOrder());
         } : null;
         rows[i].ondragover = rowReorderEnabled ? function(event){
           event.preventDefault();
           event.dataTransfer.dropEffect = "move";
           var dragged = dynamicTable.tableContainer.querySelector("tbody tr.dragged");
           if (!dragged.isSameNode(this)) {
-            dynamicTable.orderChange((dragged.nodeOrder() < this.nodeOrder()) ? this.nextSibling : this);
+            dynamicTable.orderChange((dragged.myOrder() < this.myOrder()) ? this.nextSibling : this);
           }
           return false;
         } : null;
@@ -1899,7 +1880,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           this.removeClass("dragged");
           serverUpdateOrder({
             id: this.dataset.rowid,
-            neworder: this.nodeOrder() + 1
+            neworder: this.myOrder() + 1
           });
         } : null;
       }
@@ -1915,9 +1896,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       var tbody = this.tableContainer.querySelector("tbody");
       var orderColumn = this.data.cols[orderDataCol].columnOrder;
-      var originalRowOrder = draggedRow.nodeOrder();
+      var originalRowOrder = draggedRow.myOrder();
       var droppedRowOrder = (referenceRow == null) ? (tbody.rows.length - 1)
-        : (referenceRow.nodeOrder() - ((referenceRow.nodeOrder() < originalRowOrder) ? 0 : 1));
+        : (referenceRow.myOrder() - ((referenceRow.myOrder() < originalRowOrder) ? 0 : 1));
       tbody.insertBefore(draggedRow, referenceRow);
 
       this.data.rows[originalRowOrder].cols[orderDataCol] = draggedRow.cells[orderColumn].innerHTML = droppedRowOrder + 1;
