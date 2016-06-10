@@ -150,7 +150,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   localize: function(newStrings){
     for (var stringKey in newStrings) {
-      if ({}.hasOwnProperty.call(newStrings, stringKey)) {
+      if (Object.prototype.hasOwnProperty.call(newStrings, stringKey)) {
         tfw.strings[stringKey] = newStrings[stringKey];
       }
     }
@@ -1004,7 +1004,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   encodeFormValues: function(fields){
     var x = [];
     for (var key in fields) {
-      if ({}.hasOwnProperty.call(fields, key)) {
+      if (Object.prototype.hasOwnProperty.call(fields, key)) {
         x.push(key + "=" + encodeURIComponent($(fields[key]).value));
       }
     }
@@ -1715,7 +1715,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // convert array to object
       var savedPreferences = {};
       for (var prop in preferences) {
-        if ({}.hasOwnProperty.call(preferences, prop)) {
+        if (Object.prototype.hasOwnProperty.call(preferences, prop)) {
           savedPreferences[prop] = preferences[prop];
         }
       }
@@ -2523,7 +2523,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var widths = this.getPreference("widths");
       if (widths != null) {
         for (dataCol in widths) {
-          if ({}.hasOwnProperty.call(widths, dataCol)) {
+          if (Object.prototype.hasOwnProperty.call(widths, dataCol)) {
             this.setColumnWidth(dataCol, widths[dataCol], true);
           }
         }
@@ -3058,7 +3058,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if ([tfw.DynamicTable.colTypes.NUMBER, tfw.DynamicTable.colTypes.DATE].indexOf(type) != -1) {
         var originalValue = JSON.parse(JSON.stringify(value)); // deep copy
         for (p in value) {
-          if ({}.hasOwnProperty.call(value, p)) {
+          if (Object.prototype.hasOwnProperty.call(value, p)) {
             switch (type) {
               case tfw.DynamicTable.colTypes.NUMBER:
                 value[p] = parseInt(value[p]);
@@ -3214,7 +3214,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var tableObject = new tfw.DynamicTable(params);
     var ret = tableObject.tableContainer;
     for (var prop in tableObject) {
-      if ({}.hasOwnProperty.call(tableObject, prop)) {
+      if (Object.prototype.hasOwnProperty.call(tableObject, prop)) {
         ret[prop] = tableObject[prop];
       }
     }
