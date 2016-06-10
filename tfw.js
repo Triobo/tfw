@@ -2673,8 +2673,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     };
     /**
+     * Range represented by object with min and max properties.
+     * @typedef {{min:(string|number),max:(string|number)}} tfw.DynamicTable~filterRange
+     */
+    /**
      * Value by which the table can be filtered.
-     * @typedef {(string|{min:(string|number),max:(string|number)})} tfw.DynamicTable~filterValue
+     * @typedef {(string|tfw.DynamicTable~filterRange)} tfw.DynamicTable~filterValue
      */
     /**
      * @private
@@ -3042,6 +3046,65 @@ var tfw = {//eslint-disable-line no-implicit-globals
       var filterIcon = base.getElementsByClassName("tfwArrow " + arrowType)[0];
       setActiveArrow(filterIcon, (typeof arrowBase == "undefined") ? base : arrowBase, on);
     };
+
+    /**
+     * Corrects filter value, also updates inputs if needed.
+     * @private
+     * @param {number} dataCol - order of column (in data)
+     * @param {tfw.DynamicTable.colTypes} type - type, either NUMBER or DATE
+     * @param {tfw.DynamicTable~filterRange} originalValue - original value
+     * @return {tfw.DynamicTable~filterRange} corrected value (may be same)
+     */
+    function validValuesOrDefaults(dataCol, type, originalValue){
+      var p,
+          value = JSON.parse(JSON.stringify(originalValue)); // deep copy
+      for (p in value) {
+        if (Object.prototype.hasOwnProperty.call(value, p)) {
+          switch (type) {
+            case tfw.DynamicTable.colTypes.NUMBER:
+              value[p] = parseInt(value[p]);
+              if (!value[p].match(/^[0-9]+$/)) {
+                value[p] = defaultFilterValues[dataCol][p];
+              }
+              break;
+            case tfw.DynamicTable.colTypes.DATE:
+              if (!value[p].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)) {
+                value[p] = defaultFilterValues[dataCol][p];
+              }
+              break;
+            // intentionally omitted default
+          }
+        }
+      }
+      if (value.min < defaultFilterValues[dataCol].min) {
+        value.min = defaultFilterValues[dataCol].min;
+      }
+      if (value.max > defaultFilterValues[dataCol].max) {
+        value.max = defaultFilterValues[dataCol].max;
+      }
+      if (value.min > value.max) {
+        // could be better
+        value.min = defaultFilterValues[dataCol].min;
+        value.max = defaultFilterValues[dataCol].max;
+      }
+      for (p in value) {
+        if (value[p] != originalValue[p]) {
+          var prefix;
+          switch (type) {
+            case tfw.DynamicTable.colTypes.NUMBER:
+              prefix = "range";
+              break;
+            case tfw.DynamicTable.colTypes.DATE:
+              prefix = "date";
+              break;
+            // intentionally omitted default
+          }
+          this.filterContainer.querySelector(".tfwContainer ." + prefix + "M" + p.substring(1)).value = value[p];
+        }
+      }
+      return value;
+    }
+
     /**
      * Apply any filter.
      * @param {number} dataCol - order number of filtered column (in data)
@@ -3051,56 +3114,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @todo Better behaviour when min and max are crossed (min > max)
      */
     this.filterAny = function(dataCol, value, searchType, dontSave){
-      var p;
-      var column = this.data.cols[dataCol].columnOrder;
-      var type = this.data.cols[dataCol].type;
+      var column = this.data.cols[dataCol].columnOrder,
+          type = this.data.cols[dataCol].type;
       // reset invalid/unset values to defaults
       if ([tfw.DynamicTable.colTypes.NUMBER, tfw.DynamicTable.colTypes.DATE].indexOf(type) != -1) {
-        var originalValue = JSON.parse(JSON.stringify(value)); // deep copy
-        for (p in value) {
-          if (Object.prototype.hasOwnProperty.call(value, p)) {
-            switch (type) {
-              case tfw.DynamicTable.colTypes.NUMBER:
-                value[p] = parseInt(value[p]);
-                if (!value[p].match(/^[0-9]+$/)) {
-                  value[p] = defaultFilterValues[dataCol][p];
-                }
-                break;
-              case tfw.DynamicTable.colTypes.DATE:
-                if (!value[p].match(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/)) {
-                  value[p] = defaultFilterValues[dataCol][p];
-                }
-                break;
-              // intentionally omitted default
-            }
-          }
-        }
-        if (value.min < defaultFilterValues[dataCol].min) {
-          value.min = defaultFilterValues[dataCol].min;
-        }
-        if (value.max > defaultFilterValues[dataCol].max) {
-          value.max = defaultFilterValues[dataCol].max;
-        }
-        if (value.min > value.max) {
-          // could be better
-          value.min = defaultFilterValues[dataCol].min;
-          value.max = defaultFilterValues[dataCol].max;
-        }
-        for (p in value) {
-          if (value[p] != originalValue[p]) {
-            var prefix;
-            switch (type) {
-              case tfw.DynamicTable.colTypes.NUMBER:
-                prefix = "range";
-                break;
-              case tfw.DynamicTable.colTypes.DATE:
-                prefix = "date";
-                break;
-              // intentionally omitted default
-            }
-            this.filterContainer.querySelector(".tfwContainer ." + prefix + "M" + p.substring(1)).value = value[p];
-          }
-        }
+        validValuesOrDefaults(type, value);
       }
       // update current filter values
       this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == "undefined" || !dontSave));

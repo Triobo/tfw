@@ -92,7 +92,8 @@
                 * [~goToSub](#tfw.DynamicTable..goToSub) : <code>function</code>
                 * [~serverCallback](#tfw.DynamicTable..serverCallback) : <code>function</code>
                 * [~dataChange](#tfw.DynamicTable..dataChange) : <code>Object</code>
-                * [~filterValue](#tfw.DynamicTable..filterValue) : <code>string</code> &#124; <code>Object</code>
+                * [~filterRange](#tfw.DynamicTable..filterRange) : <code>Object</code>
+                * [~filterValue](#tfw.DynamicTable..filterValue) : <code>string</code> &#124; <code>[filterRange](#tfw.DynamicTable..filterRange)</code>
         * [.calendarExtend](#tfw.calendarExtend)
             * [new calendarExtend(input)](#new_tfw.calendarExtend_new)
             * _static_
@@ -344,7 +345,8 @@ Setter for tab content.
         * [~goToSub](#tfw.DynamicTable..goToSub) : <code>function</code>
         * [~serverCallback](#tfw.DynamicTable..serverCallback) : <code>function</code>
         * [~dataChange](#tfw.DynamicTable..dataChange) : <code>Object</code>
-        * [~filterValue](#tfw.DynamicTable..filterValue) : <code>string</code> &#124; <code>Object</code>
+        * [~filterRange](#tfw.DynamicTable..filterRange) : <code>Object</code>
+        * [~filterValue](#tfw.DynamicTable..filterValue) : <code>string</code> &#124; <code>[filterRange](#tfw.DynamicTable..filterRange)</code>
 
 <a name="new_tfw.DynamicTable_new"></a>
 
@@ -865,9 +867,15 @@ Object representing an update/insertion/deletion in data.Type of change is dete
 | [value] | <code>string</code> | new value of updated cell - for change only |
 | [cols] | <code>Array.&lt;string&gt;</code> | values of inserted row - implies insertion |
 
+<a name="tfw.DynamicTable..filterRange"></a>
+
+#### DynamicTable~filterRange : <code>Object</code>
+Range represented by object with min and max properties.
+
+**Kind**: inner typedef of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 <a name="tfw.DynamicTable..filterValue"></a>
 
-#### DynamicTable~filterValue : <code>string</code> &#124; <code>Object</code>
+#### DynamicTable~filterValue : <code>string</code> &#124; <code>[filterRange](#tfw.DynamicTable..filterRange)</code>
 Value by which the table can be filtered.
 
 **Kind**: inner typedef of <code>[DynamicTable](#tfw.DynamicTable)</code>  
