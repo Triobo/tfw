@@ -3353,13 +3353,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
           w = (d.getDay() + 6) % 7, // so that Monday is first
           sp = 0;
       calendarContainer.innerHTML = "";
-      var header = document.createElement("div");
-      header.setAttribute("class", "head");
-      header.innerHTML = tfw.calendarExtend.months[selectedMonth - 1] + " " + selectedYear;
+      var header = tfw.div({className: "head", innerHTML: tfw.calendarExtend.months[selectedMonth - 1] + " " + selectedYear});
       calendarContainer.add(header);
-      var backButton = document.createElement("div");
-      backButton.addClass("calendarBackButton");
-      backButton.innerHTML = "&nbsp;";
+      var backButton = tfw.div({className: "calendarBackButton", innerHTML: "&nbsp;"});
       backButton.addEventListener("mousedown", function backward(event){
         event.stopPropagation();
         event.preventDefault();
@@ -3367,9 +3363,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         paint();
       }, true);
       header.add(backButton);
-      var forwardButton = document.createElement("div");
-      forwardButton.addClass("calendarForwardButton");
-      forwardButton.innerHTML = "&nbsp;";
+      var forwardButton = tfw.div({className: "calendarForwardButton", innerHTML: "&nbsp;"});
       forwardButton.addEventListener("mousedown", function forward(event){
         event.stopPropagation();
         event.preventDefault();
@@ -3377,33 +3371,29 @@ var tfw = {//eslint-disable-line no-implicit-globals
         paint();
       }, true);
       header.add(forwardButton);
-      var day;
-      var dayNames = document.createElement("p");
-      dayNames.setAttribute("class", "dayNames");
+      var day,
+          dayNames = tfw.par({className: "dayNames"});
       for (i = 0; i < 7; i++) {
-        day = document.createElement("span");
-        day.innerHTML = tfw.calendarExtend.daysShort[i];
+        day = tfw.span({innerHTML: tfw.calendarExtend.daysShort[i]});
         if (i % 7 == 6) {
           day.setAttribute("class", "sunday");
         }
         dayNames.add(day);
       }
       calendarContainer.add(dayNames);
-      var week = document.createElement("p");
-      week.setAttribute("class", "week");
+      var week = tfw.par({className: "week"});
       for (i = 0; i < w; i++) {
-        day = document.createElement("span");
-        day.innerHTML = "&nbsp;";
+        day = tfw.span({innerHTML: "&nbsp;"});
         week.add(day);
         sp++;
       }
       var pdm = new Date(selectedYear, selectedMonth, 0).getDate();
       for (i = 1; i <= pdm; i++) {
-        day = document.createElement("span");
-        day.setAttribute("id", "day-" + selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth) + "-"
-          + (i < 10 ? "0" + i : i));
-        day.setAttribute("class", "day" + (sp % 7 == 6 ? " sunday" : "") + (i == selectedDay ? " current" : ""));
-        day.innerHTML = i;
+        day = tfw.span({
+          id: "day-" + selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth) + "-" + (i < 10 ? "0" + i : i),
+          className: "day" + (sp % 7 == 6 ? " sunday" : "") + (i == selectedDay ? " current" : ""),
+          innerHTML: i
+        });
         day.addEventListener("mousedown", function clicked(){
           input.value = this.id.substr(4);
           var current = calendarContainer.querySelector(".current");
@@ -3418,14 +3408,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if ((sp == 7) && (i < pdm)) {
           sp = 0;
           calendarContainer.add(week);
-          week = document.createElement("p");
-          week.setAttribute("class", "week");
+          week = tfw.par({className: "week"});
         }
       }
       for (i = sp; i < 7; i++) {
-        day = document.createElement("span");
+        day = tfw.span({innerHTML: "&nbsp;"});
         if (i % 7 == 6) day.setAttribute("class", "sunday");
-        day.innerHTML = "&nbsp;";
         week.add(day);
       }
       calendarContainer.add(week);
