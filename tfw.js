@@ -2500,6 +2500,95 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     };
 
+    /** @private */
+    this.paintNew = function(){
+      this.createAndFillTable();
+      if (watchChanges) {
+        this.serverWatch();
+      }
+      if ("onload" in params) {
+        params.onload();
+      }
+      // hide columns
+      var hiddenColumns = this.getPreference("hiddenColumns"),
+          dataCol;
+      if (hiddenColumns != null) {
+        for (dataCol in hiddenColumns) {
+          if (hiddenColumns[dataCol] === true && this.isColumnVisible(dataCol)) {
+            this.toggleColumn(dataCol, true);
+          }
+        }
+      }
+      // apply column widths
+      var widths = this.getPreference("widths");
+      if (widths != null) {
+        for (dataCol in widths) {
+          if ({}.hasOwnProperty.call(widths, dataCol)) {
+            this.setColumnWidth(dataCol, widths[dataCol], true);
+          }
+        }
+      }
+    };
+
+    /**
+     * @private
+     * @param {tfw.DynamicTable~dataChange[]} changes
+     * @return {boolean} true if change happened in the column by which the table is sorted
+     */
+    this.paintChanges = function(changes){
+      var tbody = this.tableContainer.querySelector("tbody"),
+          rowOrder,
+          rowID,
+          sorting = this.getPreference("sorting"),
+          changeInSortCol = false,
+          dataCol;
+      for (var i = 0; i < changes.length; i++) {
+        rowID = changes[i].id;
+        if ("col" in changes[i]) { // update
+          dataCol = changes[i].col;
+          var newValue = changes[i].value;
+          rowOrder = this.getDataRowById(rowID);
+          if (rowOrder == null) {
+            console.error("Row that is not present in the table was updated. (id=" + rowID + ")");
+          } else if (newValue == this.data.rows[rowOrder].cols[dataCol]) {
+            console.warn("Server watch sent change to same content.");
+          } else {
+            this.updateCellFromChange(rowOrder, dataCol, newValue);
+            if (sorting != null && sorting.dataCol == dataCol) {
+              changeInSortCol = true;
+            }
+          }
+        } else if ("cols" in changes[i]) { // insertion
+          var comparator = this.getCmp(sorting === null ? null : sorting.dataCol).bind(null, sorting.asc);
+          rowOrder = this.data.rows.push({id: rowID, cols: changes[i].cols}) - 1;
+          var newRow = this.createRow(rowOrder);
+          var greaterRow = null;
+          for (i = 0; i < this.data.rows.length - 1; i++) { // don't iterate over new row
+            if (comparator(this.data.rows[rowOrder], this.data.rows[i]) < 0) {
+              greaterRow = tbody.rows[i];
+              break;
+            }
+          }
+          tbody.insertBefore(newRow, greaterRow);
+        } else { // deletion
+          rowOrder = this.getDataRowById(rowID);
+          this.data.rows.splice(rowOrder, 1);
+          if (rowOrder === null) {
+            console.error("Row that is not present in the table was deleted.");
+          } else {
+            tbody.rows[rowOrder].remove();
+            if (orderDataCol !== null && this.reorderEnabled()) {
+              for (i = rowOrder; i < this.data.rows.length; i++) {
+                this.data.rows[i].cols[orderDataCol] -= 1;
+                tbody.rows[i].cells[this.data.cols[orderDataCol].columnOrder].innerHTML -= 1;
+              }
+            }
+          }
+        }
+      }
+      return changeInSortCol;
+    };
+
     /**
      * Object representing an update/insertion/deletion in data.
      * Type of change is determined by present properties.
@@ -2517,95 +2606,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @todo Handle update of cell that is currently being edited
      */
     this.paint = function(changes){
-      var i,
-          dataCol,
-          sorting = this.getPreference("sorting"),
-          changeInSortCol = false;
+      var changeInSortCol;
       this.tableHTMLId = "dynamicTable-" + tableId;
       if (document.getElementById(this.tableHTMLId) == null) {
-        this.createAndFillTable();
-        if (watchChanges) {
-          this.serverWatch();
-        }
-        if ("onload" in params) {
-          params.onload();
-        }
+        this.paintNew();
         changeInSortCol = true;
-        // hide columns
-        var hiddenColumns = this.getPreference("hiddenColumns");
-        if (hiddenColumns != null) {
-          for (dataCol in hiddenColumns) {
-            if (hiddenColumns[dataCol] === true && this.isColumnVisible(dataCol)) {
-              this.toggleColumn(dataCol, true);
-            }
-          }
-        }
-        // apply column widths
-        var widths = this.getPreference("widths");
-        if (widths != null) {
-          for (dataCol in widths) {
-            if ({}.hasOwnProperty.call(widths, dataCol)) {
-              this.setColumnWidth(dataCol, widths[dataCol], true);
-            }
-          }
-        }
       } else if (typeof changes == "undefined") {
         console.error("Dynamic table reloading not implemented yet.");
       } else {
-        var tbody = this.tableContainer.querySelector("tbody"),
-            rowOrder,
-            rowID;
-        for (i = 0; i < changes.length; i++) {
-          rowID = changes[i].id;
-          if ("col" in changes[i]) { // update
-            dataCol = changes[i].col;
-            var newValue = changes[i].value;
-            rowOrder = this.getDataRowById(rowID);
-            if (rowOrder == null) {
-              console.error("Row that is not present in the table was updated. (id=" + rowID + ")");
-            } else if (newValue == this.data.rows[rowOrder].cols[dataCol]) {
-              console.warn("Server watch sent change to same content.");
-            } else {
-              this.updateCellFromChange(rowOrder, dataCol, newValue);
-              if (sorting != null && sorting.dataCol == dataCol) {
-                changeInSortCol = true;
-              }
-            }
-          } else if ("cols" in changes[i]) { // insertion
-            var comparator = this.getCmp(sorting === null ? null : sorting.dataCol).bind(null, sorting.asc);
-            rowOrder = this.data.rows.push({id: rowID, cols: changes[i].cols}) - 1;
-            var newRow = this.createRow(rowOrder);
-            var greaterRow = null;
-            for (i = 0; i < this.data.rows.length - 1; i++) { // don't iterate over new row
-              if (comparator(this.data.rows[rowOrder], this.data.rows[i]) < 0) {
-                greaterRow = tbody.rows[i];
-                break;
-              }
-            }
-            tbody.insertBefore(newRow, greaterRow);
-          } else { // deletion
-            rowOrder = this.getDataRowById(rowID);
-            this.data.rows.splice(rowOrder, 1);
-            if (rowOrder === null) {
-              console.error("Row that is not present in the table was deleted.");
-            } else {
-              tbody.rows[rowOrder].remove();
-              if (orderDataCol !== null && this.reorderEnabled()) {
-                for (i = rowOrder; i < this.data.rows.length; i++) {
-                  this.data.rows[i].cols[orderDataCol] -= 1;
-                  tbody.rows[i].cells[this.data.cols[orderDataCol].columnOrder].innerHTML -= 1;
-                }
-              }
-            }
-          }
-        }
+        changeInSortCol = this.paintChanges(changes);
       }
       // calculate filter default values
       defaultFilterValues = {};
       var columnValues,
           minV,
           maxV;
-      for (i = 0; i < this.data.cols.length; i++) {
+      for (var i = 0; i < this.data.cols.length; i++) {
         if (this.data.cols[i].filter) {
           var defaultValue;
           switch (this.data.cols[i].type) {
@@ -2642,13 +2658,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // apply filters
       var filterValues = this.getPreference("filterValues");
       if (filterValues != null) {
-        for (dataCol in filterValues) {
+        for (var dataCol in filterValues) {
           if (filterValues[dataCol] != null) {
             this.filterAny(dataCol, filterValues[dataCol], this.data.cols[dataCol].type, true);
           }
         }
       }
       // apply sorting
+      var sorting = this.getPreference("sorting");
       if (sorting == null) {
         this.toggleReorder();
       } else if (changeInSortCol) {
