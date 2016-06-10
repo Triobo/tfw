@@ -2467,6 +2467,39 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       return rowOrder;
     };
+
+    /**
+     * @private
+     * @param {number} rowOrder - row order (in data)
+     * @param {number} dataCol - column order (in data)
+     * @param {string|number} newValue - new value
+     */
+    this.updateCellFromChange = function(rowOrder, dataCol, newValue){
+      this.data.rows[rowOrder].cols[dataCol] = newValue;
+      var cell = this.tableContainer.querySelector("tbody").rows[rowOrder].cells[this.data.cols[dataCol].columnOrder];
+      cell.addClass("hasBeenChanged");
+      setTimeout(function(updatedCell){
+        updatedCell.removeClass("hasBeenChanged");
+      }, 3000, cell);
+      if (typeof columnRenderers[dataCol] == "function") {
+        cell.innerHTML = "";
+        tfw.addAll(cell, columnRenderers[dataCol](newValue));
+      } else {
+        switch (this.data.cols[dataCol].type) {
+          case tfw.DynamicTable.colTypes.CHECKBOX:
+            cell.querySelector(".tfwCheckbox").value = parseInt(newValue);
+            break;
+          case tfw.DynamicTable.colTypes.NUMBER:
+          case tfw.DynamicTable.colTypes.DATE:
+          case tfw.DynamicTable.colTypes.TEXT:
+            cell.querySelector("input").value = newValue;
+            break;
+          default:
+            cell.innerHTML = newValue;
+        }
+      }
+    };
+
     /**
      * Object representing an update/insertion/deletion in data.
      * Type of change is determined by present properties.
@@ -2520,40 +2553,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
         console.error("Dynamic table reloading not implemented yet.");
       } else {
         var tbody = this.tableContainer.querySelector("tbody"),
-            rowOrder;
+            rowOrder,
+            rowID;
         for (i = 0; i < changes.length; i++) {
-          var rowID = changes[i].id;
+          rowID = changes[i].id;
           if ("col" in changes[i]) { // update
             dataCol = changes[i].col;
-            var column = this.data.cols[dataCol].columnOrder;
             var newValue = changes[i].value;
             rowOrder = this.getDataRowById(rowID);
             if (rowOrder == null) {
               console.error("Row that is not present in the table was updated. (id=" + rowID + ")");
-            } else if (newValue != this.data.rows[rowOrder].cols[dataCol]) {
-              this.data.rows[rowOrder].cols[dataCol] = newValue;
-              var cell = tbody.rows[rowOrder].cells[column];
-              cell.addClass("hasBeenChanged");
-              setTimeout(function(updatedCell){
-                updatedCell.removeClass("hasBeenChanged");
-              }, 3000, cell);
-              if (typeof columnRenderers[dataCol] == "function") {
-                cell.innerHTML = "";
-                tfw.addAll(cell, columnRenderers[dataCol](newValue));
-              } else {
-                switch (this.data.cols[dataCol].type) {
-                  case tfw.DynamicTable.colTypes.CHECKBOX:
-                    cell.querySelector(".tfwCheckbox").value = parseInt(newValue);
-                    break;
-                  case tfw.DynamicTable.colTypes.NUMBER:
-                  case tfw.DynamicTable.colTypes.DATE:
-                  case tfw.DynamicTable.colTypes.TEXT:
-                    cell.querySelector("input").value = newValue;
-                    break;
-                  default:
-                    cell.innerHTML = newValue;
-                }
-              }
+            } else if (newValue == this.data.rows[rowOrder].cols[dataCol]) {
+              console.warn("Server watch sent change to same content.");
+            } else {
+              this.updateCellFromChange(rowOrder, dataCol, newValue);
               if (sorting != null && sorting.dataCol == dataCol) {
                 changeInSortCol = true;
               }
