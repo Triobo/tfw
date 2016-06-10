@@ -2212,87 +2212,71 @@ var tfw = {//eslint-disable-line no-implicit-globals
       $(this.tableHTMLId + "-hiddenRowsInfo").style.display = (vis == tot) ? "none" : "inline-block";
       $(this.tableHTMLId + "-hiddenRowsCount").innerHTML = tfw.strings.HIDDEN_ROWS + ": " + (tot - vis);
     }
+
     /**
      * @private
-     * @listens click
-     * @listens keyup
+     * @return {function} mouse down callback
      */
-    this.createAndFillTable = function(){
-      // add CSS styling for filters
-      var tableCSS = "";
-      for (var dataCol = 0; dataCol < this.data.cols.length; dataCol++) {
-        tableCSS += "#" + this.tableHTMLId + " .filter" + dataCol + "Invalid{display:none}\n";
-      }
-      tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-" + this.tableHTMLId);
-      var o,
-          thead,
-          tbody,
-          r,
-          c,
-          columnOrder,
-          dynamicTable = this,
-          b,
-          j;
-      this.tableContainer.innerHTML = "";
-      this.tableContainer.add(o = tfw.table({
-        id: this.tableHTMLId,
-        className: "tfwDynamicTable"
-      }));
-      o.addEventListener("focus", function(event){
-        dynamicTable.setFocusedRow(dynamicTable.data.rows[event.target.closest("tr").myOrder()].id);
-      }, true);
-      o.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
-      for (j = 0; j < this.data.cols.length; j++) {
-        if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
-          this.data.cols[j].sort = true;
-          orderDataCol = j;
-        }
-      }
-      o.add(thead = document.createElement("thead"));
-      thead.add(r = tfw.tr({
-        className: "headlines"
-      }));
+    function setupColumnResizing(){
+      if (typeof document.body.dataset.colResizingSet == "undefined" || !document.body.dataset.colResizingSet) {
+        document.body.dataset.colResizingSet = true;
 
-      var RESIZING_MIN_WIDTH = 40;
-      var resizerMouseDown = function(event){
+        var RESIZING_MIN_WIDTH = 40;
+        document.body.addEventListener("mousemove", function(event){
+          if (typeof window._resizedElement != "undefined") {
+            var cell = window._resizedElement;
+            var diff = event.clientX - cell._resizePositionX;
+            if (diff != 0) {
+              cell.dispatchEvent(new CustomEvent("resizing", {detail: {move: diff}}));
+
+              /** @todo apply min/max width */
+              var width = parseInt(cell.style.width) + diff;
+              if (width < RESIZING_MIN_WIDTH) {
+                width = RESIZING_MIN_WIDTH;
+              }
+              cell.style.width = width + "px";
+
+              cell._resizePositionX = event.clientX;
+            }
+          }
+        });
+
+        var resizerMouseEnd = function(){
+          if (typeof window._resizedElement != "undefined") {
+            var cell = window._resizedElement;
+            cell.dispatchEvent(new CustomEvent("resizestop"));
+            document.body.removeClass("resizing");
+            delete window._resizedElement;
+          }
+        };
+        document.body.addEventListener("mouseup", resizerMouseEnd);
+        document.addEventListener("mouseout", function(event){
+          if (!event.relatedTarget || event.relatedTarget.nodeName == "HTML") {
+            resizerMouseEnd(event);
+          }
+        });
+      }
+
+      return function(event){
         var cell = window._resizedElement = event.target.closest("th");
         cell.dispatchEvent(new CustomEvent("resizestart"));
         document.body.addClass("resizing");
         cell._resizePositionX = event.clientX;
       };
-      var resizerMouseMove = function(event){
-        if (typeof window._resizedElement != "undefined") {
-          var cell = window._resizedElement;
-          var diff = event.clientX - cell._resizePositionX;
-          if (diff != 0) {
-            cell.dispatchEvent(new CustomEvent("resizing", {detail: {move: diff}}));
+    }
 
-            /** @todo apply min/max width */
-            var width = parseInt(cell.style.width) + diff;
-            if (width < RESIZING_MIN_WIDTH) {
-              width = RESIZING_MIN_WIDTH;
-            }
-            cell.style.width = width + "px";
+    /**
+     * @private
+     * @return {HTMLElement}
+     */
+    this.createAndFillTableHead = function(){
+      var thead = document.createElement("thead"),
+          r;
+      thead.add(r = tfw.tr({
+        className: "headlines"
+      }));
 
-            cell._resizePositionX = event.clientX;
-          }
-        }
-      };
-      var resizerMouseEnd = function(){
-        if (typeof window._resizedElement != "undefined") {
-          var cell = window._resizedElement;
-          cell.dispatchEvent(new CustomEvent("resizestop"));
-          document.body.removeClass("resizing");
-          delete window._resizedElement;
-        }
-      };
-      document.body.addEventListener("mousemove", resizerMouseMove);
-      document.body.addEventListener("mouseup", resizerMouseEnd);
-      document.addEventListener("mouseout", function(event){
-        if (!event.relatedTarget || event.relatedTarget.nodeName == "HTML") {
-          resizerMouseEnd(event);
-        }
-      });
+      var resizerMouseDown = setupColumnResizing();
 
       /**
        * @private
@@ -2305,7 +2289,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       };
 
-      columnOrder = 0;
+      var columnOrder = 0;
       if (rowEdit) {
         var th = document.createElement("th");
         th.innerHTML = "&nbsp;";
@@ -2314,7 +2298,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
         columnOrder++;
       }
       var resizer,
-          d;
+          d,
+          j,
+          c,
+          b,
+          dynamicTable = this,
+          filterOnclick = function(){
+            dynamicTable.filter(this, this.dataset.dataCol);
+          };
       for (j = 0; j < this.data.cols.length; j++) {
         if (!("hidden" in this.data.cols[j])) {
           c = document.createElement("th");
@@ -2325,9 +2316,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               className: "tfwArrow " + tfw.DynamicTable.arrowTypes.FILTER
             }));
             b.dataset.dataCol = j;
-            b.onclick = function(){
-              dynamicTable.filter(this, this.dataset.dataCol);
-            };
+            b.onclick = filterOnclick;
             deltaWidth += 16;
           }
           if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
@@ -2375,6 +2364,38 @@ var tfw = {//eslint-disable-line no-implicit-globals
           columnOrder++;
         }
       }
+      return thead;
+    };
+
+    /** @private */
+    this.createAndFillTable = function(){
+      // add CSS styling for filters
+      var tableCSS = "";
+      for (var dataCol = 0; dataCol < this.data.cols.length; dataCol++) {
+        tableCSS += "#" + this.tableHTMLId + " .filter" + dataCol + "Invalid{display:none}\n";
+      }
+      tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-" + this.tableHTMLId);
+      this.tableContainer.innerHTML = "";
+      var o,
+          dynamicTable = this;
+      this.tableContainer.add(o = tfw.table({
+        id: this.tableHTMLId,
+        className: "tfwDynamicTable"
+      }));
+      o.addEventListener("focus", function(event){
+        dynamicTable.setFocusedRow(dynamicTable.data.rows[event.target.closest("tr").myOrder()].id);
+      }, true);
+      o.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
+      for (var j = 0; j < this.data.cols.length; j++) {
+        if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
+          this.data.cols[j].sort = true;
+          orderDataCol = j;
+        }
+      }
+
+      o.appendChild(this.createAndFillTableHead());
+
+      var tbody;
       o.add(tbody = document.createElement("tbody"));
       if (bodyHeight != null) {
         tbody.style.maxHeight = bodyHeight;
