@@ -877,7 +877,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
         chyba("#300-" + tfw.strings.EXTNOTALLOWED.replace("%1", lim));
       }
     };
-    element.remove = function(){};
     element.prekresli();
     return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
