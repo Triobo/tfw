@@ -1159,7 +1159,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.tabs
    */
   zvolSvislouZalozku: function(jmeno, novy){
-    console.error("DEPRECATED zvolSvislouZalozku, use setActiveTab instead.");
+    console.warn("DEPRECATED zvolSvislouZalozku, use setActiveTab instead.");
     $(jmeno).setActiveTab(String(novy));
   },
   /**
