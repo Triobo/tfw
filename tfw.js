@@ -114,6 +114,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
     EXTNOTALLOWED: "Only %1 files are allowed."
   },
   /**
+   * Orientation, either vertical or horizontal.
+   * @enum {number}
+   */
+  orientation: {
+    HORIZONTAL: 0,
+    VERTICAL: 1
+  },
+  /**
    * Add Javascript-generated CSS to the document.
    * @param {string} style - CSS to be added
    * @param {string} [tag] - identify (tag) CSS for overriding
@@ -1125,107 +1133,34 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /**
    * @deprecated
-   * @todo Replace by tfw.tabs
+   * @see tfw.tabs
    */
   noveSvisleZalozky: function(id, wl, w, h, zalozky, init){
-    var l;
-    var poziceY = 0;
-    var idxs = [];
-    var x = document.createElement("div");
-    x.id = id;
-    x.className = "zalozkyObal";
-    x.value = null;
-    x.vybrany = 0;
-    x.w = w;
-    x.h = h;
-    var u = document.createElement("div");
-    u.className = "zalozkySvisleSeznam";
-    u.style.width = wl + "px";
-    u.style.height = h + "px";
-    x.add(u);
-    x.vyber = function(ord){
-      var stary = this.value;
-      var novy = this.childNodes[0].childNodes[ord].value;
-      if (novy != stary) {
-        if ($(this.id + "-ousko-" + stary)) {
-          $(this.id + "-obsah-" + stary).className = "zalozkySvisleObsah skryty";
-          $(this.id + "-ousko-" + stary).className = $(this.id + "-ousko-" + stary).className.replace(/ aktivni/i, "");
-          if ($(this.id + "-obsah-" + stary).onHide) $(this.id + "-obsah-" + stary).onHide();
-        }
-        $(this.id + "-obsah-" + novy).className = "zalozkySvisleObsah";
-        $(this.id + "-ousko-" + novy).className += " aktivni";
-        if ($(this.id + "-obsah-" + novy).onShow) $(this.id + "-obsah-" + novy).onShow();
-        this.value = novy;
-        this.vybrany = ord;
-        if (this.onchange) this.onchange();
-      }
-    };
-    x.appendItem = function(item){
-      l = document.createElement("p");
-      l.id = this.id + "-ousko-" + item.id;
-      l.className = "zalozkyOusko" + (item.aktivni ? " aktivni" : "");
-      l.innerHTML = item.text;
-      l.value = item.id;
-      l.addEventListener("mousedown", function(e){
-        this.parentNode.parentNode.vyber(this.myOrder());
-        e.stopPropagation();
-        e.preventDefault();
-      }, false);
-      this.childNodes[0].add(l);
-      var o = document.createElement("div");
-      o.id = this.id + "-obsah-" + item.id;
-      o.className = "zalozkySvisleObsah" + (item.aktivni ? "" : " skryty");
-      o.style.width = this.w + "px";
-      o.style.height = this.h + "px";
-      o.removeItem = function(){
-        if (this.onHide) this.onHide();
-        var casti = this.id.split("-");
-        var a = $(casti[0] + "-obsah-" + casti[2]);
-        var b = $(casti[0] + "-ousko-" + casti[2]);
-        a.parentNode.removeChild(a);
-        b.parentNode.removeChild(b);
-      };
-      x.add(o);
-    };
-    var z = zalozky.split(";"),
-        sp,
-        ind;
-    for (var i = 0; i < z.length; i++) {
-      sp = z[i].split("|");
-      if (sp.length > 1) ind = sp[1];
-      else ind = i;
-      idxs[i] = ind;
-      if (ind == init) {
-        poziceY = i;
-        x.vybrany = i;
-        x.value = ind;
-      }
-      x.appendItem({
-        id: ind,
-        aktivni: (ind == init) ? 1 : 0,
-        text: sp[0]
-      });
-    }
-    window.setTimeout(function(elementId, verticalScroll){
-      if ($(elementId)) $(elementId).childNodes[0].scrollTop = verticalScroll * 20;
-    }, 20, id, poziceY);
-    return x;
+    console.warn("DEPRECATED tfw.noveSvisleZalozky, use tfw.tabs instead. (call from " + arguments.callee.caller.name + ")");
+    return tfw.tabs({
+      id: id,
+      width: w,
+      height: h,
+      tabs: zalozky.split(";").map(function(value, i){
+        var ret = {},
+            item = value.split("|");
+        if(item.length > 1) ret.name = item[1];
+        else ret.name = i;
+        ret.title = item[0];
+        return ret;
+      }),
+      active: init,
+      orientation: tfw.orientation.VERTICAL,
+      listWidth: wl
+    });
   },
   /**
    * @deprecated
-   * @todo Replace by tfw.tabs
+   * @see tfw.tabs
    */
   zvolSvislouZalozku: function(jmeno, novy){
-    var stary = tfw.parseIntOr0($(jmeno).value);
-    if (novy != stary) {
-      if (stary >= 0) {
-        $(jmeno + "-obsah-" + stary).className = "zalozkySvisleObsah skryty";
-        $(jmeno + "-ousko-" + stary).className = $(jmeno + "-ousko-" + stary).className.replace(/ aktivni/i, "");
-      }
-      $(jmeno + "-obsah-" + novy).className = "zalozkySvisleObsah";
-      $(jmeno + "-ousko-" + novy).className += " aktivni";
-      $(jmeno).value = novy;
-    }
+    console.error("DEPRECATED zvolSvislouZalozku, use setActiveTab instead.");
+    $(jmeno).setActiveTab(String(novy));
   },
   /**
    * @deprecated
@@ -1307,25 +1242,36 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return tfw.createAndFillElement("li", params);
   },
   /**
+   * Specification of a tab - either numeric index or name.
+   * @typedef {(number|string)} tfw.Tabs~tabLabel
+   */
+  /**
    * Class for creating tabs.
    * @class
    * @param {Object} params - table parameters
    * @param {string} params.id - ID of tabs container
    * @param {number} params.tabWidth - width of a tab (in pixels)
    * @param {number} params.tabHeight - height of a tab (in pixels)
-   * @param {number} [params.active=-1] - order number of tab active by default (negative means none)
+   * @param {tfw.Tabs~tabLabel} [params.active=-1] - index or name of tab active by default (negative means none)
+   * @param {tfw.orientation} [params.orientation=tfw.orientation.HORIZONTAL] - orientation of tabs
+   * @param {number} [params.listWidth] - width of tab list (for vertical tabs)
    * @param {Object[]} params.tabs - array of tabs
    * @param {string} params.tabs[].title - tab title
    * @param {HTMLElement[]} params.tabs[].content - tab content
+   * @param {string} [params.tabs[].name] - tab name (for referencing)
+   * @todo Remove deprecated properties and ids
    */
   Tabs: function(params){
+    this.orientation = ("orientation" in params) ? params.orientation : tfw.orientation.HORIZONTAL;
     this.name = params.id;
-    /** @var {HTMLElement} */
-    this.tabContainer = tfw.div({className: "tfwTabContainer", id: this.name});
-    /** @var {number} */
-    this.activeTab = ("active" in params) ? tfw.parseIntOr0(params.active) : -1;
-    /** @var {HTMLElement} */
+    this.tabContainer = tfw.div({
+      className: "tfwTabContainer " + ((this.orientation == tfw.orientation.HORIZONTAL) ? "horizontal" : "vertical"),
+      id: this.name
+    });
+    this.activeTab = -1;
     this.tabNav = tfw.ol({className: "semantic tfwTabNav"});
+    if ("listWidth" in params) this.tabNav.style.width = params.listWidth + "px";
+    if (this.orientation == tfw.orientation.VERTICAL) this.tabNav.style.height = params.tabHeight + "px";
 
     this.tabWidth = params.tabWidth;
     this.tabHeight = params.tabHeight;
@@ -1334,14 +1280,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @typedef {Object} tfw.Tabs~tab
      * @property {HTMLElement} title - tab title
      * @property {HTMLElement} content - tab content
+     * @property {?string} name - tab name
      */
-    /** @var {tfw.Tabs~tab[]} */
+    /**
+     * @protected
+     * @var {tfw.Tabs~tab[]}
+     */
     this.tabs = [];
 
     this.tabContainer.add(this.tabNav);
 
     /**
      * Getter for activeTab.
+     * @public
      * @return {number} Value of {@link tfw.Tabs#activeTab}
      */
     this.getActiveTab = function(){
@@ -1349,30 +1300,65 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
 
     /**
-     * Set active tab (and set previously active tab as inactive).
-     * @param {number} tabIndex - index of tab to make active (starting from 0)
+     * Get active tab's name.
+     * @public
+     * @return {?string} {@link tfw.Tabs#activeTab}'s name
      */
-    this.setActiveTab = function(tabIndex){
+    this.getActiveTabName = function(){
+      return (this.activeTab < 0) ? null : this.tabs[this.activeTab].name;
+    };
+
+    /**
+     * @private
+     * @param {tfw.Tabs~tabLabel} tabLabel
+     * @return {number} tab index
+     */
+    this.tabLabelToIndex = function(tabLabel){
+      return (typeof tabLabel === "number") ? tabLabel : this.tabs.reduce(function(previous, current, i){
+        return (previous == null) ? (current.name == tabLabel ? i : null) : previous;
+      }, null);
+    };
+
+    /**
+     * Set active tab (and set previously active tab as inactive).
+     * @public
+     * @param {tfw.Tabs~tabLabel} tabLabel - tab index or name (-1 to deactive all)
+     * @fires tabhide
+     * @fires tabshow
+     */
+    this.setActiveTab = function(tabLabel){
+      var tabIndex = this.tabLabelToIndex(tabLabel);
+      if (tabIndex == null) {
+        console.error("Tabs.setActiveTab: name was not found");
+        return;
+      }
+
       if (tabIndex != this.activeTab) {
         if (this.activeTab >= 0) {
           var previousTab = this.tabs[this.activeTab];
           previousTab.title.removeClass("active");
           previousTab.content.removeClass("active");
+          previousTab.content.dispatchEvent(new CustomEvent("tabhide"));
         }
-        var nextTab = this.tabs[tabIndex];
-        nextTab.title.addClass("active");
-        nextTab.content.addClass("active");
-        this.activeTab = tabIndex;
+        if (tabIndex >= 0) {
+          var nextTab = this.tabs[tabIndex];
+          nextTab.title.addClass("active");
+          nextTab.content.addClass("active");
+          this.activeTab = tabIndex;
+          nextTab.content.dispatchEvent(new CustomEvent("tabshow"));
+        }
       }
     };
 
     /**
      * Add a new tab.
+     * @public
      * @param {string} title - new tab title
      * @param {HTMLElement[]} content - new tab content
      * @param {boolean} [active=false] - whether to make new tab active by default
+     * @param {string} [tabName] - name of tab
      */
-    this.appendTab = function(title, content, active){
+    this.appendTab = function(title, content, active, tabName){
       var i = this.tabs.length,
           tabs = this,
           tabTitle,
@@ -1380,50 +1366,111 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
       // create tab title
       tabTitle = tfw.li({
-        className: "tfwTabTitle" + (active ? " active" : ""),
+        className: "tfwTabTitle",
         innerHTML: title
       });
       tabTitle.dataset.tabIndex = i;
       tabTitle.addEventListener("mousedown", function(e){
-        tabs.setActiveTab(this.dataset.tabIndex);
+        tabs.setActiveTab(parseInt(this.dataset.tabIndex));
         e.stopPropagation();
         e.preventDefault();
       }, false);
+      if (typeof tabName != "undefined") {
+        tabTitle.dataset.tabName = tabName;
+        Object.defineProperty(tabTitle, "value", {
+          configurable: false,
+          enumerable: true,
+          get: function(){
+            console.warn("DEPRECATED use of tab title's value attribute, use .dataset.tabName instead.");
+            return this.dataset.tabName;
+          }
+        });
+      }
       this.tabNav.add(tabTitle);
 
       // create tab content
       this.tabContainer.add(
         tabContent = tfw.div({
-          className: "tfwTabContent" + (active ? " active" : ""),
+          className: "tfwTabContent",
           style: "width:" + this.tabWidth + "px;height:" + this.tabHeight + "px;"
         })
       );
+      if (typeof tabName != "undefined") {
+        tabContent.id = this.name + "-obsah-" + tabName; // TODO: remove
+      }
+      tabContent.dataset.tabIndex = i;
+      tabContent.removeItem = function(){
+        tabs.removeTab(this.dataset.tabIndex);
+      };
+      Object.defineProperty(tabContent, "onHide", {
+        configurable: false,
+        enumerable: true,
+        set: function(listener){
+          console.warn("DEPRECATED use of vertical tab's attribute onHide, use addEventListener(\"tabhide\") instead.");
+          this.addEventListener("tabhide", listener);
+        }
+      });
+      Object.defineProperty(tabContent, "onShow", {
+        configurable: false,
+        enumerable: true,
+        set: function(listener){
+          console.warn("DEPRECATED use of vertical tab's attribute onShow, use addEventListener(\"tabshow\") instead.");
+          this.addEventListener("tabshow", listener);
+          this._onShowListener = listener;
+        },
+        get: function(){
+          console.warn("DEPRECATED use of vertical tab's attribute onShow, fire custom event \"tabshow\" instead.");
+          return this._onShowListener;
+        }
+      });
 
-      this.tabs[i] = {title: tabTitle, content: tabContent};
+      var tab = {title: tabTitle, content: tabContent};
+      if (typeof tabName != "undefined") tab.name = tabName;
+      this.tabs[i] = tab;
+
+      if (typeof active != "undefined" && active) this.setActiveTab(i);
+    };
+
+    /**
+     * Remove a tab.
+     * @public
+     * @param {tfw.Tabs~tabLabel} tabLabel - tab index or name
+     * @fires tabhide
+     */
+    this.removeTab = function(tabLabel){
+      var tabIndex = this.tabLabelToIndex(tabLabel),
+          tab = this.tabs[tabIndex];
+      tab.content.dispatchEvent(new CustomEvent("tabhide"));
+      tab.title.remove();
+      tab.content.remove();
+      this.tabs.splice(tabIndex, 1);
     };
 
     /**
      * Getter for tab content container (for editing).
-     * @param {number} tabIndex - index of tab (starting from 0)
+     * @public
+     * @param {tfw.Tabs~tabLabel} tabLabel - index or name
      * @return {HTMLElement}
      */
-    this.getTab = function(tabIndex){
-      return this.tabs[tabIndex].content;
+    this.getTab = function(tabLabel){
+      return this.tabs[this.tabLabelToIndex(tabLabel)].content;
     };
 
     /**
      * Setter for tab content.
-     * @param {number} tabIndex - index of tab (starting from 0)
+     * @public
+     * @param {tfw.Tabs~tabLabel} tabLabel - index or name
      * @param {HTMLElement[]} content - contents of tab (no container)
      */
-    this.setTab = function(tabIndex, content){
+    this.setTab = function(tabLabel, content){
+      var tabIndex = this.tabLabelToIndex(tabLabel);
       this.tabs[tabIndex].content.innerHTML = "";
       tfw.addAll(this.tabs[tabIndex].content, content);
     };
 
 
     for (var i = 0; i < params.tabs.length; i++) {
-      this.appendTab(params.tabs[i].title, params.tabs[i].content, params.active == i);
+      this.appendTab(params.tabs[i].title, params.tabs[i].content, this.tabLabelToIndex(params.active) == i, params.tabs[i].name);
     }
   },
   /**
@@ -1432,24 +1479,57 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {Object} params - tabs parameters
    * @return {HTMLElement} Tabs
    * @see tfw.Tabs
+   * @todo Remove deprecated properties and methods
    */
   tabs: function(params){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
-        api = ["getActiveTab", "setActiveTab", "appendTab", "getTab", "setTab"];
+        api = ["getActiveTab", "getActiveTabName", "setActiveTab", "appendTab", "removeTab", "getTab", "setTab"];
     for (var i = 0; i < api.length; i++) {
       container[api[i]] = tabObject[api[i]].bind(tabObject);
     }
+
     Object.defineProperty(container, "value", {
       configurable: false,
       enumerable: true,
       get: function(){
-        return tabObject.getActiveTab();
+        console.warn("DEPRECATED use of tab's attribute value, use getActiveTab instead.");
+        return tabObject.orientation == tfw.orientation.VERTICAL ? tabObject.getActiveTabName() : tabObject.getActiveTab();
       },
       set: function(value){
-        tabObject.setActiveTab(value);
+        console.warn("DEPRECATED use of tab's attribute value, use setActiveTab instead.");
+        tabObject.setActiveTab(tabObject.orientation == tfw.orientation.VERTICAL ? String(value) : value);
       }
     });
+    if (tabObject.orientation == tfw.orientation.VERTICAL) {
+      Object.defineProperty(container, "vybrany", {
+        configurable: false,
+        enumerable: true,
+        get: function(){
+          console.warn("DEPRECATED use of vertical tab's attribute vybrany, use getActiveTab instead.");
+          return tabObject.getActiveTab();
+        },
+        set: function(value){
+          console.warn("DEPRECATED use of vertical tab's attribute vybrany, use setActiveTab instead.");
+          tabObject.setActiveTab(value);
+        }
+      });
+      container.vyber = function(ord){
+        console.warn("DEPRECATED use of function vyber on vertical tab container, use setActiveTab instead.");
+        tabObject.setActiveTab(ord);
+      };
+      container.appendItem = function(item){
+        console.warn("DEPRECATED use of function appendItem on vertical tab container, use appendTab instead.");
+        tabObject.appendTab(item.text, "", ("aktivni" in item) ? item.aktivni : false, item.id);
+      };
+    }
+
+    if (this.orientation == tfw.orientation.VERTICAL) { // TODO: Set somewhere else??
+      setTimeout(function(verticalScroll){
+        tabObject.tabNav.scrollTop = verticalScroll;
+      }, 20, tabObject.activeTab * 20);
+    }
+
     return container;
   },
   /**

@@ -884,13 +884,27 @@ progress[value]::-webkit-progress-value{
 .tfwTabContainer{
   margin-bottom: 16px;
 }
-.tfwTabNav{
+ol.tfwTabNav{
   display: inline-block;
+}
+.tfwTabContainer.horizontal .tfwTabNav{
   overflow: hidden;
   margin: 4px 0 0;
   padding: 0;
 }
+.tfwTabContainer.vertical .tfwTabNav{
+  overflow-x: hidden;
+  overflow-y: auto;
+  vertical-align: top;
+  margin-right: 4px;
+  border: 1px solid #bbb;
+  background-color: #fff;
+  border-radius: 3px;
+}
 .tfwTabNav .tfwTabTitle {
+  cursor: pointer;
+}
+.tfwTabContainer.horizontal .tfwTabNav .tfwTabTitle {
   display: inline-block;
   background-color: #ddd;/*silver*/
   border-top-left-radius: 3px;
@@ -898,19 +912,28 @@ progress[value]::-webkit-progress-value{
   color: #000;
   margin: 0 0 0 1px;
   padding: 4px 8px;
-  cursor: pointer;
   text-align: center;
 }
-.tfwTabNav .tfwTabTitle:first-child{
+.tfwTabContainer.vertical .tfwTabNav .tfwTabTitle {
+  display: block;
+  padding: 2px 8px;
+  margin: 0px;
+  text-align: left;
+  height: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tfwTabContainer.horizontal .tfwTabNav .tfwTabTitle:first-child{
   margin-left: 0px;
 }
 .tfwTabNav .tfwTabTitle:hover {
   color: #000;
-  background-color: #8cc;/*azure*/  
+  background-color: #8cc !important;/*azure*/  
 }
 .tfwTabNav .tfwTabTitle.active {
   color: #000;
-  background-color: #fc5;/*orange*/
+  background-color: #fc5 !important;/*orange*/
 }
 .tfwTabNav .tfwTabTitle.active:hover {
   background-color: #fd5;/*orange-light*/
@@ -919,6 +942,9 @@ progress[value]::-webkit-progress-value{
   display: none;
   vertical-align: top;
 }
-.tfwTabContent.active {
+.tfwTabContainer.horizontal .tfwTabContent.active {
   display: block;
+}
+.tfwTabContainer.vertical .tfwTabContent.active {
+  display: inline-block;
 }
