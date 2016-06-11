@@ -870,9 +870,16 @@ Object representing an update/insertion/deletion in data.Type of change is dete
 <a name="tfw.DynamicTable..filterRange"></a>
 
 #### DynamicTable~filterRange : <code>Object</code>
-Range represented by object with min and max properties.
+Range represented by object with min and max properties (strings for date, numbers for numeric).
 
 **Kind**: inner typedef of <code>[DynamicTable](#tfw.DynamicTable)</code>  
+**Properties**
+
+| Name | Type |
+| --- | --- |
+| min | <code>string</code> &#124; <code>number</code> | 
+| max | <code>string</code> &#124; <code>number</code> | 
+
 <a name="tfw.DynamicTable..filterValue"></a>
 
 #### DynamicTable~filterValue : <code>string</code> &#124; <code>[filterRange](#tfw.DynamicTable..filterRange)</code>

@@ -2673,8 +2673,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     };
     /**
-     * Range represented by object with min and max properties.
-     * @typedef {{min:(string|number),max:(string|number)}} tfw.DynamicTable~filterRange
+     * Range represented by object with min and max properties (strings for date, numbers for numeric).
+     * @typedef {Object} tfw.DynamicTable~filterRange
+     * @property {(string|number)} min
+     * @property {(string|number)} max
      */
     /**
      * Value by which the table can be filtered.
