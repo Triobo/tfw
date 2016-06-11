@@ -19,7 +19,7 @@
 	background-color: #8cc;/*azure*/
 }
 .fa.icon:hover{
-	color:black;
+	color: black;
 	background-color: #fc5;/*orange*/  
 }
 .fa.icon.disabled{
@@ -76,22 +76,22 @@
 html,body {height:100%;}
 
 #desktop {
-  width:100%;
-  height:100%;
-  position:relative;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
 /* common DOM elements */
 input {
-  height:21px;
-  border-radius:3px;
+  height: 21px;
+  border-radius: 3px;
   border:1px solid #bbb; 
-  margin:0px 2px 1px;
-  padding:0px 2px;
+  margin: 0px 2px 1px;
+  padding: 0px 2px;
   vertical-align: baseline;
-  font-size:15px;
-  background:#fff;
-  color:#000;
+  font-size: 15px;
+  background: #fff;
+  color: #000;
   font-family:inherit; 
 }
 input[disabled], input[readonly] {
@@ -106,103 +106,103 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus, button:f
   outline: 0;
 }
 textarea {
-  border-radius:3px;
+  border-radius: 3px;
   border:1px solid #bbb; 
-  margin:0px 2px 1px;
-  padding:0px 2px;
+  margin: 0px 2px 1px;
+  padding: 0px 2px;
   vertical-align: baseline;
-  font-size:15px;
-  background:#fff;
-  color:#000;
-  font-family:inherit;
+  font-size: 15px;
+  background: #fff;
+  color: #000;
+  font-family: inherit;
   box-sizing: border-box;  
 }
 button {
-  display:inline-block;
+  display: inline-block;
   border: 1px solid #bbb;
-  border-radius:3px;
+  border-radius: 3px;
   background-color: #ddd;/*silver*/
   font-family:inherit; 
   font-size: 15px;
-  padding:3px 10px;
-  margin:0 4px;
+  padding: 3px 10px;
+  margin: 0 4px;
   text-align: center;
-  cursor:pointer;
+  cursor: pointer;
 }
 button:hover {
-  color:black;
+  color: black;
   background-color: #8cc;/*azure*/
 }
 button[type="submit"] {
   background-color: #fff;/*white*/
-  color:black;
+  color: black;
 }
 button[type="submit"]:hover {
   background-color: #fc5;/*orange*/
 }
 button:disabled {
-  color:#999;
+  color: #999;
   background-color: #ddd;/*silver*/
 }
 button:disabled:hover {
-  color:#999;
+  color: #999;
   background-color: #ccc;/*silver-light*/
-  cursor:not-allowed;
+  cursor: not-allowed;
 }
 
 /* TFW elements */
 #tfwLoader {
-  position:fixed;
-  width:32px;
-  height:32px;
+  position: fixed;
+  width: 32px;
+  height: 32px;
   background: url(ajax-loader.gif) no-repeat;
   background-size: 32px 32px;  
 }
 
 .tfwLayer {
- position:absolute;
- top:0px;
- left:0px;
- width:100%;
- height:100%;
+ position: absolute;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
 }
 .tfwLayer.modal{
-  position:fixed;
+  position: fixed;
 }
 
 .tfwLayerOverlay {
- position:fixed;
- top:0px;
- left:0px;
- width:100%;
- height:100%;
- background:white;
- opacity:0.8;
+ position: fixed;
+ top: 0px;
+ left: 0px;
+ width: 100%;
+ height: 100%;
+ background: white;
+ opacity: 0.8;
 }
 
 .tfwDivContentLoader {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   position: relative;
 }
 .tfwDivContentLoader span {
-  width:16px;
-  height:16px;
-  position:absolute;
-  display:block;
-  top:0;left:0;bottom:0;right:0;
-  margin:auto;
+  width: 16px;
+  height: 16px;
+  position: absolute;
+  display: block;
+  top: 0;left:0;bottom:0;right:0;
+  margin: auto;
   background: url(ajax-loader.gif) no-repeat;
   background-size: 16px 16px;
 }
 
 /* dialog */
 .tfwDialogContainer {
-  position:absolute;
-  overflow:hidden;
-  border-radius:3px;
+  position: absolute;
+  overflow: hidden;
+  border-radius: 3px;
   background-color: #8cc;/*azure*/
-  padding:2px;
+  padding: 2px;
   -webkit-transition: -webkit-transform 0.3s, opacity 0.3s;
 }
 .tfwDialogContainer.noTitle {
@@ -210,48 +210,48 @@ button:disabled:hover {
 }
 
 .tfwDialogTitle {
-  font-weight:bold;
-  margin:0;
-  color:#fff;
-  padding:5px 8px;
-  cursor:move;
+  font-weight: bold;
+  margin: 0;
+  color: #fff;
+  padding: 5px 8px;
+  cursor: move;
 }
 
 .tfwDialog {
-  border-radius:3px;
-  background:#f8f8f8;
-  color:#000;
-  padding:16px;
+  border-radius: 3px;
+  background: #f8f8f8;
+  color: #000;
+  padding: 16px;
 }
 
 .tfwDialog .text {
-  display:block;
-  width:100%;
-  height:56px;
+  display: block;
+  width: 100%;
+  height: 56px;
 }
 
 .tfwDialog a:link, .tfwDialog a:visited, .tfwDialog a:hover, .tfwDialog a:active {
-  color:#0aa;
+  color: #0aa;
 }
 
 .tfwDialog .buttonsBar {
-  position:absolute;
-  left:0px;
-  bottom:0px;
-  width:100%;
-  margin-bottom:16px;
-  text-align:center;
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  width: 100%;
+  margin-bottom: 16px;
+  text-align: center;
 }
 
 .tfwDialog .errorCode {
-  text-align:right;
-  font-size:80%;
-  color:#888;
+  text-align: right;
+  font-size: 80%;
+  color: #888;
 } 
 
 .tfwDialog .errorIcon {
-  float:left;
-  margin-right:16px;
+  float: left;
+  margin-right: 16px;
 }
 
 .tfwDialog ul {
@@ -260,135 +260,135 @@ button:disabled:hover {
 }
 
 .info, .tfwDialog .info, .roleta .info {
-  font-size:11px;
+  font-size: 11px;
 }
 
 .tfwDialog .legenda {
-  display:inline-block;
+  display: inline-block;
 }
 
 .tfwDialog .subtitle, .tfwDialog .nazev {
   border-top:1px solid #8cc;/*azure*/
-  margin-top:8px;
-  font-weight:bold;
+  margin-top: 8px;
+  font-weight: bold;
   color: #8cc;/*azure*/
 }
 
 .tfwDialog .title, .tfwDialog .nadpis {
   border-bottom:1px solid #8cc;/*azure*/
-  margin-top:8px;
-  font-size:120%;
-  font-weight:bold;
+  margin-top: 8px;
+  font-size: 120%;
+  font-weight: bold;
   color: #8cc;/*azure*/
 }
 
 .tfwDialog .error {
-  border:1px solid #400;
-  margin:0px 0px 8px;
-  padding:8px;
-  background-color:#a00;
-  color:#fff;
+  border: 1px solid #400;
+  margin: 0px 0px 8px;
+  padding: 8px;
+  background-color: #a00;
+  color: #fff;
 }
 
 .tfwDialog .error b {
-  color:#f80;
+  color: #f80;
 }
 
 .tfwDialog .banner {
-  border:1px solid #f80;
-  margin:0px 0px 8px;
-  padding:6px;
-  background-color:#fed;
+  border: 1px solid #f80;
+  margin: 0px 0px 8px;
+  padding: 6px;
+  background-color: #fed;
   border-radius: 3px;
-  color:#000;
+  color: #000;
 }
 
 .tfwDialog b, .roleta b {
-  color:#f80;
+  color: #f80;
 }
 
 .tfwDialog a b{
-  color:#f80;
+  color: #f80;
 }
 
 .tfwDialog p>span {
-  display:inline-block;
+  display: inline-block;
 }
 .tfwDialog p>.tfwCheckbox {
-  display:inline-block;
+  display: inline-block;
 }
 
 /* container */
 .tfwContainer {
-  margin:2px 0;
+  margin: 2px 0;
 }
 
 .tfwContainer span {
-  display:inline-block;
-  vertical-align:top;
+  display: inline-block;
+  vertical-align: top;
 }
 
 /* block */
 .tfwBlock {
-  display:block;
-  padding:4px;
+  display: block;
+  padding: 4px;
   border:1px solid #ddd;/*silver*/
-  vertical-align:top;
+  vertical-align: top;
 }
 
 /* select */
 .tfwSelect {
-  display:inline-block;
-  margin:0px;
-  padding:0px;
-  border:1px solid #bbb;
-  background-color:#fff;
-  color:#000;
-  border-radius:3px;
+  display: inline-block;
+  margin: 0px;
+  padding: 0px;
+  border: 1px solid #bbb;
+  background-color: #fff;
+  color: #000;
+  border-radius: 3px;
   overflow-x: hidden;
   overflow-y: scroll;
 }
 .tfwSelect div {
-  display:block;
-  padding:1px 4px;
-  margin:0px;
-  cursor:pointer;
-  white-space:nowrap;
-  overflow:hidden;
-  text-overflow:ellipsis;
+  display: block;
+  padding: 1px 4px;
+  margin: 0px;
+  cursor: pointer;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .tfwSelect div:hover {
   color:#000;  
   background-color: #8cc;/*azure*/
 }
 .tfwSelect div.selected {
-  color:#000;
+  color: #000;
   background-color:#fc5;/*orange*/
 }
 .tfwSelect div.selected:hover {
-  color:#000;
+  color: #000;
   background-color:#fd5;/*orange-light*/
 }
 
 /* dropdown */
 .tfwDropDown {
-  display:inline-block;
-  border-radius:3px;
+  display: inline-block;
+  border-radius: 3px;
   border:1px solid #bbb; 
-  margin:0px 2px 1px;
-  padding:1px 4px 0px;
+  margin: 0px 2px 1px;
+  padding: 1px 4px 0px;
   background-color: #fff;
-  color:#000;
-  cursor:pointer;
+  color: #000;
+  cursor: pointer;
   box-sizing: border-box;    
 }
 
 .tfwDropDown:after {
-  content:"";
-  float:right;
-  margin-top:4px;
-  width:0px;
-  height:0px;
+  content: "";
+  float: right;
+  margin-top: 4px;
+  width: 0px;
+  height: 0px;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
 	border-top: 8px solid #bbb;
@@ -400,26 +400,26 @@ button:disabled:hover {
 
 /* checkbox */
 .tfwCheckbox {
-  padding:2px;
-  cursor:pointer;
+  padding: 2px;
+  cursor: pointer;
 }
 .tfwCheckbox:hover {
   background-color: #8cc;/*azure*/
-  color:black;
+  color: black;
 }
 .tfwCheckbox.disabled {
-  color:#bbb;
+  color: #bbb;
 }
 .tfwCheckbox.disabled:hover {
   background-color: inherit;
 }
 .tfwCheckbox div {
-  display:inline-block;
-  width:12px;
-  height:12px;
-  margin:3px 4px 3px 0px;
-  border-radius:3px;
-  cursor:pointer;
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin: 3px 4px 3px 0px;
+  border-radius: 3px;
+  cursor: pointer;
   vertical-align: bottom;
   background-color: #ddd;/*silver*/
 }
@@ -429,12 +429,12 @@ button:disabled:hover {
 
 /* icon */
 .tfwIcon {
-  display:inline-block;
+  display: inline-block;
   background-color: #ddd;/*silver*/
-  cursor:pointer;
-  text-align:center;
-  margin-left:1px;
-  padding:2px 1px;
+  cursor: pointer;
+  text-align: center;
+  margin-left: 1px;
+  padding: 2px 1px;
 }
 .tfwIcon:first-child {
   margin-left: 0px;
@@ -443,11 +443,11 @@ button:disabled:hover {
   background-color: #8cc;/*azure*/
 }
 .tfwIcon.disabled div {
-  opacity:0.2;
+  opacity: 0.2;
 }
 .tfwIcon.disabled:hover {
   background-color: #ddd;/*silver*/
-  cursor:not-allowed;
+  cursor: not-allowed;
 }
 .tfwIcon.selected {
   background-color: #fc5;/*orange*/
@@ -458,114 +458,114 @@ button:disabled:hover {
 
 .tfwIconGroup {
   line-height: 1;
-  display:inline-block;
-  border-radius:3px;
-  border:1px solid #bbb;
-  background:#bbb;
+  display: inline-block;
+  border-radius: 3px;
+  border: 1px solid #bbb;
+  background: #bbb;
   overflow: hidden;
-  padding-right:-1px;
-  margin-right:4px;
-  vertical-align:top;
+  padding-right: -1px;
+  margin-right: 4px;
+  vertical-align: top;
   white-space: nowrap;
 }
 
 /* tfwSlider */
 .tfwSlider {
-  vertical-align:bottom;
+  vertical-align: bottom;
 }
 
 .tfwSlider span {
-  display:inline-block;
+  display: inline-block;
 }
 
 /* tfwFilebox */
 .tfwFilebox {
   box-sizing: border-box;
-  position:relative;
-  display:inline-block;
-  width:100px;
-  height:20px;
-  border:1px solid #bbb;
-  margin:0 2px 1px;
-  border-radius:3px;
-  color:#000;
-  background:white;
-  cursor:pointer;
+  position: relative;
+  display: inline-block;
+  width: 100px;
+  height: 20px;
+  border: 1px solid #bbb;
+  margin: 0 2px 1px;
+  border-radius: 3px;
+  color: #000;
+  background: white;
+  cursor: pointer;
   text-align: center;
 }
 
 .tfwFilebox .content {
-  display:table-cell;
+  display: table-cell;
   vertical-align: middle;
   overflow: hidden;
-  position:relative;
+  position: relative;
 }
 
 .tfwFilebox .butRemove {
-  display:none;
-  position:absolute;
-  right:8px;
-  top:8px;
+  display: none;
+  position: absolute;
+  right: 8px;
+  top: 8px;
   background-color: #d00;
-  color:white;
+  color: white;
 }
 
 .tfwFilebox:hover .butRemove {
-  display:block;
+  display: block;
 }
 
 .tfwFilebox.empty {
-  color:#bbb;
-  background:transparent;
+  color: #bbb;
+  background: transparent;
 }
 
 .tfwFilebox .content img {
-  width:100%;
+  width: 100%;
   height:100%;  
 }
 .tfwFilebox .content p {
-  height:40px;
+  height: 40px;
 }
 
 /* layout formating */
 .tfwInline {
-  display:inline-block;
+  display: inline-block;
   vertical-align: top;
 }
 
 .tfwSeparatorTop {
-  padding-top:8px;
-  margin-top:7px;
+  padding-top: 8px;
+  margin-top: 7px;
   border-top:1px solid #ddd;/*silver*/
 }
 
 .tfwSeparatorLeft {
-  padding-left:8px;
-  margin-left:7px;
+  padding-left: 8px;
+  margin-left: 7px;
   border-left:1px solid #ddd;/*silver*/
 }
 
 .tfwSeparatorRight {
-  padding-right:8px;
-  margin-right:7px;
+  padding-right: 8px;
+  margin-right: 7px;
   border-right:1px solid #ddd;/*silver*/
 }
 
 .tfwBarCentered {
-  text-align:center;
-  margin:8px 0px;
+  text-align: center;
+  margin: 8px 0px;
 } 
 
 .tfwFullArea {
-  display:block;
-  width:100%;
-  height:100%;
+  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /*****************/
 
 .hideColumn{
-	display:none !important;
+	display: none !important;
 }
 
 /* reset */
@@ -637,7 +637,7 @@ button:disabled:hover {
 }
 .tfwDynamicTable tfoot tr {
 	background-color: #888;/*gray*/
-	color:white;
+	color: white;
 }
 .tfwDynamicTable tr.headlines th {
   color: white;
@@ -646,17 +646,17 @@ button:disabled:hover {
 }
 .tfwDynamicTable tr.headlines th .colHeading{
   display: inline-block;
-  white-space:nowrap;
-  overflow:hidden;
+  white-space: nowrap;
+  overflow: hidden;
   text-overflow: ellipsis;
 }
 .tfwDynamicTable tr.headlines th .colHeadingControl {
-  height:100%;
-  white-space:nowrap;
-  float:right;
+  height: 100%;
+  white-space: nowrap;
+  float: right;
 }
 .tfwDynamicTable tr.headlines th button{
-	float:right;
+	float: right;
 }
 
 .tfwDynamicTable tr.draggable{
@@ -676,7 +676,7 @@ button:disabled:hover {
 .tfwDynamicTable tr td input, .tfwDynamicTable tr td input:focus {
   height: 20px;
   border: none;
-  box-shadow:none;
+  box-shadow: none;
   background-color: transparent;
 }
 .tfwDynamicTable tr td .tfwCheckbox {
@@ -689,11 +689,11 @@ button:disabled:hover {
 	width: calc(100% - 24px); /* icon width */
 }
 .tfwDynamicTable tr td .subtable {
-  float:right;
+  float: right;
 }
 .tfwDynamicTableColumnDialog {
-  padding:8px;
-  border:1px solid #000;
+  padding: 8px;
+  border: 1px solid #000;
   border-radius: 3px;
   background-color: white;
 }
@@ -712,103 +712,103 @@ button:disabled:hover {
 }
 
 .calendarWidget {
-  width:188px;
-  height:164px;
-  overflow:hidden;
-  border:1px solid #bbb;
+  width: 188px;
+  height: 164px;
+  overflow: hidden;
+  border: 1px solid #bbb;
   background: #eee;
-  border-radius:3px;
-  z-index:1;
-  font-family:PTSans,Helvetica,Arial,sans;
+  border-radius: 3px;
+  z-index: 1;
+  font-family: PTSans,Helvetica,Arial,sans;
 }
 
 .calendarWidget p.dayNames {
-  font-size:11px;
+  font-size: 11px;
 }
 
 .calendarWidget div.head {
-  padding:4px 2px 2px;
+  padding: 4px 2px 2px;
   background-color: #ddd;/*silver*/
-  text-align:center;
-  border-top-left-radius:4px;
-  border-top-right-radius:4px;
+  text-align: center;
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
 }
 
 .calendarBackButton {
-  float:left;
-  cursor:pointer;
-  width:20px;
+  float: left;
+  cursor: pointer;
+  width: 20px;
   background:url("https://editor.triobo.com/v351/pics/sipkaVlevo.png") 2px 2px;  
 }
 
 .calendarForwardButton {
-  float:right;
-  cursor:pointer;
-  width:20px;
-  background:url("https://editor.triobo.com/v351/pics/sipkaVpravo.png") 2px 2px;
+  float: right;
+  cursor: pointer;
+  width: 20px;
+  background: url("https://editor.triobo.com/v351/pics/sipkaVpravo.png") 2px 2px;
 }
 
 .calendarWidget p {
-  margin:0px;
+  margin: 0px;
 }
 
 .calendarWidget p span {
-  display:inline-block;
-  width:22px;
-  border-bottom:1px solid #bbb;
-  border-right:1px solid #bbb;
-  text-align:right;
-  padding:2px 2px 0px;
+  display: inline-block;
+  width: 22px;
+  border-bottom: 1px solid #bbb;
+  border-right: 1px solid #bbb;
+  text-align: right;
+  padding: 2px 2px 0px;
 }
 
 .calendarWidget p.week span.day {
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .calendarWidget p.week span.day:hover {
   background-color: #8cc;/*azure*/
-  color:black;
+  color: black;
 }
 
 .calendarWidget p span.sunday {
-  border-right:none;
-  color:red;
+  border-right: none;
+  color: red;
 }
 
 .calendarWidget p span.current {
   background-color: #fc5;/*orange*/
-  color:black;
+  color: black;
 }
 
 /* CSS arrows */
 
 .tfwArrow {
-  display:inline-block;
-  width:0px;
-  height:0px;
+  display: inline-block;
+  width: 0px;
+  height: 0px;
   margin:3px 0;  
   cursor: pointer;
 }
 .tfwArrow.up {
-  border-left:6px solid transparent;
-  border-right:6px solid transparent;
-  border-bottom:10px solid #888;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 10px solid #888;
 }
 .tfwArrow.up.active {
   border-bottom-color:#fc5;/*orange*/
 }
 .tfwArrow.down {
-  border-left:6px solid transparent;
-  border-right:6px solid transparent;
-  border-top:10px solid #888;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 10px solid #888;
 }
 .tfwArrow.down.active {
   border-top-color:#fc5;/*orange*/
 }
 .tfwArrow.filter {
-  border-left:4px solid #222;
-  border-right:4px solid #222;
-  border-top:5px solid #888;
+  border-left: 4px solid #222;
+  border-right: 4px solid #222;
+  border-top: 5px solid #888;
   width:  4px;
   height: 5px;
   background-color: #888;
@@ -891,34 +891,34 @@ progress[value]::-webkit-progress-value{
   padding: 0;
 }
 .tfwTabNav .tfwTabTitle {
-  display:inline-block;
+  display: inline-block;
   background-color: #ddd;/*silver*/
   border-top-left-radius: 3px;
   border-top-right-radius: 3px;
-  color:#000;
-  margin:0 0 0 1px;
-  padding:4px 8px;
-  cursor:pointer;
-  text-align:center;
+  color: #000;
+  margin: 0 0 0 1px;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: center;
 }
 .tfwTabNav .tfwTabTitle:first-child{
-  margin-left:0px;
+  margin-left: 0px;
 }
 .tfwTabNav .tfwTabTitle:hover {
-  color:#000;
+  color: #000;
   background-color: #8cc;/*azure*/  
 }
 .tfwTabNav .tfwTabTitle.active {
-  color:#000;
+  color: #000;
   background-color: #fc5;/*orange*/
 }
 .tfwTabNav .tfwTabTitle.active:hover {
   background-color: #fd5;/*orange-light*/
 }
 .tfwTabContent {
-  display:none;
+  display: none;
   vertical-align: top;
 }
 .tfwTabContent.active {
-  display:block;
+  display: block;
 }
