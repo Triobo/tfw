@@ -1273,8 +1273,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if ("listWidth" in params) this.tabNav.style.width = params.listWidth + "px";
     if (this.orientation == tfw.orientation.VERTICAL) this.tabNav.style.height = params.tabHeight + "px";
 
-    this.tabWidth = params.tabWidth;
-    this.tabHeight = params.tabHeight;
+    this.style = params.style;
 
     /**
      * @typedef {Object} tfw.Tabs~tab
@@ -1392,7 +1391,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       this.tabContainer.add(
         tabContent = tfw.div({
           className: "tfwTabContent",
-          style: "width:" + this.tabWidth + "px;height:" + this.tabHeight + "px;"
+          style: this.style
         })
       );
       if (typeof tabName != "undefined") {
