@@ -604,6 +604,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.selected) element.selected = 1;
     return element;
   },
+  groupOfIcons: function(params){
+    var container = tfw.div({className: "tfwGroupOfIcons"});
+    var cn = params.iconsClassName;
+    for (var i = 0; i < params.children.length; i++) {
+      var ic = params.children[i];
+      ic.className = cn;
+      container.appendChild(tfw.icon(ic));
+    }
+    return container;
+  },
   /**
    * Alias for tfw.createAndFillElement("table", params)
    * @param {Object} params - table parameters (use params.children for rows)
@@ -1167,13 +1177,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @see tfw.iconButton
    */
   novyCudl: function(id, c, pozice, stisk, popis){
-    console.warn("DEPRECATED novyCudl, use iconButton instead.");
-    return tfw.iconButton({
+    console.warn("DEPRECATED novyCudl, use tfw.icon instead.");
+    return tfw.icon({
       id: id,
       className: c,
       title: typeof popis == "undefined" ? "" : popis,
-      position: pozice,
-      onmousedown: stisk
+      index: pozice,
+      action: stisk
     });
   },
   /**
@@ -1529,23 +1539,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, 20, tabObject.activeTab * 20);
     }
 
-    return container;
-  },
-  /**
-   * Create a custom button with an icon.
-   * @param {Object} params - parameters
-   * @param {number} params.position - negated background-position-x for icons sprite
-   * @param {function} params.onmousedown - click callback
-   * @return {HTMLElement} button with an icon
-   * @see tfw.fillElemDefs
-   * @todo Rename class "cudl"
-   */
-  iconButton: function(params){
-    var container = tfw.div({className: "cudl"}),
-        icon = tfw.createAndFillElement("div", params);
-    icon.style.backgroundPositionX = (-params.position) + "px";
-    icon.addEventListener("mousedown", params.onmousedown, false);
-    container.add(icon);
     return container;
   },
   /**
