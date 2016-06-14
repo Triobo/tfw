@@ -325,7 +325,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (prt.length == 1) prt[1] = i;
         params.list.push({
           id: prt[1],
-          t: prt[0]
+          text: prt[0]
         });
       }
     }
@@ -334,14 +334,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (typeof p === "string") {
         p = {
           id: i,
-          t: p
+          text: p
         };
       }
       if (!("id" in p)) p.id = i;
       var l = document.createElement("div");
       l.value = String(p.id);
-      if ("n" in p) l.innerHTML = p.n;
-      else l.innerHTML = p.t;
+      l.innerHTML = p.n || p.t || p.text;
       if (m.indexOf(l.value) > -1) l.className = "selected";
       l.addEventListener("mousedown", element.clickOnItem, false);
       element.add(l);
