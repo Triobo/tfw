@@ -1144,12 +1144,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     console.warn("DEPRECATED tfw.noveZalozky, use tfw.tabs instead. (call from " + arguments.callee.caller.name + ")");
     return tfw.tabs({
       id: id,
-      width: w,
-      height: h,
+      style: "width: "+w+"px;height: "+h+"px",
       tabs: zalozky.split(";").map(function(value){
         return {title: value};
       }),
-      active: init
+      active: Number(init)
     });
   },
   /**
@@ -1160,19 +1159,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
     console.warn("DEPRECATED tfw.noveSvisleZalozky, use tfw.tabs instead. (call from " + arguments.callee.caller.name + ")");
     return tfw.tabs({
       id: id,
-      width: w,
-      height: h,
+      style: "width: "+w+"px;height: "+h+"px",
       tabs: zalozky.split(";").map(function(value, i){
         var ret = {},
             item = value.split("|");
-        if(item.length > 1) ret.name = item[1];
-        else ret.name = i;
+        if(item.length > 1) ret.id = item[1];
+        else ret.id = id+"-tab-"+String(i);
         ret.title = item[0];
         return ret;
       }),
       active: init,
       orientation: tfw.orientation.VERTICAL,
-      listWidth: wl
+      styleTabs: "width: "+wl+"px;"
     });
   },
   /**
@@ -1228,11 +1226,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} params.id - ID of tabs container
    * @param {tfw.Tabs~tabLabel} [params.active=-1] - index or name of tab active by default (negative means none)
    * @param {tfw.orientation} [params.orientation=tfw.orientation.HORIZONTAL] - orientation of tabs
-   * @param {number} [params.listWidth] - width of tab list (for vertical tabs)
+   * @param {string} [params.styleTabs] - style of tab titles' list (width required for vertical tabs)
+   * @param {string} params.style - style of each tab's content (width and height required, but not checked)
    * @param {Object[]} params.tabs - array of tabs
    * @param {string} params.tabs[].title - tab title
-   * @param {HTMLElement[]} params.tabs[].content - tab content
-   * @param {string} [params.tabs[].name] - tab name (for referencing)
+   * @param {HTMLElement[]} [params.tabs[].children] - tab content (as HTML elements)
+   * @param {string} [params.tabs[].innerHTML] - tab content (as HTML string)
+   * @param {string} [params.tabs[].id] - tab ID/name (has to be unique in document)
    * @todo Remove deprecated properties and ids
    */
   Tabs: function(params){
@@ -1243,11 +1243,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       id: this.name
     });
     this.activeTab = -1;
-    this.tabNav = tfw.ol({className: "semantic tfwTabNav"});
-    if ("listWidth" in params) this.tabNav.style.width = params.listWidth + "px";
+    this.tabNav = tfw.ol({className: "semantic tfwTabNav", style: ("styleTabs" in params) ? params.styleTabs : ""});
     if (this.orientation == tfw.orientation.VERTICAL) this.tabNav.style.height = params.tabHeight + "px";
 
-    this.style = params.style;
+    this.tabStyle = params.style;
 
     /**
      * @typedef {Object} tfw.Tabs~tab
@@ -1327,11 +1326,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Add a new tab.
      * @public
      * @param {string} title - new tab title
-     * @param {HTMLElement[]} content - new tab content
+     * @param {HTMLElement[]|string} content - new tab content (may be HTML)
      * @param {boolean} [active=false] - whether to make new tab active by default
-     * @param {string} [tabName] - name of tab
+     * @param {string} [tabId] - ID (name) of tab
      */
-    this.appendTab = function(title, content, active, tabName){
+    this.appendTab = function(title, content, active, tabId){
       var i = this.tabs.length,
           tabs = this,
           tabTitle,
@@ -1348,8 +1347,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
         e.stopPropagation();
         e.preventDefault();
       }, false);
-      if (typeof tabName != "undefined") {
-        tabTitle.dataset.tabName = tabName;
+      if (typeof tabId != "undefined") {
+        tabTitle.dataset.tabName = tabId;
         Object.defineProperty(tabTitle, "value", {
           configurable: false,
           enumerable: true,
@@ -1362,14 +1361,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
       this.tabNav.add(tabTitle);
 
       // create tab content
+      var tabContentParams = {
+        className: "tfwTabContent",
+        style: this.tabStyle
+      };
+      if (typeof content === "string") {
+        tabContentParams.innerHTML = content;
+      } else {
+        tabContentParams.children = content;
+      }
       this.tabContainer.add(
-        tabContent = tfw.div({
-          className: "tfwTabContent",
-          style: this.style
-        })
+        tabContent = tfw.div(tabContentParams)
       );
-      if (typeof tabName != "undefined") {
-        tabContent.id = this.name + "-obsah-" + tabName; // TODO: remove
+      if (typeof tabId != "undefined") {
+        tabContent.id = tabId; // TODO: prefix?
       }
       tabContent.dataset.tabIndex = i;
       tabContent.removeItem = function(){
@@ -1398,7 +1403,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       });
 
       var tab = {title: tabTitle, content: tabContent};
-      if (typeof tabName != "undefined") tab.name = tabName;
+      if (typeof tabId != "undefined") tab.name = tabId;
       this.tabs[i] = tab;
 
       if (typeof active != "undefined" && active) this.setActiveTab(i);
@@ -1443,7 +1448,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
 
     for (var i = 0; i < params.tabs.length; i++) {
-      this.appendTab(params.tabs[i].title, params.tabs[i].content, this.tabLabelToIndex(params.active) == i, params.tabs[i].name);
+      this.appendTab(
+        params.tabs[i].title,
+        params.tabs[i].children || params.tabs[i].innerHTML,
+        this.tabLabelToIndex(params.active) == i,
+        params.tabs[i].id
+      );
     }
   },
   /**
@@ -2924,8 +2934,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     };
     /**
-     * @private
      * Compare two numbers - for use with sorting functions.
+     * @private
      * @param {number} a - number to be compared
      * @param {number} b - number to compare to
      * @return {number} -1 if a < b, 0 if a == b, 1 if a > b
@@ -2936,8 +2946,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       return l < r ? -1 : l > r;
     }
     /**
-     * @private
      * Compare two table rows by their IDs - for use with sorting functions.
+     * @private
      * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
      * @param {tfw.DynamicTable~dataRow} row1 - row to be compared
      * @param {tfw.DynamicTable~dataRow} row2 - row to compare to
@@ -2947,8 +2957,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       return cmp(row1.id, row2.id) * asc;
     }
     /**
-     * @private
      * Compare two table rows by numeric value of a column - for use with sorting functions.
+     * @private
      * @param {number} dataCol - order of column (in data)
      * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
      * @param {tfw.DynamicTable~dataRow} row1 - row to be compared
@@ -2961,8 +2971,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       return (a == b) ? cmpRowsIds(asc, row1, row2) : (cmp(a, b) * asc);
     }
     /**
-     * @private
      * Compare two table rows alphabetically by value of a column - for use with sorting functions.
+     * @private
      * @param {number} dataCol - order of column (in data)
      * @param {tfw.DynamicTable.sortTypes} asc - sorting type (ascending or descending)
      * @param {tfw.DynamicTable~dataRow} row1 - row to be compared
@@ -3355,8 +3365,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
 
     /**
-     * @private
      * (Re)paint the calendar.
+     * @private
      */
     function paint(){
       var d = new Date(selectedYear, selectedMonth - 1, 1),

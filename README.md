@@ -39,7 +39,7 @@
                 * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒ <code>number</code>
                 * [.getActiveTabName()](#tfw.Tabs+getActiveTabName) ⇒ <code>string</code>
                 * [.setActiveTab(tabLabel)](#tfw.Tabs+setActiveTab)
-                * [.appendTab(title, content, [active], [tabName])](#tfw.Tabs+appendTab)
+                * [.appendTab(title, content, [active], [tabId])](#tfw.Tabs+appendTab)
                 * [.removeTab(tabLabel)](#tfw.Tabs+removeTab)
                 * [.getTab(tabLabel)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
                 * [.setTab(tabLabel, content)](#tfw.Tabs+setTab)
@@ -182,7 +182,7 @@ Triobo framework. This is a singleton.
         * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒ <code>number</code>
         * [.getActiveTabName()](#tfw.Tabs+getActiveTabName) ⇒ <code>string</code>
         * [.setActiveTab(tabLabel)](#tfw.Tabs+setActiveTab)
-        * [.appendTab(title, content, [active], [tabName])](#tfw.Tabs+appendTab)
+        * [.appendTab(title, content, [active], [tabId])](#tfw.Tabs+appendTab)
         * [.removeTab(tabLabel)](#tfw.Tabs+removeTab)
         * [.getTab(tabLabel)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
         * [.setTab(tabLabel, content)](#tfw.Tabs+setTab)
@@ -202,11 +202,13 @@ Class for creating tabs.
 | params.id | <code>string</code> |  | ID of tabs container |
 | [params.active] | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | <code>-1</code> | index or name of tab active by default (negative means none) |
 | [params.orientation] | <code>[orientation](#tfw.orientation)</code> | <code>tfw.orientation.HORIZONTAL</code> | orientation of tabs |
-| [params.listWidth] | <code>number</code> |  | width of tab list (for vertical tabs) |
+| [params.styleTabs] | <code>string</code> |  | style of tab titles' list (width required for vertical tabs) |
+| params.style | <code>string</code> |  | style of each tab's content (width and height required, but not checked) |
 | params.tabs | <code>Array.&lt;Object&gt;</code> |  | array of tabs |
 | params.tabs[].title | <code>string</code> |  | tab title |
-| params.tabs[].content | <code>Array.&lt;HTMLElement&gt;</code> |  | tab content |
-| [params.tabs[].name] | <code>string</code> |  | tab name (for referencing) |
+| [params.tabs[].children] | <code>Array.&lt;HTMLElement&gt;</code> |  | tab content (as HTML elements) |
+| [params.tabs[].innerHTML] | <code>string</code> |  | tab content (as HTML string) |
+| [params.tabs[].id] | <code>string</code> |  | tab ID/name (has to be unique in document) |
 
 <a name="tfw.Tabs+tabs"></a>
 
@@ -244,7 +246,7 @@ Set active tab (and set previously active tab as inactive).
 
 <a name="tfw.Tabs+appendTab"></a>
 
-#### tabs.appendTab(title, content, [active], [tabName])
+#### tabs.appendTab(title, content, [active], [tabId])
 Add a new tab.
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
@@ -253,9 +255,9 @@ Add a new tab.
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | title | <code>string</code> |  | new tab title |
-| content | <code>Array.&lt;HTMLElement&gt;</code> |  | new tab content |
+| content | <code>Array.&lt;HTMLElement&gt;</code> &#124; <code>string</code> |  | new tab content (may be HTML) |
 | [active] | <code>boolean</code> | <code>false</code> | whether to make new tab active by default |
-| [tabName] | <code>string</code> |  | name of tab |
+| [tabId] | <code>string</code> |  | ID (name) of tab |
 
 <a name="tfw.Tabs+removeTab"></a>
 
