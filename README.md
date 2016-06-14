@@ -131,6 +131,7 @@
         * [.textArea(params)](#tfw.textArea) ⇒ <code>HTMLElement</code>
         * [.checkbox(params)](#tfw.checkbox) ⇒ <code>HTMLElement</code>
         * [.icon(params)](#tfw.icon) ⇒ <code>HTMLElement</code>
+        * [.groupOfIcons(params)](#tfw.groupOfIcons) ⇒ <code>HTMLElement</code>
         * [.table(params)](#tfw.table) ⇒ <code>HTMLElement</code>
         * [.tr(params)](#tfw.tr) ⇒ <code>HTMLElement</code>
         * [.td(params)](#tfw.td) ⇒ <code>HTMLElement</code>
@@ -199,8 +200,6 @@ Class for creating tabs.
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | table parameters |
 | params.id | <code>string</code> |  | ID of tabs container |
-| params.tabWidth | <code>number</code> |  | width of a tab (in pixels) |
-| params.tabHeight | <code>number</code> |  | height of a tab (in pixels) |
 | [params.active] | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | <code>-1</code> | index or name of tab active by default (negative means none) |
 | [params.orientation] | <code>[orientation](#tfw.orientation)</code> | <code>tfw.orientation.HORIZONTAL</code> | orientation of tabs |
 | [params.listWidth] | <code>number</code> |  | width of tab list (for vertical tabs) |
@@ -1351,6 +1350,25 @@ Create an icon with specified parameters.
 | params | <code>Object</code> | icon parameters |
 | [params.action] | <code>function</code> | function triggered when icon is clicked (basically onclick) |
 | [params.index] | <code>number</code> | move background image up by this number of pixels (background-position-x) |
+
+<a name="tfw.groupOfIcons"></a>
+
+### tfw.groupOfIcons(params) ⇒ <code>HTMLElement</code>
+Creates [div](#tfw.div) classed tfwGroupOfIcons with [icon](#tfw.icon)s.
+
+**Kind**: static method of <code>[tfw](#tfw)</code>  
+**Returns**: <code>HTMLElement</code> - icon group's container  
+**See**
+
+- tfw.icon
+- tfw.div
+
+
+| Param | Type | Description |
+| --- | --- | --- |
+| params | <code>Object</code> | parameters (mostly for containing div) |
+| params.iconsClassName | <code>string</code> | class given to each icon |
+| params.children | <code>Array.&lt;Object&gt;</code> | array of params objects for [icon](#tfw.icon) |
 
 <a name="tfw.table"></a>
 

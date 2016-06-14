@@ -604,6 +604,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.selected) element.selected = 1;
     return element;
   },
+  /**
+   * Creates {@link tfw.div} classed tfwGroupOfIcons with {@link tfw.icon}s.
+   * @param {Object} params - parameters (mostly for containing div)
+   * @param {string} params.iconsClassName - class given to each icon
+   * @param {Object[]} params.children - array of params objects for {@link tfw.icon}
+   * @see tfw.icon
+   * @see tfw.div
+   * @return {HTMLElement} icon group's container
+   */
   groupOfIcons: function(params){
     var cn = params.iconsClassName;
     delete params.iconsClassName;
@@ -1217,8 +1226,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @class
    * @param {Object} params - table parameters
    * @param {string} params.id - ID of tabs container
-   * @param {number} params.tabWidth - width of a tab (in pixels)
-   * @param {number} params.tabHeight - height of a tab (in pixels)
    * @param {tfw.Tabs~tabLabel} [params.active=-1] - index or name of tab active by default (negative means none)
    * @param {tfw.orientation} [params.orientation=tfw.orientation.HORIZONTAL] - orientation of tabs
    * @param {number} [params.listWidth] - width of tab list (for vertical tabs)
