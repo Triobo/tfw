@@ -325,7 +325,10 @@ button:disabled:hover {
 
 .tfwContainer span {
   display: inline-block;
-  vertical-align: top;
+  vertical-align: baseline;
+}
+.tfwContainer input {
+  vertical-align: baseline;
 }
 
 /* block */
@@ -456,15 +459,15 @@ button:disabled:hover {
   background-color: #fd5;/*orange-light*/
 }
 
-.tfwIconGroup {
+.tfwGroupOfIcons {
   line-height: 1;
-  display: inline-block;
-  border-radius: 3px;
-  border: 1px solid #bbb;
-  background: #bbb;
+  display:inline-block;
+  border-radius:3px;
+  border:1px solid #bbb;
+  background:#bbb;
   overflow: hidden;
-  padding-right: -1px;
-  margin-right: 4px;
+  padding-right:-1px;
+  margin-right:4px;
   vertical-align: top;
   white-space: nowrap;
 }
