@@ -432,10 +432,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.containerStyle) x.style.cssText = params.containerStyle;
     x.add(l);
     x.add(element);
-    if (params.postText) {
-      x.add(tfw.span({
-        innerHTML: params.postText
-      }));
+    if (params.after) {
+      var a = document.createElement("span");
+      a.innerHTML = params.after;
+      if (params.afterStyle) a.style.cssText = params.afterStyle;
+      x.add(a);
     }
     return x;
   },
@@ -465,7 +466,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         element[attributesToCopy[i]] = params[attributesToCopy[i]];
       }
     }
-    return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
+    return (params.legend || params.after) ? (this.inputFieldLegend(element, params)) : element;
   },
   /**
    * Create a text area with specified parameters.
@@ -605,12 +606,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return element;
   },
   groupOfIcons: function(params){
-    var container = tfw.div({className: "tfwGroupOfIcons"});
     var cn = params.iconsClassName;
-    for (var i = 0; i < params.children.length; i++) {
-      var ic = params.children[i];
-      ic.className = cn;
-      container.appendChild(tfw.icon(ic));
+    delete params.iconsClassName;
+    var ch = params.children;
+    delete params.children;
+    params.className = "tfwGroupOfIcons";
+    var container = tfw.div(params);
+    for (var i = 0; i < ch.length; i++) {
+      ch[i].className = cn;
+      container.appendChild(tfw.icon(ch[i]));
     }
     return container;
   },
@@ -984,7 +988,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
         // intentionally omitted default
       }
     }
-    console.info("Desktop ajax " + o.method + " " + ur);
     httpRequest.open(o.method, ur);
     switch (o.method) {
       case "GET":
@@ -1171,51 +1174,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
   zvolSvislouZalozku: function(jmeno, novy){
     console.warn("DEPRECATED zvolSvislouZalozku, use setActiveTab instead.");
     $(jmeno).setActiveTab(String(novy));
-  },
-  /**
-   * @deprecated
-   * @see tfw.iconButton
-   */
-  novyCudl: function(id, c, pozice, stisk, popis){
-    console.warn("DEPRECATED novyCudl, use tfw.icon instead.");
-    return tfw.icon({
-      id: id,
-      className: c,
-      title: typeof popis == "undefined" ? "" : popis,
-      index: pozice,
-      action: stisk
-    });
-  },
-  /**
-   * @deprecated
-   * @see tfw.wrappedInput
-   */
-  vstupniPole: function(id, styl, legenda, stylL, postT, postL){
-    console.warn("DEPRECATED tfw.vstupniPole, use tfw.wrappedInput instead.");
-    return tfw.wrappedInput({
-      id: id,
-      style: typeof styl == "undefined" ? "" : styl,
-      legend: legenda,
-      legendStyle: typeof stylL == "undefined" ? "" : stylL,
-      textAfter: typeof postT == "undefined" ? null : postT,
-      textAfterStyle: typeof postL == "undefined" ? "" : postL
-    });
-  },
-  /**
-   * @deprecated
-   * @see tfw.wrappedInput
-   */
-  vstupniPoleR: function(id, styl, legenda, stylL, postT, postL){
-    console.warn("DEPRECATED tfw.vstupniPoleR, use tfw.wrappedInput instead.");
-    return tfw.wrappedInput({
-      id: id,
-      style: typeof styl == "undefined" ? "" : styl,
-      legend: legenda,
-      legendStyle: typeof stylL == "undefined" ? "" : stylL,
-      textAfter: typeof postT == "undefined" ? null : postT,
-      textAfterStyle: typeof postL == "undefined" ? "" : postL,
-      right: true
-    });
   },
   /**
    * @deprecated
@@ -1539,32 +1497,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, 20, tabObject.activeTab * 20);
     }
 
-    return container;
-  },
-  /**
-   * Basically a wrapper for tfw.input with legend, with some parameters prefilled.
-   * @param {Object} params - parameters
-   * @param {string} [params.textAfter] - text to append after input
-   * @param {string} [params.textAfterStyle] - CSS to apply to appended text
-   * @param {boolean} [params.right=false] - whether to align input text to the right
-   * @return {HTMLElement} input container with legend(s)
-   * @see tfw.input
-   */
-  wrappedInput: function(params){
-    var inputParams = params;
-    inputParams.containerTag = "div";
-    inputParams.containerClassName = "vstup";
-    inputParams.className = "data";
-    if ("right" in params && params.right) {
-      inputParams.style = "text-align: right;" + (("style" in inputParams) ? inputParams.style : "");
-    }
-    var container = tfw.input(inputParams);
-    if ("textAfter" in params && params.textAfter != null) {// null only for compatibility with tfw.vstupniPole
-      container.appendChild(tfw.span({
-        innerHTML: params.textAfter,
-        style: ("textAfterStyle" in params) ? params.textAfterStyle : ""
-      }));
-    }
     return container;
   },
   /**
