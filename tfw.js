@@ -621,8 +621,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
     params.className = "tfwGroupOfIcons";
     var container = tfw.div(params);
     for (var i = 0; i < ch.length; i++) {
-      ch[i].className = cn;
-      container.appendChild(tfw.icon(ch[i]));
+      if (ch[i] != null) {
+        ch[i].className = cn;
+        container.appendChild(tfw.icon(ch[i]));
+      }
     }
     return container;
   },
