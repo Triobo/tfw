@@ -1249,6 +1249,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (this.orientation == tfw.orientation.VERTICAL) this.tabNav.style.height = params.tabHeight + "px";
 
     this.tabStyle = params.style;
+    if ("onchange" in params) this.onchange = params.onchange;
 
     /**
      * @typedef {Object} tfw.Tabs~tab
@@ -1321,6 +1322,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           this.activeTab = tabIndex;
           nextTab.content.dispatchEvent(new CustomEvent("tabshow"));
         }
+        if (this.onchange) this.onchange();
       }
     };
 
@@ -1521,6 +1523,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
         tabObject.tabNav.scrollTop = verticalScroll;
       }, 20, tabObject.activeTab * 20);
     }
+
+    if ("value" in params) container.value = params.value; 
+    else container.value = 0;
 
     return container;
   },
