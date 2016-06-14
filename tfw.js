@@ -282,7 +282,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {boolean} [params.multiple] - can multiple values be selected
    * @param {(string|string[]|Object[])} params.list - list of options as string "label1;label2" or "label1\|value1;label2\|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text)
    * @param {string} [params.list[].id] - value (defaults to numeric index of option)
-   * @param {string} params.list[].t - label
+   * @param {string} params.list[].text - label
    * @return {HTMLElement} Created select field.
    */
   select: function(params){
