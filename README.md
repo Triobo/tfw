@@ -148,15 +148,10 @@
         * ~~[.noveZalozky()](#tfw.noveZalozky)~~
         * ~~[.noveSvisleZalozky()](#tfw.noveSvisleZalozky)~~
         * ~~[.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)~~
-        * ~~[.novyCudl()](#tfw.novyCudl)~~
-        * ~~[.vstupniPole()](#tfw.vstupniPole)~~
-        * ~~[.vstupniPoleR()](#tfw.vstupniPoleR)~~
         * ~~[.progressBar()](#tfw.progressBar)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
-        * [.iconButton(params)](#tfw.iconButton) ⇒ <code>HTMLElement</code>
-        * [.wrappedInput(params)](#tfw.wrappedInput) ⇒ <code>HTMLElement</code>
         * [.progress(params)](#tfw.progress) ⇒ <code>HTMLElement</code>
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
@@ -1222,7 +1217,7 @@ Create a select field with specified parameters.
 | [params.multiple] | <code>boolean</code> | can multiple values be selected |
 | params.list | <code>string</code> &#124; <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> | list of options as string "label1;label2" or "label1\|value1;label2\|value2", as array of string labels or as object (nonspecified value defaults to numeric index, NOT label text) |
 | [params.list[].id] | <code>string</code> | value (defaults to numeric index of option) |
-| params.list[].t | <code>string</code> | label |
+| params.list[].text | <code>string</code> | label |
 
 <a name="tfw.dropDown"></a>
 
@@ -1571,27 +1566,6 @@ Use various tfw functions instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: tfw.tabs  
-<a name="tfw.novyCudl"></a>
-
-### ~~tfw.novyCudl()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.iconButton  
-<a name="tfw.vstupniPole"></a>
-
-### ~~tfw.vstupniPole()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.wrappedInput  
-<a name="tfw.vstupniPoleR"></a>
-
-### ~~tfw.vstupniPoleR()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.wrappedInput  
 <a name="tfw.progressBar"></a>
 
 ### ~~tfw.progressBar()~~
@@ -1637,41 +1611,6 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | tabs parameters |
-
-<a name="tfw.iconButton"></a>
-
-### tfw.iconButton(params) ⇒ <code>HTMLElement</code>
-Create a custom button with an icon.
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - button with an icon  
-**See**: tfw.fillElemDefs  
-**Todo**
-
-- [ ] Rename class "cudl"
-
-
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>Object</code> | parameters |
-| params.position | <code>number</code> | negated background-position-x for icons sprite |
-| params.onmousedown | <code>function</code> | click callback |
-
-<a name="tfw.wrappedInput"></a>
-
-### tfw.wrappedInput(params) ⇒ <code>HTMLElement</code>
-Basically a wrapper for tfw.input with legend, with some parameters prefilled.
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**Returns**: <code>HTMLElement</code> - input container with legend(s)  
-**See**: tfw.input  
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| params | <code>Object</code> |  | parameters |
-| [params.textAfter] | <code>string</code> |  | text to append after input |
-| [params.textAfterStyle] | <code>string</code> |  | CSS to apply to appended text |
-| [params.right] | <code>boolean</code> | <code>false</code> | whether to align input text to the right |
 
 <a name="tfw.progress"></a>
 
