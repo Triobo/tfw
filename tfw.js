@@ -418,7 +418,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} [params.containerId] - legend container ID
    * @param {string} [params.containerClassName] - legend container class(es)
    * @param {string} [params.containerStyle] - legend container CSS styling
-   * @param {string} [params.postText] - text after input field
+   * @param {string} [params.after] - text after input field
    * @return {HTMLElement} container with legend and input field
    */
   inputFieldLegend: function(element, params){

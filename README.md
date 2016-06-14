@@ -1273,7 +1273,7 @@ Wrap an input field with a legend and a container.
 | [params.containerId] | <code>string</code> |  | legend container ID |
 | [params.containerClassName] | <code>string</code> |  | legend container class(es) |
 | [params.containerStyle] | <code>string</code> |  | legend container CSS styling |
-| [params.postText] | <code>string</code> |  | text after input field |
+| [params.after] | <code>string</code> |  | text after input field |
 
 <a name="tfw.input"></a>
 
