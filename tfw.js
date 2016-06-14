@@ -1367,14 +1367,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
         className: "tfwTabContent",
         style: this.tabStyle
       };
-      if (typeof content === "string") {
-        tabContentParams.innerHTML = content;
-      } else {
-        tabContentParams.children = content;
+
+      if (typeof content != "undefined") {
+        if (typeof content === "string") {
+          tabContentParams.innerHTML = content;
+        } else {
+          tabContentParams.children = content;
+        }
       }
+
       this.tabContainer.add(
         tabContent = tfw.div(tabContentParams)
       );
+
       if (typeof tabId != "undefined") {
         tabContent.id = tabId; // TODO: prefix?
       }
