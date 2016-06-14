@@ -152,7 +152,7 @@
         * ~~[.progressBar()](#tfw.progressBar)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
-        * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
+        * [.tabs(params, [_valueAsName])](#tfw.tabs) ⇒ <code>HTMLElement</code>
         * [.progress(params)](#tfw.progress) ⇒ <code>HTMLElement</code>
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
@@ -1617,7 +1617,7 @@ Alias for tfw.createAndFillElement("li", params)
 
 <a name="tfw.tabs"></a>
 
-### tfw.tabs(params) ⇒ <code>HTMLElement</code>
+### tfw.tabs(params, [_valueAsName]) ⇒ <code>HTMLElement</code>
 Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.API methods are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
@@ -1625,12 +1625,13 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 **See**: tfw.Tabs  
 **Todo**
 
-- [ ] Remove deprecated properties and methods
+- [ ] Remove deprecated argument, properties and methods
 
 
-| Param | Type | Description |
-| --- | --- | --- |
-| params | <code>Object</code> | tabs parameters |
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| params | <code>Object</code> |  | tabs parameters |
+| [_valueAsName] | <code>boolean</code> | <code>false</code> | simulate behaviour of noveSvisleZalozky (for compatibility) |
 
 <a name="tfw.progress"></a>
 

@@ -1173,7 +1173,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       active: init,
       orientation: tfw.orientation.VERTICAL,
       styleTabs: "width: "+wl+"px;"
-    });
+    }, true);
   },
   /**
    * @deprecated
@@ -1467,14 +1467,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
    * API methods are mirrored into the HTML element.
    * @param {Object} params - tabs parameters
+   * @param {boolean} [_valueAsName=false] - simulate behaviour of noveSvisleZalozky (for compatibility)
    * @return {HTMLElement} Tabs
    * @see tfw.Tabs
-   * @todo Remove deprecated properties and methods
+   * @todo Remove deprecated argument, properties and methods
    */
-  tabs: function(params){
+  tabs: function(params, _valueAsName){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
         api = ["getActiveTab", "getActiveTabName", "setActiveTab", "appendTab", "removeTab", "getTab", "setTab"];
+    tabObject._valueAsName = (typeof _valueAsName == "undefined") ? false : _valueAsName;
     for (var i = 0; i < api.length; i++) {
       container[api[i]] = tabObject[api[i]].bind(tabObject);
     }
@@ -1483,12 +1485,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
       configurable: false,
       enumerable: true,
       get: function(){
-        console.warn("DEPRECATED use of tab's attribute value, use getActiveTab instead.");
-        return tabObject.orientation == tfw.orientation.VERTICAL ? tabObject.getActiveTabName() : tabObject.getActiveTab();
+        if (tabObject._valueAsName) console.warn("DEPRECATED use of tab's attribute value (requesting name), use getActiveTabName instead.");
+        return tabObject._valueAsName ? tabObject.getActiveTabName() : tabObject.getActiveTab();
       },
       set: function(value){
-        console.warn("DEPRECATED use of tab's attribute value, use setActiveTab instead.");
-        tabObject.setActiveTab(tabObject.orientation == tfw.orientation.VERTICAL ? String(value) : value);
+        if (tabObject._valueAsName) console.warn("DEPRECATED use of tab's attribute value (setting name), use setActiveTabName instead.");
+        tabObject.setActiveTab(tabObject._valueAsName ? String(value) : value);
       }
     });
     if (tabObject.orientation == tfw.orientation.VERTICAL) {
