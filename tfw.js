@@ -1158,7 +1158,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       active: init,
       orientation: tfw.orientation.VERTICAL,
       styleTabs: "width: "+wl+"px;"
-    }, true);
+    });
   },
   /**
    * @deprecated
@@ -1220,7 +1220,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {HTMLElement[]} [params.tabs[].children] - tab content (as HTML elements)
    * @param {string} [params.tabs[].innerHTML] - tab content (as HTML string)
    * @param {string} [params.tabs[].id] - tab ID/name (has to be unique in document)
-   * @todo Remove deprecated properties and ids
    */
   Tabs: function(params){
     this.orientation = ("orientation" in params) ? params.orientation : tfw.orientation.HORIZONTAL;
@@ -1337,14 +1336,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, false);
       if (typeof tabId != "undefined") {
         tabTitle.dataset.tabName = tabId;
-        Object.defineProperty(tabTitle, "value", {
-          configurable: false,
-          enumerable: true,
-          get: function(){
-            console.warn("DEPRECATED use of tab title's value attribute, use .dataset.tabName instead.");
-            return this.dataset.tabName;
-          }
-        });
       }
       this.tabNav.add(tabTitle);
 
@@ -1373,27 +1364,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
       tabContent.removeItem = function(){
         tabs.removeTab(this.dataset.tabIndex);
       };
-      Object.defineProperty(tabContent, "onHide", {
-        configurable: false,
-        enumerable: true,
-        set: function(listener){
-          console.warn("DEPRECATED use of vertical tab's attribute onHide, use addEventListener(\"tabhide\") instead.");
-          this.addEventListener("tabhide", listener);
-        }
-      });
-      Object.defineProperty(tabContent, "onShow", {
-        configurable: false,
-        enumerable: true,
-        set: function(listener){
-          console.warn("DEPRECATED use of vertical tab's attribute onShow, use addEventListener(\"tabshow\") instead.");
-          this.addEventListener("tabshow", listener);
-          this._onShowListener = listener;
-        },
-        get: function(){
-          console.warn("DEPRECATED use of vertical tab's attribute onShow, fire custom event \"tabshow\" instead.");
-          return this._onShowListener;
-        }
-      });
 
       var tab = {title: tabTitle, content: tabContent};
       if (typeof tabId != "undefined") tab.name = tabId;
@@ -1455,16 +1425,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * API methods are mirrored into the HTML element.
    * @param {Object} params - tabs parameters
    * @param {number} [params.value=0] - alias for params.active with different default
-   * @param {boolean} [_valueAsName=false] - simulate behaviour of noveSvisleZalozky (for compatibility)
    * @return {HTMLElement} Tabs
    * @see tfw.Tabs
-   * @todo Remove deprecated argument, properties and methods
    */
-  tabs: function(params, _valueAsName){
+  tabs: function(params){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
         api = ["getActiveTab", "getActiveTabName", "setActiveTab", "appendTab", "removeTab", "tab", "setTab"];
-    tabObject._valueAsName = (typeof _valueAsName == "undefined") ? false : _valueAsName;
     for (var i = 0; i < api.length; i++) {
       container[api[i]] = tabObject[api[i]].bind(tabObject);
     }
@@ -1473,43 +1440,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
       configurable: false,
       enumerable: true,
       get: function(){
-        if (tabObject._valueAsName) console.warn("DEPRECATED use of tab's attribute value (requesting name), use getActiveTabName instead.");
-        return tabObject._valueAsName ? tabObject.getActiveTabName() : tabObject.getActiveTab();
+        return tabObject.getActiveTab();
       },
       set: function(value){
-        if (tabObject._valueAsName) console.warn("DEPRECATED use of tab's attribute value (setting name), use setActiveTabName instead.");
-        tabObject.setActiveTab(tabObject._valueAsName ? String(value) : value);
+        tabObject.setActiveTab(value);
       }
     });
-    if (tabObject.orientation == tfw.orientation.VERTICAL) {
-      Object.defineProperty(container, "vybrany", {
-        configurable: false,
-        enumerable: true,
-        get: function(){
-          console.warn("DEPRECATED use of vertical tab's attribute vybrany, use getActiveTab instead.");
-          return tabObject.getActiveTab();
-        },
-        set: function(value){
-          console.warn("DEPRECATED use of vertical tab's attribute vybrany, use setActiveTab instead.");
-          tabObject.setActiveTab(value);
-        }
-      });
-      container.vyber = function(ord){
-        console.warn("DEPRECATED use of function vyber on vertical tab container, use setActiveTab instead.");
-        tabObject.setActiveTab(ord);
-      };
-      container.appendItem = function(item){
-        console.warn("DEPRECATED use of function appendItem on vertical tab container, use appendTab instead.");
-        tabObject.appendTab(item.text, "", ("aktivni" in item) ? item.aktivni : false, item.id);
-      };
-    }
 
     if (this.orientation == tfw.orientation.VERTICAL) { // TODO: Set somewhere else??
       setTimeout(function(verticalScroll){
         tabObject.tabNav.scrollTop = verticalScroll;
       }, 20, tabObject.activeTab * 20);
     }
-
 
     container.setActiveTab(("value" in params) ? Number(params.value) : 0);
 
@@ -3449,7 +3391,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /**
    * Create a list of checkboxes, with common controls.
-   * @todo Change seznamZatrzitek to tfwMultiCheckbox
    * @param {Object} params - checkbox list parameters
    * @see tfw.fillElemDefs
    * @param {string} [params.className=seznamZatrzitek] - container classes (seznamZatrzitek is always added)

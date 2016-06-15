@@ -147,7 +147,7 @@
         * ~~[.progressBar()](#tfw.progressBar)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
-        * [.tabs(params, [_valueAsName])](#tfw.tabs) ⇒ <code>HTMLElement</code>
+        * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
         * [.progress(params)](#tfw.progress) ⇒ <code>HTMLElement</code>
         * [.dynamicTable(params)](#tfw.dynamicTable) ⇒ <code>HTMLElement</code>
         * [.calendar(params)](#tfw.calendar) ⇒ <code>HTMLElement</code>
@@ -165,10 +165,6 @@ Triobo framework. This is a singleton.
 
 ### tfw.Tabs
 **Kind**: static class of <code>[tfw](#tfw)</code>  
-**Todo**
-
-- [ ] Remove deprecated properties and ids
-
 
 * [.Tabs](#tfw.Tabs)
     * [new Tabs(params)](#new_tfw.Tabs_new)
@@ -1605,22 +1601,17 @@ Alias for tfw.createAndFillElement("li", params)
 
 <a name="tfw.tabs"></a>
 
-### tfw.tabs(params, [_valueAsName]) ⇒ <code>HTMLElement</code>
+### tfw.tabs(params) ⇒ <code>HTMLElement</code>
 Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.API methods are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - Tabs  
 **See**: tfw.Tabs  
-**Todo**
-
-- [ ] Remove deprecated argument, properties and methods
-
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | tabs parameters |
 | [params.value] | <code>number</code> | <code>0</code> | alias for params.active with different default |
-| [_valueAsName] | <code>boolean</code> | <code>false</code> | simulate behaviour of noveSvisleZalozky (for compatibility) |
 
 <a name="tfw.progress"></a>
 
@@ -1676,10 +1667,6 @@ Create a list of checkboxes, with common controls.
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - Returns checkboxes' container (with value attribute and methods setNone and setAll)  
 **See**: tfw.fillElemDefs  
-**Todo**
-
-- [ ] Change seznamZatrzitek to tfwMultiCheckbox
-
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
