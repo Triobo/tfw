@@ -5,10 +5,6 @@
 <dd></dd>
 <dt><a href="#desktop">desktop</a></dt>
 <dd></dd>
-<dt><del><a href="#prvek">prvek</a></del></dt>
-<dd></dd>
-<dt><del><a href="#Dyntable">Dyntable</a></del></dt>
-<dd></dd>
 </dl>
 
 ## Functions
@@ -146,7 +142,6 @@
         * ~~[.zatrzitko()](#tfw.zatrzitko)~~
         * ~~[.tlacitko()](#tfw.tlacitko)~~
         * ~~[.novySelect()](#tfw.novySelect)~~
-        * ~~[.noveZalozky()](#tfw.noveZalozky)~~
         * ~~[.noveSvisleZalozky()](#tfw.noveSvisleZalozky)~~
         * ~~[.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)~~
         * ~~[.progressBar()](#tfw.progressBar)~~
@@ -1565,13 +1560,6 @@ Use various tfw functions instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **See**: tfw.select  
-<a name="tfw.noveZalozky"></a>
-
-### ~~tfw.noveZalozky()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.tabs  
 <a name="tfw.noveSvisleZalozky"></a>
 
 ### ~~tfw.noveSvisleZalozky()~~
@@ -1807,107 +1795,6 @@ Create a dropdown menu.
 | params.list | <code>Array.&lt;string&gt;</code> &#124; <code>Array.&lt;Object&gt;</code> |  | list of options passed to [select](#tfw.select) |
 | [params.value] | <code>string</code> |  | default (selected) value |
 
-<a name="prvek"></a>
-
-## ~~prvek~~
-***Deprecated***
-
-**Kind**: global class  
-
-* ~~[prvek](#prvek)~~
-    * [new prvek()](#new_prvek_new)
-    * [.rezimVyberuBarvy](#prvek.rezimVyberuBarvy)
-    * ~~[.seznamZatrzitek(params)](#prvek.seznamZatrzitek) ⇒ <code>HTMLElement</code>~~
-    * ~~[.tabulka()](#prvek.tabulka)~~
-    * ~~[.radek()](#prvek.radek)~~
-    * ~~[.sloupec()](#prvek.sloupec)~~
-    * [.barva()](#prvek.barva)
-    * [.barvaSLegendou()](#prvek.barvaSLegendou)
-
-<a name="new_prvek_new"></a>
-
-### new prvek()
-Function package for preparing HTML elements.
-
-<a name="prvek.rezimVyberuBarvy"></a>
-
-### prvek.rezimVyberuBarvy
-**Kind**: static property of <code>[prvek](#prvek)</code>  
-**Todo**
-
-- [ ] Remove dependencies on Triobo
-- [ ] Move to [tfw](#tfw)
-
-<a name="prvek.seznamZatrzitek"></a>
-
-### ~~prvek.seznamZatrzitek(params) ⇒ <code>HTMLElement</code>~~
-***Deprecated***
-
-Create a list of checkboxes, with common controls.
-
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**Returns**: <code>HTMLElement</code> - Returns container with checkboxes  
-**See**
-
-- tfw.multiCheckbox
-- tfw.fillElemDefs
-
-
-| Param | Type | Default | Description |
-| --- | --- | --- | --- |
-| params | <code>Object</code> |  | checkbox list parameters |
-| [params.className] | <code>string</code> | <code>&quot;seznamZatrzitek&quot;</code> | container classes (seznamZatrzitek is always added) |
-| [params.seznam] | <code>Array.&lt;Object&gt;</code> |  | list of checkboxes' parameters (makes params.id mandatory) |
-| params.seznam[].id | <code>string</code> |  | ID of checkbox |
-| params.seznam[].text | <code>string</code> |  | text of checkbox |
-| [params.init] | <code>string</code> |  | initial value |
-
-<a name="prvek.tabulka"></a>
-
-### ~~prvek.tabulka()~~
-***Deprecated***
-
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**See**: tfw.table  
-<a name="prvek.radek"></a>
-
-### ~~prvek.radek()~~
-***Deprecated***
-
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**See**: tfw.tr  
-<a name="prvek.sloupec"></a>
-
-### ~~prvek.sloupec()~~
-***Deprecated***
-
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**See**: tfw.td  
-<a name="prvek.barva"></a>
-
-### prvek.barva()
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**Todo**
-
-- [ ] Remove dependencies on Triobo
-- [ ] Move to [tfw](#tfw)
-
-<a name="prvek.barvaSLegendou"></a>
-
-### prvek.barvaSLegendou()
-**Kind**: static method of <code>[prvek](#prvek)</code>  
-**Todo**
-
-- [ ] Remove dependencies on Triobo
-- [ ] Move to [tfw](#tfw)
-
-<a name="Dyntable"></a>
-
-## ~~Dyntable~~
-***Deprecated***
-
-**Kind**: global class  
-**See**: tfw.dynamicTable  
 <a name="$"></a>
 
 ## $(id) ⇒ <code>HTMLElement</code>
