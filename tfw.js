@@ -1423,7 +1423,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {tfw.Tabs~tabLabel} tabLabel - index or name
      * @return {HTMLElement}
      */
-    this.getTab = function(tabLabel){
+    this.tab = function(tabLabel){
       return this.tabs[this.tabLabelToIndex(tabLabel)].content;
     };
 
@@ -1463,7 +1463,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   tabs: function(params, _valueAsName){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
-        api = ["getActiveTab", "getActiveTabName", "setActiveTab", "appendTab", "removeTab", "getTab", "setTab"];
+        api = ["getActiveTab", "getActiveTabName", "setActiveTab", "appendTab", "removeTab", "tab", "setTab"];
     tabObject._valueAsName = (typeof _valueAsName == "undefined") ? false : _valueAsName;
     for (var i = 0; i < api.length; i++) {
       container[api[i]] = tabObject[api[i]].bind(tabObject);

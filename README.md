@@ -37,7 +37,7 @@
                 * [.setActiveTab(tabLabel)](#tfw.Tabs+setActiveTab)
                 * [.appendTab(title, content, [active], [tabId])](#tfw.Tabs+appendTab)
                 * [.removeTab(tabLabel)](#tfw.Tabs+removeTab)
-                * [.getTab(tabLabel)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
+                * [.tab(tabLabel)](#tfw.Tabs+tab) ⇒ <code>HTMLElement</code>
                 * [.setTab(tabLabel, content)](#tfw.Tabs+setTab)
             * _inner_
                 * [~tabLabel](#tfw.Tabs..tabLabel) : <code>number</code> &#124; <code>string</code>
@@ -179,7 +179,7 @@ Triobo framework. This is a singleton.
         * [.setActiveTab(tabLabel)](#tfw.Tabs+setActiveTab)
         * [.appendTab(title, content, [active], [tabId])](#tfw.Tabs+appendTab)
         * [.removeTab(tabLabel)](#tfw.Tabs+removeTab)
-        * [.getTab(tabLabel)](#tfw.Tabs+getTab) ⇒ <code>HTMLElement</code>
+        * [.tab(tabLabel)](#tfw.Tabs+tab) ⇒ <code>HTMLElement</code>
         * [.setTab(tabLabel, content)](#tfw.Tabs+setTab)
     * _inner_
         * [~tabLabel](#tfw.Tabs..tabLabel) : <code>number</code> &#124; <code>string</code>
@@ -267,9 +267,9 @@ Remove a tab.
 | --- | --- | --- |
 | tabLabel | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | tab index or name |
 
-<a name="tfw.Tabs+getTab"></a>
+<a name="tfw.Tabs+tab"></a>
 
-#### tabs.getTab(tabLabel) ⇒ <code>HTMLElement</code>
+#### tabs.tab(tabLabel) ⇒ <code>HTMLElement</code>
 Getter for tab content container (for editing).
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
