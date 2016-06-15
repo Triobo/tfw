@@ -1233,7 +1233,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.tabNav = tfw.ol({className: "semantic tfwTabNav", style: ("styleTabs" in params) ? params.styleTabs : ""});
 
     this.tabStyle = params.style;
-    if ("onchange" in params) this.addEventListener("change", params.onchange);
+    if ("onchange" in params) this.tabContainer.addEventListener("change", params.onchange);
 
     /**
      * @typedef {Object} tfw.Tabs~tab
@@ -1306,7 +1306,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           this.activeTab = tabIndex;
           nextTab.content.dispatchEvent(new CustomEvent("tabshow"));
         }
-        this.dispatchEvent(new Event("change"));
+        this.tabContainer.dispatchEvent(new Event("change"));
       }
     };
 
