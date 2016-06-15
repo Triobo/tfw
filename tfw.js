@@ -4,7 +4,7 @@
  * @author melanger
  */
 
-/* global token:false, chyba:false, t:false, editor:false */
+/* global token:false, chyba:false, t:false */
 
 /**
  * Get HTML element by ID.
@@ -1439,16 +1439,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
       tfw.addAll(this.tabs[tabIndex].content, content);
     };
 
-
-    for (var i = 0; i < params.tabs.length; i++) if (params.tabs[i]) {
-      this.appendTab(
-        params.tabs[i].title,
-        params.tabs[i].children || params.tabs[i].innerHTML,
-        this.tabLabelToIndex(params.active) == i,
-        params.tabs[i].id
-      );
+    for (var i = 0; i < params.tabs.length; i++) {
+      if (params.tabs[i]) {
+        this.appendTab(
+          params.tabs[i].title,
+          params.tabs[i].children || params.tabs[i].innerHTML,
+          this.tabLabelToIndex(params.active) == i,
+          params.tabs[i].id
+        );
+      }
     }
-
   },
   /**
    * Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
@@ -1509,9 +1509,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, 20, tabObject.activeTab * 20);
     }
 
-    if ("value" in params) container.value = params.value; 
+    if ("value" in params) container.value = params.value;
     else container.value = 0;
-    
+
     return container;
   },
   /**
@@ -3478,7 +3478,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         var v = [];
         for (i = 0; i < this.childNodes.length; i++) {
           this.childNodes[i].value = 0;
-        }        
+        }
         if (typeof val === "string") v = val.split(",");
         else v = val;
         var itemId;
@@ -4018,17 +4018,21 @@ var desktop = {//eslint-disable-line no-implicit-globals
     if (co.obsah) dlg.innerHTML = co.obsah;
     var i;
     if (co.children) {
-      for (i = 0; i < co.children.length; i++) if (co.children[i]) {
-        dlg.add(co.children[i]);
+      for (i = 0; i < co.children.length; i++) {
+        if (co.children[i]) {
+          dlg.add(co.children[i]);
+        }
       }
     }
     vnit.add(dlg.buttons = tfw.div({
       className: "buttonsBar"
     }));
     if (co.buttons) {
-      for (i = 0; i < co.buttons.length; i++) if (co.buttons[i]) {
-        dlg.buttons.add(b = tfw.button(co.buttons[i]));
-        if (!co.vychozi && b.type == "submit") b.focus();
+      for (i = 0; i < co.buttons.length; i++) {
+        if (co.buttons[i]) {
+          dlg.buttons.add(b = tfw.button(co.buttons[i]));
+          if (!co.vychozi && b.type == "submit") b.focus();
+        }
       }
     }
     if (co.id) dlg.id = co.id;
