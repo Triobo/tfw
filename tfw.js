@@ -1231,7 +1231,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     this.activeTab = -1;
     this.tabNav = tfw.ol({className: "semantic tfwTabNav", style: ("styleTabs" in params) ? params.styleTabs : ""});
-    if (this.orientation == tfw.orientation.VERTICAL) this.tabNav.style.height = params.tabHeight + "px";
 
     this.tabStyle = params.style;
     if ("onchange" in params) this.onchange = params.onchange;
@@ -1449,6 +1448,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         params.tabs[i].id
       );
     }
+
   },
   /**
    * Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
@@ -1511,7 +1511,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
     if ("value" in params) container.value = params.value; 
     else container.value = 0;
-
+    
     return container;
   },
   /**
@@ -3461,9 +3461,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
   multiCheckbox: function(params){
     var i,
         container = tfw.createAndFillElement("div", params);
-    container.addClass("seznamZatrzitek");
+    container.addClass("tfwMultiCheckbox");
     container._value = [];
-    if (params.value) container._value = params.value;
     var checkboxOnChange = function(){
       var checkboxContainer = this.parentNode,
           checkboxes = checkboxContainer.childNodes;
@@ -3473,6 +3472,27 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       if (container.onchange) container.dispatchEvent(new Event("change"));
     };
+    Object.defineProperty(container, "value", {
+      set: function(val){
+        var v = [];
+        for (i = 0; i < this.childNodes.length; i++) {
+          this.childNodes[i].value = 0;
+        }        
+        if (typeof val === "string") v = val.split(",");
+        else v = val;
+        var itemId;
+        for (i = 0; i < v.length; i++) {
+          itemId = this.id + "-" + v[i];
+          if ($(itemId)) $(itemId).value = 1;
+        }
+      },
+      get: function(){
+        return container._value;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    if (params.value) container.value = params.value;
     if ("list" in params) {
       for (i = 0; i < params.list.length; i++) {
         container.add(tfw.checkbox({
@@ -3482,40 +3502,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           value: (container._value.indexOf(params.list[i].id) > -1) ? 1 : 0
         }));
       }
-    }
-    Object.defineProperty(container, "value", {
-      set: function(val){
-        if (val === "AllItems") {
-          for (i = 0; i < this.childNodes.length; i++) {
-            this.childNodes[i].value = 1;
-          }
-        } else {
-          var v = [];
-          if (val) {
-            v = val;
-          }
-          for (i = 0; i < this.childNodes.length; i++) {
-            this.childNodes[i].value = 0;
-          }
-          var itemId;
-          for (i = 0; i < v.length; i++) {
-            itemId = this.id + "-" + v[i];
-            if ($(itemId)) $(itemId).value = 1;
-          }
-        }
-      },
-      get: function(){
-        return this._value;
-      },
-      enumerable: true,
-      configurable: true
-    });
-    container.setNone = function(){
-      this.value = [];
-    };
-    container.setAll = function(){
-      this.value = "AllItems";
-    };
+    }    
     return container;
   }
 };
@@ -4031,7 +4018,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     if (co.obsah) dlg.innerHTML = co.obsah;
     var i;
     if (co.children) {
-      for (i = 0; i < co.children.length; i++) {
+      for (i = 0; i < co.children.length; i++) if (co.children[i]) {
         dlg.add(co.children[i]);
       }
     }
@@ -4039,11 +4026,9 @@ var desktop = {//eslint-disable-line no-implicit-globals
       className: "buttonsBar"
     }));
     if (co.buttons) {
-      for (i = 0; i < co.buttons.length; i++) {
-        if (co.buttons[i].text) {
-          dlg.buttons.add(b = tfw.button(co.buttons[i]));
-          if (!co.vychozi && b.type == "submit") b.focus();
-        }
+      for (i = 0; i < co.buttons.length; i++) if (co.buttons[i]) {
+        dlg.buttons.add(b = tfw.button(co.buttons[i]));
+        if (!co.vychozi && b.type == "submit") b.focus();
       }
     }
     if (co.id) dlg.id = co.id;
