@@ -3462,7 +3462,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var i,
         container = tfw.createAndFillElement("div", params);
     container.addClass("tfwMultiCheckbox");
-    container._value = [];
+    if ("value" in params) container._value = params.value;
+    else container._value = [];
     var checkboxOnChange = function(){
       var checkboxContainer = this.parentNode,
           checkboxes = checkboxContainer.childNodes;
@@ -3492,7 +3493,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    if (params.value) container.value = params.value;
     if ("list" in params) {
       for (i = 0; i < params.list.length; i++) {
         container.add(tfw.checkbox({
@@ -3502,7 +3502,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           value: (container._value.indexOf(params.list[i].id) > -1) ? 1 : 0
         }));
       }
-    }    
+    }
     return container;
   }
 };
