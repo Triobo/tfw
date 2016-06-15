@@ -1328,15 +1328,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
         className: "tfwTabTitle",
         innerHTML: title
       });
-      tabTitle.dataset.tabIndex = i;
-      tabTitle.addEventListener("mousedown", function(e){
-        tabs.setActiveTab(parseInt(this.dataset.tabIndex));
-        e.stopPropagation();
-        e.preventDefault();
-      }, false);
-      if (typeof tabId != "undefined") {
-        tabTitle.dataset.tabName = tabId;
-      }
+      tabTitle.addEventListener("click", function(e){
+        tabs.setActiveTab(parseInt(this.myOrder()));
+      });
       this.tabNav.add(tabTitle);
 
       // create tab content
@@ -1360,9 +1354,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (typeof tabId != "undefined") {
         tabContent.id = tabId; // TODO: prefix?
       }
-      tabContent.dataset.tabIndex = i;
       tabContent.removeItem = function(){
-        tabs.removeTab(this.dataset.tabIndex);
+        tabs.removeTab(this.myOrder());
       };
 
       var tab = {title: tabTitle, content: tabContent};
@@ -1381,6 +1374,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.removeTab = function(tabLabel){
       var tabIndex = this.tabLabelToIndex(tabLabel),
           tab = this.tabs[tabIndex];
+      if (this.tabs.length > 1) this.setActiveTab(tabIndex ? tabIndex - 1 : tabIndex + 1);
       tab.content.dispatchEvent(new CustomEvent("tabhide"));
       tab.title.remove();
       tab.content.remove();
