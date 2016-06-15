@@ -1454,6 +1454,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
    * API methods are mirrored into the HTML element.
    * @param {Object} params - tabs parameters
+   * @param {number} [params.value=0] - alias for params.active with different default
    * @param {boolean} [_valueAsName=false] - simulate behaviour of noveSvisleZalozky (for compatibility)
    * @return {HTMLElement} Tabs
    * @see tfw.Tabs
@@ -1509,8 +1510,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, 20, tabObject.activeTab * 20);
     }
 
-    if ("value" in params) container.value = params.value;
-    else container.value = 0;
+
+    container.setActiveTab(("value" in params) ? Number(params.value) : 0);
 
     return container;
   },

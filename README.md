@@ -1619,6 +1619,7 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | tabs parameters |
+| [params.value] | <code>number</code> | <code>0</code> | alias for params.active with different default |
 | [_valueAsName] | <code>boolean</code> | <code>false</code> | simulate behaviour of noveSvisleZalozky (for compatibility) |
 
 <a name="tfw.progress"></a>
