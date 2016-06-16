@@ -1278,9 +1278,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           nextTab.content.addClass("active");
           nextTab.content.dispatchEvent(new CustomEvent("tabshow"));
         }
-        console.info (this.activeTab + " => " + tabIndex);
         this.activeTab = tabIndex;
-        
         this.tabContainer.dispatchEvent(new Event("change"));
       }
     };
@@ -1343,7 +1341,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       this.tabs.splice(tabIndex, 1);
       if (tabIndex == this.activeTab) {
         this.activeTab = -1;
-        if (this.tabs.length) this.setActiveTab(tabIndex);
+        if (this.tabs.length) {
+          if (tabIndex >= this.tabs.length) tabIndex--;
+          this.setActiveTab(tabIndex);
+        }
       }
     };
 
