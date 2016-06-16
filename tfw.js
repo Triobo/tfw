@@ -1140,36 +1140,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /**
    * @deprecated
-   * @see tfw.tabs
-   */
-  noveSvisleZalozky: function(id, wl, w, h, zalozky, init){
-    console.warn("DEPRECATED tfw.noveSvisleZalozky, use tfw.tabs instead. (call from " + arguments.callee.caller.name + ")");
-    return tfw.tabs({
-      id: id,
-      style: "width: "+w+"px;height: "+h+"px",
-      tabs: zalozky.split(";").map(function(value, i){
-        var ret = {},
-            item = value.split("|");
-        if(item.length > 1) ret.id = item[1];
-        else ret.id = id+"-tab-"+String(i);
-        ret.tag = item[0];
-        return ret;
-      }),
-      active: init,
-      orientation: tfw.orientation.VERTICAL,
-      tagsStyle: "width: "+wl+"px;"
-    });
-  },
-  /**
-   * @deprecated
-   * @see tfw.tabs
-   */
-  zvolSvislouZalozku: function(jmeno, novy){
-    console.warn("DEPRECATED zvolSvislouZalozku, use setActiveTab instead.");
-    $(jmeno).setActiveTab(String(novy));
-  },
-  /**
-   * @deprecated
    * @see tfw.progress
    */
   progressBar: function(id, styl){
