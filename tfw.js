@@ -1152,12 +1152,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
             item = value.split("|");
         if(item.length > 1) ret.id = item[1];
         else ret.id = id+"-tab-"+String(i);
-        ret.title = item[0];
+        ret.tag = item[0];
         return ret;
       }),
       active: init,
       orientation: tfw.orientation.VERTICAL,
-      styleTabs: "width: "+wl+"px;"
+      tagsStyle: "width: "+wl+"px;"
     });
   },
   /**
@@ -1213,7 +1213,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @param {string} params.id - ID of tabs container
    * @param {tfw.Tabs~tabLabel} [params.active=-1] - index or name of tab active by default (negative means none)
    * @param {tfw.orientation} [params.orientation=tfw.orientation.HORIZONTAL] - orientation of tabs
-   * @param {string} [params.styleTabs] - style of tab titles' list (width required for vertical tabs)
+   * @param {string} [params.tagsStyle] - style of tab titles' list (width required for vertical tabs)
    * @param {string} params.style - style of each tab's content (width and height required, but not checked)
    * @param {Object[]} params.tabs - array of tabs
    * @param {string} params.tabs[].title - tab title
@@ -1229,14 +1229,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       id: this.name
     });
     this.activeTab = -1;
-    this.tabNav = tfw.ol({className: "semantic tfwTabNav", style: ("styleTabs" in params) ? params.styleTabs : ""});
+    this.tabNav = tfw.ol({className: "semantic tfwTabNav", style: ("tagsStyle" in params) ? params.tagsStyle : ""});
 
     this.tabStyle = params.style;
     if ("onchange" in params) this.tabContainer.addEventListener("change", params.onchange);
 
     /**
      * @typedef {Object} tfw.Tabs~tab
-     * @property {HTMLElement} title - tab title
+     * @property {HTMLElement} tag - tab tag
      * @property {HTMLElement} content - tab content
      * @property {?string} name - tab name
      */
@@ -1258,53 +1258,29 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
 
     /**
-     * Get active tab's name.
-     * @public
-     * @return {?string} {@link tfw.Tabs#activeTab}'s name
-     */
-    this.getActiveTabName = function(){
-      return (this.activeTab < 0) ? null : this.tabs[this.activeTab].name;
-    };
-
-    /**
-     * @private
-     * @param {tfw.Tabs~tabLabel} tabLabel
-     * @return {number} tab index
-     */
-    this.tabLabelToIndex = function(tabLabel){
-      return (typeof tabLabel === "number") ? tabLabel : this.tabs.reduce(function(previous, current, i){
-        return (previous == null) ? (current.name == tabLabel ? i : null) : previous;
-      }, null);
-    };
-
-    /**
      * Set active tab (and set previously active tab as inactive).
      * @public
      * @param {tfw.Tabs~tabLabel} tabLabel - tab index or name (-1 to deactive all)
      * @fires tabhide
      * @fires tabshow
      */
-    this.setActiveTab = function(tabLabel){
-      var tabIndex = this.tabLabelToIndex(tabLabel);
-      if (tabIndex == null) {
-        console.error("Tabs.setActiveTab: name was not found");
-        return;
-      }
-
+    this.setActiveTab = function(tabIndex){
       if (tabIndex != this.activeTab) {
         if (this.activeTab >= 0) {
           var previousTab = this.tabs[this.activeTab];
-          previousTab.title.removeClass("active");
+          previousTab.tag.removeClass("active");
           previousTab.content.removeClass("active");
           previousTab.content.dispatchEvent(new CustomEvent("tabhide"));
         }
         if (tabIndex >= 0) {
           var nextTab = this.tabs[tabIndex];
-          nextTab.title.addClass("active");
+          nextTab.tag.addClass("active");
           nextTab.content.addClass("active");
-          this.activeTab = tabIndex;
           nextTab.content.dispatchEvent(new CustomEvent("tabshow"));
         }
+        console.info (this.activeTab + " => " + tabIndex);
+        this.activeTab = tabIndex;
+        
         this.tabContainer.dispatchEvent(new Event("change"));
       }
     };
@@ -1317,7 +1293,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {boolean} [active=false] - whether to make new tab active by default
      * @param {string} [tabId] - ID (name) of tab
      */
-    this.appendTab = function(title, content, active, tabId){
+    this.appendTab = function(data, active){
       var i = this.tabs.length,
           tabs = this,
           tabTitle,
@@ -1326,10 +1302,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // create tab title
       tabTitle = tfw.li({
         className: "tfwTabTitle",
-        innerHTML: title
+        innerHTML: data.title
       });
-      tabTitle.addEventListener("click", function(e){
-        tabs.setActiveTab(parseInt(this.myOrder()));
+      tabTitle.addEventListener("click", function(){
+        tabs.setActiveTab(this.myOrder());
       });
       this.tabNav.add(tabTitle);
 
@@ -1339,28 +1315,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
         style: this.tabStyle
       };
 
-      if (typeof content != "undefined") {
-        if (typeof content === "string") {
-          tabContentParams.innerHTML = content;
-        } else {
-          tabContentParams.children = content;
-        }
-      }
+      if ("text" in data) tabContentParams.innerHTML = data.text;
+      else if ("children" in data) tabContentParams.children = data.children;
 
       this.tabContainer.add(
         tabContent = tfw.div(tabContentParams)
       );
 
-      if (typeof tabId != "undefined") {
-        tabContent.id = tabId; // TODO: prefix?
-      }
-      tabContent.removeItem = function(){
-        tabs.removeTab(this.myOrder());
-      };
-
-      var tab = {title: tabTitle, content: tabContent};
-      if (typeof tabId != "undefined") tab.name = tabId;
-      this.tabs[i] = tab;
+      delete data.title;
+      delete data.content;
+      this.tabs[i] = {tag: tabTitle, content: tabContent, data: data};
 
       if (typeof active != "undefined" && active) this.setActiveTab(i);
     };
@@ -1371,46 +1335,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @param {tfw.Tabs~tabLabel} tabLabel - tab index or name
      * @fires tabhide
      */
-    this.removeTab = function(tabLabel){
-      var tabIndex = this.tabLabelToIndex(tabLabel),
-          tab = this.tabs[tabIndex];
-      if (this.tabs.length > 1) this.setActiveTab(tabIndex ? tabIndex - 1 : tabIndex + 1);
+    this.removeTab = function(tabIndex){
+      var tab = this.tabs[tabIndex];
       tab.content.dispatchEvent(new CustomEvent("tabhide"));
-      tab.title.remove();
+      tab.tag.remove();
       tab.content.remove();
       this.tabs.splice(tabIndex, 1);
-    };
-
-    /**
-     * Getter for tab content container (for editing).
-     * @public
-     * @param {tfw.Tabs~tabLabel} tabLabel - index or name
-     * @return {HTMLElement}
-     */
-    this.tab = function(tabLabel){
-      return this.tabs[this.tabLabelToIndex(tabLabel)].content;
-    };
-
-    /**
-     * Setter for tab content.
-     * @public
-     * @param {tfw.Tabs~tabLabel} tabLabel - index or name
-     * @param {HTMLElement[]} content - contents of tab (no container)
-     */
-    this.setTab = function(tabLabel, content){
-      var tabIndex = this.tabLabelToIndex(tabLabel);
-      this.tabs[tabIndex].content.innerHTML = "";
-      tfw.addAll(this.tabs[tabIndex].content, content);
+      if (tabIndex == this.activeTab) {
+        this.activeTab = -1;
+        if (this.tabs.length) this.setActiveTab(tabIndex);
+      }
     };
 
     for (var i = 0; i < params.tabs.length; i++) {
       if (params.tabs[i]) {
-        this.appendTab(
-          params.tabs[i].title,
-          params.tabs[i].children || params.tabs[i].innerHTML,
-          this.tabLabelToIndex(params.active) == i,
-          params.tabs[i].id
-        );
+        this.appendTab(params.tabs[i], params.value == i);
       }
     }
   },
@@ -1425,10 +1364,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
   tabs: function(params){
     var tabObject = new tfw.Tabs(params),
         container = tabObject.tabContainer,
-        api = ["getActiveTab", "getActiveTabName", "setActiveTab", "appendTab", "removeTab", "tab", "setTab"];
+        api = ["appendTab", "removeTab"];
     for (var i = 0; i < api.length; i++) {
       container[api[i]] = tabObject[api[i]].bind(tabObject);
     }
+    container.tabs = tabObject.tabs;
 
     Object.defineProperty(container, "value", {
       configurable: false,
@@ -1447,7 +1387,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }, 20, tabObject.activeTab * 20);
     }
 
-    container.setActiveTab(("value" in params) ? Number(params.value) : 0);
+    container.value = ("value" in params) ? params.value : 0;
 
     return container;
   },
