@@ -1133,23 +1133,24 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return tfw.createAndFillElement("li", params);
   },
   /**
-   * Specification of a tab - either numeric index or name.
-   * @typedef {(number|string)} tfw.Tabs~tabLabel
+   * @summary Tab (as parameter).
+   * @description Tab as parameter object for creation. Any other properties are preserved (and later saved in tab's data).
+   * @typedef {Object} tfw.Tabs~tabParam
+   * @property {string} title - tab title
+   * @property {HTMLElement[]} [children] - tab content (as HTML elements)
+   * @property {string} [text] - tab content (as HTML string)
    */
   /**
    * Class for creating tabs.
    * @class
    * @param {Object} params - table parameters
    * @param {string} params.id - ID of tabs container
-   * @param {tfw.Tabs~tabLabel} [params.active=-1] - index or name of tab active by default (negative means none)
+   * @param {number} [params.value] - index of tab active by default (defaults to none)
    * @param {tfw.orientation} [params.orientation=tfw.orientation.HORIZONTAL] - orientation of tabs
    * @param {string} [params.tagsStyle] - style of tab titles' list (width required for vertical tabs)
    * @param {string} params.style - style of each tab's content (width and height required, but not checked)
-   * @param {Object[]} params.tabs - array of tabs
-   * @param {string} params.tabs[].title - tab title
-   * @param {HTMLElement[]} [params.tabs[].children] - tab content (as HTML elements)
-   * @param {string} [params.tabs[].innerHTML] - tab content (as HTML string)
-   * @param {string} [params.tabs[].id] - tab ID/name (has to be unique in document)
+   * @param {tfw.Tabs~tabParam[]} params.tabs - array of tabs
+   * @param {function} [params.onchange] - callback when a tab becomes active
    */
   Tabs: function(params){
     this.orientation = ("orientation" in params) ? params.orientation : tfw.orientation.HORIZONTAL;
@@ -1167,7 +1168,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @typedef {Object} tfw.Tabs~tab
      * @property {HTMLElement} tag - tab tag
      * @property {HTMLElement} content - tab content
-     * @property {?string} name - tab name
+     * @property {*} data - any data passed at creation
      */
     /**
      * @protected
@@ -1189,7 +1190,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * Set active tab (and set previously active tab as inactive).
      * @public
-     * @param {tfw.Tabs~tabLabel} tabLabel - tab index or name (-1 to deactive all)
+     * @param {number} tabIndex - tab index
      * @fires tabhide
      * @fires tabshow
      */
@@ -1215,10 +1216,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /**
      * Add a new tab.
      * @public
-     * @param {string} title - new tab title
-     * @param {HTMLElement[]|string} content - new tab content (may be HTML)
+     * @param {tfw.Tabs~tabParam} data - tab
      * @param {boolean} [active=false] - whether to make new tab active by default
-     * @param {string} [tabId] - ID (name) of tab
      */
     this.appendTab = function(data, active){
       var i = this.tabs.length,
@@ -1258,9 +1257,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
 
     /**
-     * Remove a tab.
+     * @summary Remove a tab.
+     * @description Remove a tab and set previous tab as active (or new first if removed tab was first).
      * @public
-     * @param {tfw.Tabs~tabLabel} tabLabel - tab index or name
+     * @param {number} tabIndex - tab index
      * @fires tabhide
      */
     this.removeTab = function(tabIndex){
@@ -1288,7 +1288,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
    * API methods are mirrored into the HTML element.
    * @param {Object} params - tabs parameters
-   * @param {number} [params.value=0] - alias for params.active with different default
+   * @param {number} [params.value=0] - if set, passed to {@link tfw.Tabs}, otherwise sets active tab to 0
    * @return {HTMLElement} Tabs
    * @see tfw.Tabs
    */

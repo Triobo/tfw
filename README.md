@@ -33,14 +33,11 @@
             * _instance_
                 * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
                 * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒ <code>number</code>
-                * [.getActiveTabName()](#tfw.Tabs+getActiveTabName) ⇒ <code>string</code>
-                * [.setActiveTab(tabLabel)](#tfw.Tabs+setActiveTab)
-                * [.appendTab(title, content, [active], [tabId])](#tfw.Tabs+appendTab)
-                * [.removeTab(tabLabel)](#tfw.Tabs+removeTab)
-                * [.tab(tabLabel)](#tfw.Tabs+tab) ⇒ <code>HTMLElement</code>
-                * [.setTab(tabLabel, content)](#tfw.Tabs+setTab)
+                * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
+                * [.appendTab(data, [active])](#tfw.Tabs+appendTab)
+                * [.removeTab(tabIndex)](#tfw.Tabs+removeTab)
             * _inner_
-                * [~tabLabel](#tfw.Tabs..tabLabel) : <code>number</code> &#124; <code>string</code>
+                * [~tabParam](#tfw.Tabs..tabParam) : <code>Object</code>
                 * [~tab](#tfw.Tabs..tab) : <code>Object</code>
         * [.DynamicTable](#tfw.DynamicTable)
             * [new DynamicTable(params)](#new_tfw.DynamicTable_new)
@@ -139,11 +136,6 @@
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
         * ~~[.novyElement()](#tfw.novyElement)~~
-        * ~~[.zatrzitko()](#tfw.zatrzitko)~~
-        * ~~[.tlacitko()](#tfw.tlacitko)~~
-        * ~~[.novySelect()](#tfw.novySelect)~~
-        * ~~[.noveSvisleZalozky()](#tfw.noveSvisleZalozky)~~
-        * ~~[.zvolSvislouZalozku()](#tfw.zvolSvislouZalozku)~~
         * ~~[.progressBar()](#tfw.progressBar)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
@@ -171,14 +163,11 @@ Triobo framework. This is a singleton.
     * _instance_
         * [.tabs](#tfw.Tabs+tabs) : <code>[Array.&lt;tab&gt;](#tfw.Tabs..tab)</code>
         * [.getActiveTab()](#tfw.Tabs+getActiveTab) ⇒ <code>number</code>
-        * [.getActiveTabName()](#tfw.Tabs+getActiveTabName) ⇒ <code>string</code>
-        * [.setActiveTab(tabLabel)](#tfw.Tabs+setActiveTab)
-        * [.appendTab(title, content, [active], [tabId])](#tfw.Tabs+appendTab)
-        * [.removeTab(tabLabel)](#tfw.Tabs+removeTab)
-        * [.tab(tabLabel)](#tfw.Tabs+tab) ⇒ <code>HTMLElement</code>
-        * [.setTab(tabLabel, content)](#tfw.Tabs+setTab)
+        * [.setActiveTab(tabIndex)](#tfw.Tabs+setActiveTab)
+        * [.appendTab(data, [active])](#tfw.Tabs+appendTab)
+        * [.removeTab(tabIndex)](#tfw.Tabs+removeTab)
     * _inner_
-        * [~tabLabel](#tfw.Tabs..tabLabel) : <code>number</code> &#124; <code>string</code>
+        * [~tabParam](#tfw.Tabs..tabParam) : <code>Object</code>
         * [~tab](#tfw.Tabs..tab) : <code>Object</code>
 
 <a name="new_tfw.Tabs_new"></a>
@@ -191,15 +180,12 @@ Class for creating tabs.
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | table parameters |
 | params.id | <code>string</code> |  | ID of tabs container |
-| [params.active] | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | <code>-1</code> | index or name of tab active by default (negative means none) |
+| [params.value] | <code>number</code> |  | index of tab active by default (defaults to none) |
 | [params.orientation] | <code>[orientation](#tfw.orientation)</code> | <code>tfw.orientation.HORIZONTAL</code> | orientation of tabs |
-| [params.styleTabs] | <code>string</code> |  | style of tab titles' list (width required for vertical tabs) |
+| [params.tagsStyle] | <code>string</code> |  | style of tab titles' list (width required for vertical tabs) |
 | params.style | <code>string</code> |  | style of each tab's content (width and height required, but not checked) |
-| params.tabs | <code>Array.&lt;Object&gt;</code> |  | array of tabs |
-| params.tabs[].title | <code>string</code> |  | tab title |
-| [params.tabs[].children] | <code>Array.&lt;HTMLElement&gt;</code> |  | tab content (as HTML elements) |
-| [params.tabs[].innerHTML] | <code>string</code> |  | tab content (as HTML string) |
-| [params.tabs[].id] | <code>string</code> |  | tab ID/name (has to be unique in document) |
+| params.tabs | <code>[Array.&lt;tabParam&gt;](#tfw.Tabs..tabParam)</code> |  | array of tabs |
+| [params.onchange] | <code>function</code> |  | callback when a tab becomes active |
 
 <a name="tfw.Tabs+tabs"></a>
 
@@ -214,17 +200,9 @@ Getter for activeTab.
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
 **Returns**: <code>number</code> - Value of [tfw.Tabs#activeTab](tfw.Tabs#activeTab)  
 **Access:** public  
-<a name="tfw.Tabs+getActiveTabName"></a>
-
-#### tabs.getActiveTabName() ⇒ <code>string</code>
-Get active tab's name.
-
-**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
-**Returns**: <code>string</code> - [tfw.Tabs#activeTab](tfw.Tabs#activeTab)'s name  
-**Access:** public  
 <a name="tfw.Tabs+setActiveTab"></a>
 
-#### tabs.setActiveTab(tabLabel)
+#### tabs.setActiveTab(tabIndex)
 Set active tab (and set previously active tab as inactive).
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
@@ -233,11 +211,11 @@ Set active tab (and set previously active tab as inactive).
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tabLabel | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | tab index or name (-1 to deactive all) |
+| tabIndex | <code>number</code> | tab index |
 
 <a name="tfw.Tabs+appendTab"></a>
 
-#### tabs.appendTab(title, content, [active], [tabId])
+#### tabs.appendTab(data, [active])
 Add a new tab.
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
@@ -245,55 +223,38 @@ Add a new tab.
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
-| title | <code>string</code> |  | new tab title |
-| content | <code>Array.&lt;HTMLElement&gt;</code> &#124; <code>string</code> |  | new tab content (may be HTML) |
+| data | <code>[tabParam](#tfw.Tabs..tabParam)</code> |  | tab |
 | [active] | <code>boolean</code> | <code>false</code> | whether to make new tab active by default |
-| [tabId] | <code>string</code> |  | ID (name) of tab |
 
 <a name="tfw.Tabs+removeTab"></a>
 
-#### tabs.removeTab(tabLabel)
-Remove a tab.
+#### tabs.removeTab(tabIndex)
+Remove a tab and set previous tab as active (or new first if removed tab was first).
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
+**Summary**: Remove a tab.  
 **Emits**: <code>event:tabhide</code>  
 **Access:** public  
 
 | Param | Type | Description |
 | --- | --- | --- |
-| tabLabel | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | tab index or name |
+| tabIndex | <code>number</code> | tab index |
 
-<a name="tfw.Tabs+tab"></a>
+<a name="tfw.Tabs..tabParam"></a>
 
-#### tabs.tab(tabLabel) ⇒ <code>HTMLElement</code>
-Getter for tab content container (for editing).
-
-**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tabLabel | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | index or name |
-
-<a name="tfw.Tabs+setTab"></a>
-
-#### tabs.setTab(tabLabel, content)
-Setter for tab content.
-
-**Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
-**Access:** public  
-
-| Param | Type | Description |
-| --- | --- | --- |
-| tabLabel | <code>[tabLabel](#tfw.Tabs..tabLabel)</code> | index or name |
-| content | <code>Array.&lt;HTMLElement&gt;</code> | contents of tab (no container) |
-
-<a name="tfw.Tabs..tabLabel"></a>
-
-#### Tabs~tabLabel : <code>number</code> &#124; <code>string</code>
-Specification of a tab - either numeric index or name.
+#### Tabs~tabParam : <code>Object</code>
+Tab as parameter object for creation. Any other properties are preserved (and later saved in tab's data).
 
 **Kind**: inner typedef of <code>[Tabs](#tfw.Tabs)</code>  
+**Summary**: Tab (as parameter).  
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| title | <code>string</code> | tab title |
+| children | <code>Array.&lt;HTMLElement&gt;</code> | tab content (as HTML elements) |
+| text | <code>string</code> | tab content (as HTML string) |
+
 <a name="tfw.Tabs..tab"></a>
 
 #### Tabs~tab : <code>Object</code>
@@ -302,9 +263,9 @@ Specification of a tab - either numeric index or name.
 
 | Name | Type | Description |
 | --- | --- | --- |
-| title | <code>HTMLElement</code> | tab title |
+| tag | <code>HTMLElement</code> | tab tag |
 | content | <code>HTMLElement</code> | tab content |
-| name | <code>string</code> | tab name |
+| data | <code>\*</code> | any data passed at creation |
 
 <a name="tfw.DynamicTable"></a>
 
@@ -1535,41 +1496,6 @@ Decode JSON data, show error in case they are invalid.
 Use various tfw functions instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-<a name="tfw.zatrzitko"></a>
-
-### ~~tfw.zatrzitko()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.checkbox  
-<a name="tfw.tlacitko"></a>
-
-### ~~tfw.tlacitko()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.div  
-<a name="tfw.novySelect"></a>
-
-### ~~tfw.novySelect()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.select  
-<a name="tfw.noveSvisleZalozky"></a>
-
-### ~~tfw.noveSvisleZalozky()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.tabs  
-<a name="tfw.zvolSvislouZalozku"></a>
-
-### ~~tfw.zvolSvislouZalozku()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.tabs  
 <a name="tfw.progressBar"></a>
 
 ### ~~tfw.progressBar()~~
@@ -1611,7 +1537,7 @@ Wrapper that creates a tabs container and returns it's HTML node for inserting i
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | params | <code>Object</code> |  | tabs parameters |
-| [params.value] | <code>number</code> | <code>0</code> | alias for params.active with different default |
+| [params.value] | <code>number</code> | <code>0</code> | if set, passed to [Tabs](#tfw.Tabs), otherwise sets active tab to 0 |
 
 <a name="tfw.progress"></a>
 
