@@ -1100,46 +1100,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
   },
   /**
    * @deprecated
-   * @see tfw.checkbox
-   */
-  zatrzitko: function(id, text, init, styl){
-    console.warn("DEPRECATED tfw.zatrzitko, use tfw.checkbox instead. (call from " + arguments.callee.caller.name + ")");
-    return tfw.checkbox({
-      id: id,
-      text: text,
-      value: init,
-      style: styl
-    });
-  },
-  /**
-   * @deprecated
-   * @see tfw.div
-   */
-  tlacitko: function(id, text, funkce, styl){
-    console.warn("DEPRECATED tfw.tlacitko, use tfw.div({className: \"button\"}) instead.");
-    return tfw.div({
-      className: "button",
-      id: id,
-      innerHTML: text,
-      onclick: funkce,
-      style: styl
-    });
-  },
-  /**
-   * @deprecated
-   * @see tfw.select
-   */
-  novySelect: function(id, w, h, l, i){
-    console.warn("DEPRECATED tfw.novySelect, use tfw.select instead. (call from " + arguments.callee.caller.name + ")");
-    return tfw.select({
-      id: id,
-      style: "width:" + w + "px;height:" + h + "px;",
-      list: l,
-      value: i
-    });
-  },
-  /**
-   * @deprecated
    * @see tfw.progress
    */
   progressBar: function(id, styl){
@@ -3790,7 +3750,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     if (("value" in params) && params.list) {
       for (var i = 0; i < params.list.length; i++) {
         if (typeof params.list[i] === "object") {
-          if (params.list[i].id == params.value) x.innerHTML = params.list[i].t;
+          if (params.list[i].id == params.value) x.innerHTML = params.list[i].n || params.list[i].t || params.list[i].text;
         } else if (i == params.value) x.innerHTML = params.list[i];
       }
     }
