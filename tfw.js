@@ -1153,10 +1153,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   Tabs: function(params){
     this.orientation = ("orientation" in params) ? params.orientation : tfw.orientation.HORIZONTAL;
-    this.name = params.id;
     this.tabContainer = tfw.div({
       className: "tfwTabContainer " + ((this.orientation == tfw.orientation.HORIZONTAL) ? "horizontal" : "vertical"),
-      id: this.name
+      id: params.id
     });
     this.activeTab = -1;
     this.tabNav = tfw.ol({className: "semantic tfwTabNav", style: ("tagsStyle" in params) ? params.tagsStyle : ""});
@@ -1251,7 +1250,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       );
 
       delete data.title;
-      delete data.content;
+      delete data.text;
+      delete data.children;
       this.tabs[i] = {tag: tabTitle, content: tabContent, data: data};
 
       if (typeof active != "undefined" && active) this.setActiveTab(i);
