@@ -206,7 +206,6 @@ Getter for activeTab.
 Set active tab (and set previously active tab as inactive).
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
-**Emits**: <code>event:tabhide</code>, <code>event:tabshow</code>  
 **Access:** public  
 
 | Param | Type | Description |
@@ -233,7 +232,6 @@ Remove a tab and set previous tab as active (or new first if removed tab was fir
 
 **Kind**: instance method of <code>[Tabs](#tfw.Tabs)</code>  
 **Summary**: Remove a tab.  
-**Emits**: <code>event:tabhide</code>  
 **Access:** public  
 
 | Param | Type | Description |

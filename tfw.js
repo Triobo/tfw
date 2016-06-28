@@ -1176,8 +1176,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Set active tab (and set previously active tab as inactive).
      * @public
      * @param {number} tabIndex - tab index
-     * @fires tabhide
-     * @fires tabshow
      */
     this.setActiveTab = function(tabIndex){
       if (tabIndex != this.activeTab) {
@@ -1185,13 +1183,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
           var previousTab = this.tabs[this.activeTab];
           previousTab.tag.removeClass("active");
           previousTab.content.removeClass("active");
-          previousTab.content.dispatchEvent(new CustomEvent("tabhide"));
         }
         if (tabIndex >= 0) {
           var nextTab = this.tabs[tabIndex];
           nextTab.tag.addClass("active");
           nextTab.content.addClass("active");
-          nextTab.content.dispatchEvent(new CustomEvent("tabshow"));
         }
         this.activeTab = tabIndex;
         this.tabContainer.dispatchEvent(new Event("change"));
@@ -1246,11 +1242,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @description Remove a tab and set previous tab as active (or new first if removed tab was first).
      * @public
      * @param {number} tabIndex - tab index
-     * @fires tabhide
      */
     this.removeTab = function(tabIndex){
       var tab = this.tabs[tabIndex];
-      tab.content.dispatchEvent(new CustomEvent("tabhide"));
       tab.tag.remove();
       tab.content.remove();
       this.tabs.splice(tabIndex, 1);
