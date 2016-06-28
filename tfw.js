@@ -1098,21 +1098,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (styl) x.setAttribute("style", styl);
     return x;
   },
-  /**
-   * @deprecated
-   * @see tfw.progress
-   */
-  progressBar: function(id, styl){
-    console.warn("DEPRECATED tfw.progressBar, use tfw.progress instead (with value attribute).");
-    var x = document.createElement("div");
-    x.id = id;
-    x.style.cssText = styl;
-    x.className = "progressbar";
-    var y = document.createElement("div");
-    x.add(y);
-    y.add(document.createElement("div"));
-    return x;
-  },
   /* eslint-enable */
   /**
    * Alias for tfw.createAndFillElement("ol", params)
@@ -3779,16 +3764,20 @@ var desktop = {//eslint-disable-line no-implicit-globals
     });
     var vnit,
         dlg,
-        sirka = 300,
-        vyska = 200,
+        cWidth = 300,
+        cHeight = 200,
         nazev = "";
-    if (co.width) sirka = co.width;
-    if (co.height) vyska = co.height;
+    if (co.width) cWidth = co.width;
+    if (co.height) cHeight = co.height;
     if (co.title) nazev = co.title;
+    var wHeight = cHeight, wWidth = cWidth;
+    if (cWidth > (desktop.width - 30))   wWidth  = (desktop.width - 30);
+    if (cHeight > (desktop.height - 30)) wHeight = (desktop.height - 30); 
+    var wLeft = Math.round((desktop.width - wWidth) / 2);
+    var wTop = Math.round((desktop.height - wHeight) / 2);
     var obal = tfw.div({
       className: "tfwDialogContainer" + (nazev ? "" : " noTitle"),
-      style: "left:" + Math.round((desktop.width - sirka) / 2) + "px;top:" + Math.round((desktop.height - vyska) / 2) + "px;width:"
-        + sirka + "px;height:" + vyska + "px;"
+      style: "left:" + wLeft + "px;top:" + wTop + "px;width:" + wWidth + "px;height:" + wHeight + "px;"
     });
     obal.style.webkitTransform = "translateY(-32px)";
     obal.style.opacity = 0;
@@ -3810,14 +3799,17 @@ var desktop = {//eslint-disable-line no-implicit-globals
     obal.add(f);
     f.add(vnit = tfw.div({
       className: "tfwDialog",
-      style: "height:" + (vyska - (nazev ? 60 : 32)) + "px"
+      style: "height:" + (wHeight - (nazev ? 60 : 32)) + "px"
     }));
     desktop.layers[desktop.activeLayer].addEventListener("keydown", function(e){
       if (e.which == 27) desktop.closeTopLayer();
     }, true);
     /**/
-    vnit.add(dlg = tfw.div({
-      style: "height:" + (vyska - (nazev ? 60 : 32) - 27) + "px"
+    vnit.add(wdlg = tfw.div({
+      style: "width: 100%; height:" + (wHeight - (nazev ? 60 : 32) - 30) + "px; overflow: scroll;"
+    }));
+    wdlg.add(dlg = tfw.div({
+      style: "width: " + (cWidth - 32) + "px; height:" + (cHeight - (nazev ? 60 : 32) - 50) + "px"
     }));
     dlg.addEventListener("mousedown", function(e){
       e.stopPropagation();
