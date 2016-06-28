@@ -3246,7 +3246,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   multiCheckbox: function(params){
     var i,
-        container = tfw.createAndFillElement("div", params);
+    container = tfw.createAndFillElement("div", params);
     container.addClass("tfwMultiCheckbox");
     if ("value" in params) container._value = params.value;
     else container._value = [];
@@ -3289,7 +3289,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }));
       }
     }
-    return container;
+    return (params.legend) ? (this.inputFieldLegend(container, params)) : container;
   }
 };
 Object.seal(tfw.strings);
