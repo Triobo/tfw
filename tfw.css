@@ -221,7 +221,7 @@ button:disabled:hover {
   border-radius: 3px;
   background: #f8f8f8;
   color: #000;
-  padding: 16px;
+  padding: 16px 6px 16px 16px;
 }
 
 .tfwDialog .text {
@@ -325,7 +325,7 @@ button:disabled:hover {
 
 .tfwContainer span {
   display: inline-block;
-  vertical-align: baseline;
+  vertical-align: top;
 }
 .tfwContainer input {
   vertical-align: baseline;
