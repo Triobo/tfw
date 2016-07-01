@@ -3246,7 +3246,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   multiCheckbox: function(params){
     var i,
-    container = tfw.createAndFillElement("div", params);
+        container = tfw.createAndFillElement("div", params);
     container.addClass("tfwMultiCheckbox");
     if ("value" in params) container._value = params.value;
     else container._value = [];
@@ -3765,8 +3765,8 @@ var desktop = {//eslint-disable-line no-implicit-globals
     if (co.height) cHeight = co.height;
     if (co.title) nazev = co.title;
     var wHeight = cHeight, wWidth = cWidth;
-    if (cWidth > (desktop.width - 30))   wWidth  = (desktop.width - 30);
-    if (cHeight > (desktop.height - 30)) wHeight = (desktop.height - 30); 
+    if (cWidth > (desktop.width - 30)) wWidth = (desktop.width - 30);
+    if (cHeight > (desktop.height - 30)) wHeight = (desktop.height - 30);
     var wLeft = Math.round((desktop.width - wWidth) / 2);
     var wTop = Math.round((desktop.height - wHeight) / 2);
     var obal = tfw.div({
