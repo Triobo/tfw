@@ -136,7 +136,6 @@
         * [.encodeFormValues(fields)](#tfw.encodeFormValues) ⇒ <code>string</code>
         * [.decodeJSON(json)](#tfw.decodeJSON) ⇒ <code>Object</code>
         * ~~[.novyElement()](#tfw.novyElement)~~
-        * ~~[.progressBar()](#tfw.progressBar)~~
         * [.ol(params)](#tfw.ol) ⇒ <code>HTMLElement</code>
         * [.li(params)](#tfw.li) ⇒ <code>HTMLElement</code>
         * [.tabs(params)](#tfw.tabs) ⇒ <code>HTMLElement</code>
@@ -1494,13 +1493,6 @@ Decode JSON data, show error in case they are invalid.
 Use various tfw functions instead.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
-<a name="tfw.progressBar"></a>
-
-### ~~tfw.progressBar()~~
-***Deprecated***
-
-**Kind**: static method of <code>[tfw](#tfw)</code>  
-**See**: tfw.progress  
 <a name="tfw.ol"></a>
 
 ### tfw.ol(params) ⇒ <code>HTMLElement</code>
