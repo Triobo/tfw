@@ -189,7 +189,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if ("text" in params) {
       params.innerHTML = params.text;
     }
-    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder"];
+    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder", "onchange"];
     var i;
     for (i = 0; i < attributesToCopy.length; i++) {
       var attribute = attributesToCopy[i];
@@ -635,7 +635,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    * @return {HTMLElement}
    */
   table: function(params){
-    return tfw.createAndFillElement("table", params);
+    var element = tfw.createAndFillElement("table", params);
+    if ("rows" in params) {
+      for (var i = 0; i < params.rows.length; i++) {
+        element.add(tfw.tr(params.rows[i]));
+      }
+    }
+    return element;
   },
   /**
    * Create a table row with specified parameters.
@@ -3757,7 +3763,9 @@ var desktop = {//eslint-disable-line no-implicit-globals
       modal: true
     });
     var vnit,
+        wdlg,
         dlg,
+        titleDiv = null,
         cWidth = 300,
         cHeight = 200,
         nazev = "";
@@ -3778,12 +3786,11 @@ var desktop = {//eslint-disable-line no-implicit-globals
     obal.id = "tfwDialog" + desktop.activeLayer;
     desktop.layers[desktop.activeLayer].add(obal);
     if (nazev) {
-      var h = tfw.par({
+      obal.add(titleDiv = tfw.par({
         innerHTML: nazev,
         className: "tfwDialogTitle"
-      });
-      obal.add(h);
-      h.addEventListener("mousedown", desktop.dialogMoveStart, false);
+      }));
+      titleDiv.addEventListener("mousedown", desktop.dialogMoveStart, false);
     }
     var f = document.createElement("form");
     f.onsubmit = function(e){
@@ -3830,6 +3837,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     }
     if (co.id) dlg.id = co.id;
     if (co.vychozi) $(co.vychozi).focus();
+    dlg.titleDiv = titleDiv;
     dlg.hasBeenChanged = function(){
       return this.getElementsByClassName("hasBeenChanged").length ? 1 : 0;
     };

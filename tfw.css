@@ -215,6 +215,9 @@ button:disabled:hover {
   color: #fff;
   padding: 5px 8px;
   cursor: move;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;  
 }
 
 .tfwDialog {
@@ -469,6 +472,9 @@ button:disabled:hover {
 }
 .tfwIcon.selected:hover {
   background-color: #fd5;/*orange-light*/
+}
+.tfwIcon.default {
+  background-color: #8cc;/*azure*/  
 }
 
 .tfwGroupOfIcons {
