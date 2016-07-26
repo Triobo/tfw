@@ -70,6 +70,9 @@
 .fa-lock:before {
   content: "\f023";
 }
+.fa-trash:before {
+  content: "\f1f8";
+}
 
 
 
@@ -110,7 +113,7 @@ textarea {
   border:1px solid #bbb; 
   margin: 0px 2px 1px;
   padding: 0px 2px;
-  vertical-align: baseline;
+  vertical-align: top;
   font-size: 15px;
   background: #fff;
   color: #000;
@@ -314,9 +317,6 @@ button:disabled:hover {
   color: #f80;
 }
 
-.tfwDialog p>span {
-  display: inline-block;
-}
 .tfwDialog p>.tfwCheckbox {
   display: inline-block;
 }
@@ -328,7 +328,7 @@ button:disabled:hover {
 
 .tfwContainer span {
   display: inline-block;
-  vertical-align: top;
+  vertical-align: baseline;
 }
 .tfwContainer input {
   vertical-align: baseline;
@@ -640,6 +640,10 @@ button:disabled:hover {
 	padding: 1px 0 0 0;
 	border: 0px none;
 	color: inherit;
+	margin: 0 8px;
+}
+.tfwDynamicTable > tfoot button .fa {
+  font-size: 20px;
 }
 .tfwDynamicTable > tfoot > tr > td:nth-child(2){
 	text-align: center;
@@ -727,9 +731,13 @@ button:disabled:hover {
 /*********************/
 
 .tfwCalendarWrapper{
-    display: inline-block;
-    max-width: 100%;
-    overflow: hidden;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.tfwContainer .tfwCalendarWrapper {
+  vertical-align: top;
 }
 
 .calendarWidget {

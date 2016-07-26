@@ -48,6 +48,10 @@ HTMLElement.prototype.toggleClass = function(c){
   if (this.hasClass(c)) this.removeClass(c);
   else this.addClass(c);
 };
+HTMLElement.prototype.classIf = function(c,cond){
+  if (cond) this.addClass(c); 
+  else this.removeClass(c);
+}
 HTMLElement.prototype.myOrder = function(){
   return this.parentNode == null ? null : Array.prototype.indexOf.call(this.parentNode.children, this);
 };
@@ -310,12 +314,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
           m.push(element.childNodes[i].value);
         }
       }
-      element.value = m.join(",");
+      element._value = m.join(",");
       if (element.onchange) element.onchange();
       element.addClass("hasBeenChanged");
     };
-    if (!element.value) element.value = 0;
-    var m = element.value.toString().split(","),
+    if (!element.value) element._value = 0;
+    else element._value=element.value;
+    var m = element._value.toString().split(","),
         i;
     if (typeof params.list === "string") {
       var szn = params.list.split(";");
@@ -345,16 +350,26 @@ var tfw = {//eslint-disable-line no-implicit-globals
       l.addEventListener("mousedown", element.clickOnItem, false);
       element.add(l);
     }
-    element.setValue = function(a){
-      for (var i = 0; i < element.childNodes.length; i++) {
-        if (element.childNodes[i].value == a) {
-          element.childNodes[i].addClass("selected");
-        } else {
-          element.childNodes[i].removeClass("selected");
+    Object.defineProperty(element, "value", {
+      set: function(a){
+        for (var i = 0; i < element.childNodes.length; i++) {
+          if (element.childNodes[i].value == a) {
+            element.childNodes[i].addClass("selected");
+          } else {
+            element.childNodes[i].removeClass("selected");
+          }
         }
-      }
-      element.value = String(a);
-    };
+        element._value = String(a);
+      },
+      get: function(){
+        return this._value;
+      },
+      enumerable: true,
+      configurable: true
+    });
+    element.setValue = function(a){
+      this.value = a;
+    }
     return element;
   },
   /* eslint-disable */
@@ -978,17 +993,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function(){
+      if (o.outputToConsole) console.log("tfw.ajax (" + o.url + "), state:" + httpRequest.readyState + ", status: "+httpRequest.status+" ("+httpRequest.statusText+"), timeout: "+httpRequest.timeout);
       if (httpRequest.readyState === 4) {
-        if (tfw.ajaxOnDone != null) tfw.ajaxOnDone();
+        if (o.callOnDoneWhenFinished) if (tfw.ajaxOnDone != null) tfw.ajaxOnDone();
         if (httpRequest.status === 200) {
           var rt;
           if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == "#") {
             tfw.ajaxOnErrorCode(rt);
           } else {
-            o.onload(httpRequest);
+            if (o.onload) o.onload(httpRequest);
           }
-        } else if (tfw.ajaxOnError) {
-          tfw.ajaxOnError();
+        } else if (httpRequest.status) if (tfw.ajaxOnError) {
+          tfw.ajaxOnError(httpRequest, o);
         }
       }
     };
@@ -996,7 +1012,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (tfw.ajaxIncludeParams) {
       switch (o.method) {
         case "GET":
-          ur += "&" + tfw.ajaxIncludeParams();
+          if (ur.indexOf("?")>-1) ur += "&";
+          else ur += "?";
+          ur += tfw.ajaxIncludeParams();
           break;
         case "POST":
           o.parameters += "&" + tfw.ajaxIncludeParams();
@@ -1004,6 +1022,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         // intentionally omitted default
       }
     }
+    if (o.outputToConsole) console.log("tfw.ajax: " + ur);
     httpRequest.open(o.method, ur);
     switch (o.method) {
       case "GET":
@@ -1018,6 +1037,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     httpRequest.send(o.parameters);
     if (o.autohide && tfw.ajaxOnAutoHide != null) {
       tfw.ajaxOnAutoHide((o.autohide == 2) ? 1 : 0);
+      o.callOnDoneWhenFinished = 1;
     }
     return httpRequest;
   },
@@ -1067,8 +1087,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
             innerHTML: "This is unknown error, please contact Triobo representative:",
             className: "nazev"
           }), tfw.div({
-            style: "width:100%;height:300px;overflow-y:scroll;font-size:80%;",
-            innerHTML: json.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+            style: "width:100%;height:300px;overflow-y:scroll;font-size:80%;-webkit-user-select: text;",
+            innerHTML: json
           })
         ],
         buttons: [{
@@ -2244,6 +2264,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               })
             ]
           }), tfw.td({
+            className: "tfwFooterRight",
             children: [
               tfw.button({
                 onclick: function(){
