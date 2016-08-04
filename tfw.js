@@ -48,10 +48,10 @@ HTMLElement.prototype.toggleClass = function(c){
   if (this.hasClass(c)) this.removeClass(c);
   else this.addClass(c);
 };
-HTMLElement.prototype.classIf = function(c,cond){
-  if (cond) this.addClass(c); 
+HTMLElement.prototype.classIf = function(c, cond){
+  if (cond) this.addClass(c);
   else this.removeClass(c);
-}
+};
 HTMLElement.prototype.myOrder = function(){
   return this.parentNode == null ? null : Array.prototype.indexOf.call(this.parentNode.children, this);
 };
@@ -318,8 +318,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (element.onchange) element.onchange();
       element.addClass("hasBeenChanged");
     };
-    if (!element.value) element._value = 0;
-    else element._value=element.value;
+    if (element.value) element._value = element.value;
+    else element._value = 0;
     var m = element._value.toString().split(","),
         i;
     if (typeof params.list === "string") {
@@ -369,7 +369,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     element.setValue = function(a){
       this.value = a;
-    }
+    };
     return element;
   },
   /* eslint-disable */
@@ -993,17 +993,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     var httpRequest = new XMLHttpRequest();
     httpRequest.onreadystatechange = function(){
-      if (o.outputToConsole) console.log("tfw.ajax (" + o.url + "), state:" + httpRequest.readyState + ", status: "+httpRequest.status+" ("+httpRequest.statusText+"), timeout: "+httpRequest.timeout);
+      if (o.outputToConsole) {
+        console.info("tfw.ajax (" + o.url + "), state:" + httpRequest.readyState + ", status: " + httpRequest.status
+          + " (" + httpRequest.statusText + "), timeout: " + httpRequest.timeout);
+      }
       if (httpRequest.readyState === 4) {
         if (o.callOnDoneWhenFinished) if (tfw.ajaxOnDone != null) tfw.ajaxOnDone();
         if (httpRequest.status === 200) {
           var rt;
           if (tfw.ajaxOnErrorCode && (rt = httpRequest.responseText).substr(0, 1) == "#") {
             tfw.ajaxOnErrorCode(rt);
-          } else {
-            if (o.onload) o.onload(httpRequest);
+          } else if (o.onload) {
+            o.onload(httpRequest);
           }
-        } else if (httpRequest.status) if (tfw.ajaxOnError) {
+        } else if (httpRequest.status && tfw.ajaxOnError) {
           tfw.ajaxOnError(httpRequest, o);
         }
       }
@@ -1012,7 +1015,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (tfw.ajaxIncludeParams) {
       switch (o.method) {
         case "GET":
-          if (ur.indexOf("?")>-1) ur += "&";
+          if (ur.indexOf("?") > -1) ur += "&";
           else ur += "?";
           ur += tfw.ajaxIncludeParams();
           break;
@@ -1022,7 +1025,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         // intentionally omitted default
       }
     }
-    if (o.outputToConsole) console.log("tfw.ajax: " + ur);
+    if (o.outputToConsole) console.info("tfw.ajax: " + ur);
     httpRequest.open(o.method, ur);
     switch (o.method) {
       case "GET":
@@ -3793,7 +3796,8 @@ var desktop = {//eslint-disable-line no-implicit-globals
     if (co.width) cWidth = co.width;
     if (co.height) cHeight = co.height;
     if (co.title) nazev = co.title;
-    var wHeight = cHeight, wWidth = cWidth;
+    var wHeight = cHeight,
+        wWidth = cWidth;
     if (cWidth > (desktop.width - 30)) wWidth = (desktop.width - 30);
     if (cHeight > (desktop.height - 30)) wHeight = (desktop.height - 30);
     var wLeft = Math.round((desktop.width - wWidth) / 2);
