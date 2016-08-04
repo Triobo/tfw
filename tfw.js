@@ -3169,14 +3169,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       selectedMonth = parseInt(month);
       selectedDay = parseInt(day);
     };
-    var readonly = input.readOnly || input.disabled;
     if (tfw.calendarExtend.placeCalendar == null) {
       console.error("Calendar widget was not added to the document - no callback was set.");
-    } else if (readonly) {
-      calendarIcon.addClass("disabled");
     } else {
       calendarIcon.addEventListener("click", function(){
-        tfw.calendarExtend.placeCalendar(calendarContainer, input);
+        if (!input.hasAttribute("readonly") && !input.hasAttribute("disabled")) {
+          tfw.calendarExtend.placeCalendar(calendarContainer, input);
+        }
       });
     }
 
