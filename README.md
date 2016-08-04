@@ -347,7 +347,20 @@ Class for creating dynamic tables.
 
 **Example**  
 ```js
-function myRowEditFunction(id){    // ...}var table = document.body.appendChild( tfw.dynamicTable(  {   id: "table1",   baseURL: "data.php",   urlParams: "token=Nd5qPxH&timestamp=1234567890",   rowEdit: myRowEditFunction,   bodyHeight: "300px"  } ));
+function myRowEditFunction(id){
+    // ...
+}
+var table = document.body.appendChild(
+ tfw.dynamicTable(
+  {
+   id: "table1",
+   baseURL: "data.php",
+   urlParams: "token=Nd5qPxH&timestamp=1234567890",
+   rowEdit: myRowEditFunction,
+   bodyHeight: "300px"
+  }
+ )
+);
 ```
 <a name="tfw.DynamicTable+tableContainer"></a>
 
@@ -359,7 +372,8 @@ DIV containing the table.
 <a name="tfw.DynamicTable+data"></a>
 
 #### dynamicTable.data : <code>Object</code>
-Data obtained from server. [reload()](#tfw.DynamicTable+reload) has to be called to fill this.Any other attributes provided by server are preserved (e.g. data.meta).
+Data obtained from server. [reload()](#tfw.DynamicTable+reload) has to be called to fill this.
+Any other attributes provided by server are preserved (e.g. data.meta).
 
 **Kind**: instance property of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 **Default**: <code>null</code>  
@@ -406,7 +420,8 @@ Get table container (for inserting into document).
 <a name="tfw.DynamicTable+reload"></a>
 
 #### dynamicTable.reload()
-Reload (or load) data from server.Loads preferences and data, then [paint](#tfw.DynamicTable+paint)s the table.
+Reload (or load) data from server.
+Loads preferences and data, then [paint](#tfw.DynamicTable+paint)s the table.
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 **See**
@@ -424,7 +439,9 @@ Watch for updates from the server.
 <a name="tfw.DynamicTable+destroy"></a>
 
 #### dynamicTable.destroy()
-A "destructor" for table.Aborts all pending requests created by current table.Removes associated CSS.
+A "destructor" for table.
+Aborts all pending requests created by current table.
+Removes associated CSS.
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 **See**: tfw.DynamicTable~serverCall  
@@ -438,7 +455,9 @@ Test if no filters are applied and table is sorted by column of type "order".
 <a name="tfw.DynamicTable+toggleReorder"></a>
 
 #### dynamicTable.toggleReorder()
-Toggle reordering of rows via drag & drop.Reflects the value of a private variable set by onclick events fired with filters.Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
+Toggle reordering of rows via drag & drop.
+Reflects the value of a private variable set by onclick events fired with filters.
+Recommended CSS: tr.draggable{cursor:grab}, tr.draggable:active{cursor:grabbing}
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 <a name="tfw.DynamicTable+orderChange"></a>
@@ -481,7 +500,8 @@ Set width of a column.
 <a name="tfw.DynamicTable+paint"></a>
 
 #### dynamicTable.paint([changes])
-Refresh the content of the table using data gotten by (re)loading.Assumes that there is only 1 order column and that data is initially sorted by that column.
+Refresh the content of the table using data gotten by (re)loading.
+Assumes that there is only 1 order column and that data is initially sorted by that column.
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 **Todo**
@@ -497,7 +517,8 @@ Refresh the content of the table using data gotten by (re)loading.Assumes that 
 <a name="tfw.DynamicTable+filter"></a>
 
 #### dynamicTable.filter(filterElement, dataCol)
-Apply filter for values of a column.Creates a [dialog](#tfw.dialog) with filter (and moves focus to input field).
+Apply filter for values of a column.
+Creates a [dialog](#tfw.dialog) with filter (and moves focus to input field).
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 **Todo**
@@ -513,7 +534,8 @@ Apply filter for values of a column.Creates a [dialog](#tfw.dialog) with filter
 <a name="tfw.DynamicTable+sort"></a>
 
 #### dynamicTable.sort(dataCol, asc, [dontSave])
-Apply sorting by values (text without HTML) of a column.Text fields are sorted locale aware, with empty strings always last.
+Apply sorting by values (text without HTML) of a column.
+Text fields are sorted locale aware, with empty strings always last.
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 
@@ -565,7 +587,8 @@ Reset all applied filters.
 <a name="tfw.DynamicTable+toggleColumn"></a>
 
 #### dynamicTable.toggleColumn(dataCol, [dontSave])
-Toggle visibility of a column. Only hides cells in TBODY and THEAD.Requires .hideColumn{display:none}
+Toggle visibility of a column. Only hides cells in TBODY and THEAD.
+Requires .hideColumn{display:none}
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 
@@ -581,7 +604,8 @@ Toggle visibility of a column. Only hides cells in TBODY and THEAD.Requires .hi
 <a name="tfw.DynamicTable+toggleColumnDialog"></a>
 
 #### dynamicTable.toggleColumnDialog(element)
-Toggle visibility of a column.Creates a [dialog](#tfw.dialog) with checkboxes.
+Toggle visibility of a column.
+Creates a [dialog](#tfw.dialog) with checkboxes.
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 
@@ -698,7 +722,8 @@ Width of column with row edit icon (icon's width including padding, border, marg
 <a name="tfw.DynamicTable..serverCall"></a>
 
 #### DynamicTable~serverCall(params)
-Send a table-specific request to server.If table is [destroy](#tfw.DynamicTable+destroy)ed, pending requests are aborted.
+Send a table-specific request to server.
+If table is [destroy](#tfw.DynamicTable+destroy)ed, pending requests are aborted.
 
 **Kind**: inner method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 **See**
@@ -833,7 +858,8 @@ Function that handles data received from server.
 <a name="tfw.DynamicTable..dataChange"></a>
 
 #### DynamicTable~dataChange : <code>Object</code>
-Object representing an update/insertion/deletion in data.Type of change is determined by present properties.
+Object representing an update/insertion/deletion in data.
+Type of change is determined by present properties.
 
 **Kind**: inner typedef of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 
@@ -886,7 +912,9 @@ Value by which the table can be filtered.
 <a name="new_tfw.calendarExtend_new"></a>
 
 #### new calendarExtend(input)
-Class for enhancing date input fields. Requires CSS styling.If style.width is set on input, resulting input including calendar icon will have that width.If input is readonly or disabled, calendar will be too.
+Class for enhancing date input fields. Requires CSS styling.
+If style.width is set on input, resulting input including calendar icon will have that width.
+If input is readonly or disabled, calendar will be too.
 
 **Returns**: <code>HTMLElement</code> - Returns input wrapper (for inserting into DOM in case input was not inserted yet)  
 
@@ -896,11 +924,18 @@ Class for enhancing date input fields. Requires CSS styling.If style.width is s
 
 **Example**  
 ```js
-var input = tfw.input({value:"2016-03-07",style:"width:200px"});document.body.appendChild(input);tfw.calendarExtend(input);
+var input = tfw.input({value:"2016-03-07",style:"width:200px"});
+document.body.appendChild(input);
+
+tfw.calendarExtend(input);
 ```
 **Example**  
 ```js
-tfw.calendarExtend.placeCalendar = function (cal, input){ input.parentNode.insertBefore(cal, input);}document.body.add(tfw.calendarExtend(tfw.input({value: "2016-03-07"})));
+tfw.calendarExtend.placeCalendar = function (cal, input){
+ input.parentNode.insertBefore(cal, input);
+}
+
+document.body.add(tfw.calendarExtend(tfw.input({value: "2016-03-07"})));
 ```
 <a name="tfw.calendarExtend.months"></a>
 
@@ -937,7 +972,8 @@ Adjust date.
 <a name="tfw.calendarExtend..placeCalendar"></a>
 
 #### calendarExtend~placeCalendar : <code>function</code>
-Callback function that puts calendar widget for an input field into page.Most likely create an overlay that closes calendar when user clicks somewhere else.
+Callback function that puts calendar widget for an input field into page.
+Most likely create an overlay that closes calendar when user clicks somewhere else.
 
 **Kind**: inner typedef of <code>[calendarExtend](#tfw.calendarExtend)</code>  
 
@@ -1064,7 +1100,8 @@ Add Javascript-generated CSS to the document.
 <a name="tfw.init"></a>
 
 ### tfw.init()
-Initialization needed to run tfw functions (e.g. adds required CSS styling).Can be run multiple times (after adding localized strings).
+Initialization needed to run tfw functions (e.g. adds required CSS styling).
+Can be run multiple times (after adding localized strings).
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 <a name="tfw.localize"></a>
@@ -1518,7 +1555,8 @@ Alias for tfw.createAndFillElement("li", params)
 <a name="tfw.tabs"></a>
 
 ### tfw.tabs(params) ⇒ <code>HTMLElement</code>
-Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.API methods are mirrored into the HTML element.
+Wrapper that creates a tabs container and returns it's HTML node for inserting into DOM.
+API methods are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - Tabs  
@@ -1548,7 +1586,8 @@ Create a progress bar.
 <a name="tfw.dynamicTable"></a>
 
 ### tfw.dynamicTable(params) ⇒ <code>HTMLElement</code>
-Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.Class instance's properties are mirrored into the HTML element.
+Wrapper that creates a dynamic table and returns it's HTML node for inserting into DOM.
+Class instance's properties are mirrored into the HTML element.
 
 **Kind**: static method of <code>[tfw](#tfw)</code>  
 **Returns**: <code>HTMLElement</code> - Table  
