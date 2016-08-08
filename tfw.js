@@ -520,7 +520,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     params.text = "";
     var x = tfw.createAndFillElement("div", params);
     x.addClass("tfwCheckbox");
-    if (params.onchange) x.onchange = params.onchange;
+    if (params.onchange) x.addEventListener("change", params.onchange);
     if (params.onclick) x.onclick = params.onclick;
     var b = document.createElement("div");
     x._value = 0;
@@ -542,7 +542,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
           x.removeClass("checked");
         }
         this._value = val;
-        if (this.onchange) this.onchange();
         this.addClass("hasBeenChanged");
       },
       get: function(){
@@ -564,7 +563,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       configurable: true
     });
     x.addEventListener("click", function(e){
-      if (!this.zakazano) x.value = 1 - this._value;
+      if (!this.zakazano && this.dispatchEvent(new CustomEvent("change", {bubbles: true, cancelable: true}))) {
+        this.value = 1 - this._value;
+      }
       e.stopPropagation();
       e.preventDefault();
     }, false);
