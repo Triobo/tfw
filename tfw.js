@@ -3858,6 +3858,16 @@ var desktop = {//eslint-disable-line no-implicit-globals
     }
     if (co.id) dlg.id = co.id;
     if (co.vychozi) $(co.vychozi).focus();
+    Object.defineProperty(dlg, "title", {
+      set: function(val){
+        this.titleDiv.innerHTML = val;
+      },
+      get: function(){
+        return this.titleDiv.innerHTML;
+      },
+      enumerable: true,
+      configurable: true
+    });
     dlg.titleDiv = titleDiv;
     dlg.hasBeenChanged = function(){
       return this.getElementsByClassName("hasBeenChanged").length ? 1 : 0;
