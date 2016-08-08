@@ -3197,7 +3197,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       calendarContainer.innerHTML = "";
       var header = tfw.div({className: "head", innerHTML: tfw.calendarExtend.months[selectedOrCurrentMonth - 1] + " " + selectedOrCurrentYear});
       calendarContainer.add(header);
-      var backButton = tfw.div({className: "calendarBackButton", innerHTML: "&nbsp;"});
+      var backButton = tfw.div({className: "calendarBackButton fa icon fa-caret-left clickable"});
       backButton.addEventListener("mousedown", function backward(event){
         event.stopPropagation();
         event.preventDefault();
@@ -3205,7 +3205,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         paint();
       }, true);
       header.add(backButton);
-      var forwardButton = tfw.div({className: "calendarForwardButton", innerHTML: "&nbsp;"});
+      var forwardButton = tfw.div({className: "calendarForwardButton fa icon fa-caret-right clickable"});
       forwardButton.addEventListener("mousedown", function forward(event){
         event.stopPropagation();
         event.preventDefault();

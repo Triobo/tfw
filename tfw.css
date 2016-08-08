@@ -765,16 +765,10 @@ button:disabled:hover {
 
 .calendarBackButton {
   float: left;
-  cursor: pointer;
-  width: 20px;
-  background:url("https://editor.triobo.com/v351/pics/sipkaVlevo.png") 2px 2px;  
 }
 
 .calendarForwardButton {
   float: right;
-  cursor: pointer;
-  width: 20px;
-  background: url("https://editor.triobo.com/v351/pics/sipkaVpravo.png") 2px 2px;
 }
 
 .calendarWidget p {
