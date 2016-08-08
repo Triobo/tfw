@@ -3140,30 +3140,33 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {string} Date in format yyyy-mm-dd
      */
     function completeDate(date){
-      if (date.match(/^\d{4}$/)) { // yyyy
+      if (date.match(/^\d{4}$/) && date != "0000") { // yyyy
         return date + "-01-01";
-      } else if (date.match(/^\d{4}-\d{2}$/)) { // yyyy-mm
+      } else if (date.match(/^\d{4}-\d{2}$/) && date != "0000-00") { // yyyy-mm
         return date + "-01";
-      } else {
+      } else if (date.match(/^\d{4}-\d{2}-\d{2}$/) && date != "0000-00-00") {
         return date;
+      } else {
+        return "";
       }
     }
     input.addEventListener("change", function(){
       this.value = completeDate(this.value);
     }, true);
+    input.value = completeDate(input.value);
     var calendarContainer = document.createElement("div");
     calendarContainer.addClass("calendarWidget");
-    var selectedYear;
+    var selectedYear = NaN;
     /**
      * Month number, 1-12
      * @private
      */
-    var selectedMonth;
+    var selectedMonth = NaN;
     /**
      * Day number, 1-31 (or 0 for undefined)
      * @private
      */
-    var selectedDay;
+    var selectedDay = NaN;
     var setSelectedDate = function(year, month, day){
       selectedYear = parseInt(year);
       selectedMonth = parseInt(month);
@@ -3184,19 +3187,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @private
      */
     function paint(){
-      var d = new Date(selectedYear, selectedMonth - 1, 1),
+      var selectedOrCurrentYear = isNaN(selectedYear) ? (new Date()).getFullYear() : selectedYear,
+          selectedOrCurrentMonth = isNaN(selectedMonth) ? ((new Date()).getMonth() + 1) : selectedMonth;
+      var d = new Date(selectedOrCurrentYear, selectedOrCurrentMonth - 1, 1),
           i,
           // which day of week is the first one of a month
           w = (d.getDay() + 6) % 7, // so that Monday is first
           sp = 0;
       calendarContainer.innerHTML = "";
-      var header = tfw.div({className: "head", innerHTML: tfw.calendarExtend.months[selectedMonth - 1] + " " + selectedYear});
+      var header = tfw.div({className: "head", innerHTML: tfw.calendarExtend.months[selectedOrCurrentMonth - 1] + " " + selectedOrCurrentYear});
       calendarContainer.add(header);
       var backButton = tfw.div({className: "calendarBackButton", innerHTML: "&nbsp;"});
       backButton.addEventListener("mousedown", function backward(event){
         event.stopPropagation();
         event.preventDefault();
-        setSelectedDate(selectedYear - (selectedMonth == 1 ? 1 : 0), selectedMonth == 1 ? 12 : selectedMonth - 1, 0);
+        setSelectedDate(selectedOrCurrentYear - (selectedOrCurrentMonth == 1 ? 1 : 0), selectedOrCurrentMonth == 1 ? 12 : selectedOrCurrentMonth - 1, 0);
         paint();
       }, true);
       header.add(backButton);
@@ -3204,7 +3209,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       forwardButton.addEventListener("mousedown", function forward(event){
         event.stopPropagation();
         event.preventDefault();
-        setSelectedDate(selectedYear + (selectedMonth == 12 ? 1 : 0), selectedMonth == 12 ? 1 : selectedMonth + 1, 0);
+        setSelectedDate(selectedOrCurrentYear + (selectedOrCurrentMonth == 12 ? 1 : 0), selectedOrCurrentMonth == 12 ? 1 : selectedOrCurrentMonth + 1, 0);
         paint();
       }, true);
       header.add(forwardButton);
@@ -3224,10 +3229,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
         week.add(day);
         sp++;
       }
-      var pdm = new Date(selectedYear, selectedMonth, 0).getDate();
+      var pdm = new Date(selectedOrCurrentYear, selectedOrCurrentMonth, 0).getDate();
       for (i = 1; i <= pdm; i++) {
         day = tfw.span({
-          id: "day-" + selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth) + "-" + (i < 10 ? "0" + i : i),
+          id: "day-" + selectedOrCurrentYear + "-" + (selectedOrCurrentMonth < 10 ? "0" + selectedOrCurrentMonth : selectedOrCurrentMonth)
+            + "-" + (i < 10 ? "0" + i : i),
           className: "day" + (sp % 7 == 6 ? " sunday" : "") + (i == selectedDay ? " current" : ""),
           innerHTML: i
         });
@@ -3256,8 +3262,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
       calendarContainer.add(week);
     }
     calendarIcon.addEventListener("click", function(){
-      var selectedDate = this._calendarInput.value.split("-");
-      setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
+      if (this._calendarInput.value) {
+        var selectedDate = this._calendarInput.value.split("-");
+        setSelectedDate(selectedDate[0], selectedDate[1], selectedDate[2]);
+      } else {
+        setSelectedDate(NaN, NaN, NaN);
+      }
       paint();
     });
     return calendarWrapper;
