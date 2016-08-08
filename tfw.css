@@ -22,11 +22,11 @@
 	color: black;
 	background-color: #fc5;/*orange*/  
 }
-.fa.icon.disabled{
+.fa.icon.disabled, .calendarInput:disabled + .fa.icon, .calendarInput:read-only + .fa.icon{
   background-color: #ddd;
   cursor: not-allowed;
 }
-.fa.icon.disabled:hover{
+.fa.icon.disabled:hover, .calendarInput:disabled + .fa.icon:hover, .calendarInput:read-only + .fa.icon:hover{
 	color: white;
   background-color: #ddd;
 }
