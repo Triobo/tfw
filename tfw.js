@@ -3011,26 +3011,31 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * Requires .hideColumn{display:none}
      * @param {number} dataCol - number of column (in data)
      * @param {boolean} [dontSave=false] - don't save into preferences
+     * @return {boolean} True if toggle happened, false otherwise (when trying to hide last column)
      */
     this.toggleColumn = function(dataCol, dontSave){
-      var column = this.data.cols[dataCol].columnOrder;
-      var visible;
+      var column = this.data.cols[dataCol].columnOrder,
+          visible = !this.tableContainer.querySelector("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
+            + (column + 1) + ")").hasClass("hideColumn"),
+          hiddenColumns = this.getPreference("hiddenColumns") || [];
+      if ((typeof dontSave == "undefined" || !dontSave) && visible && hiddenColumns.filter(function(el){return el == true;}).length
+        == this.tableContainer.querySelectorAll("thead tr > :not(.rowEditCell)").length - 1) {
+        return false;
+      }
       [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
         + (column + 1) + ")")).forEach(function(cell){
-          visible = cell.hasClass("hideColumn");
           cell.toggleClass("hideColumn");
         });
       this.setTableWidth();
       if (typeof dontSave == "undefined" || !dontSave) {
-        /** @var {boolean[]} */
-        var hiddenColumns = this.getPreference("hiddenColumns") || [];
         if (visible) {
-          delete hiddenColumns[dataCol];
-        } else {
           hiddenColumns[dataCol] = true;
+        } else {
+          delete hiddenColumns[dataCol];
         }
         this.setPreference("hiddenColumns", hiddenColumns);
       }
+      return true;
     };
     /**
      * Toggle visibility of a column.
@@ -3047,9 +3052,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (!this.data.cols[j].hidden) {
           var checkbox = tfw.checkbox({
             text: this.data.cols[j].name,
-            value: (hiddenColumns != null && hiddenColumns[j] === true) ? 0 : 1,
-            onchange: function(){
-              dynamicTable.toggleColumn(this.dataset.dataCol);
+            value: (hiddenColumns != null && hiddenColumns[j] === true) ? 0 : 1
+          });
+          checkbox.addEventListener("change", function(event){
+            if (!dynamicTable.toggleColumn(this.dataset.dataCol)) {
+              event.preventDefault();
             }
           });
           checkbox.dataset.dataCol = j;

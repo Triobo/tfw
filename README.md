@@ -61,8 +61,7 @@
                 * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.DynamicTable+setActiveFilterInColumn)
                 * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.DynamicTable+filterAny)
                 * [.resetFilters()](#tfw.DynamicTable+resetFilters)
-                * [.toggleColumn(dataCol, [dontSave])](#tfw.DynamicTable+toggleColumn)
-                    * [~hiddenColumns](#tfw.DynamicTable+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
+                * [.toggleColumn(dataCol, [dontSave])](#tfw.DynamicTable+toggleColumn) ⇒ <code>boolean</code>
                 * [.toggleColumnDialog(element)](#tfw.DynamicTable+toggleColumnDialog)
             * _static_
                 * [.placePositionedDialog](#tfw.DynamicTable.placePositionedDialog) : <code>function</code>
@@ -298,8 +297,7 @@ Tab as parameter object for creation. Any other properties are preserved (and la
         * [.setActiveFilterInColumn(column, on, arrowType, [arrowBase])](#tfw.DynamicTable+setActiveFilterInColumn)
         * [.filterAny(dataCol, value, [searchType], [dontSave])](#tfw.DynamicTable+filterAny)
         * [.resetFilters()](#tfw.DynamicTable+resetFilters)
-        * [.toggleColumn(dataCol, [dontSave])](#tfw.DynamicTable+toggleColumn)
-            * [~hiddenColumns](#tfw.DynamicTable+toggleColumn..hiddenColumns) : <code>Array.&lt;boolean&gt;</code>
+        * [.toggleColumn(dataCol, [dontSave])](#tfw.DynamicTable+toggleColumn) ⇒ <code>boolean</code>
         * [.toggleColumnDialog(element)](#tfw.DynamicTable+toggleColumnDialog)
     * _static_
         * [.placePositionedDialog](#tfw.DynamicTable.placePositionedDialog) : <code>function</code>
@@ -564,20 +562,17 @@ Reset all applied filters.
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
 <a name="tfw.DynamicTable+toggleColumn"></a>
 
-#### dynamicTable.toggleColumn(dataCol, [dontSave])
+#### dynamicTable.toggleColumn(dataCol, [dontSave]) ⇒ <code>boolean</code>
 Toggle visibility of a column. Only hides cells in TBODY and THEAD.Requires .hideColumn{display:none}
 
 **Kind**: instance method of <code>[DynamicTable](#tfw.DynamicTable)</code>  
+**Returns**: <code>boolean</code> - True if toggle happened, false otherwise (when trying to hide last column)  
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
 | dataCol | <code>number</code> |  | number of column (in data) |
 | [dontSave] | <code>boolean</code> | <code>false</code> | don't save into preferences |
 
-<a name="tfw.DynamicTable+toggleColumn..hiddenColumns"></a>
-
-##### toggleColumn~hiddenColumns : <code>Array.&lt;boolean&gt;</code>
-**Kind**: inner property of <code>[toggleColumn](#tfw.DynamicTable+toggleColumn)</code>  
 <a name="tfw.DynamicTable+toggleColumnDialog"></a>
 
 #### dynamicTable.toggleColumnDialog(element)
