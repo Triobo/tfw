@@ -97,7 +97,8 @@ input {
   color: #000;
   font-family:inherit; 
 }
-input[disabled], input[readonly] {
+input[disabled], input[readonly],
+input[disabled] + label, input[readonly] + label {
   color: #bbb;
 }
 input[type="range"] {

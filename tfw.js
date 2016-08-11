@@ -445,12 +445,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
         l.setAttribute("for", element.id);
       }
     }
-    if (params.legendStyle) l.style.cssText = params.legendStyle;
+    l.style.cssText = (("legendStyle" in params) ? params.legendStyle : "");
     if (params.containerId) x.id = params.containerId;
     x.className = "tfwContainer" + (params.containerClassName ? (" " + params.containerClassName) : "");
     if (params.containerStyle) x.style.cssText = params.containerStyle;
-    x.add(l);
-    x.add(element);
+    if (element.tagName.toUpperCase() == "INPUT" && ["checkbox", "radio"].indexOf(element.type.toLowerCase()) == -1) {
+      var sp = document.createElement("span");
+      l.style["float"] = "left";
+      sp.add(element);
+      sp.add(l);
+      x.add(sp);
+    } else {
+      x.add(l);
+      x.add(element);
+    }
     if (params.after) {
       var a = document.createElement("span");
       a.innerHTML = params.after;
