@@ -438,8 +438,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
    */
   inputFieldLegend: function(element, params){
     var x = document.createElement(("containerTag" in params) ? params.containerTag : "p");
-    var l = document.createElement("span");
-    if (params.legend) l.innerHTML = params.legend;
+    var l = document.createElement("label");
+    if (params.legend) {
+      l.innerHTML = params.legend;
+      if (element.id) {
+        l.setAttribute("for", element.id);
+      }
+    }
     if (params.legendStyle) l.style.cssText = params.legendStyle;
     if (params.containerId) x.id = params.containerId;
     x.className = "tfwContainer" + (params.containerClassName ? (" " + params.containerClassName) : "");

@@ -326,7 +326,7 @@ button:disabled:hover {
   margin: 2px 0;
 }
 
-.tfwContainer span {
+.tfwContainer span, .tfwContainer label {
   display: inline-block;
   vertical-align: baseline;
 }
