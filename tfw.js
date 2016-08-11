@@ -1976,7 +1976,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             b.onclick = goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j);
           }
           val = this.data.rows[rowOrder].cols[j];
-          readonlyCol = ("readonly" in this.data.cols[j]) && this.data.cols[j] === true;
+          readonlyCol = ("readonly" in this.data.cols[j]) && this.data.cols[j].readonly === true;
           if (typeof columnRenderers[j] == "function") {
             params.children.push.apply(params.children, columnRenderers[j](val));
           } else {
