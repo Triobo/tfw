@@ -1699,7 +1699,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @listens drop
      */
     this.toggleReorder = function(){
-      var dynamicTable = this;
       var rowReorderEnabled = this.reorderEnabled();
       var tbody = this.tableContainer.querySelector("tbody");
       if (rowReorderEnabled) {
@@ -1707,33 +1706,43 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       var rows = tbody.getElementsByTagName("tr");
       for (var i = 0; i < rows.length; i++) {
-        rows[i][rowReorderEnabled ? "addClass" : "removeClass"]("draggable");
-        rows[i].draggable = rowReorderEnabled;
-        rows[i].ondragstart = rowReorderEnabled ? function(event){
-          this.addClass("dragged");
-          event.dataTransfer.setData("text", event.target.myOrder());
-        } : null;
-        rows[i].ondragover = rowReorderEnabled ? function(event){
-          event.preventDefault();
-          event.dataTransfer.dropEffect = "move";
-          var dragged = dynamicTable.tableContainer.querySelector("tbody tr.dragged");
-          if (!dragged.isSameNode(this)) {
-            dynamicTable.orderChange((dragged.myOrder() < this.myOrder()) ? this.nextSibling : this);
-          }
-          return false;
-        } : null;
-        rows[i].ondrop = rowReorderEnabled ? function(event){
-          event.preventDefault();
-        } : null;
-        rows[i].ondragend = rowReorderEnabled ? function(){
-          this.removeClass("dragged");
-          serverUpdateOrder({
-            id: this.dataset.rowid,
-            neworder: this.myOrder() + 1
-          });
-        } : null;
+        this.setReorderEnabled(rows[i], rowReorderEnabled);
       }
     };
+    /**
+     * @private
+     * @param {HTMLElement} row
+     * @param {boolean} rowReorderEnabled
+     */
+    this.setReorderEnabled = function(row, rowReorderEnabled){
+      var dynamicTable = this;
+      row[rowReorderEnabled ? "addClass" : "removeClass"]("draggable");
+      row.draggable = rowReorderEnabled;
+      row.ondragstart = rowReorderEnabled ? function(event){
+        this.addClass("dragged");
+        event.dataTransfer.setData("text", event.target.myOrder());
+      } : null;
+      row.ondragover = rowReorderEnabled ? function(event){
+        event.preventDefault();
+        event.dataTransfer.dropEffect = "move";
+        var dragged = dynamicTable.tableContainer.querySelector("tbody tr.dragged");
+        if (!dragged.isSameNode(this)) {
+          dynamicTable.orderChange((dragged.myOrder() < this.myOrder()) ? this.nextSibling : this);
+        }
+        return false;
+      } : null;
+      row.ondrop = rowReorderEnabled ? function(event){
+        event.preventDefault();
+      } : null;
+      row.ondragend = rowReorderEnabled ? function(){
+        this.removeClass("dragged");
+        serverUpdateOrder({
+          id: this.dataset.rowid,
+          neworder: this.myOrder() + 1
+        });
+      } : null;
+    };
+
     /**
      * Reflect a change in order in the table.
      * @param {?HTMLElement} referenceRow - before which row should be the moved row placed (if null, insert at the end)
