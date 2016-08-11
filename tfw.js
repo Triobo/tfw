@@ -2430,6 +2430,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }
           }
           tbody.insertBefore(newRow, greaterRow);
+          this.setReorderEnabled(newRow, this.reorderEnabled());
         } else { // deletion
           rowOrder = this.getDataRowById(rowID);
           this.data.rows.splice(rowOrder, 1);
