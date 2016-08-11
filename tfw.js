@@ -449,7 +449,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.containerId) x.id = params.containerId;
     x.className = "tfwContainer" + (params.containerClassName ? (" " + params.containerClassName) : "");
     if (params.containerStyle) x.style.cssText = params.containerStyle;
-    if (element.tagName.toUpperCase() == "INPUT" && ["checkbox", "radio"].indexOf(element.type.toLowerCase()) == -1) {
+    if ((element.tagName.toUpperCase() == "INPUT" && ["checkbox", "radio"].indexOf(element.type.toLowerCase()) == -1)
+      || element.tagName.toUpperCase() == "TEXTAREA") {
       var sp = document.createElement("span");
       l.style["float"] = "left";
       sp.add(element);
