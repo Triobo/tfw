@@ -218,14 +218,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       }
     }
-    if ("onchange" in params) {
+    /*if ("onchange" in params) {
       element.speconchange = params.onchange;
-    }
-    if ("onchange" in params || "evaluate" in params) {
+    }*/
+    if ("evaluate" in params) {
       element.addEventListener("change", function(){
-        if (this.speconchange) {
+        /*if (this.speconchange) {
           this.speconchange();
-        }
+        }*/
         if (this.evaluate) {
           var a;
           try {
@@ -534,8 +534,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     params.text = "";
     var x = tfw.createAndFillElement("div", params);
     x.addClass("tfwCheckbox");
-    if (params.onchange) x.addEventListener("change", params.onchange);
-    if (params.onclick) x.onclick = params.onclick;
+    //if (params.onchange) x.addEventListener("change", params.onchange);
+    //if (params.onclick) x.onclick = params.onclick;
     var b = document.createElement("div");
     x._value = 0;
     if ("value" in params) x._value = params.value ? 1 : 0;
@@ -577,8 +577,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       configurable: true
     });
     x.addEventListener("click", function(e){
-      if (!this.zakazano && this.dispatchEvent(new CustomEvent("change", {bubbles: true, cancelable: true}))) {
+      if (!this.zakazano) {
         this.value = 1 - this._value;
+        this.dispatchEvent(new CustomEvent("change", {bubbles: true, cancelable: true}));
       }
       e.stopPropagation();
       e.preventDefault();
