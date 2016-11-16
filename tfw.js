@@ -605,6 +605,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (!element.hasClass("disabled")) this.action(e);
       };
     }
+    if ("title" in params) element.title = params.title;
     var b = document.createElement("div");
     if (params.index) b.style.backgroundPositionX = (-params.index) + "px";
     element.add(b);
@@ -934,7 +935,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             $(element.id).prekresli();
           }, 500);
         });
-        element.hr.open("POST", "uploadFile.php?token=" + token);
+        element.hr.open("POST", "uploadFile.php?" + tfw.ajaxIncludeParams());
         element.hr.setRequestHeader("X_FILENAME", element.path + element.filename);
         element.hr.send(u[0]);
       } else {
@@ -1414,7 +1415,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.tableContainer = tfw.div({
       innerHTML: tfw.AJAX_LOADER,
-      className: "tfwDynamicTableContainer"
+      className: "tfwDynamicTableContainer" + (("className" in params) ? (" " + params.className) : "")
     });
     var baseURL = params.baseURL;
     /**

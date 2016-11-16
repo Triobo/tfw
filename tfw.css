@@ -8,6 +8,9 @@
   -moz-osx-font-smoothing: grayscale;
   box-sizing: border-box;
 }
+.fa-2x {
+  font-size: 2em;
+}
 .fa.icon{
   padding: 2px;
 	margin: 1px;
@@ -73,6 +76,9 @@
 .fa-trash:before {
   content: "\f1f8";
 }
+.fa-home:before {
+  content: "\f015";
+}
 
 
 
@@ -100,6 +106,9 @@ input {
 input[disabled], input[readonly], textarea[disabled], textarea[readonly],
 input[disabled] + label, input[readonly] + label, textarea[disabled] + label, textarea[readonly] + label {
   color: #bbb;
+}
+.readonly input[readonly] {
+  color: black;
 }
 input[type="range"] {
   vertical-align: bottom;
