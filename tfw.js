@@ -3324,8 +3324,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var i,
         container = tfw.createAndFillElement("div", params);
     container.addClass("tfwMultiCheckbox");
-    if ("value" in params) container._value = params.value;
-    else container._value = [];
+    if ("value" in params) {
+      container._value = params.value;
+      if (typeof container._value === "string") container._value = container._value.split(",");
+    } else container._value = [];
+    
     var checkboxOnChange = function(){
       var checkboxContainer = this.parentNode,
           checkboxes = checkboxContainer.childNodes;
@@ -3337,17 +3340,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
     };
     Object.defineProperty(container, "value", {
       set: function(val){
-        var v = [];
+        if (typeof val === "string") val = val.split(",");
         for (i = 0; i < this.childNodes.length; i++) {
           this.childNodes[i].value = 0;
         }
-        if (typeof val === "string") v = val.split(",");
-        else v = val;
         var itemId;
-        for (i = 0; i < v.length; i++) {
-          itemId = this.id + "-" + v[i];
+        for (i = 0; i < val.length; i++) {
+          itemId = this.id + "-" + val[i];
           if ($(itemId)) $(itemId).value = 1;
         }
+        container._value = val;
       },
       get: function(){
         return container._value;
