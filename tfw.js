@@ -420,6 +420,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
         }
       };
     }
+    if ("icon" in params) {
+      element.insertBefore(tfw.span({innerHTML: params.icon, className: "icon"}), element.childNodes[0]);
+    }
     return element;
   },
   /**
@@ -2015,7 +2018,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
               case tfw.DynamicTable.colTypes.DATE:
                 params.children.push(tfw.calendar({
                   id: id,
-                  value: val.match(/\d{4,}-\d{2}-\d{2}/)[0],
+                  value: (val) ? val.match(/\d{4,}-\d{2}-\d{2}/)[0] : "",
                   onchange: updateInputCallback,
                   readOnly: readonlyRow || readonlyCol
                 }));
@@ -3358,7 +3361,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           id: params.id + "-" + params.list[i].id,
           text: params.list[i].text,
           onchange: checkboxOnChange,
-          value: (container._value.indexOf(params.list[i].id) > -1) ? 1 : 0
+          value: (container._value.indexOf(params.list[i].id.toString()) > -1) ? 1 : 0
         }));
       }
     }
