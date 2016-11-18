@@ -1672,7 +1672,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var i = 0; i < pendingHttpRequests.length; i++) {
         pendingHttpRequests[i].abort();
       }
-      document.getElementById("tfwInsertStyle-tfwDynamicTableStyling-" + this.tableHTMLId).remove();
+      var id = "tfwInsertStyle-tfwDynamicTableStyling-" + this.tableHTMLId;
+      if ($(id)) $(id).remove();
     };
     /**
      * Test if no filters are applied and table is sorted by column of type "order".
