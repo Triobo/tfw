@@ -115,7 +115,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     /** when composing list, last OR word (f.e. jpg, png or gif) */
     OR: "or",
     /** Error, when not allowed file extension is used  */
-    EXTNOTALLOWED: "Only %1 files are allowed."
+    EXTNOTALLOWED: "Only %1 files are allowed.",
+    /** Calendar, button today **/
+    TODAY: "Today",
+    /** Calendar, button remove **/
+    REMOVE: "Remove"
   },
   /**
    * Orientation, either vertical or horizontal.
@@ -370,7 +374,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     element.setValue = function(a){
       this.value = a;
     };
-    return element;
+    return (params.legend) ? (this.inputFieldLegend(element, params)) : element;
   },
   /* eslint-disable */
   /**
@@ -3231,7 +3235,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           i,
           // which day of week is the first one of a month
           w = (d.getDay() + 6) % 7, // so that Monday is first
-          sp = 0;
+          sp = 0,
+          wc = 0; //weeksCounter
       calendarContainer.innerHTML = "";
       var header = tfw.div({className: "head", innerHTML: tfw.calendarExtend.months[selectedOrCurrentMonth - 1] + " " + selectedOrCurrentYear});
       calendarContainer.add(header);
@@ -3289,6 +3294,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if ((sp == 7) && (i < pdm)) {
           sp = 0;
           calendarContainer.add(week);
+          wc++;
           week = tfw.par({className: "week"});
         }
       }
@@ -3298,6 +3304,35 @@ var tfw = {//eslint-disable-line no-implicit-globals
         week.add(day);
       }
       calendarContainer.add(week);
+      if (wc < 5) {
+        calendarContainer.add(week = tfw.par({className: "week"}));
+        for (i = 0; i < 7; i++) {
+          day = tfw.span({innerHTML: "&nbsp;"});
+          if (i % 7 == 6) day.setAttribute("class", "sunday");
+          week.add(day);
+        }
+      }
+      calendarContainer.add(tfw.div({
+        className: "foot",
+        children: [
+          tfw.span({text: tfw.strings.TODAY, onclick: function () {
+            input.value = new Date().toISOString().slice(0, 10);
+            var current = calendarContainer.querySelector(".current");
+            if (current) {
+              current.removeClass("current");
+            }
+            $("day-" + input.value).addClass("current");
+          }}),
+          tfw.span({text: tfw.strings.REMOVE, onclick: function () {
+            input.value = "";
+            var current = calendarContainer.querySelector(".current");
+            if (current) {
+              current.removeClass("current");
+            }
+          }})
+        ]
+      }));
+      
     }
     calendarIcon.addEventListener("click", function(){
       if (this._calendarInput.value) {
@@ -3797,6 +3832,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         if (val) this.addClass("disabled");
         else this.removeClass("disabled");
         this._disabled = val;
+        if (this.previousSibling) this.previousSibling.classIf("disabled", this._disabled);
       },
       get: function(){
         return this._disabled;

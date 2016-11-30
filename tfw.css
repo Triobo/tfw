@@ -343,6 +343,9 @@ button:disabled:hover {
 .tfwContainer input {
   vertical-align: baseline;
 }
+.tfwContainer span.disabled {
+  color: #bbb;
+}
 
 /* block */
 .tfwBlock {
@@ -752,7 +755,7 @@ button:disabled:hover {
 
 .calendarWidget {
   width: 188px;
-  height: 164px;
+  height: 184px;
   overflow: hidden;
   border: 1px solid #bbb;
   background: #eee;
@@ -813,6 +816,22 @@ button:disabled:hover {
   color: black;
 }
 
+.calendarWidget div.foot {
+  position: absolute;
+  padding: 2px 4px;
+  bottom: 0px;
+  font-size: 90%;
+  width: 100%;
+  text-align: center;
+}
+.calendarWidget div.foot span {
+  padding: 0px 4px;
+	color: #8cc;/*azure*/
+	cursor: pointer;
+}
+.calendarWidget div.foot span:hover {
+  color: #fc5;/*orange*/
+}
 /* CSS arrows */
 
 .tfwArrow {
