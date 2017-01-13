@@ -588,12 +588,21 @@ button:disabled:hover {
 .tfwBarCentered {
   text-align: center;
   margin: 8px 0px;
+  line-height: 36px;
 } 
 
 .tfwFullArea {
   display: block;
   width: 100%;
   height: 100%;
+}
+
+.tfwDialogIcon {
+  float: left;
+  width: 64px;
+  height: 64px;
+  color: red;
+  font-size: 50px;
 }
 
 /*****************/

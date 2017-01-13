@@ -197,7 +197,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if ("text" in params) {
       params.innerHTML = params.text;
     }
-    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder", "onchange"];
+    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder", "onchange", "onkeyup", "title"];
     var i;
     for (i = 0; i < attributesToCopy.length; i++) {
       var attribute = attributesToCopy[i];
@@ -3926,6 +3926,9 @@ var desktop = {//eslint-disable-line no-implicit-globals
       e.stopPropagation();
     }, false);
     if (co.obsah) dlg.innerHTML = co.obsah;
+    if (co.icon) switch (co.icon) {
+      case "warning": dlg.insertBefore(tfw.div({text: "<i class='fa fa-warning'></i>", className: "tfwDialogIcon"}), dlg.firstChild); break;
+    }
     var i;
     if (co.children) {
       for (i = 0; i < co.children.length; i++) {
