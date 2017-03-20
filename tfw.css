@@ -445,6 +445,9 @@ button:disabled:hover {
 .tfwCheckbox div.checked {
   background-color: #fc5;/*orange*/
 }
+.tfwCheckbox.disabled div.checked {
+  background-color: #bbb;
+}
 .tfwMultiCheckbox {
   display:inline-block;
   padding:0px 4px;
@@ -584,6 +587,10 @@ button:disabled:hover {
   margin-right: 7px;
   border-right:1px solid #ddd;/*silver*/
 }
+
+.tfwCentered {
+  text-align: center;
+} 
 
 .tfwBarCentered {
   text-align: center;

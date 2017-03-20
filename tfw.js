@@ -907,7 +907,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + tfw.strings.UPLOADING.replace("%1", (prc + " %")) + "</p>";
       } else if (element.value) {
         element.removeClass("empty");
-        if (element.filename.match(/\.(gif|jpg|jpeg|png)$/i)) {
+        if (element.filename.match(/\.(gif|jpg|jpeg|png|ico)$/i)) {
           element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\"/zdroje/"
           + element.path + element.filename + "?" + element.value + "\">";
         } else {
