@@ -59,6 +59,10 @@ HTMLElement.prototype.add = function(x){
   this.appendChild(x);
 };
 
+function initProperty (object, name, defaultValue) {
+  if (!(name in object)) object[name] = defaultValue;
+};
+
 /**
  * Triobo framework. This is a singleton.
  * @class
