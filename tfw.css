@@ -163,6 +163,26 @@ button:disabled:hover {
   cursor: not-allowed;
 }
 
+button.canBeChecked {
+  padding-left: 20px;
+  position: relative;
+}
+button.canBeChecked:before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: 4px;
+  top: 0px;
+  bottom: 0px;
+  margin: auto 0;
+  border-radius: 3px;  
+  background-color:  #ccc;
+}
+button.canBeChecked.checked:before {
+  background-color:  #fc5;/*orange*/
+}
+
 /* TFW elements */
 #tfwLoader {
   position: fixed;
