@@ -441,6 +441,9 @@ button.canBeChecked.checked:before {
 .tfwCheckbox {
   padding: 2px;
   cursor: pointer;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow: ellipsis;  
 }
 .tfwCheckbox:hover {
   background-color: #8cc;/*azure*/

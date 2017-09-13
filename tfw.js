@@ -201,7 +201,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if ("text" in params) {
       params.innerHTML = params.text;
     }
-    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder", "onchange", "onkeyup", "title"];
+    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder", "onchange", "onkeyup", "title", "onkeydown"];
     var i;
     for (i = 0; i < attributesToCopy.length; i++) {
       var attribute = attributesToCopy[i];
@@ -597,6 +597,44 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }, false);
     if (params.disabled) x.disabled = 1;
     return (params.legend) ? (this.inputFieldLegend(x, params)) : x;
+  },
+  multiLangInput: function(params){
+    var div = document.createElement("DIV");
+    if ("id" in params) div.id = params.id;
+    if ("style" in params) div.style.cssText = params.style;
+    if ("langs" in params) div.langs = params.langs; else div.langs = [{id: "en"}];
+    if ("value" in params) div.value = params.value; else div.value = "{}";
+    if ("onkeyup" in params) div.onkeyup = params.onkeyup; else div.onkeyup = null;
+    if (div.value == "") div.value = "{}";
+    var _value = tfw.decodeJSON(div.value);
+    for (var i = 0; i < div.langs.length; i++) {
+      div.add(tfw.input({
+        id:          params.id + "_" + i,
+        style:       "width:312px",
+        legendStyle: "width: 24px; margin-left: 4px;",
+        legend:      "<div class='_tg_flag " + div.langs[i].id + "'>",
+        value:       div.langs[i].id in _value ? _value[div.langs[i].id] : "",
+        onchange:    function(){
+          var val = {},
+              fieldId;
+          for (var i = 0; i < div.langs.length; i++) {
+            fieldId = div.id + "_" + i;
+            if ($(div.id + "_" + i).value) val[div.langs[i].id] = $(fieldId).value;
+          }
+          div.value = JSON.stringify(val);
+        },
+        onkeyup:     div.onkeyup
+      }));
+    }
+    var container;
+    if ("legend" in params) {
+      div.style.display = "inline-block";
+      container = tfw.inputFieldLegend(div, params);
+    } else {
+      container = div;
+    }
+
+    return container;
   },
   /**
    * Create an icon with specified parameters.
