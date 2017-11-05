@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * @file Triobo Framework
  * @author mpl75
@@ -16,45 +18,6 @@ function $(id){//eslint-disable-line no-implicit-globals
   return x;
 }
 
-HTMLElement.prototype.hasClass = function(c){
-  return (this.className.split(" ").indexOf(c) != -1);
-};
-HTMLElement.prototype.hasAnyClass = function(c){
-  var searchedClasses = c.split(" ");
-  for (var i in searchedClasses) {
-    if (this.className.split(" ").indexOf(searchedClasses[i]) != -1) {
-      return true;
-    }
-  }
-  return false;
-};
-HTMLElement.prototype.addClass = function(c){
-  if (!this.hasClass(c)) {
-    if (this.className) {
-      var cs = this.className.split(" ");
-      cs.push(c);
-      this.className = cs.join(" ");
-    } else this.className = c;
-  }
-};
-HTMLElement.prototype.removeClass = function(c){
-  var cs = this.className.split(" ");
-  var id = cs.indexOf(c);
-  if (id >= 0) cs.splice(id, 1);
-  if (cs.length) this.className = cs.join(" ");
-  else this.removeAttribute("class");
-};
-HTMLElement.prototype.toggleClass = function(c){
-  if (this.hasClass(c)) this.removeClass(c);
-  else this.addClass(c);
-};
-HTMLElement.prototype.classIf = function(c, cond){
-  if (cond) this.addClass(c);
-  else this.removeClass(c);
-};
-HTMLElement.prototype.myOrder = function(){
-  return this.parentNode == null ? null : Array.prototype.indexOf.call(this.parentNode.children, this);
-};
 HTMLElement.prototype.add = function(x){
   this.appendChild(x);
 };
@@ -70,6 +33,25 @@ function initProperty (object, name, defaultValue) {
  * @todo freeze
  */
 var tfw = {//eslint-disable-line no-implicit-globals
+  /**
+   *  Return the order of the element among its siblings.
+   *  @param {HTMLElement} el
+   *  @returns {?number} Null if parent is null, number (indexed from 0) otherwise
+   */
+  getElementOrder: function (el) {
+    return this.parentNode == null ? null : Array.prototype.indexOf.call(this.parentNode.children, this);
+  },
+  /**
+   *  Check if an element has any of the classes.
+   *  @param {HTMLElement} el
+   *  @param {string[]} classes
+   *  @returns {boolean}
+   */
+  elementHasAnyClass: function (el, classes) {
+    return classes.some(function(searchedClass){
+      return this.classList.contains(searchedClass);
+    }, el);
+  },
   /**
    * Add multiple HTML elements.
    * @param {HTMLElement} parentNode - node to append to
@@ -146,7 +128,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (document.getElementById(id) == null) {
       var styleElement = document.createElement("style");
       styleElement.setAttribute("id", id);
-      document.getElementsByTagName("head")[0].add(styleElement);
+      document.getElementsByTagName("head")[0].appendChild(styleElement);
     }
     if (typeof tag == "undefined") {
       document.getElementById(id).innerHTML += style;
@@ -176,6 +158,22 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     tfw.init();
   },
+  _evaluateOnChangeHandler: function () {
+    if (this.evaluate) {
+      var a;
+      try {
+        a = this.value.replace(/,/g, ".");
+        a = eval(a);
+        if (isNaN(a)) a = "";
+      } catch (err) {
+        a = this.value;
+      }
+      this.value = a;
+    }
+  },
+  addClass: function (element, className) {
+    element.classList.add(className);
+  },
   /**
    * Set attributes of a HTML element.
    * @memberof tfw
@@ -201,28 +199,38 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if ("text" in params) {
       params.innerHTML = params.text;
     }
-    var attributesToCopy = ["id", "innerHTML", "disabled", "readOnly", "maxLength", "evaluate", "onclick", "value", "placeholder", "onchange", "onkeyup", "title", "onkeydown"];
-    var i;
-    for (i = 0; i < attributesToCopy.length; i++) {
-      var attribute = attributesToCopy[i];
-      if (attribute in params) {
-        element[attribute] = params[attribute];
+    
+    if (params.id) element.id = params.id;
+    if (params.innerHTML) element.innerHTML = params.innerHTML;
+    if (params.disabled) element.disabled = params.disabled;
+    if (params.readOnly) element.readOnly = params.readOnly;
+    if (params.maxLength) element.maxLength = params.maxLength;
+    if (params.evaluate) element.evaluate = params.evaluate;
+    if (params.value) element.value = params.value;
+    if (params.placeholder) element.placeholder = params.placeholder;
+    if (params.title) element.title = params.title;
+    
+    if (params.onclick) element.addEventListener("click", params.onclick);
+    if (params.onchange) element.addEventListener("change", params.onchange);
+    if (params.onkeyup) element.addEventListener("keyup", params.onkeyup);
+    if (params.onkeydown) element.addEventListener("keydown", params.onkeydown);
+    
+    if (params.data) {
+      for (var prop in params.data) {
+        element.dataset[prop] = params.data[prop];
       }
     }
+
     if ("style" in params) {
       element.style.cssText = params.style;
     }
-    if ("className" in params) {
-      if (element.className) {
-        element.className += " " + params.className;
-      } else {
-        element.className = params.className;
-      }
+    if (params.className) {
+      params.className.split(" ").forEach(tfw.addClass.bind(null, element));
     }
     if ("children" in params) {
-      for (i = 0; i < params.children.length; i++) {
+      for (var i = 0; i < params.children.length; i++) {
         if (params.children[i]) {
-          element.add(params.children[i]);
+          element.appendChild(params.children[i]);
         }
       }
     }
@@ -230,22 +238,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       element.speconchange = params.onchange;
     }*/
     if ("evaluate" in params) {
-      element.addEventListener("change", function(){
-        /*if (this.speconchange) {
-          this.speconchange();
-        }*/
-        if (this.evaluate) {
-          var a;
-          try {
-            a = this.value.replace(/,/g, ".");
-            a = eval(a);
-            if (isNaN(a)) a = "";
-          } catch (err) {
-            a = this.value;
-          }
-          this.value = a;
-        }
-      });
+      element.addEventListener("change", tfw._evaluateOnChangeHandler);
     }
   },
   /**
@@ -311,20 +304,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
       e.preventDefault();
       var i;
       if (element.multiple) {
-        this.toggleClass("selected");
+        this.classList.toggle("selected");
       } else {
-        for (i = 0; i < element.childNodes.length; i++) element.childNodes[i].removeClass("selected");
-        this.addClass("selected");
+        for (i = 0; i < element.childNodes.length; i++) element.childNodes[i].classList.remove("selected");
+        this.classList.add("selected");
       }
       var m = [];
       for (i = 0; i < element.childNodes.length; i++) {
-        if (element.childNodes[i].hasClass("selected")) {
+        if (element.childNodes[i].classList.contains("selected")) {
           m.push(element.childNodes[i].value);
         }
       }
       element._value = m.join(",");
       if (element.onchange) element.onchange();
-      element.addClass("hasBeenChanged");
+      element.classList.add("hasBeenChanged");
     };
     if (element.value) element._value = element.value;
     else element._value = 0;
@@ -356,15 +349,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
       l.innerHTML = p.n || p.t || p.text;
       if (m.indexOf(l.value) > -1) l.className = "selected";
       l.addEventListener("mousedown", element.clickOnItem, false);
-      element.add(l);
+      element.appendChild(l);
     }
     Object.defineProperty(element, "value", {
       set: function(a){
         for (var i = 0; i < element.childNodes.length; i++) {
           if (element.childNodes[i].value == a) {
-            element.childNodes[i].addClass("selected");
+            element.childNodes[i].classList.add("selected");
           } else {
-            element.childNodes[i].removeClass("selected");
+            element.childNodes[i].classList.remove("selected");
           }
         }
         element._value = String(a);
@@ -405,6 +398,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
   dialogPrepareAndDownload: function(params){
     return desktop.dialogPrepareAndDownload(params);//eslint-disable-line no-use-before-define
   },
+  _buttonOnClick: function(e){
+    e.stopPropagation();
+    if (!this.disabled) {
+      this.action(e);
+    }
+  },
   /* eslint-enable */
   /**
    * Create a button with specified parameters.
@@ -421,12 +420,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     element.type = ((params["default"]) ? "submit" : "button");
     if (params.action) {
       element.action = params.action;
-      element.onclick = function(e){
-        e.stopPropagation();
-        if (!this.disabled) {
-          this.action(e);
-        }
-      };
+      element.addEventListener("click", tfw._buttonOnClick);
     }
     if ("icon" in params) {
       element.insertBefore(tfw.span({innerHTML: params.icon, className: "icon"}), element.childNodes[0]);
@@ -464,18 +458,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
       || element.tagName.toUpperCase() == "TEXTAREA") {
       var sp = document.createElement("span");
       l.style["float"] = "left";
-      sp.add(element);
-      sp.add(l);
-      x.add(sp);
+      sp.appendChild(element);
+      sp.appendChild(l);
+      x.appendChild(sp);
     } else {
-      x.add(l);
-      x.add(element);
+      x.appendChild(l);
+      x.appendChild(element);
     }
     if (params.after) {
       var a = document.createElement("span");
       a.innerHTML = params.after;
       if (params.afterStyle) a.style.cssText = params.afterStyle;
-      x.add(a);
+      x.appendChild(a);
     }
     return x;
   },
@@ -495,7 +489,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   input: function(params){
     var element = document.createElement("input");
     element.addEventListener("change", function(){
-      this.addClass("hasBeenChanged");
+      this.classList.add("hasBeenChanged");
     });
 
     this.fillElemDefs(element, params);
@@ -506,6 +500,42 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
     }
     return (params.legend || params.after) ? (this.inputFieldLegend(element, params)) : element;
+  },
+  _lazyInputSettings: {
+    get: function(){
+      return this.innerHTML;
+    },
+    enumerable: true
+  },
+  /**
+   * If readonly or disabled, create a span, otherwise call {@link tfw.input}.
+   * @memberof tfw
+   * @param {Object} params - input fields parameters, for all see {@link tfw.input}
+   * @see tfw.fillElemDefs
+   * @see tfw.input
+   * @see tfw.inputFieldLegend
+   * @param {string} [params.value] - prefilled value
+   * @param {string} [params.id] - DOM element ID
+   * @param {boolean} [params.readOnly]
+   * @param {boolean} [params.disabled]
+   * @param {string} [params.legend]
+   * @param {string} [params.after]
+   * @return {HTMLElement} Created input field, optionally wrapped with label
+   */
+  lazyInput: function (params) {
+    if (!params.readOnly && !params.disabled) return tfw.input(params);
+    
+    var el = document.createElement("span");
+    
+    if (params.id) {
+      el.id = params.id;
+    }
+    if (params.value) {
+      el.innerHTML = params.value;
+    }
+    el.classList.add("input_text");
+    Object.defineProperty(el, "value", tfw._lazyInputSettings);
+    return (params.legend || params.after) ? this.inputFieldLegend(el, params) : el;
   },
   /**
    * Create a text area with specified parameters.
@@ -519,7 +549,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   textArea: function(params){
     var element = document.createElement("textarea");
     element.addEventListener("change", function(){
-      this.addClass("hasBeenChanged");
+      this.classList.add("hasBeenChanged");
     });
 
     this.fillElemDefs(element, params);
@@ -544,30 +574,28 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var labelText = (params.text) ? params.text : "";
     params.text = "";
     var x = tfw.createAndFillElement("div", params);
-    x.addClass("tfwCheckbox");
-    //if (params.onchange) x.addEventListener("change", params.onchange);
-    //if (params.onclick) x.onclick = params.onclick;
+    x.classList.add("tfwCheckbox");
     var b = document.createElement("div");
     x._value = 0;
     if ("value" in params) x._value = params.value ? 1 : 0;
     x.className += x._value ? " checked" : "";
     b.className = x._value ? "checked" : "";
-    x.add(b);
+    x.appendChild(b);
     var text = document.createElement("span");
     text.innerHTML = labelText;
-    x.add(text);
+    x.appendChild(text);
     Object.defineProperty(x, "value", {
       set: function(val){
         var box = this.childNodes[0];
         if (val) {
-          box.addClass("checked");
-          x.addClass("checked");
+          box.classList.add("checked");
+          x.classList.add("checked");
         } else {
-          box.removeClass("checked");
-          x.removeClass("checked");
+          box.classList.remove("checked");
+          x.classList.remove("checked");
         }
         this._value = val;
-        this.addClass("hasBeenChanged");
+        this.classList.add("hasBeenChanged");
       },
       get: function(){
         return this._value;
@@ -577,8 +605,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     Object.defineProperty(x, "disabled", {
       set: function(val){
-        if (val) this.addClass("disabled");
-        else this.removeClass("disabled");
+        if (val) this.classList.add("disabled");
+        else this.classList.remove("disabled");
         this.zakazano = val;
       },
       get: function(){
@@ -598,17 +626,36 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.disabled) x.disabled = 1;
     return (params.legend) ? (this.inputFieldLegend(x, params)) : x;
   },
+  lazyCheckbox: function (params) {
+    if (!params.readOnly && !params.disabled) return tfw.checkbox(params);
+    
+    var labelText = (params.text) ? params.text : "";
+    params.text = "";
+    var x = tfw.createAndFillElement("div", params);
+    x.classList.add("tfwCheckbox");
+    var b = document.createElement("div");
+    var _value = 0;
+    if ("value" in params) _value = params.value ? 1 : 0;
+    x.className += _value ? " checked" : "";
+    b.className = _value ? "checked" : "";
+    x.appendChild(b);
+    var text = document.createElement("span");
+    text.innerHTML = labelText;
+    x.appendChild(text);
+    x.classList.toggle("disabled", params.disabled);
+    return (params.legend) ? (this.inputFieldLegend(x, params)) : x;
+  },
   multiLangInput: function(params){
     var div = document.createElement("DIV");
     if ("id" in params) div.id = params.id;
     if ("style" in params) div.style.cssText = params.style;
     if ("langs" in params) div.langs = params.langs; else div.langs = [{id: "en"}];
     if ("value" in params) div.value = params.value; else div.value = "{}";
-    if ("onkeyup" in params) div.onkeyup = params.onkeyup; else div.onkeyup = null;
+    if ("onkeyup" in params) div.addEventListener("keyup", params.onkeyup);
     if (div.value == "") div.value = "{}";
     var _value = tfw.decodeJSON(div.value);
     for (var i = 0; i < div.langs.length; i++) {
-      div.add(tfw.input({
+      div.appendChild(tfw.input({
         id:          params.id + "_" + i,
         style:       "width:312px",
         legendStyle: "width: 24px; margin-left: 4px;",
@@ -623,7 +670,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
           div.value = JSON.stringify(val);
         },
-        onkeyup:     div.onkeyup
+        onkeyup:     params.onkeyup
       }));
     }
     var container;
@@ -635,6 +682,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
 
     return container;
+  },
+  _iconOnClick: function(e){
+    if (!this.classList.contains("disabled")) this.action(e);
   },
   /**
    * Create an icon with specified parameters.
@@ -650,22 +700,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var element = tfw.createAndFillElement("div", params);
     if (params.action) {
       element.action = params.action;
-      element.onclick = function(e){
-        if (!element.hasClass("disabled")) this.action(e);
-      };
+      element.addEventListener("click", tfw._iconOnClick);
     }
     if ("title" in params) element.title = params.title;
     var b = document.createElement("div");
     if (params.index) b.style.backgroundPositionX = (-params.index) + "px";
-    element.add(b);
+    element.appendChild(b);
     element.disabled = 0;
     Object.defineProperty(element, "disabled", {
       set: function(val){
-        if (val) element.addClass("disabled");
-        else element.removeClass("disabled");
+        if (val) element.classList.add("disabled");
+        else element.classList.remove("disabled");
       },
       get: function(){
-        return element.hasClass("disabled");
+        return element.classList.contains("disabled");
       },
       enumerable: true,
       configurable: true
@@ -673,11 +721,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.disabled) element.disabled = params.disabled;
     Object.defineProperty(element, "selected", {
       set: function(val){
-        if (val) element.addClass("selected");
-        else element.removeClass("selected");
+        if (val) element.classList.add("selected");
+        else element.classList.remove("selected");
       },
       get: function(){
-        return element.hasClass("selected");
+        return element.classList.contains("selected");
       },
       enumerable: true,
       configurable: true
@@ -719,7 +767,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var element = tfw.createAndFillElement("table", params);
     if ("rows" in params) {
       for (var i = 0; i < params.rows.length; i++) {
-        element.add(tfw.tr(params.rows[i]));
+        element.appendChild(tfw.tr(params.rows[i]));
       }
     }
     return element;
@@ -736,7 +784,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var element = tfw.createAndFillElement("tr", params);
     if ("columns" in params) {
       for (var i = 0; i < params.columns.length; i++) {
-        element.add(tfw.td(params.columns[i]));
+        element.appendChild(tfw.td(params.columns[i]));
       }
     }
     return element;
@@ -781,11 +829,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     params.value = false;
     this.fillElemDefs(element, params);
     var l = document.createElement("span");
-    element.add(l);
+    element.appendChild(l);
     if (params.legend) l.innerHTML = params.legend;
     if (params.legendStyle) l.style.cssText = params.legendStyle;
     var s = document.createElement("input");
-    element.add(s);
+    element.appendChild(s);
     s.type = "range";
     if (params.id) s.id = params.id + "-s";
     if (params.max) {
@@ -808,7 +856,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (element.onchange) element.onchange();
     };
     var v = document.createElement("input");
-    element.add(v);
+    element.appendChild(v);
     v.type = "text";
     if (params.id) v.id = params.id + "-v";
     if (params.valueStyle) v.style.cssText = params.valueStyle;
@@ -853,7 +901,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     if (params.postText) {
       var p = document.createElement("span");
-      element.add(p);
+      element.appendChild(p);
       p.innerHTML = params.postText;
       if (params.postStyle) p.style.cssText = params.postStyle;
     }
@@ -912,7 +960,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
     element.uploading = 0;
     var b = tfw.div({});
-    element.add(b);
+    element.appendChild(b);
     b.className = "content";
     if (innerDivStyle) b.style.cssText = innerDivStyle;
     b.addEventListener("click", function(){
@@ -938,7 +986,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       this.style.outline = "";
       element.upload(e.dataTransfer.files);
     }, false);
-    element.add(b = document.createElement("input"));
+    element.appendChild(b = document.createElement("input"));
     b.type = "file";
     b.style.display = "none";
     b.addEventListener("change", function(e){
@@ -948,7 +996,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (element.uploading) {
         element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + tfw.strings.UPLOADING.replace("%1", (prc + " %")) + "</p>";
       } else if (element.value) {
-        element.removeClass("empty");
+        element.classList.remove("empty");
         if (element.filename.match(/\.(gif|jpg|jpeg|png|ico)$/i)) {
           element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\"/zdroje/"
           + element.path + element.filename + "?" + element.value + "\">";
@@ -956,7 +1004,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + element.filename + "</p>";
         }
       } else {
-        element.addClass("empty");
+        element.classList.add("empty");
         element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:40px;\">" + element.text + "</p>";
       }
     };
@@ -1256,7 +1304,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.tabs = [];
 
-    this.tabContainer.add(this.tabNav);
+    this.tabContainer.appendChild(this.tabNav);
 
     /**
      * Getter for activeTab.
@@ -1276,13 +1324,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (tabIndex != this.activeTab) {
         if (this.activeTab >= 0) {
           var previousTab = this.tabs[this.activeTab];
-          previousTab.tag.removeClass("active");
-          previousTab.content.removeClass("active");
+          previousTab.tag.classList.remove("active");
+          previousTab.content.classList.remove("active");
         }
         if (tabIndex >= 0) {
           var nextTab = this.tabs[tabIndex];
-          nextTab.tag.addClass("active");
-          nextTab.content.addClass("active");
+          nextTab.tag.classList.add("active");
+          nextTab.content.classList.add("active");
         }
         this.activeTab = tabIndex;
         this.tabContainer.dispatchEvent(new Event("change"));
@@ -1307,9 +1355,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
         innerHTML: data.title
       });
       tabTitle.addEventListener("click", function(){
-        tabs.setActiveTab(this.myOrder());
+        tabs.setActiveTab(tfw.getElementOrder(this));
       });
-      this.tabNav.add(tabTitle);
+      this.tabNav.appendChild(tabTitle);
 
       // create tab content
       var tabContentParams = {
@@ -1320,7 +1368,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if ("text" in data) tabContentParams.innerHTML = data.text;
       else if ("children" in data) tabContentParams.children = data.children;
 
-      this.tabContainer.add(
+      this.tabContainer.appendChild(
         tabContent = tfw.div(tabContentParams)
       );
 
@@ -1408,7 +1456,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   progress: function(params){
     var progressbar = tfw.createAndFillElement("progress", params);
     progressbar.max = ("max" in params) ? params.max : 1;
-    if ("showPercentage" in params && params.showPercentage) progressbar.addClass("showPercentage");
+    if ("showPercentage" in params && params.showPercentage) progressbar.classList.add("showPercentage");
     return progressbar;
   },
   /**
@@ -1768,18 +1816,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.setReorderEnabled = function(row, rowReorderEnabled){
       var dynamicTable = this;
-      row[rowReorderEnabled ? "addClass" : "removeClass"]("draggable");
+      row.classList.toggle("draggable", rowReorderEnabled);
       row.draggable = rowReorderEnabled;
       row.ondragstart = rowReorderEnabled ? function(event){
-        this.addClass("dragged");
-        event.dataTransfer.setData("text", event.target.myOrder());
+        this.classList.add("dragged");
+        event.dataTransfer.setData("text", tfw.getElementOrder(event.target));
       } : null;
       row.ondragover = rowReorderEnabled ? function(event){
         event.preventDefault();
         event.dataTransfer.dropEffect = "move";
         var dragged = dynamicTable.tableContainer.querySelector("tbody tr.dragged");
         if (!dragged.isSameNode(this)) {
-          dynamicTable.orderChange((dragged.myOrder() < this.myOrder()) ? this.nextSibling : this);
+          dynamicTable.orderChange((tfw.getElementOrder(dragged) < tfw.getElementOrder(this)) ? this.nextSibling : this);
         }
         return false;
       } : null;
@@ -1787,10 +1835,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
         event.preventDefault();
       } : null;
       row.ondragend = rowReorderEnabled ? function(){
-        this.removeClass("dragged");
+        this.classList.remove("dragged");
         serverUpdateOrder({
           id: this.dataset.rowid,
-          neworder: this.myOrder() + 1
+          neworder: tfw.getElementOrder(this) + 1
         });
       } : null;
     };
@@ -1806,9 +1854,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       var tbody = this.tableContainer.querySelector("tbody");
       var orderColumn = this.data.cols[orderDataCol].columnOrder;
-      var originalRowOrder = draggedRow.myOrder();
+      var originalRowOrder = tfw.getElementOrder(draggedRow);
       var droppedRowOrder = (referenceRow == null) ? (tbody.rows.length - 1)
-        : (referenceRow.myOrder() - ((referenceRow.myOrder() < originalRowOrder) ? 0 : 1));
+        : (tfw.getElementOrder(referenceRow) - ((tfw.getElementOrder(referenceRow) < originalRowOrder) ? 0 : 1));
       tbody.insertBefore(draggedRow, referenceRow);
 
       this.data.rows[originalRowOrder].cols[orderDataCol] = draggedRow.cells[orderColumn].innerHTML = droppedRowOrder + 1;
@@ -1875,25 +1923,25 @@ var tfw = {//eslint-disable-line no-implicit-globals
         for (var j = 0; j < arrowGroups.length; j++) {
           var arrowTypes = arrowGroups[j];
           for (i in arrowTypes) {
-            if (element.hasClass(arrowTypes[i])) {
+            if (element.classList.contains(arrowTypes[i])) {
               arrowGroup = arrowTypes;
               arrowType = arrowTypes[i];
             }
           }
         }
-        if (arrowType == null) {
+        if (arrowType === null) {
           console.error("setActiveArrow called on invalid element.");
         } else {
           var otherArrows = base.getElementsByClassName("tfwArrow");
           for (i = 0; i < otherArrows.length; i++) {
-            if (otherArrows[i].hasAnyClass(arrowGroup.join(" "))) {
-              otherArrows[i].removeClass("active");
+            if (tfw.elementHasAnyClass(otherArrows[i], arrowGroup)) {
+              otherArrows[i].classList.remove("active");
             }
           }
         }
       }
-      if (element != null && (typeof on == "undefined" || on)) {
-        element.addClass("active");
+      if (element !== null && (typeof on === "undefined" || on)) {
+        element.classList.add("active");
       }
     }
     /**
@@ -1928,7 +1976,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.isColumnVisible = function(dataCol){
       return (!("hidden" in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
-        && !(this.tableContainer.querySelector("thead").rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass("hideColumn"));
+        && !(this.tableContainer.querySelector("thead").rows[0].cells[this.data.cols[dataCol].columnOrder].classList.contains("hideColumn"));
     };
     /**
      * @private
@@ -1973,6 +2021,25 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
       this.setColumnCellsWidths(dataCol, width);
     };
+    
+    /**
+     *  @private
+     *  @param {Event} event
+     */
+    function keyCallback(event) {
+      switch (event.keyCode) {
+        case 38: // up
+          shift = -1;
+          break;
+        case 40: // down
+          shift = 1;
+          break;
+        default:
+          return;
+      }
+      moveFocusToCell(this.closest("td"), this.dataset.columnOrder, shift);
+    }
+    
     /**
      * @private
      * @param {number} rowOrder - order of row in data
@@ -1980,51 +2047,35 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.createRow = function(rowOrder){
       var readonlyRow = ("readonly" in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly === true,
-          r = tfw.tr({
-            id: "rowID-" + this.data.rows[rowOrder].id
-          });
+          r = document.createElement("tr");
+      r.id = "rowID-" + this.data.rows[rowOrder].id;
       if (readonlyRow) {
-        r.addClass("readonly");
+        r.classList.add("readonly");
       }
       r.setAttribute("data-rowid", this.data.rows[rowOrder].id);
       var columnOrder = 0,
           b,
           dynamicTable = this;
       if (rowEdit) {
-        r.add(tfw.td({
+        r.appendChild(tfw.td({
           className: "rowEditCell",
           children: [b = tfw.span({
             className: "rowEditIcon clickable icon fa fa-info"
           })]
         }));
         if (readonlyRow) {
-          b.addClass("disabled");
+          b.classList.add("disabled");
         } else {
-          b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
+          b.addEventListener("click", rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id));
         }
         columnOrder++;
       }
-      var updateInputCallback = function(){
-        dynamicTable.updateInput(this);
-      };
+      var updateInputCallback = dynamicTable.updateInput.bind(this);
       var val,
           shift,
           type,
           c,
-          readonlyCol,
-          keyCallback = function(event){
-            switch (event.keyCode) {
-              case 38: // up
-                shift = -1;
-                break;
-              case 40: // down
-                shift = 1;
-                break;
-              default:
-                return;
-            }
-            moveFocusToCell(this.closest("td"), this.dataset.columnOrder, shift);
-          };
+          readonlyCol;
       for (var j = 0; j < this.data.cols.length; j++) {
         if (!("hidden" in this.data.cols[j])) {
           var params = {};
@@ -2034,19 +2085,31 @@ var tfw = {//eslint-disable-line no-implicit-globals
             params.children.push(b = tfw.div({
               className: "subtable clickable icon fa fa-caret-down"
             }));
-            b.onclick = goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j);
+            b.addEventListener("click", goToSub.bind(null, dynamicTable.data.rows[rowOrder].id, j));
           }
           val = this.data.rows[rowOrder].cols[j];
           readonlyCol = ("readonly" in this.data.cols[j]) && this.data.cols[j].readonly === true;
+          
+          type = ("type" in this.data.cols[j]) ? this.data.cols[j].type : null;
+          switch (type) {
+            case tfw.DynamicTable.colTypes.CHECKBOX:
+            case tfw.DynamicTable.colTypes.NUMBER:
+            case tfw.DynamicTable.colTypes.DATE:
+            case tfw.DynamicTable.colTypes.TEXT:
+              break;
+            default:
+              params.innerHTML = val;
+          }
+          r.appendChild(c = tfw.td(params));
+          
           if (typeof columnRenderers[j] == "function") {
             params.children.push.apply(params.children, columnRenderers[j](val));
           } else {
-            type = ("type" in this.data.cols[j]) ? this.data.cols[j].type : null;
             var id = "tfwDynamicTable-" + rowOrder + "-" + columnOrder;
             var setKeys = null;
             switch (type) {
               case tfw.DynamicTable.colTypes.CHECKBOX:
-                params.children.push(tfw.checkbox({
+                c.appendChild(tfw.lazyCheckbox({
                   id: id,
                   value: (val ? 1 : 0),
                   onchange: updateInputCallback,
@@ -2054,16 +2117,18 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 }));
                 break;
               case tfw.DynamicTable.colTypes.NUMBER:
-                params.children.push(setKeys = tfw.input({
+                c.appendChild(tfw.lazyInput({
                   type: "number",
                   id: id,
                   value: val,
                   onchange: updateInputCallback,
-                  readOnly: readonlyRow || readonlyCol
+                  readOnly: readonlyRow || readonlyCol,
+                  data: {columnOrder: columnOrder},
+                  onkeyup: keyCallback
                 }));
                 break;
               case tfw.DynamicTable.colTypes.DATE:
-                params.children.push(tfw.calendar({
+                c.appendChild(tfw.lazyCalendar({
                   id: id,
                   value: (val) ? val.match(/\d{4,}-\d{2}-\d{2}/)[0] : "",
                   onchange: updateInputCallback,
@@ -2071,23 +2136,19 @@ var tfw = {//eslint-disable-line no-implicit-globals
                 }));
                 break;
               case tfw.DynamicTable.colTypes.TEXT:
-                params.children.push(setKeys = tfw.input({
+                c.appendChild(tfw.lazyInput({
                   type: "text",
                   id: id,
                   value: val,
                   onchange: updateInputCallback,
-                  readOnly: readonlyRow || readonlyCol
+                  readOnly: readonlyRow || readonlyCol,
+                  data: {columnOrder: columnOrder},
+                  onkeyup: keyCallback
                 }));
                 break;
-              default:
-                params.innerHTML = val;
-            }
-            if (setKeys != null) {
-              setKeys.dataset.columnOrder = columnOrder;
-              setKeys.addEventListener("keyup", keyCallback);
+              // default omitted
             }
           }
-          r.add(c = tfw.td(params));
           c.dataset.dataCol = j;
           c.style.width = this.data.cols[j].width + "px";
           columnOrder++;
@@ -2156,7 +2217,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           if (typeof window._resizedElement != "undefined") {
             var cell = window._resizedElement;
             cell.dispatchEvent(new CustomEvent("resizestop"));
-            document.body.removeClass("resizing");
+            document.body.classList.remove("resizing");
             delete window._resizedElement;
           }
         };
@@ -2171,9 +2232,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       return function(event){
         var cell = window._resizedElement = event.target.closest("th");
         cell.dispatchEvent(new CustomEvent("resizestart"));
-        document.body.addClass("resizing");
+        document.body.classList.add("resizing");
         cell._resizePositionX = event.clientX;
       };
+    }
+    
+    function sortArrowOnClick () {
+      dynamicTable.sort(this.dataset.dataCol, this.dataset.sortOrder);
     }
 
     /**
@@ -2183,7 +2248,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.createAndFillTableHead = function(){
       var thead = document.createElement("thead"),
           r;
-      thead.add(r = tfw.tr({
+      thead.appendChild(r = tfw.tr({
         className: "headlines"
       }));
 
@@ -2205,7 +2270,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         var th = document.createElement("th");
         th.innerHTML = "&nbsp;";
         th.className = "rowEditCell";
-        r.add(th);
+        r.appendChild(th);
         columnOrder++;
       }
       var resizer,
@@ -2220,37 +2285,36 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (j = 0; j < this.data.cols.length; j++) {
         if (!("hidden" in this.data.cols[j])) {
           c = document.createElement("th");
-          c.add(d = tfw.span({className: "colHeadingControl"}));
+          c.appendChild(d = tfw.span({className: "colHeadingControl"}));
           var deltaWidth = 0;
           if ("filter" in this.data.cols[j] && this.data.cols[j].filter && this.data.cols[j].type) {
-            d.add(b = tfw.div({
+            d.appendChild(b = tfw.div({
               className: "tfwArrow " + tfw.DynamicTable.arrowTypes.FILTER
             }));
             b.dataset.dataCol = j;
-            b.onclick = filterOnclick;
+            b.addEventListener("click", filterOnclick);
             deltaWidth += 16;
           }
           if ("sort" in this.data.cols[j] && this.data.cols[j].sort) {
             var b1,
                 b2;
-            d.add(b2 = tfw.div({
+            d.appendChild(b2 = tfw.div({
               className: "tfwArrow " + tfw.DynamicTable.arrowTypes.UP,
               style: "position:relative;left:2px;"
             }));
             b2.dataset.sortOrder = tfw.DynamicTable.sortTypes.ASC;
-            d.add(b1 = tfw.div({
+            d.appendChild(b1 = tfw.div({
               className: "tfwArrow " + tfw.DynamicTable.arrowTypes.DOWN
             }));
             b1.dataset.sortOrder = tfw.DynamicTable.sortTypes.DESC;
             b1.dataset.dataCol = b2.dataset.dataCol = j;
-            b1.onclick = b2.onclick = function(){
-              dynamicTable.sort(this.dataset.dataCol, this.dataset.sortOrder);
-            };
+            b1.addEventListener("click", sortArrowOnClick);
+            b2.addEventListener("click", sortArrowOnClick);
             deltaWidth += 24;
           }
           if (!("noresize" in this.data.cols[j]) || this.data.cols[j].noresize === false) {
-            c.addClass("resizable");
-            d.add(resizer = tfw.span({className: "resizer"}));
+            c.classList.add("resizable");
+            d.appendChild(resizer = tfw.span({className: "resizer"}));
             resizer.addEventListener("mousedown", resizerMouseDown);
             c.addEventListener("resizing", function(){
               onResizeCallback.call(dynamicTable, this.dataset.dataCol, parseInt(this.style.width));
@@ -2261,7 +2325,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             deltaWidth += 8;
           }
 
-          c.add(tfw.span({className: "colHeading", innerHTML: this.data.cols[j].name, style: "width: calc(100% - " + deltaWidth + "px);"}));
+          c.appendChild(tfw.span({className: "colHeading", innerHTML: this.data.cols[j].name, style: "width: calc(100% - " + deltaWidth + "px);"}));
 
           if ("width" in this.data.cols[j]) {
             this.data.cols[j].width = parseInt(this.data.cols[j].width);
@@ -2270,7 +2334,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           }
           c.style.width = this.data.cols[j].width + "px";
           c.dataset.dataCol = j;
-          r.add(c);
+          r.appendChild(c);
           this.data.cols[j].columnOrder = columnOrder;
           columnOrder++;
         }
@@ -2287,16 +2351,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       tfw.insertStyle(tableCSS, "tfwDynamicTableStyling-" + this.tableHTMLId);
       this.tableContainer.innerHTML = "";
-      var o,
+      
+      var fragment = document.createDocumentFragment();
+      
+      var o = tfw.table({
+            id: this.tableHTMLId,
+            className: "tfwDynamicTable"
+          }),
           dynamicTable = this;
-      this.tableContainer.add(o = tfw.table({
-        id: this.tableHTMLId,
-        className: "tfwDynamicTable"
-      }));
       o.addEventListener("focus", function(event){
-        dynamicTable.setFocusedRow(dynamicTable.data.rows[event.target.closest("tr").myOrder()].id);
+        dynamicTable.setFocusedRow(dynamicTable.data.rows[tfw.getElementOrder(event.target.closest("tr"))].id);
       }, true);
       o.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
+      fragment.appendChild(o);
+      
       for (var j = 0; j < this.data.cols.length; j++) {
         if (!this.data.cols[j].hidden && this.data.cols[j].type == "order") {
           this.data.cols[j].sort = true;
@@ -2306,17 +2374,17 @@ var tfw = {//eslint-disable-line no-implicit-globals
 
       o.appendChild(this.createAndFillTableHead());
 
-      var tbody;
-      o.add(tbody = document.createElement("tbody"));
+      var tbody = document.createElement("tbody");
       if (bodyHeight != null) {
         tbody.style.maxHeight = bodyHeight;
       }
       for (var i = 0; i < this.data.rows.length; i++) {
-        tbody.add(this.createRow(i));
+        tbody.appendChild(this.createRow(i));
       }
+      o.appendChild(tbody);
       var tfoot;
-      o.add(tfoot = document.createElement("tfoot"));
-      tfoot.add(tfw.tr({
+      o.appendChild(tfoot = document.createElement("tfoot"));
+      tfoot.appendChild(tfw.tr({
         children: [
           tfw.td(addRowEnabled ? {
             children: [
@@ -2355,6 +2423,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
           })
         ]
       }));
+      
+      this.tableContainer.appendChild(fragment);
+      
       updateRowCounts.call(dynamicTable);
       this.setTableWidth();
     };
@@ -2389,9 +2460,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.updateCellFromChange = function(rowOrder, dataCol, newValue){
       this.data.rows[rowOrder].cols[dataCol] = newValue;
       var cell = this.tableContainer.querySelector("tbody").rows[rowOrder].cells[this.data.cols[dataCol].columnOrder];
-      cell.addClass("hasBeenChanged");
+      cell.classList.add("hasBeenChanged");
       setTimeout(function(updatedCell){
-        updatedCell.removeClass("hasBeenChanged");
+        updatedCell.classList.remove("hasBeenChanged");
       }, 3000, cell);
       if (typeof columnRenderers[dataCol] == "function") {
         cell.innerHTML = "";
@@ -2703,7 +2774,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           filter.addEventListener("click", function(event){
             event.stopPropagation();
           });
-          c.add(filter);
+          c.appendChild(filter);
           break;
         case tfw.DynamicTable.colTypes.NUMBER:
           minV = defaultFilterValues[dataCol].min;
@@ -2744,8 +2815,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           });
           inputToFocus = f1.querySelector(".rangeMin");
           f1.querySelector(".rangeMin").dataset.dataCol = f2.querySelector(".rangeMax").dataset.dataCol = dataCol;
-          c.add(f1);
-          c.add(f2);
+          c.appendChild(f1);
+          c.appendChild(f2);
           f1.addEventListener("click", function(event){
             event.stopPropagation();
           });
@@ -2793,8 +2864,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
           f2.addEventListener("click", function(event){
             event.stopPropagation();
           });
-          c.add(f1);
-          c.add(f2);
+          c.appendChild(f1);
+          c.appendChild(f2);
           break;
         case tfw.DynamicTable.colTypes.TEXT:
           var searchInput = inputToFocus = tfw.input({
@@ -2810,7 +2881,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           searchInput.onkeyup = function(){
             dynamicTable.filterAny(this.dataset.dataCol, this.value.trim(), this.dataset.searchType, true);
           };
-          c.add(searchInput);
+          c.appendChild(searchInput);
           searchInput.addEventListener("click", function(event){
             event.stopPropagation();
           });
@@ -3049,7 +3120,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             matches = (value === "0") || (value === "1" && checked) || (value === "2" && !checked);
             break;
           case tfw.DynamicTable.colTypes.TEXT:
-            matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type=\"text\"]").value.toLowerCase()[searchFunc](
+            matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type=\"text\"],.input_text").value.toLowerCase()[searchFunc](
               value.toLowerCase());
             break;
           case tfw.DynamicTable.colTypes.NUMBER:
@@ -3057,12 +3128,12 @@ var tfw = {//eslint-disable-line no-implicit-globals
             matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
           case tfw.DynamicTable.colTypes.DATE:
-            rowValue = tbody.rows[i].cells[column].querySelector("input").value;
+            rowValue = tbody.rows[i].cells[column].querySelector("input,.input_text").value;
             matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
           // intentionally omitted default
         }
-        tbody.rows[i][matches ? "removeClass" : "addClass"]("filter" + dataCol + "Invalid");
+        tbody.rows[i].classList.toggle("filter" + dataCol + "Invalid", !matches);
       }
       updateRowCounts.call(this);
     };
@@ -3092,7 +3163,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.toggleColumn = function(dataCol, dontSave){
       var column = this.data.cols[dataCol].columnOrder,
           visible = !this.tableContainer.querySelector("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
-            + (column + 1) + ")").hasClass("hideColumn"),
+            + (column + 1) + ")").classList.contains("hideColumn"),
           hiddenColumns = this.getPreference("hiddenColumns") || [];
       if ((typeof dontSave == "undefined" || !dontSave) && visible && hiddenColumns.filter(function(el){return el == true;}).length
         == this.tableContainer.querySelectorAll("thead tr > :not(.rowEditCell)").length - 1) {
@@ -3100,7 +3171,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
         + (column + 1) + ")")).forEach(function(cell){
-          cell.toggleClass("hideColumn");
+          cell.classList.toggle("hideColumn");
         });
       this.setTableWidth();
       if (typeof dontSave == "undefined" || !dontSave) {
@@ -3136,7 +3207,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             }
           });
           checkbox.dataset.dataCol = j;
-          c.add(checkbox);
+          c.appendChild(checkbox);
         }
       }
       if (tfw.DynamicTable.placePositionedDialog == null) console.error("tfw.DynamicTable.placePositionedDialog has not been set.");
@@ -3179,6 +3250,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
     return inputAndMaybeLegend;
   },
   /**
+   * * If readonly or disabled, create a span, otherwise call {@link tfw.calendar}.
+   * @param {Object} params - parameters
+   * @see tfw.calendar
+   * @return {HTMLElement} Returns input (+ optionally legend) wrapper
+   */
+  lazyCalendar: function(params){
+    return (params.readOnly || params.disabled) ? tfw.lazyInput(params) : tfw.calendar(params);
+  },
+  /**
    * Class for enhancing date input fields. Requires CSS styling.
    * If style.width is set on input, resulting input including calendar icon will have that width.
    * If input is readonly or disabled, calendar will be too.
@@ -3194,7 +3274,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
    *  input.parentNode.insertBefore(cal, input);
    * }
    *
-   * document.body.add(tfw.calendarExtend(tfw.input({value: "2016-03-07"})));
+   * document.body.appendChild(tfw.calendarExtend(tfw.input({value: "2016-03-07"})));
    * @param {HTMLElement} input - input field to turn into calendar field
    * @return {HTMLElement} Returns input wrapper (for inserting into DOM in case input was not inserted yet)
    * @see tfw.calendar
@@ -3215,7 +3295,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     calendarWrapper.appendChild(calendarIcon);
     calendarIcon.className = "tfwCalendarIcon clicable icon fa fa-calendar";
     calendarIcon._calendarInput = input;
-    input.addClass("calendarInput");
+    input.classList.add("calendarInput");
     input._calendar = this;
     input.setAttribute("pattern", "[0-9]{4,}-[0-9]{2}-[0-9]{2}");
     /**
@@ -3239,7 +3319,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }, true);
     input.value = completeDate(input.value);
     var calendarContainer = document.createElement("div");
-    calendarContainer.addClass("calendarWidget");
+    calendarContainer.classList.add("calendarWidget");
     var selectedYear = NaN;
     /**
      * Month number, 1-12
@@ -3281,7 +3361,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           wc = 0; //weeksCounter
       calendarContainer.innerHTML = "";
       var header = tfw.div({className: "head", innerHTML: tfw.calendarExtend.months[selectedOrCurrentMonth - 1] + " " + selectedOrCurrentYear});
-      calendarContainer.add(header);
+      calendarContainer.appendChild(header);
       var backButton = tfw.div({className: "calendarBackButton fa icon fa-caret-left clickable"});
       backButton.addEventListener("mousedown", function backward(event){
         event.stopPropagation();
@@ -3289,7 +3369,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         setSelectedDate(selectedOrCurrentYear - (selectedOrCurrentMonth == 1 ? 1 : 0), selectedOrCurrentMonth == 1 ? 12 : selectedOrCurrentMonth - 1, 0);
         paint();
       }, true);
-      header.add(backButton);
+      header.appendChild(backButton);
       var forwardButton = tfw.div({className: "calendarForwardButton fa icon fa-caret-right clickable"});
       forwardButton.addEventListener("mousedown", function forward(event){
         event.stopPropagation();
@@ -3297,7 +3377,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         setSelectedDate(selectedOrCurrentYear + (selectedOrCurrentMonth == 12 ? 1 : 0), selectedOrCurrentMonth == 12 ? 1 : selectedOrCurrentMonth + 1, 0);
         paint();
       }, true);
-      header.add(forwardButton);
+      header.appendChild(forwardButton);
       var day,
           dayNames = tfw.par({className: "dayNames"});
       for (i = 0; i < 7; i++) {
@@ -3305,13 +3385,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
         if (i % 7 == 6) {
           day.setAttribute("class", "sunday");
         }
-        dayNames.add(day);
+        dayNames.appendChild(day);
       }
-      calendarContainer.add(dayNames);
+      calendarContainer.appendChild(dayNames);
       var week = tfw.par({className: "week"});
       for (i = 0; i < w; i++) {
         day = tfw.span({innerHTML: "&nbsp;"});
-        week.add(day);
+        week.appendChild(day);
         sp++;
       }
       var pdm = new Date(selectedOrCurrentYear, selectedOrCurrentMonth, 0).getDate();
@@ -3326,16 +3406,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
           input.value = this.id.substr(4);
           var current = calendarContainer.querySelector(".current");
           if (current) {
-            current.toggleClass("current");
+            current.classList.toggle("current");
           }
-          this.addClass("current");
+          this.classList.add("current");
           calendarInput.dispatchEvent(new Event("change"));
         }, true);
-        week.add(day);
+        week.appendChild(day);
         sp++;
         if ((sp == 7) && (i < pdm)) {
           sp = 0;
-          calendarContainer.add(week);
+          calendarContainer.appendChild(week);
           wc++;
           week = tfw.par({className: "week"});
         }
@@ -3343,33 +3423,33 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (i = sp; i < 7; i++) {
         day = tfw.span({innerHTML: "&nbsp;"});
         if (i % 7 == 6) day.setAttribute("class", "sunday");
-        week.add(day);
+        week.appendChild(day);
       }
-      calendarContainer.add(week);
+      calendarContainer.appendChild(week);
       if (wc < 5) {
-        calendarContainer.add(week = tfw.par({className: "week"}));
+        calendarContainer.appendChild(week = tfw.par({className: "week"}));
         for (i = 0; i < 7; i++) {
           day = tfw.span({innerHTML: "&nbsp;"});
           if (i % 7 == 6) day.setAttribute("class", "sunday");
-          week.add(day);
+          week.appendChild(day);
         }
       }
-      calendarContainer.add(tfw.div({
+      calendarContainer.appendChild(tfw.div({
         className: "foot",
         children: [
           tfw.span({text: tfw.strings.TODAY, onclick: function () {
             input.value = new Date().toISOString().slice(0, 10);
             var current = calendarContainer.querySelector(".current");
             if (current) {
-              current.removeClass("current");
+              current.classList.remove("current");
             }
-            $("day-" + input.value).addClass("current");
+            $("day-" + input.value).classList.add("current");
           }}),
           tfw.span({text: tfw.strings.REMOVE, onclick: function () {
             input.value = "";
             var current = calendarContainer.querySelector(".current");
             if (current) {
-              current.removeClass("current");
+              current.classList.remove("current");
             }
           }})
         ]
@@ -3401,7 +3481,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   multiCheckbox: function(params){
     var i,
         container = tfw.createAndFillElement("div", params);
-    container.addClass("tfwMultiCheckbox");
+    container.classList.add("tfwMultiCheckbox");
     if ("value" in params) {
       container._value = params.value;
       if (typeof container._value === "string") container._value = container._value.split(",");
@@ -3437,7 +3517,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     if ("list" in params) {
       for (i = 0; i < params.list.length; i++) {
-        container.add(tfw.checkbox({
+        container.appendChild(tfw.checkbox({
           id: params.id + "-" + params.list[i].id,
           text: params.list[i].text,
           onchange: checkboxOnChange,
@@ -3634,7 +3714,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     desktop.layers = [];
     desktop.activeLayer = 0;
     desktop.div.innerHTML = "";
-    desktop.div.add(desktop.layers[0] = tfw.div({
+    desktop.div.appendChild(desktop.layers[0] = tfw.div({
       id: "tfwLayer0",
       className: "tfwLayer"
     }));
@@ -3664,11 +3744,11 @@ var desktop = {//eslint-disable-line no-implicit-globals
   newLayer: function(params){
     if (params.modal) {
       if (params.modal == "auto") {
-        params.modal = desktop.layers[desktop.activeLayer].hasClass("modal") ? 1 : 0;
+        params.modal = desktop.layers[desktop.activeLayer].classList.contains("modal") ? 1 : 0;
       }
     }
     desktop.activeLayer++;
-    desktop.div.add(desktop.layers[desktop.activeLayer] = tfw.div({
+    desktop.div.appendChild(desktop.layers[desktop.activeLayer] = tfw.div({
       id: "tfwLayer" + desktop.activeLayer,
       className: "tfwLayer" + (params.modal ? " modal" : "")
     }));
@@ -3676,7 +3756,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
       desktop.layers[desktop.activeLayer].addEventListener("click", desktop.closeTopLayer);
     }
     if (params.overlay) {
-      desktop.layers[desktop.activeLayer].add(tfw.div({
+      desktop.layers[desktop.activeLayer].appendChild(tfw.div({
         id: "tfwLayerOverlay" + desktop.activeLayer,
         className: "tfwLayerOverlay"
       }));
@@ -3701,7 +3781,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         wrapper,
         leftOrRight = placeRight ? "right" : "left",
         leftOrRightPx = placeRight ? (window.innerWidth - rect.right) : rect.left;
-    desktop.layers[desktop.activeLayer].add(wrapper = tfw.div({
+    desktop.layers[desktop.activeLayer].appendChild(wrapper = tfw.div({
       style: "overflow:hidden;position:absolute;" + leftOrRight + ":" + leftOrRightPx + "px;"
         + (placeAbove ? "bottom" : "top") + ":" + (placeAbove ? (window.innerHeight - rect.top) : rect.bottom) + "px"
     }));
@@ -3716,12 +3796,12 @@ var desktop = {//eslint-disable-line no-implicit-globals
     }
   },
   hide: function(){
-    desktop.layers[desktop.activeLayer].add(tfw.div({
+    desktop.layers[desktop.activeLayer].appendChild(tfw.div({
       id: "tfwLayerOverlay" + desktop.activeLayer,
       className: "tfwLayerOverlay",
       style: "cursor:progress;"
     }));
-    desktop.layers[desktop.activeLayer].add(tfw.div({
+    desktop.layers[desktop.activeLayer].appendChild(tfw.div({
       id: "tfwLoader",
       style: "left:" + Math.round(desktop.width / 2 - 16) + "px;top:" + Math.round(desktop.height / 2 - 16) + "px"
     }));
@@ -3800,7 +3880,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
       if (params.containerStyle) {
         y.style.cssText = params.containerStyle;
       }
-      y.add(l);
+      y.appendChild(l);
     }
     var x = tfw.div({});
     if (params.id) {
@@ -3859,10 +3939,10 @@ var desktop = {//eslint-disable-line no-implicit-globals
             if (x.onchange) {
               x.onchange();
             }
-            x.addClass("hasBeenChanged");
+            x.classList.add("hasBeenChanged");
           }
         });
-        c.add(b);
+        c.appendChild(b);
         b.style.webkitTransform = "translateY(-" + vyska + "px)";
         window.setTimeout(function(){
           $("drop" + params.id).style.webkitTransform = "";
@@ -3871,10 +3951,10 @@ var desktop = {//eslint-disable-line no-implicit-globals
     };
     Object.defineProperty(x, "disabled", {
       set: function(val){
-        if (val) this.addClass("disabled");
-        else this.removeClass("disabled");
+        if (val) this.classList.add("disabled");
+        else this.classList.remove("disabled");
         this._disabled = val;
-        if (this.previousSibling) this.previousSibling.classIf("disabled", this._disabled);
+        if (this.previousSibling) this.previousSibling.classList.toggle("disabled", this._disabled);
       },
       get: function(){
         return this._disabled;
@@ -3904,7 +3984,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         } else if (i == a) x.innerHTML = params.list[i];
       }
     };
-    y.add(x);
+    y.appendChild(x);
     return y;
   },
   dialog: function(co){
@@ -3936,9 +4016,9 @@ var desktop = {//eslint-disable-line no-implicit-globals
     obal.style.webkitTransform = "translateY(-32px)";
     obal.style.opacity = 0;
     obal.id = "tfwDialog" + desktop.activeLayer;
-    desktop.layers[desktop.activeLayer].add(obal);
+    desktop.layers[desktop.activeLayer].appendChild(obal);
     if (nazev) {
-      obal.add(titleDiv = tfw.par({
+      obal.appendChild(titleDiv = tfw.par({
         innerHTML: nazev,
         className: "tfwDialogTitle"
       }));
@@ -3949,8 +4029,8 @@ var desktop = {//eslint-disable-line no-implicit-globals
       e.stopPropagation();
       e.preventDefault();
     };
-    obal.add(f);
-    f.add(vnit = tfw.div({
+    obal.appendChild(f);
+    f.appendChild(vnit = tfw.div({
       className: "tfwDialog",
       style: "height:" + (wHeight - (nazev ? 60 : 32)) + "px"
     }));
@@ -3958,10 +4038,10 @@ var desktop = {//eslint-disable-line no-implicit-globals
       if (e.which == 27) desktop.closeTopLayer();
     }, true);
     /**/
-    vnit.add(wdlg = tfw.div({
+    vnit.appendChild(wdlg = tfw.div({
       style: "width: 100%; height:" + (wHeight - (nazev ? 60 : 32) - 30) + "px; overflow: scroll;"
     }));
-    wdlg.add(dlg = tfw.div({
+    wdlg.appendChild(dlg = tfw.div({
       style: "width: " + (cWidth - 32) + "px; height:" + (cHeight - (nazev ? 60 : 32) - 50) + "px"
     }));
     dlg.addEventListener("mousedown", function(e){
@@ -3975,17 +4055,17 @@ var desktop = {//eslint-disable-line no-implicit-globals
     if (co.children) {
       for (i = 0; i < co.children.length; i++) {
         if (co.children[i]) {
-          dlg.add(co.children[i]);
+          dlg.appendChild(co.children[i]);
         }
       }
     }
-    vnit.add(dlg.buttons = tfw.div({
+    vnit.appendChild(dlg.buttons = tfw.div({
       className: "buttonsBar"
     }));
     if (co.buttons) {
       for (i = 0; i < co.buttons.length; i++) {
         if (co.buttons[i]) {
-          dlg.buttons.add(b = tfw.button(co.buttons[i]));
+          dlg.buttons.appendChild(b = tfw.button(co.buttons[i]));
           if (!co.vychozi && b.type == "submit") b.focus();
         }
       }
@@ -4008,7 +4088,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     };
     dlg.resetChanges = function(){
       var list = this.getElementsByClassName("hasBeenChanged");
-      for (var i = 0; i < list.length; i++) list[i].removeClass("hasBeenChanged");
+      for (var i = 0; i < list.length; i++) list[i].classList.remove("hasBeenChanged");
     };
     window.setTimeout(function(activeLayer){
       activeLayer.style.webkitTransform = "";
@@ -4068,14 +4148,14 @@ tfw.DynamicTable.placePositionedDialog = function(positionAtElement, filterEleme
     autoclose: true,
     modal: "auto"
   }, true, typeof right == "undefined" ? false : right);
-  wrapper.add(filterElement);
+  wrapper.appendChild(filterElement);
 };
 tfw.calendarExtend.placeCalendar = function(cal, input){
   var wrapper = desktop.createLayerAndWrapperAtElement(input, {
     autoclose: true,
     modal: "auto"
   });
-  wrapper.add(cal);
+  wrapper.appendChild(cal);
 };
 
 
