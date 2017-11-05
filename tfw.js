@@ -2919,16 +2919,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (this.focusedRowId != null) {
         // sort so that focused row is not moved, therefore not looses focus
         var focusedDataRow = this.data.rows[this.getDataRowById(this.focusedRowId)],
-            focusedRow = tbody.rows.namedItem("rowID-" + this.focusedRowId);
+            focusedRow = document.getElementById("rowID-" + this.focusedRowId);
         while (comp(this.data.rows[i], focusedDataRow) < 0) {
-          tbody.insertBefore(tbody.rows.namedItem("rowID-" + this.data.rows[i].id), focusedRow);
+          tbody.insertBefore(document.getElementById("rowID-" + this.data.rows[i].id), focusedRow);
           i++;
         }
         // leave focusedRow untouched
         i++;
       }
       for (; i < this.data.rows.length; i++) {
-        tbody.appendChild(tbody.rows.namedItem("rowID-" + this.data.rows[i].id));
+        tbody.appendChild(document.getElementById("rowID-" + this.data.rows[i].id));
       }
 
       this.toggleReorder();
