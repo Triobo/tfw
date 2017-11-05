@@ -668,6 +668,8 @@ button.canBeChecked.checked:before {
 }
 .tfwDynamicTable tbody {
   overflow-y: scroll;
+  touch-action: manipulation;
+  transform: rotateX(0.0001deg);
 }
 .tfwDynamicTable tbody tr:hover {
   background-color: #eee;
