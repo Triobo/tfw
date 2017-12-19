@@ -471,6 +471,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (params.afterStyle) a.style.cssText = params.afterStyle;
       x.appendChild(a);
     }
+    element.container = x;
     return x;
   },
   /**
@@ -998,7 +999,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       } else if (element.value) {
         element.classList.remove("empty");
         if (element.filename.match(/\.(gif|jpg|jpeg|png|ico)$/i)) {
-          element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\"/zdroje/"
+          element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\""
           + element.path + element.filename + "?" + element.value + "\">";
         } else {
           element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + element.filename + "</p>";
@@ -3874,13 +3875,13 @@ var desktop = {//eslint-disable-line no-implicit-globals
       if (params.legendStyle) {
         l.style.cssText = params.legendStyle;
       }
-      if (params.containerId) {
-        y.id = params.containerId;
-      }
-      if (params.containerStyle) {
-        y.style.cssText = params.containerStyle;
-      }
       y.appendChild(l);
+    }
+    if (params.containerId) {
+      y.id = params.containerId;
+    }
+    if (params.containerStyle) {
+      y.style.cssText = params.containerStyle;
     }
     var x = tfw.div({});
     if (params.id) {
@@ -3985,6 +3986,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
       }
     };
     y.appendChild(x);
+    x.container = y;
     return y;
   },
   dialog: function(co){
