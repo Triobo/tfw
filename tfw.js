@@ -17,6 +17,7 @@ function $(id){//eslint-disable-line no-implicit-globals
 }
 
 HTMLElement.prototype.hasClass = function(c){
+  console.warn("hasClass DEPRECATED");
   return (this.className.split(" ").indexOf(c) != -1);
 };
 HTMLElement.prototype.hasAnyClass = function(c){
@@ -29,6 +30,7 @@ HTMLElement.prototype.hasAnyClass = function(c){
   return false;
 };
 HTMLElement.prototype.addClass = function(c){
+  console.warn("addClass DEPRECATED");
   if (!this.hasClass(c)) {
     if (this.className) {
       var cs = this.className.split(" ");
@@ -38,6 +40,7 @@ HTMLElement.prototype.addClass = function(c){
   }
 };
 HTMLElement.prototype.removeClass = function(c){
+  console.warn("removeClass DEPRECATED");
   var cs = this.className.split(" ");
   var id = cs.indexOf(c);
   if (id >= 0) cs.splice(id, 1);
@@ -45,14 +48,17 @@ HTMLElement.prototype.removeClass = function(c){
   else this.removeAttribute("class");
 };
 HTMLElement.prototype.toggleClass = function(c){
+  console.warn("toggleClass DEPRECATED");
   if (this.hasClass(c)) this.removeClass(c);
   else this.addClass(c);
 };
 HTMLElement.prototype.classIf = function(c, cond){
+  console.warn("classIf DEPRECATED");
   if (cond) this.addClass(c);
   else this.removeClass(c);
 };
 HTMLElement.prototype.myOrder = function(){
+  console.warn("myOrder DEPRECATED");
   return this.parentNode == null ? null : Array.prototype.indexOf.call(this.parentNode.children, this);
 };
 HTMLElement.prototype.add = function(x){
@@ -311,20 +317,20 @@ var tfw = {//eslint-disable-line no-implicit-globals
       e.preventDefault();
       var i;
       if (element.multiple) {
-        this.toggleClass("selected");
+        this.classList.toggle("selected");
       } else {
-        for (i = 0; i < element.childNodes.length; i++) element.childNodes[i].removeClass("selected");
-        this.addClass("selected");
+        for (i = 0; i < element.childNodes.length; i++) element.childNodes[i].classList.remove("selected");
+        this.classList.add("selected");
       }
       var m = [];
       for (i = 0; i < element.childNodes.length; i++) {
-        if (element.childNodes[i].hasClass("selected")) {
+        if (element.childNodes[i].classList.contains("selected")) {
           m.push(element.childNodes[i].value);
         }
       }
       element._value = m.join(",");
       if (element.onchange) element.onchange();
-      element.addClass("hasBeenChanged");
+      element.classList.add("hasBeenChanged");
     };
     if (element.value) element._value = element.value;
     else element._value = 0;
@@ -362,9 +368,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
       set: function(a){
         for (var i = 0; i < element.childNodes.length; i++) {
           if (element.childNodes[i].value == a) {
-            element.childNodes[i].addClass("selected");
+            element.childNodes[i].classList.add("selected");
           } else {
-            element.childNodes[i].removeClass("selected");
+            element.childNodes[i].classList.remove("selected");
           }
         }
         element._value = String(a);
@@ -496,7 +502,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   input: function(params){
     var element = document.createElement("input");
     element.addEventListener("change", function(){
-      this.addClass("hasBeenChanged");
+      this.classList.add("hasBeenChanged");
     });
 
     this.fillElemDefs(element, params);
@@ -520,7 +526,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   textArea: function(params){
     var element = document.createElement("textarea");
     element.addEventListener("change", function(){
-      this.addClass("hasBeenChanged");
+      this.classList.add("hasBeenChanged");
     });
 
     this.fillElemDefs(element, params);
@@ -545,7 +551,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var labelText = (params.text) ? params.text : "";
     params.text = "";
     var x = tfw.createAndFillElement("div", params);
-    x.addClass("tfwCheckbox");
+    x.classList.add("tfwCheckbox");
     //if (params.onchange) x.addEventListener("change", params.onchange);
     //if (params.onclick) x.onclick = params.onclick;
     var b = document.createElement("div");
@@ -561,14 +567,14 @@ var tfw = {//eslint-disable-line no-implicit-globals
       set: function(val){
         var box = this.childNodes[0];
         if (val) {
-          box.addClass("checked");
-          x.addClass("checked");
+          box.classList.add("checked");
+          x.classList.add("checked");
         } else {
-          box.removeClass("checked");
-          x.removeClass("checked");
+          box.classList.remove("checked");
+          x.classList.remove("checked");
         }
         this._value = val;
-        this.addClass("hasBeenChanged");
+        this.classList.add("hasBeenChanged");
       },
       get: function(){
         return this._value;
@@ -578,8 +584,8 @@ var tfw = {//eslint-disable-line no-implicit-globals
     });
     Object.defineProperty(x, "disabled", {
       set: function(val){
-        if (val) this.addClass("disabled");
-        else this.removeClass("disabled");
+        if (val) this.classList.add("disabled");
+        else this.classList.remove("disabled");
         this.zakazano = val;
       },
       get: function(){
@@ -652,7 +658,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.action) {
       element.action = params.action;
       element.onclick = function(e){
-        if (!element.hasClass("disabled")) this.action(e);
+        if (!element.classList.contains("disabled")) this.action(e);
       };
     }
     if ("title" in params) element.title = params.title;
@@ -662,11 +668,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     element.disabled = 0;
     Object.defineProperty(element, "disabled", {
       set: function(val){
-        if (val) element.addClass("disabled");
-        else element.removeClass("disabled");
+        if (val) element.classList.add("disabled");
+        else element.classList.remove("disabled");
       },
       get: function(){
-        return element.hasClass("disabled");
+        return element.classList.contains("disabled");
       },
       enumerable: true,
       configurable: true
@@ -674,11 +680,11 @@ var tfw = {//eslint-disable-line no-implicit-globals
     if (params.disabled) element.disabled = params.disabled;
     Object.defineProperty(element, "selected", {
       set: function(val){
-        if (val) element.addClass("selected");
-        else element.removeClass("selected");
+        if (val) element.classList.add("selected");
+        else element.classList.remove("selected");
       },
       get: function(){
-        return element.hasClass("selected");
+        return element.classList.contains("selected");
       },
       enumerable: true,
       configurable: true
@@ -949,7 +955,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (element.uploading) {
         element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + tfw.strings.UPLOADING.replace("%1", (prc + " %")) + "</p>";
       } else if (element.value) {
-        element.removeClass("empty");
+        element.classList.remove("empty");
         if (element.filename.match(/\.(gif|jpg|jpeg|png|ico)$/i)) {
           element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\""
           + element.path + element.filename + "?" + element.value + "\">";
@@ -957,7 +963,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + element.filename + "</p>";
         }
       } else {
-        element.addClass("empty");
+        element.classList.add("empty");
         element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:40px;\">" + element.text + "</p>";
       }
     };
@@ -1277,13 +1283,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (tabIndex != this.activeTab) {
         if (this.activeTab >= 0) {
           var previousTab = this.tabs[this.activeTab];
-          previousTab.tag.removeClass("active");
-          previousTab.content.removeClass("active");
+          previousTab.tag.classList.remove("active");
+          previousTab.content.classList.remove("active");
         }
         if (tabIndex >= 0) {
           var nextTab = this.tabs[tabIndex];
-          nextTab.tag.addClass("active");
-          nextTab.content.addClass("active");
+          nextTab.tag.classList.add("active");
+          nextTab.content.classList.add("active");
         }
         this.activeTab = tabIndex;
         this.tabContainer.dispatchEvent(new Event("change"));
@@ -1409,7 +1415,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   progress: function(params){
     var progressbar = tfw.createAndFillElement("progress", params);
     progressbar.max = ("max" in params) ? params.max : 1;
-    if ("showPercentage" in params && params.showPercentage) progressbar.addClass("showPercentage");
+    if ("showPercentage" in params && params.showPercentage) progressbar.classList.add("showPercentage");
     return progressbar;
   },
   /**
@@ -1769,10 +1775,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.setReorderEnabled = function(row, rowReorderEnabled){
       var dynamicTable = this;
-      row[rowReorderEnabled ? "addClass" : "removeClass"]("draggable");
+      row.classList[rowReorderEnabled ? "add" : "remove"]("draggable");
       row.draggable = rowReorderEnabled;
       row.ondragstart = rowReorderEnabled ? function(event){
-        this.addClass("dragged");
+        this.classList.add("dragged");
         event.dataTransfer.setData("text", event.target.myOrder());
       } : null;
       row.ondragover = rowReorderEnabled ? function(event){
@@ -1788,7 +1794,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         event.preventDefault();
       } : null;
       row.ondragend = rowReorderEnabled ? function(){
-        this.removeClass("dragged");
+        this.classList.remove("dragged");
         serverUpdateOrder({
           id: this.dataset.rowid,
           neworder: this.myOrder() + 1
@@ -1876,7 +1882,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         for (var j = 0; j < arrowGroups.length; j++) {
           var arrowTypes = arrowGroups[j];
           for (i in arrowTypes) {
-            if (element.hasClass(arrowTypes[i])) {
+            if (element.classList.contains(arrowTypes[i])) {
               arrowGroup = arrowTypes;
               arrowType = arrowTypes[i];
             }
@@ -1888,13 +1894,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
           var otherArrows = base.getElementsByClassName("tfwArrow");
           for (i = 0; i < otherArrows.length; i++) {
             if (otherArrows[i].hasAnyClass(arrowGroup.join(" "))) {
-              otherArrows[i].removeClass("active");
+              otherArrows[i].classList.remove("active");
             }
           }
         }
       }
       if (element != null && (typeof on == "undefined" || on)) {
-        element.addClass("active");
+        element.classList.add("active");
       }
     }
     /**
@@ -1929,7 +1935,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.isColumnVisible = function(dataCol){
       return (!("hidden" in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
-        && !(this.tableContainer.querySelector("thead").rows[0].cells[this.data.cols[dataCol].columnOrder].hasClass("hideColumn"));
+        && !(this.tableContainer.querySelector("thead").rows[0].cells[this.data.cols[dataCol].columnOrder].classList.contains("hideColumn"));
     };
     /**
      * @private
@@ -1985,7 +1991,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             id: "rowID-" + this.data.rows[rowOrder].id
           });
       if (readonlyRow) {
-        r.addClass("readonly");
+        r.classList.add("readonly");
       }
       r.setAttribute("data-rowid", this.data.rows[rowOrder].id);
       var columnOrder = 0,
@@ -1999,7 +2005,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           })]
         }));
         if (readonlyRow) {
-          b.addClass("disabled");
+          b.classList.add("disabled");
         } else {
           b.onclick = rowEdit.bind(null, dynamicTable.data.rows[rowOrder].id);
         }
@@ -2157,7 +2163,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           if (typeof window._resizedElement != "undefined") {
             var cell = window._resizedElement;
             cell.dispatchEvent(new CustomEvent("resizestop"));
-            document.body.removeClass("resizing");
+            document.body.classList.remove("resizing");
             delete window._resizedElement;
           }
         };
@@ -2172,7 +2178,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       return function(event){
         var cell = window._resizedElement = event.target.closest("th");
         cell.dispatchEvent(new CustomEvent("resizestart"));
-        document.body.addClass("resizing");
+        document.body.classList.add("resizing");
         cell._resizePositionX = event.clientX;
       };
     }
@@ -2250,7 +2256,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
             deltaWidth += 24;
           }
           if (!("noresize" in this.data.cols[j]) || this.data.cols[j].noresize === false) {
-            c.addClass("resizable");
+            c.classList.add("resizable");
             d.add(resizer = tfw.span({className: "resizer"}));
             resizer.addEventListener("mousedown", resizerMouseDown);
             c.addEventListener("resizing", function(){
@@ -2390,9 +2396,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.updateCellFromChange = function(rowOrder, dataCol, newValue){
       this.data.rows[rowOrder].cols[dataCol] = newValue;
       var cell = this.tableContainer.querySelector("tbody").rows[rowOrder].cells[this.data.cols[dataCol].columnOrder];
-      cell.addClass("hasBeenChanged");
+      cell.classList.add("hasBeenChanged");
       setTimeout(function(updatedCell){
-        updatedCell.removeClass("hasBeenChanged");
+        updatedCell.classList.remove("hasBeenChanged");
       }, 3000, cell);
       if (typeof columnRenderers[dataCol] == "function") {
         cell.innerHTML = "";
@@ -3093,7 +3099,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.toggleColumn = function(dataCol, dontSave){
       var column = this.data.cols[dataCol].columnOrder,
           visible = !this.tableContainer.querySelector("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
-            + (column + 1) + ")").hasClass("hideColumn"),
+            + (column + 1) + ")").classList.contains("hideColumn"),
           hiddenColumns = this.getPreference("hiddenColumns") || [];
       if ((typeof dontSave == "undefined" || !dontSave) && visible && hiddenColumns.filter(function(el){return el == true;}).length
         == this.tableContainer.querySelectorAll("thead tr > :not(.rowEditCell)").length - 1) {
@@ -3101,7 +3107,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       }
       [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
         + (column + 1) + ")")).forEach(function(cell){
-          cell.toggleClass("hideColumn");
+          cell.classList.toggle("hideColumn");
         });
       this.setTableWidth();
       if (typeof dontSave == "undefined" || !dontSave) {
@@ -3216,7 +3222,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     calendarWrapper.appendChild(calendarIcon);
     calendarIcon.className = "tfwCalendarIcon clicable icon fa fa-calendar";
     calendarIcon._calendarInput = input;
-    input.addClass("calendarInput");
+    input.classList.add("calendarInput");
     input._calendar = this;
     input.setAttribute("pattern", "[0-9]{4,}-[0-9]{2}-[0-9]{2}");
     /**
@@ -3240,7 +3246,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }, true);
     input.value = completeDate(input.value);
     var calendarContainer = document.createElement("div");
-    calendarContainer.addClass("calendarWidget");
+    calendarContainer.classList.add("calendarWidget");
     var selectedYear = NaN;
     /**
      * Month number, 1-12
@@ -3327,9 +3333,9 @@ var tfw = {//eslint-disable-line no-implicit-globals
           input.value = this.id.substr(4);
           var current = calendarContainer.querySelector(".current");
           if (current) {
-            current.toggleClass("current");
+            current.classList.toggle("current");
           }
-          this.addClass("current");
+          this.classList.add("current");
           calendarInput.dispatchEvent(new Event("change"));
         }, true);
         week.add(day);
@@ -3362,15 +3368,15 @@ var tfw = {//eslint-disable-line no-implicit-globals
             input.value = new Date().toISOString().slice(0, 10);
             var current = calendarContainer.querySelector(".current");
             if (current) {
-              current.removeClass("current");
+              current.classList.remove("current");
             }
-            $("day-" + input.value).addClass("current");
+            $("day-" + input.value).classList.add("current");
           }}),
           tfw.span({text: tfw.strings.REMOVE, onclick: function () {
             input.value = "";
             var current = calendarContainer.querySelector(".current");
             if (current) {
-              current.removeClass("current");
+              current.classList.remove("current");
             }
           }})
         ]
@@ -3402,7 +3408,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
   multiCheckbox: function(params){
     var i,
         container = tfw.createAndFillElement("div", params);
-    container.addClass("tfwMultiCheckbox");
+    container.classList.add("tfwMultiCheckbox");
     if ("value" in params) {
       container._value = params.value;
       if (typeof container._value === "string") container._value = container._value.split(",");
@@ -3665,7 +3671,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
   newLayer: function(params){
     if (params.modal) {
       if (params.modal == "auto") {
-        params.modal = desktop.layers[desktop.activeLayer].hasClass("modal") ? 1 : 0;
+        params.modal = desktop.layers[desktop.activeLayer].classList.contains("modal") ? 1 : 0;
       }
     }
     desktop.activeLayer++;
@@ -3860,7 +3866,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
             if (x.onchange) {
               x.onchange();
             }
-            x.addClass("hasBeenChanged");
+            x.classList.add("hasBeenChanged");
           }
         });
         c.add(b);
@@ -3872,10 +3878,10 @@ var desktop = {//eslint-disable-line no-implicit-globals
     };
     Object.defineProperty(x, "disabled", {
       set: function(val){
-        if (val) this.addClass("disabled");
-        else this.removeClass("disabled");
+        if (val) this.classList.add("disabled");
+        else this.classList.remove("disabled");
         this._disabled = val;
-        if (this.previousSibling) this.previousSibling.classIf("disabled", this._disabled);
+        if (this.previousSibling) this.previousSibling.classList.toggle("disabled", this._disabled);
       },
       get: function(){
         return this._disabled;
@@ -4010,7 +4016,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
     };
     dlg.resetChanges = function(){
       var list = this.getElementsByClassName("hasBeenChanged");
-      for (var i = 0; i < list.length; i++) list[i].removeClass("hasBeenChanged");
+      for (var i = 0; i < list.length; i++) list[i].classList.remove("hasBeenChanged");
     };
     window.setTimeout(function(activeLayer){
       activeLayer.style.webkitTransform = "";
