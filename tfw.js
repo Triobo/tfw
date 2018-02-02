@@ -2045,7 +2045,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     this.createRow = function(rowOrder){
       var readonlyRow = ("readonly" in this.data.rows[rowOrder]) && this.data.rows[rowOrder].readonly === true,
           r = document.createElement("tr");
-      r.id = "rowID-" + this.data.rows[rowOrder].id;
+      r.id = this.getRowHTMLId(this.data.rows[rowOrder].id);
       if (readonlyRow) {
         r.classList.add("readonly");
       }
@@ -2959,6 +2959,25 @@ var tfw = {//eslint-disable-line no-implicit-globals
           ? cmpNumericRows : cmpTextRows
       ).bind(null, dataCol);
     };
+    
+    /**
+     *  Get the TR element representing a row with the given ID.
+     *  @param {number} rowId
+     *  @returns {HTMLElement}
+     *  @see getRowHTMLId
+     */
+    this.getRowById = function (rowId) {
+      return document.getElementById(this.getRowById(rowId));
+    }
+    
+    /**
+     *  Get the (HTML) ID of a row with the given ID (in data)
+     *  @param {number} rowId
+     *  @returns {string}
+     */
+    this.getRowHTMLId = function (rowId) {
+      return "rowID-" + this.tableHTMLId + "-" + rowId;
+    }
 
     /**
      * Apply sorting by values (text without HTML) of a column.
@@ -2987,16 +3006,16 @@ var tfw = {//eslint-disable-line no-implicit-globals
       if (this.focusedRowId != null) {
         // sort so that focused row is not moved, therefore not looses focus
         var focusedDataRow = this.data.rows[this.getDataRowById(this.focusedRowId)],
-            focusedRow = document.getElementById("rowID-" + this.focusedRowId);
+            focusedRow = this.getRowById(this.focusedRowId);
         while (comp(this.data.rows[i], focusedDataRow) < 0) {
-          tbody.insertBefore(document.getElementById("rowID-" + this.data.rows[i].id), focusedRow);
+          tbody.insertBefore(this.getRowById(this.data.rows[i].id), focusedRow);
           i++;
         }
         // leave focusedRow untouched
         i++;
       }
       for (; i < this.data.rows.length; i++) {
-        tbody.appendChild(document.getElementById("rowID-" + this.data.rows[i].id));
+        tbody.appendChild(this.getRowById(this.data.rows[i].id));
       }
 
       this.toggleReorder();
