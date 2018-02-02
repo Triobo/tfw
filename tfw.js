@@ -18,6 +18,10 @@ function $(id){//eslint-disable-line no-implicit-globals
   return x;
 }
 
+HTMLElement.prototype.add = function(x){
+  this.appendChild(x);
+};
+
 function initProperty (object, name, defaultValue) {
   if (!(name in object)) object[name] = defaultValue;
 };
