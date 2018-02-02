@@ -221,7 +221,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
       element.style.cssText = params.style;
     }
     if (params.className) {
-      params.className.split(" ").forEach(tfw.addClass.bind(null, element));
+      params.className.trim().split(" ").forEach(tfw.addClass.bind(null, element));
     }
     if ("children" in params) {
       for (var i = 0; i < params.children.length; i++) {
@@ -2967,7 +2967,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      *  @see getRowHTMLId
      */
     this.getRowById = function (rowId) {
-      return document.getElementById(this.getRowById(rowId));
+      return document.getElementById(this.getRowHTMLId(rowId));
     }
     
     /**
