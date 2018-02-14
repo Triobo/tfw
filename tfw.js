@@ -3313,7 +3313,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     }
     calendarWrapper.appendChild(input);
     calendarWrapper.appendChild(calendarIcon);
-    calendarIcon.className = "tfwCalendarIcon clicable icon fa fa-calendar";
+    calendarIcon.className = "tfwCalendarIcon clicable icon far fa-calendar";
     calendarIcon._calendarInput = input;
     input.classList.add("calendarInput");
     input._calendar = this;
