@@ -1,17 +1,40 @@
-@font-face {font-family: 'FontAwesome';src: url('fontawesome-webfont.ttf?v=4.6.1') format('truetype');font-weight: normal;font-style: normal;}
-.fa {
-  display: inline-block;
-  font: normal normal normal 14px/1 FontAwesome;
-  font-size: inherit;
-  text-rendering: auto;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  box-sizing: border-box;
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  src: url("fa-solid-900.ttf?v=5.0") format("truetype");
 }
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 400;
+  src: url("fa-regular-400.ttf?v=5.0") format("truetype");
+}
+
+.fa {
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-size: 1em;
+}
+
+.far {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 400; }
+.fa,
+.fas {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900; }
+  
 .fa-2x {
   font-size: 2em;
 }
-.fa.icon{
+.fa.icon, .far.icon{
+  box-sizing: border-box;
   padding: 2px;
 	margin: 1px;
   width: 18px;
@@ -21,15 +44,15 @@
 	color: white;
 	background-color: #8cc;/*azure*/
 }
-.fa.icon:hover{
+.fa.icon:hover, .far.icon:hover{
 	color: black;
 	background-color: #fc5;/*orange*/  
 }
-.fa.icon.disabled, .calendarInput:disabled + .fa.icon, .calendarInput:read-only + .fa.icon{
+.fa.icon.disabled, .calendarInput:disabled + .fa.icon, .calendarInput:read-only + .fa.icon, .far.icon.disabled, .calendarInput:disabled + .far.icon, .calendarInput:read-only + .far.icon{
   background-color: #ddd;
   cursor: not-allowed;
 }
-.fa.icon.disabled:hover, .calendarInput:disabled + .fa.icon:hover, .calendarInput:read-only + .fa.icon:hover{
+.fa.icon.disabled:hover, .calendarInput:disabled + .fa.icon:hover, .calendarInput:read-only + .fa.icon:hover, .far.icon.disabled:hover, .calendarInput:disabled + .far.icon:hover, .calendarInput:read-only + .far.icon:hover{
 	color: white;
   background-color: #ddd;
 }
@@ -44,6 +67,9 @@
   content: "\f013";
 }
 .fa-calendar:before {
+  content: "\f133";
+}
+.fa-calendar-alt:before {
   content: "\f073";
 }
 .fa-plus:before {
