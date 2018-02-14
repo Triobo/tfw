@@ -956,7 +956,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
         element.childNodes[0].innerHTML = "<p class=\"verticalCenter\" style=\"height:20px;\">" + tfw.strings.UPLOADING.replace("%1", (prc + " %")) + "</p>";
       } else if (element.value) {
         element.classList.remove("empty");
-        if (element.filename.match(/\.(gif|jpg|jpeg|png|ico)$/i)) {
+        if (element.filename.match(/\.(gif|jpg|jpeg|png|ico|svg)$/i)) {
           element.childNodes[0].innerHTML = "<img id=\"fileboximg" + element.id + "\" class=\"verticalCenter\" " + element.imgStyle + " src=\""
           + element.path + element.filename + "?" + element.value + "\">";
         } else {
@@ -1138,6 +1138,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var x = [];
     for (var key in fields) {
       if (Object.prototype.hasOwnProperty.call(fields, key)) {
+        if (!$(fields[key])) console.warn("Not found " + fields[key]);
         x.push(key + "=" + encodeURIComponent($(fields[key]).value));
       }
     }
@@ -3921,33 +3922,34 @@ var desktop = {//eslint-disable-line no-implicit-globals
       overlay: true,
       modal: true
     });
-    var vnit,
-        wdlg,
-        dlg,
-        titleDiv = null,
-        cWidth = 300,
-        cHeight = 200,
-        nazev = "";
-    if (co.width) cWidth = co.width;
-    if (co.height) cHeight = co.height;
-    if (co.title) nazev = co.title;
-    var wHeight = cHeight,
-        wWidth = cWidth;
-    if (cWidth > (desktop.width - 30)) wWidth = (desktop.width - 30);
-    if (cHeight > (desktop.height - 30)) wHeight = (desktop.height - 30);
+    var titleDiv = null;
+    
+    var dlg = tfw.div({});
+            
+    if (co.width) dlg.width = co.width; else dlg.width = 300;
+    if (co.height) dlg.height = co.height; else dlg.height = 200;
+    if (co.title) dlg.dialogTitle = co.title;
+
+    dlg.style.width = (dlg.width - 32) + "px";
+    dlg.style.height = (dlg.height - (dlg.dialogTitle ? 60 : 32) - 50) + "px";
+    
+    var wHeight = dlg.height,
+        wWidth = dlg.width;
+    if (dlg.width > (desktop.width - 30)) wWidth = (desktop.width - 30);
+    if (dlg.height > (desktop.height - 30)) wHeight = (desktop.height - 30);
     var wLeft = Math.round((desktop.width - wWidth) / 2);
     var wTop = Math.round((desktop.height - wHeight) / 2);
-    var obal = tfw.div({
-      className: "tfwDialogContainer" + (nazev ? "" : " noTitle"),
+    dlg.wrapper = tfw.div({
+      className: "tfwDialogContainer" + (dlg.dialogTitle ? "" : " noTitle"),
       style: "left:" + wLeft + "px;top:" + wTop + "px;width:" + wWidth + "px;height:" + wHeight + "px;"
     });
-    obal.style.webkitTransform = "translateY(-32px)";
-    obal.style.opacity = 0;
-    obal.id = "tfwDialog" + desktop.activeLayer;
-    desktop.layers[desktop.activeLayer].add(obal);
-    if (nazev) {
-      obal.add(titleDiv = tfw.par({
-        innerHTML: nazev,
+    dlg.wrapper.style.webkitTransform = "translateY(-32px)";
+    dlg.wrapper.style.opacity = 0;
+    dlg.wrapper.id = "tfwDialog" + desktop.activeLayer;
+    desktop.layers[desktop.activeLayer].add(dlg.wrapper);
+    if (dlg.dialogTitle) {
+      dlg.wrapper.add(titleDiv = tfw.par({
+        innerHTML: dlg.dialogTitle,
         className: "tfwDialogTitle"
       }));
       titleDiv.addEventListener("mousedown", desktop.dialogMoveStart, false);
@@ -3957,21 +3959,19 @@ var desktop = {//eslint-disable-line no-implicit-globals
       e.stopPropagation();
       e.preventDefault();
     };
-    obal.add(f);
-    f.add(vnit = tfw.div({
+    dlg.wrapper.add(f);
+    f.add(dlg.contentWrapper = tfw.div({
       className: "tfwDialog",
-      style: "height:" + (wHeight - (nazev ? 60 : 32)) + "px"
+      style: "height:" + (wHeight - (dlg.dialogTitle ? 60 : 32)) + "px"
     }));
     desktop.layers[desktop.activeLayer].addEventListener("keydown", function(e){
       if (e.which == 27) desktop.closeTopLayer();
     }, true);
     /**/
-    vnit.add(wdlg = tfw.div({
-      style: "width: 100%; height:" + (wHeight - (nazev ? 60 : 32) - 30) + "px; overflow: scroll;"
+    dlg.contentWrapper.add(dlg.content = tfw.div({
+      style: "width: 100%; height:" + (wHeight - (dlg.dialogTitle ? 60 : 32) - 30) + "px; overflow: scroll;"
     }));
-    wdlg.add(dlg = tfw.div({
-      style: "width: " + (cWidth - 32) + "px; height:" + (cHeight - (nazev ? 60 : 32) - 50) + "px"
-    }));
+    dlg.content.add(dlg);
     dlg.addEventListener("mousedown", function(e){
       e.stopPropagation();
     }, false);
@@ -3987,7 +3987,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         }
       }
     }
-    vnit.add(dlg.buttons = tfw.div({
+    dlg.contentWrapper.add(dlg.buttons = tfw.div({
       className: "buttonsBar"
     }));
     if (co.buttons) {
@@ -4017,6 +4017,28 @@ var desktop = {//eslint-disable-line no-implicit-globals
     dlg.resetChanges = function(){
       var list = this.getElementsByClassName("hasBeenChanged");
       for (var i = 0; i < list.length; i++) list[i].classList.remove("hasBeenChanged");
+    };
+    dlg.resize = function (w, h) {
+      this.width = w;
+      this.height = h;
+      var wHeight = dlg.height,
+          wWidth = dlg.width;
+
+      if (this.width > (desktop.width - 30)) wWidth = (desktop.width - 30);
+      if (this.height > (desktop.height - 30)) wHeight = (desktop.height - 30);
+      var wLeft = Math.round((desktop.width - wWidth) / 2);
+      var wTop = Math.round((desktop.height - wHeight) / 2);
+      this.wrapper.style.left = wLeft + "px";
+      this.wrapper.style.top = wTop + "px";
+      this.wrapper.style.width = wWidth + "px";
+      this.wrapper.style.height = wHeight + "px";
+
+      this.contentWrapper.style.height = (wHeight - (this.dialogTitle ? 60 : 32)) + "px";
+      
+      this.content.style.height = (wHeight - (this.dialogTitle ? 60 : 32) - 30) + "px";
+      
+      this.style.width = (this.width - 32) + "px";
+      this.style.height = (this.height - (this.dialogTitle ? 60 : 32) - 50) + "px";
     };
     window.setTimeout(function(activeLayer){
       activeLayer.style.webkitTransform = "";
