@@ -2360,10 +2360,6 @@ var tfw = {//eslint-disable-line no-implicit-globals
             className: "tfwDynamicTable"
           }),
           dynamicTable = this;
-      o.addEventListener("focus", function(event){
-        dynamicTable.setFocusedRow(dynamicTable.data.rows[tfw.getElementOrder(event.target.closest("tr"))].id);
-      }, true);
-      o.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
       fragment.appendChild(o);
       
       for (var j = 0; j < this.data.cols.length; j++) {
@@ -2382,6 +2378,10 @@ var tfw = {//eslint-disable-line no-implicit-globals
       for (var i = 0; i < this.data.rows.length; i++) {
         tbody.appendChild(this.createRow(i));
       }
+      tbody.addEventListener("focus", function(event){
+        dynamicTable.setFocusedRow(dynamicTable.data.rows[tfw.getElementOrder(event.target.closest("tr"))].id);
+      }, true);
+      tbody.addEventListener("blur", this.setFocusedRow.bind(this, null), true);
       o.appendChild(tbody);
       var tfoot;
       o.appendChild(tfoot = document.createElement("tfoot"));
