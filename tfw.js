@@ -3129,31 +3129,35 @@ var tfw = {//eslint-disable-line no-implicit-globals
       // update current filter values
       this.setFilterPreferenceIfNotDefault(value, dataCol, (typeof dontSave == "undefined" || !dontSave));
       this.setActiveFilterInColumn(column, !this.isFilterValueDefault(value, dataCol), tfw.DynamicTable.arrowTypes.FILTER);
-      var tbody = this.tableContainer.querySelector("tbody"),
-          searchFunc = (typeof searchType != "undefined" && searchType == 1) ? "startsWith" : "includes",
-          rowValue;
-      for (var i = 0; i < tbody.rows.length; i++) {
-        var matches = true;
+      var searchFunc = (typeof searchType != "undefined" && searchType == 1) ? "startsWith" : "includes",
+          rowValue,
+          matches,
+          htmlRow,
+          htmlCell;
+      for (var i = 0; i < this.data.rows.length; i++) {
+        htmlRow = this.getRowById(this.data.rows[i].id);
+        htmlCell = htmlRow.cells[column];
+        matches = true;
         switch (type) {
           case tfw.DynamicTable.colTypes.CHECKBOX:
-            var checked = tbody.rows[i].cells[column].querySelector(".checked") != null;
+            var checked = htmlCell.querySelector(".checked") != null;
             matches = (value === "0") || (value === "1" && checked) || (value === "2" && !checked);
             break;
           case tfw.DynamicTable.colTypes.TEXT:
-            matches = (value == "") || tbody.rows[i].cells[column].querySelector("input[type=\"text\"],.input_text").value.toLowerCase()[searchFunc](
+            matches = (value == "") || htmlCell.querySelector("input[type=\"text\"],.input_text").value.toLowerCase()[searchFunc](
               value.toLowerCase());
             break;
           case tfw.DynamicTable.colTypes.NUMBER:
-            rowValue = parseInt(tbody.rows[i].cells[column].querySelector("input").rowValue);
+            rowValue = parseInt(htmlCell.querySelector("input").rowValue);
             matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
           case tfw.DynamicTable.colTypes.DATE:
-            rowValue = tbody.rows[i].cells[column].querySelector("input,.input_text").value;
+            rowValue = htmlCell.querySelector("input,.input_text").value;
             matches = (rowValue === "" || (value.min <= rowValue && rowValue <= value.max));
             break;
           // intentionally omitted default
         }
-        tbody.rows[i].classList.toggle("filter" + dataCol + "Invalid", !matches);
+        htmlRow.classList.toggle("filter" + dataCol + "Invalid", !matches);
       }
       updateRowCounts.call(this);
     };
