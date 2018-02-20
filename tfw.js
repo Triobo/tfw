@@ -1977,7 +1977,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.isColumnVisible = function(dataCol){
       return (!("hidden" in this.data.cols[dataCol]) || this.data.cols[dataCol].hidden === false)
-        && !(this.tableContainer.querySelector("thead").rows[0].cells[this.data.cols[dataCol].columnOrder].classList.contains("hideColumn"));
+        && (!("hiddenByUser" in this.data.cols[dataCol]) || this.data.cols[dataCol].hiddenByUser === false);
     };
     /**
      * @private
@@ -3182,13 +3182,13 @@ var tfw = {//eslint-disable-line no-implicit-globals
      */
     this.toggleColumn = function(dataCol, dontSave){
       var column = this.data.cols[dataCol].columnOrder,
-          visible = !this.tableContainer.querySelector("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
-            + (column + 1) + ")").classList.contains("hideColumn"),
+          visible = this.isColumnVisible(dataCol),
           hiddenColumns = this.getPreference("hiddenColumns") || [];
       if ((typeof dontSave == "undefined" || !dontSave) && visible && hiddenColumns.filter(function(el){return el == true;}).length
         == this.tableContainer.querySelectorAll("thead tr > :not(.rowEditCell)").length - 1) {
         return false;
       }
+      this.data.cols[dataCol].hiddenByUser = visible;
       [].slice.call(this.tableContainer.querySelectorAll("tbody tr > :nth-child(" + (column + 1) + "), thead tr > :nth-child("
         + (column + 1) + ")")).forEach(function(cell){
           cell.classList.toggle("hideColumn");
