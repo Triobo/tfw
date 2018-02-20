@@ -3188,7 +3188,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           visible = this.isColumnVisible(dataCol),
           hiddenColumns = this.getPreference("hiddenColumns") || [];
       if ((typeof dontSave == "undefined" || !dontSave) && visible && hiddenColumns.filter(function(el){return el == true;}).length
-        == this.tableContainer.querySelectorAll("thead tr > :not(.rowEditCell)").length - 1) {
+        == this.data.cols.filter(function(col){return !("hidden" in col) || col.hidden === false;}).length - (rowEdit ? 1 : 0) - 1) {
         return false;
       }
       this.data.cols[dataCol].hiddenByUser = visible;
