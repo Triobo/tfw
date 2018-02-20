@@ -2163,9 +2163,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {number}
      */
     this.getVisibleRowsCount = function(){
-      return [].slice.call(this.tableContainer.querySelectorAll("tbody tr")).reduce(function(previous, current){
-        return previous + ((current.className.match(/(^| )filter[0-9]+Invalid( |$)/)) ? 0 : 1);
-      }, 0);
+      return this.data.rows.filter(function(row){return !("hiddenByUser" in row) || row.hiddenByUser === false;}).length;
     };
     /**
      * Get total rows count (from HTML table).
@@ -2173,7 +2171,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
      * @return {number}
      */
     this.getTotalRowsCount = function(){
-      return this.tableContainer.querySelectorAll("tbody tr").length;
+      return this.data.rows.length;
     };
     /**
      * Recompute rows counts and update text in table footer.
@@ -3158,6 +3156,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           // intentionally omitted default
         }
         htmlRow.classList.toggle("filter" + dataCol + "Invalid", !matches);
+        this.data.rows[i].hiddenByUser = !matches;
       }
       updateRowCounts.call(this);
     };
