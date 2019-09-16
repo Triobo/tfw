@@ -984,16 +984,21 @@ var tfw = {//eslint-disable-line no-implicit-globals
           element.prekresli(Math.round(e.loaded / element.uploading * 100));
         });
         fUp.addEventListener("load", function(){
+          element.prekresli(100);
+        });
+        element.hr.addEventListener("load", function(e) {
           element.uploading = 0;
           element.value = Math.floor(Math.random() * 1000000) + 1;
           if (element.onloaded) element.onloaded();
-          window.setTimeout(function(){
-            $(element.id).prekresli();
-          }, 500);
+          element.prekresli(100);
         });
         element.hr.open("POST", "uploadFile.php?" + tfw.ajaxIncludeParams());
         element.hr.setRequestHeader("X_FILENAME", element.path + element.filename);
-        element.hr.send(u[0]);
+
+        var fd = new FormData();
+        fd.append("file", u[0]);
+        
+        element.hr.send(fd);
       } else {
         var lims = element.limitExtensions.split("|");
         var lastl = lims.pop();
@@ -1138,8 +1143,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
     var x = [];
     for (var key in fields) {
       if (Object.prototype.hasOwnProperty.call(fields, key)) {
-        if (!$(fields[key])) console.warn("Not found " + fields[key]);
-        x.push(key + "=" + encodeURIComponent($(fields[key]).value));
+        if ($(fields[key])) x.push(key + "=" + encodeURIComponent($(fields[key]).value));
       }
     }
     return x.join("&");
@@ -3420,7 +3424,7 @@ var tfw = {//eslint-disable-line no-implicit-globals
           checkboxes = checkboxContainer.childNodes;
       checkboxContainer._value = [];
       for (var j = 0; j < checkboxes.length; j++) {
-        if (checkboxes[j].value) checkboxContainer._value.push(checkboxes[j].id.split("-")[1]);
+        if (checkboxes[j].value) checkboxContainer._value.push(checkboxes[j].id.split("-").pop());
       }
       if (container.onchange) container.dispatchEvent(new Event("change"));
     };
@@ -3922,7 +3926,6 @@ var desktop = {//eslint-disable-line no-implicit-globals
       overlay: true,
       modal: true
     });
-    var titleDiv = null;
     
     var dlg = tfw.div({});
             
@@ -3948,11 +3951,11 @@ var desktop = {//eslint-disable-line no-implicit-globals
     dlg.wrapper.id = "tfwDialog" + desktop.activeLayer;
     desktop.layers[desktop.activeLayer].add(dlg.wrapper);
     if (dlg.dialogTitle) {
-      dlg.wrapper.add(titleDiv = tfw.par({
+      dlg.wrapper.add(dlg.titleDiv = tfw.par({
         innerHTML: dlg.dialogTitle,
         className: "tfwDialogTitle"
       }));
-      titleDiv.addEventListener("mousedown", desktop.dialogMoveStart, false);
+      dlg.titleDiv.addEventListener("mousedown", desktop.dialogMoveStart, false);
     }
     var f = document.createElement("form");
     f.onsubmit = function(e){
@@ -4010,7 +4013,6 @@ var desktop = {//eslint-disable-line no-implicit-globals
       enumerable: true,
       configurable: true
     });
-    dlg.titleDiv = titleDiv;
     dlg.hasBeenChanged = function(){
       return this.getElementsByClassName("hasBeenChanged").length ? 1 : 0;
     };
@@ -4080,6 +4082,7 @@ var desktop = {//eslint-disable-line no-implicit-globals
         action: desktop.closeTopLayer
       }]
     });
+    console.log(params.ajaxFile + "?" + params.ajaxParam);
     tfw.ajaxGet({
       url: params.ajaxFile + "?" + params.ajaxParam,
       onload: function(hr){

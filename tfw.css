@@ -96,6 +96,9 @@
 .fa-share:before {
   content: "\f064";
 }
+.fa-share-alt:before {
+  content: "\f1e0";
+}
 .fa-lock:before {
   content: "\f023";
 }
